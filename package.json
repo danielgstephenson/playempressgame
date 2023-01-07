@@ -1,0 +1,22 @@
+{
+  "name": "playempressgame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielgstephenson/playempressgame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielgstephenson/playempressgame/issues"
+  },
+  "homepage": "https://github.com/danielgstephenson/playempressgame#readme",
+  "dependencies": {
+    "firebase-admin": "^11.4.1"
+  }
+}
