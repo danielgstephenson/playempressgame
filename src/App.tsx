@@ -1,20 +1,27 @@
-import { useState } from "react"
 import { initializeApp } from 'firebase/app'
-import { firebaseConfig } from "./secret"
-import { collection, getFirestore, DocumentData, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from "firebase/firestore"
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { firebaseConfig } from './secret'
+import {
+  collection, getFirestore, DocumentData, QueryDocumentSnapshot,
+  SnapshotOptions, WithFieldValue, connectFirestoreEmulator
+} from 'firebase/firestore'
+import { useCollectionData } from 'react-firebase-hooks/firestore'
+import { getAuth, signInAnonymously } from 'firebase/auth'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
+const auth = getAuth()
 
-interface Game { 
+connectFirestoreEmulator(db, 'localhost', 8080)
+
+interface Game {
   name: string
   id?: string
 }
 
 const converter = {
   toFirestore: (game: WithFieldValue<Game>): DocumentData => {
-    return {name: game.name}
+    return { name: game.name }
   },
   fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
     const data = snapshot.data(options)
@@ -22,29 +29,27 @@ const converter = {
   }
 }
 
-const games = collection(db,'games')
+const games = collection(db, 'games')
 const converted = games.withConverter(converter)
 
-export default function App (): JSX.Element {
-  const [count, setCount] = useState(0)
-  const [values, loading, error] = useCollectionData (converted);
-  console.log('values', values)
-  console.log('loading', loading)
-  console.log('error', error)
-  console.log('count render', count)
-  function handleCount (): void {
-    console.log('click')
-    console.log('count before', count)
-    setCount((oldCount) => oldCount + 1)
-    console.log('count after', count)
+async function createAccount (): Promise<void> {
+  try {
+    await signInAnonymously(auth)
+    console.log('signed in')
+  } catch (error) {
+    console.log(error)
   }
-  const games = values?.map((value) => <p key={value.id}>{value.name}</p>)
+}
+
+export default function App (): JSX.Element {
+  const [user, userLoading, userError] = useAuthState(auth)
+  const [games, gamesLoading, gamesError] = useCollectionData(converted)
+  console.log('user', user)
+  const gameViews = games?.map((value) => <p key={value.id}>{value.name}</p>)
   return (
     <>
-      <h1 onClick={handleCount}>{count}</h1>
-
-      <p>World</p>
-      {games}
+      <button onClick={createAccount}>New Account</button>
+      {gameViews}
     </>
   )
 }
