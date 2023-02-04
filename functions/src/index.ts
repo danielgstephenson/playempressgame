@@ -3,10 +3,11 @@ import admin from 'firebase-admin';
 import { https, runWith } from "firebase-functions"
 import { firebaseConfig } from './secret'
 
+// process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080'
+
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore()
 const games = db.collection('games')
-// connectFirestoreEmulator(db, 'localhost', 8080)
 
 exports.hello = runWith({
     enforceAppCheck: true

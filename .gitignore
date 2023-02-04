@@ -3,6 +3,7 @@
 src/secret.ts
 .firebase/
 firestore-debug.log
+firebase-debug.log
 
 # dependencies
 /node_modules

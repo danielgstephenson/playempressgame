@@ -7,7 +7,7 @@ import {
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getAuth, signInAnonymously, connectAuthEmulator } from 'firebase/auth'
 import { useAuthState, useSignOut } from 'react-firebase-hooks/auth'
-import { getFunctions, httpsCallable } from 'firebase/functions'
+import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const app = initializeApp(firebaseConfig)
@@ -17,9 +17,10 @@ const appCheck = initializeAppCheck(app, {
 })
 const db = getFirestore(app)
 const auth = getAuth()
-
-// connectFirestoreEmulator(db, 'localhost', 8080)
-// connectAuthEmulator(auth, 'http://localhost:9099')
+const functions = getFunctions(app)
+connectFirestoreEmulator(db, 'localhost', 8080)
+connectAuthEmulator(auth, 'http://localhost:9099')
+// connectFunctionsEmulator(functions, 'localhost', 5001)
 
 interface Game {
   name: string
@@ -38,7 +39,6 @@ const converter = {
 
 const games = collection(db, 'games')
 const converted = games.withConverter(converter)
-const functions = getFunctions()
 
 async function createAccount (): Promise<void> {
   try {
