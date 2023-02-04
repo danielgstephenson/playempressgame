@@ -5,14 +5,21 @@ import {
   SnapshotOptions, WithFieldValue, connectFirestoreEmulator
 } from 'firebase/firestore'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { getAuth, signInAnonymously } from 'firebase/auth'
-import { useAuthState } from 'react-firebase-hooks/auth'
+import { getAuth, signInAnonymously, connectAuthEmulator } from 'firebase/auth'
+import { useAuthState, useSignOut } from 'react-firebase-hooks/auth'
+import { getFunctions, httpsCallable } from 'firebase/functions'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const app = initializeApp(firebaseConfig)
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Lcg41EkAAAAAGxGhJxxL2y3KIzIeRjzVXJ5k_wO'),
+  isTokenAutoRefreshEnabled: true
+})
 const db = getFirestore(app)
 const auth = getAuth()
 
-connectFirestoreEmulator(db, 'localhost', 8080)
+// connectFirestoreEmulator(db, 'localhost', 8080)
+// connectAuthEmulator(auth, 'http://localhost:9099')
 
 interface Game {
   name: string
@@ -31,6 +38,7 @@ const converter = {
 
 const games = collection(db, 'games')
 const converted = games.withConverter(converter)
+const functions = getFunctions()
 
 async function createAccount (): Promise<void> {
   try {
@@ -41,14 +49,25 @@ async function createAccount (): Promise<void> {
   }
 }
 
+const addGame = httpsCallable(functions, 'addGame')
+
+async function callAddGame (): Promise<void> {
+  console.log('calling addGame...')
+  const result = await addGame()
+  console.log('addGame called:', result)
+}
+
 export default function App (): JSX.Element {
   const [user, userLoading, userError] = useAuthState(auth)
   const [games, gamesLoading, gamesError] = useCollectionData(converted)
+  const [signOut, signOutLoading, signOutError] = useSignOut(auth)
   console.log('user', user)
+  const authView = (user != null) ? <button onClick={signOut}>Sign Out</button> : <button onClick={createAccount}>New Account</button>
   const gameViews = games?.map((value) => <p key={value.id}>{value.name}</p>)
   return (
     <>
-      <button onClick={createAccount}>New Account</button>
+      {authView}
+      <button onClick={callAddGame}>Add Game</button>
       {gameViews}
     </>
   )
