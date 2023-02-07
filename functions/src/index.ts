@@ -9,7 +9,11 @@ admin.initializeApp(firebaseConfig);
 const db = admin.firestore()
 const games = db.collection('games')
 
-exports.hello = runWith({
+exports.hello = https.onCall((data, context) => {
+  return 'hello world!'
+})
+/*
+runWith({
     enforceAppCheck: true
   })
   .https.onCall((data, context) => {
@@ -21,6 +25,8 @@ exports.hello = runWith({
     }
     return 'hello world!'
   })
+*/
+
 
 exports.addGame = runWith({
     enforceAppCheck: true
