@@ -1,19 +1,18 @@
-import { Auth, User } from 'firebase/auth'
+import { Auth } from 'firebase/auth'
 import { ReactNode } from 'react'
-// import { useAuthState } from 'react-firebase-hooks/auth'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
-import authContext from '.'
+import authContext, { AuthState } from '.'
 
 export default function AuthProvider ({
   auth,
-  user,
   children
 }: {
   auth: Auth
-  user?: User | null
   children: ReactNode
 }): JSX.Element {
-  const state = { auth, user }
+  const [currentUser, currentUserLoading, currentUserError] = useAuthState(auth)
+  const state: AuthState = { auth, currentUser, currentUserLoading, currentUserError }
 
   return (
     <authContext.Provider value={state}>

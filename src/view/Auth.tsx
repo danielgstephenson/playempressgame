@@ -10,5 +10,5 @@ export default function AuthView ({ user }: { user?: User | null }): JSX.Element
   if (authState.auth == null) {
     return <Text>Auth state is null</Text>
   }
-  return <AuthContentView auth={authState.auth} user={authState.user} />
+  return <AuthContentView auth={authState.auth} user={authState.currentUser} />
 }
