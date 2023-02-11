@@ -11,6 +11,8 @@ import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import { Button, Heading, Text } from '@chakra-ui/react'
 
+import Users from './Users'
+
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
   window.location.hostname === '[::1]' || // [::1] is the IPv6 localhost address.
@@ -30,11 +32,6 @@ interface Game {
   id?: string
 }
 
-interface User {
-  uid: string
-  id?: string
-}
-
 const gameConverter = {
   toFirestore: (game: WithFieldValue<Game>): DocumentData => {
     return { name: game.name }
@@ -42,16 +39,6 @@ const gameConverter = {
   fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
     const data = snapshot.data(options)
     return { id: snapshot.id, name: data.name }
-  }
-}
-
-const userConverter = {
-  toFirestore: (user: WithFieldValue<User>): DocumentData => {
-    return { uid: user.uid }
-  },
-  fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
-    const data = snapshot.data(options)
-    return { id: snapshot.id, uid: data.uid }
   }
 }
 
@@ -77,27 +64,24 @@ export default function App (): JSX.Element {
     const result = await addGame()
     console.log('addGame called:', result)
   }
-  const usersCollection = collection(db, 'users')
-  const usersConverted = usersCollection.withConverter(userConverter)
   const gamesCollection = collection(db, 'games')
   const gamesConverted = gamesCollection.withConverter(gameConverter)
   const gamesWhere = where('name', '!=', false)
   const gamesQuery = query(gamesConverted, gamesWhere)
   const [user, userLoading, userError] = useAuthState(auth)
-  const [users, usersLoading, usersError] = useCollectionData(usersConverted)
   const [games, gamesLoading, gamesError] = useCollectionData(gamesQuery)
   const [signOut, signOutLoading, signOutError] = useSignOut(auth)
   console.log('auth', auth)
   console.log('user', user)
   const authView = (user != null) ? <Button onClick={signOut}>Sign Out</Button> : <Button onClick={createAccount}>New Account</Button>
-  const userViews = users?.map((value) => <Text key={value.id}>{value.uid}</Text>)
   const gameViews = games?.map((value) => <Text key={value.id}>{value.name}</Text>)
   console.log('gamesError', gamesError)
   console.log('games', games)
+  const usersView = user != null && <Users db={db} />
   return (
     <>
-      <Heading>Users {authView}</Heading>
-      {userViews}
+      {authView}
+      {usersView}
       <Heading>Games <Button onClick={callAddGame}>Add Game</Button></Heading>
       {gameViews}
     </>
