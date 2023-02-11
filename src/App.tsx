@@ -2,13 +2,14 @@ import { initializeApp } from 'firebase/app'
 import { firebaseConfig, debugToken, reCaptchaSiteKey } from './secret'
 import {
   collection, getFirestore, DocumentData, QueryDocumentSnapshot,
-  SnapshotOptions, WithFieldValue, connectFirestoreEmulator
+  SnapshotOptions, WithFieldValue, connectFirestoreEmulator, query, where
 } from 'firebase/firestore'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { getAuth, signInAnonymously, connectAuthEmulator } from 'firebase/auth'
 import { useAuthState, useSignOut } from 'react-firebase-hooks/auth'
 import { getFunctions, httpsCallable, connectFunctionsEmulator } from 'firebase/functions'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { Button, Heading, Text } from '@chakra-ui/react'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -19,23 +20,22 @@ const isLocalhost = Boolean(
 const app = initializeApp(firebaseConfig)
 // @ts-expect-error
 if (isLocalhost) window.FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken
-const appCheck = initializeAppCheck(app, {
+initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider(reCaptchaSiteKey),
   isTokenAutoRefreshEnabled: true
 })
-const db = getFirestore(app)
-const auth = getAuth()
-const functions = getFunctions(app)
-connectFirestoreEmulator(db, 'localhost', 8080)
-connectAuthEmulator(auth, 'http://localhost:9099')
-connectFunctionsEmulator(functions, 'localhost', 5001)
 
 interface Game {
   name: string
   id?: string
 }
 
-const converter = {
+interface User {
+  uid: string
+  id?: string
+}
+
+const gameConverter = {
   toFirestore: (game: WithFieldValue<Game>): DocumentData => {
     return { name: game.name }
   },
@@ -45,37 +45,60 @@ const converter = {
   }
 }
 
-const games = collection(db, 'games')
-const converted = games.withConverter(converter)
-
-async function createAccount (): Promise<void> {
-  try {
-    await signInAnonymously(auth)
-    console.log('signed in')
-  } catch (error) {
-    console.log(error)
+const userConverter = {
+  toFirestore: (user: WithFieldValue<User>): DocumentData => {
+    return { uid: user.uid }
+  },
+  fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
+    const data = snapshot.data(options)
+    return { id: snapshot.id, uid: data.uid }
   }
 }
 
-const addGame = httpsCallable(functions, 'addGame')
-
-async function callAddGame (): Promise<void> {
-  console.log('calling addGame...')
-  const result = await addGame()
-  console.log('addGame called:', result)
-}
+const db = getFirestore(app)
+if (isLocalhost) connectFirestoreEmulator(db, 'localhost', 8080)
+const auth = getAuth()
+if (isLocalhost) connectAuthEmulator(auth, 'http://localhost:9099')
+const functions = getFunctions(app)
+if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default function App (): JSX.Element {
+  async function createAccount (): Promise<void> {
+    try {
+      await signInAnonymously(auth)
+      console.log('signed in')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const addGame = httpsCallable(functions, 'addGame')
+  async function callAddGame (): Promise<void> {
+    console.log('calling addGame...')
+    const result = await addGame()
+    console.log('addGame called:', result)
+  }
+  const usersCollection = collection(db, 'users')
+  const usersConverted = usersCollection.withConverter(userConverter)
+  const gamesCollection = collection(db, 'games')
+  const gamesConverted = gamesCollection.withConverter(gameConverter)
+  const gamesWhere = where('name', '!=', false)
+  const gamesQuery = query(gamesConverted, gamesWhere)
   const [user, userLoading, userError] = useAuthState(auth)
-  const [games, gamesLoading, gamesError] = useCollectionData(converted)
+  const [users, usersLoading, usersError] = useCollectionData(usersConverted)
+  const [games, gamesLoading, gamesError] = useCollectionData(gamesQuery)
   const [signOut, signOutLoading, signOutError] = useSignOut(auth)
+  console.log('auth', auth)
   console.log('user', user)
-  const authView = (user != null) ? <button onClick={signOut}>Sign Out</button> : <button onClick={createAccount}>New Account</button>
-  const gameViews = games?.map((value) => <p key={value.id}>{value.name}</p>)
+  const authView = (user != null) ? <Button onClick={signOut}>Sign Out</Button> : <Button onClick={createAccount}>New Account</Button>
+  const userViews = users?.map((value) => <Text key={value.id}>{value.uid}</Text>)
+  const gameViews = games?.map((value) => <Text key={value.id}>{value.name}</Text>)
+  console.log('gamesError', gamesError)
+  console.log('games', games)
   return (
     <>
-      {authView}
-      <button onClick={callAddGame}>Add Game</button>
+      <Heading>Users {authView}</Heading>
+      {userViews}
+      <Heading>Games <Button onClick={callAddGame}>Add Game</Button></Heading>
       {gameViews}
     </>
   )
