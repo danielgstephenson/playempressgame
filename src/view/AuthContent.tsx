@@ -1,6 +1,7 @@
-import { Spinner, Button, Text } from '@chakra-ui/react'
 import { Auth, User, signInAnonymously } from 'firebase/auth'
 import { useSignOut } from 'react-firebase-hooks/auth'
+import { useState } from 'react'
+import ActionView from './Action'
 
 export default function AuthContentView ({
   auth, user
@@ -8,22 +9,20 @@ export default function AuthContentView ({
   auth: Auth
   user?: User | null
 }): JSX.Element {
+  const [createAccountLoading, setCreateAccountLoading] = useState(false)
+  const [createAccountError, setCreateAccountError] = useState<Error>()
   const [signOut, signOutLoading, signOutError] = useSignOut(auth)
-  if (signOutLoading) {
-    return <Spinner />
-  }
-  if (signOutError != null) {
-    return <Text>{signOutError.message}</Text>
-  }
   async function createAccount (): Promise<void> {
     try {
+      setCreateAccountLoading(true)
       await signInAnonymously(auth)
+      setCreateAccountLoading(false)
     } catch (error) {
-      console.log(error)
+      setCreateAccountError(error as Error)
     }
   }
   if (user == null) {
-    return <Button onClick={createAccount}>New Account</Button>
+    return <ActionView label='New Account' action={createAccount} loading={createAccountLoading} error={createAccountError} />
   }
-  return <Button onClick={signOut}>Sign Out</Button>
+  return <ActionView label='Sign Out' action={signOut} loading={signOutLoading} error={signOutError} />
 }

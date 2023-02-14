@@ -28,15 +28,24 @@ runWith({
   })
 */
 
+function sleep (ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 exports.addGame = runWith({
     enforceAppCheck: true
   })
   .https.onCall(async (data, context) => {
-    if (context.app == undefined) {
+    if (context.app == null) {
       throw new https.HttpsError(
         'failed-precondition',
         'The function must be called from an App Check verified app.'
+      )
+    }
+    if (context.auth == null) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'The function must be called while authenticated.'
       )
     }
     const now = Date.now()
@@ -60,3 +69,4 @@ exports.onDeleteUser = auth.user().onDelete(async user =>{
   await users.doc(user.uid).delete()
   console.log(`${user.uid} deleted!`)
 })
+

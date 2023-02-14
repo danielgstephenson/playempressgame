@@ -11,7 +11,7 @@ export default function GamesView (): JSX.Element {
   const authState = useContext(authContext)
   const functionsState = useContext(functionsContext)
   const content = authState.currentUser != null && dbState.db != null && <GamesContentView db={dbState.db} />
-  const addGameView = functionsState.functions != null && <AddGameView functions={functionsState.functions} />
+  const addGameView = functionsState.functions != null && authState.currentUser != null && <AddGameView functions={functionsState.functions} />
   return (
     <>
       <Heading>Games {addGameView}</Heading>

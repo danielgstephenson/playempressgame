@@ -1,16 +1,15 @@
-import { Button } from '@chakra-ui/react'
-import { Functions, httpsCallable } from 'firebase/functions'
+import { useHttpsCallable } from 'react-firebase-hooks/functions'
+import { Functions } from 'firebase/functions'
+import ActionView from './Action'
 
 export default function AddGameView ({
   functions
 }: {
   functions: Functions
 }): JSX.Element {
-  const addGame = httpsCallable(functions, 'addGame')
-  async function callAddGame (): Promise<void> {
-    console.log('calling addGame...')
-    const result = await addGame()
-    console.log('addGame called:', result)
+  const [callAddGame, addGameLoading, addGameError] = useHttpsCallable(functions, 'addGame')
+  async function addGame (): Promise<void> {
+    await callAddGame()
   }
-  return <Button onClick={callAddGame}>Add Game</Button>
+  return <ActionView label='Add Game' action={addGame} loading={addGameLoading} error={addGameError} />
 }
