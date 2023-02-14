@@ -5,14 +5,15 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 interface User {
   uid: string
   id?: string
+  displayName: string
 }
 const userConverter = {
   toFirestore: (user: WithFieldValue<User>): DocumentData => {
-    return { uid: user.uid }
+    return { uid: user.uid, displayName: user.displayName }
   },
   fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
     const data = snapshot.data(options)
-    return { id: snapshot.id, uid: data.uid }
+    return { id: snapshot.id, uid: data.uid, displayName: data.displayName }
   }
 }
 
@@ -26,6 +27,6 @@ export default function UsersContentView ({ db }: { db: Firestore }): JSX.Elemen
   if (usersError != null) {
     return <Text>{usersError.message}</Text>
   }
-  const items = users?.map((value) => <Text key={value.id}>{value.uid}</Text>)
+  const items = users?.map((value) => <Text key={value.id}>{value.displayName}</Text>)
   return <>{items}</>
 }
