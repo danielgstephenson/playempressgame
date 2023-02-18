@@ -4,12 +4,11 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
-
-import UsersView from './view/Users'
 import AuthProvider from './context/auth/Provider'
 import DbProvider from './context/db/Provider'
-import GamesView from './view/Games'
 import FunctionsProvider from './context/functions/Provider'
+import Router from './Router'
+import HeaderView from './view/Header'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -38,8 +37,8 @@ export default function App (): JSX.Element {
       <AuthProvider auth={auth}>
         <DbProvider db={db}>
           <FunctionsProvider functions={functions}>
-            <UsersView />
-            <GamesView />
+            <HeaderView />
+            <Router />
           </FunctionsProvider>
         </DbProvider>
       </AuthProvider>
