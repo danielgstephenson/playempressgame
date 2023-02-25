@@ -108,6 +108,12 @@ exports.joinGame = runWith({
         'This user has already joined the game.'
       )
     }
+    if(gameData.phase !== 'join') {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This game has already started.'
+      )
+    }
     console.log(`joining game...`)
     await profilesRef.add({ userId: context.auth.uid, gameId: data.gameId})
     await gameRef.update({

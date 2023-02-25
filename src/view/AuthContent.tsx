@@ -2,6 +2,7 @@ import { Auth, User, signInAnonymously } from 'firebase/auth'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
 import ActionView from './Action'
+import { useNavigate } from 'react-router-dom'
 
 export default function AuthContentView ({
   auth, user
@@ -9,6 +10,7 @@ export default function AuthContentView ({
   auth: Auth
   user?: User | null
 }): JSX.Element {
+  const navigate = useNavigate()
   const [createAccountLoading, setCreateAccountLoading] = useState(false)
   const [createAccountError, setCreateAccountError] = useState<Error>()
   const [signOut, signOutLoading, signOutError] = useSignOut(auth)
@@ -24,5 +26,9 @@ export default function AuthContentView ({
   if (user == null) {
     return <ActionView label='New Account' action={createAccount} loading={createAccountLoading} error={createAccountError} />
   }
-  return <ActionView label='Sign Out' action={signOut} loading={signOutLoading} error={signOutError} />
+  async function signOutToHome (): Promise<void> {
+    await signOut()
+    navigate('/')
+  }
+  return <ActionView label='Sign Out' action={signOutToHome} loading={signOutLoading} error={signOutError} />
 }
