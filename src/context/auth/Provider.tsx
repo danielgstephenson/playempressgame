@@ -12,7 +12,8 @@ export default function AuthProvider ({
   children: ReactNode
 }): JSX.Element {
   const [currentUser, currentUserLoading, currentUserError] = useAuthState(auth)
-  const state: AuthState = { auth, currentUser, currentUserLoading, currentUserError }
+  const authed = currentUser != null
+  const state: AuthState = { auth, authed, currentUser, currentUserLoading, currentUserError }
 
   return (
     <authContext.Provider value={state}>

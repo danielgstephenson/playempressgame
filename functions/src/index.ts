@@ -47,6 +47,7 @@ exports.addGame = runWith({
     const id = createId()
     const newData = {
       name: id,
+      phase: 'join',
       userIds: []
     }
     const gameRef = gamesRef.doc(id)
@@ -113,6 +114,71 @@ exports.joinGame = runWith({
       userIds: admin.firestore.FieldValue.arrayUnion(context.auth.uid)
     })
     console.log('joined!')
+  })
+
+exports.startGame = runWith({
+    enforceAppCheck: true
+  })
+  .https.onCall(async (data, context) => {
+    if (context.app == null) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'The function must be called from an App Check verified app.'
+      )
+    }
+    if (context.auth == null) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'The function must be called while authenticated.'
+      )
+    }
+    const userRef = usersRef.doc(context.auth.uid)
+    const userDoc = await userRef.get()
+    if(!userDoc.exists) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This user does not exist.'
+      )
+    }
+    const userData = userDoc.data()
+    if(!userData == null) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This user is empty.'
+      )
+    }
+    const gameRef = gamesRef.doc(data.gameId)
+    const gameDoc = await gameRef.get()
+    if(!gameDoc.exists) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This game does not exist.'
+      )
+    }
+    const gameData = gameDoc.data()
+    if(gameData == null) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This game is empty.'
+      )
+    }
+    if(!gameData.userIds.includes(context.auth.uid)) {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This user has not joined the game.'
+      )
+    }
+    if(gameData.phase !== 'join') {
+      throw new https.HttpsError(
+        'failed-precondition',
+        'This game has already started.'
+      )
+    }
+    console.log(`starting game...`)
+    await gameRef.update({
+      phase: 'play'
+    })
+    console.log('started!')
   })
 
 exports.onCreateUser = auth.user().onCreate(async user =>{

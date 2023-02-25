@@ -1,15 +1,16 @@
-import { useHttpsCallable } from 'react-firebase-hooks/functions'
-import { Functions } from 'firebase/functions'
-import ActionView from './Action'
+import { useContext } from 'react'
+import authContext from '../context/auth'
+import CallerView from './Caller'
 
-export default function AddGameView ({
-  functions
-}: {
-  functions: Functions
-}): JSX.Element {
-  const [callAddGame, addGameLoading, addGameError] = useHttpsCallable(functions, 'addGame')
-  async function addGame (): Promise<void> {
-    await callAddGame()
+export default function AddGameView (): JSX.Element {
+  const authState = useContext(authContext)
+  if (authState.authed !== true) {
+    return <></>
   }
-  return <ActionView label='Add Game' action={addGame} loading={addGameLoading} error={addGameError} />
+  return (
+    <CallerView
+      label='Add Game'
+      action='addGame'
+    />
+  )
 }

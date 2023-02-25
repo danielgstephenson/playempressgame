@@ -1,19 +1,23 @@
-import { Button } from '@chakra-ui/react'
-import LoadingView from './Loading'
+import { Button, Spinner } from '@chakra-ui/react'
 import WarningView from './Warning'
 
-export default function ActionView (props: {
-  label: string
+export default function ActionView ({
+  action,
+  label,
+  loading,
+  error
+}: {
   action: () => void
+  label: string
   loading: boolean
   error?: Error
 }): JSX.Element {
-  function handleClick (): void { props.action() }
+  const loadingView = loading && <Spinner ml='10px' />
   return (
-    <Button onClick={handleClick} isDisabled={props.loading}>
-      {props.label}
-      <LoadingView loading={props.loading} />
-      <WarningView error={props.error} />
+    <Button onClick={action} isDisabled={loading}>
+      {label}
+      {loadingView}
+      <WarningView error={error} />
     </Button>
   )
 }

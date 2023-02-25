@@ -3,6 +3,7 @@ import { Auth, User } from 'firebase/auth'
 
 export interface AuthState {
   auth?: Auth
+  authed?: boolean
   currentUser?: User | null
   currentUserLoading?: Boolean
   currentUserError?: Error | undefined

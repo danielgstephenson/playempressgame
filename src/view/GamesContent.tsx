@@ -1,37 +1,26 @@
-import { Spinner, Stack, Text } from '@chakra-ui/react'
-import { WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions, collection, Firestore } from 'firebase/firestore'
+import { Stack } from '@chakra-ui/react'
+import { collection, CollectionReference } from 'firebase/firestore'
+import { useContext } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import ChakraLinkView from './ChakraLink'
+import dbContext from '../context/db'
+import { gameConverter } from '../service/game'
+import GameItemView from './GameItemView'
+import Viewer from './Viewer'
+import { Game } from '../types'
 
-interface Game {
-  name: string
-  id?: string
-}
-
-const gameConverter = {
-  toFirestore: (game: WithFieldValue<Game>): DocumentData => {
-    return { name: game.name }
-  },
-  fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
-    const data = snapshot.data(options)
-    const game: Game = { id: snapshot.id, name: data.name }
-    return game
+export default function GamesContentView (): JSX.Element {
+  const dbState = useContext(dbContext)
+  function getRef (): CollectionReference<Game> | null {
+    if (dbState.db == null) return null
+    const gamesRef = collection(dbState.db, 'games')
+    const gamesConverted = gamesRef.withConverter(gameConverter)
+    return gamesConverted
   }
-}
-
-export default function GamesContentView ({ db }: { db: Firestore }): JSX.Element {
-  const gamesCollection = collection(db, 'games')
-  const gamesConverted = gamesCollection.withConverter(gameConverter)
-  const [games, gamesLoading, gamesError] = useCollectionData(gamesConverted)
-  if (gamesLoading) {
-    return <Spinner />
-  }
-  if (gamesError != null) {
-    return <Text>{gamesError.message}</Text>
-  }
-  const items = games?.map((value) => {
-    const to = `/game/${value.name}`
-    return <ChakraLinkView to={to} key={value.id}>{value.id}</ChakraLinkView>
-  })
-  return <Stack>{items}</Stack>
+  const ref = getRef()
+  const gamesStream = useCollectionData(ref)
+  return (
+    <Stack>
+      <Viewer stream={gamesStream} View={GameItemView} />
+    </Stack>
+  )
 }
