@@ -7,7 +7,14 @@ export const gameConverter = {
   },
   fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
     const data = snapshot.data(options)
-    const game: Game = { id: snapshot.id, name: data.name, phase: data.phase }
+    const game: Game = {
+      id: snapshot.id,
+      name: data.name,
+      phase: data.phase,
+      timeline: data.timeline,
+      court: data.court,
+      dungeon: data.dungeon
+    }
     return game
   }
 }

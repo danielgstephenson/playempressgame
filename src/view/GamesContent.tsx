@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import dbContext from '../context/db'
 import { gameConverter } from '../service/game'
-import GameItemView from './GameItemView'
+import GameItemView from './GameItem'
 import Viewer from './Viewer'
 import { Game } from '../types'
 

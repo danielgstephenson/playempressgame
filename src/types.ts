@@ -7,6 +7,9 @@ export interface Doc {
 export interface Game extends Doc {
   name: string
   phase: string
+  timeline: number[]
+  court: number[]
+  dungeon: number[]
 }
 
 export interface Profile extends Doc {
