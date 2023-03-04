@@ -17,4 +17,12 @@ export interface Profile extends Doc {
   userId: string
 }
 
+export interface Player extends Doc {
+  deck: number[]
+  discard: number[]
+  gameId: string
+  hand: number[]
+  userId: string
+}
+
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>

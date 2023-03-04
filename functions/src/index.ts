@@ -15,6 +15,7 @@ db.settings({ ignoreUndefinedProperties: true })
 const gamesRef = db.collection('games')
 const usersRef = db.collection('users')
 const profilesRef = db.collection('profiles')
+const playersRef = db.collection('players')
 const green = [0, 1, 2, 3, 4, 5, 6, 23, 24, 25]
 const red = [8, 9, 10, 11, 12, 13, 14, 15]
 const yellow = [16, 17, 18, 19, 20, 21, 22]
@@ -135,7 +136,7 @@ exports.joinGame = runWith({
 exports.startGame = runWith({
   enforceAppCheck: true
 })
-  .https.onCall(async (data, context) => {
+  .https.onCall(async (props, context) => {
     if (context.app == null) {
       throw new https.HttpsError(
         'failed-precondition',
@@ -163,7 +164,7 @@ exports.startGame = runWith({
         'This user is empty.'
       )
     }
-    const gameRef = gamesRef.doc(data.gameId)
+    const gameRef = gamesRef.doc(props.gameId)
     const gameDoc = await gameRef.get()
     if (!gameDoc.exists) {
       throw new https.HttpsError(
@@ -218,10 +219,13 @@ exports.startGame = runWith({
     const empressRed = palaceSlice.filter(rank => red.includes(rank))
     const empressYellow = palaceSlice.filter(rank => yellow.includes(rank))
     const lowestYellow = empressYellow[0]
+    console.log('lowestYellow test:', lowestYellow)
     const lowGreen = empressGreen.slice(0, 2)
+    console.log('lowGreen test:', lowGreen)
     const lowRed = empressRed.slice(0, 2)
+    console.log('lowRed test:', lowRed)
     const basePortfolio = [7, lowestYellow, ...lowGreen, ...lowRed]
-    console.log('baseHand test:', basePortfolio)
+    console.log('basePortfolio test:', basePortfolio)
     const empressLeft = palaceSlice.filter(rank => !basePortfolio.includes(rank))
     console.log('empressLeft test:', empressLeft)
     const lowestLeft = empressLeft[0]
@@ -229,12 +233,27 @@ exports.startGame = runWith({
     console.log('portfolio test:', portfolio)
     const timeline = empressLeft.slice(1)
     console.log('timeline test:', timeline)
-    await gameRef.update({
+    const batch = db.batch()
+    batch.update(gameRef, {
       phase: 'play',
       court: [court],
       dungeon: [dungeon],
       timeline
     })
+    const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
+      return aRank - bRank
+    })
+    const topDeck = sortedPortfolio[sortedPortfolio.length - 2]
+    const topDiscard = sortedPortfolio[sortedPortfolio.length - 1]
+    const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
+    gameData.userIds.forEach((userId: string) => {
+      const deck = [topDeck]
+      const discard = [topDiscard]
+      const playerData = { userId, gameId: props.gameId, hand, deck, discard }
+      const playerRef = playersRef.doc()
+      batch.set(playerRef, playerData)
+    })
+    await batch.commit()
     console.log('started!')
   })
 
