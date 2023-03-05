@@ -64,7 +64,6 @@ export default function streamQuery<Doc extends { id?: string }> ({ View }: {
   }): JSX.Element {
     const stream = useCollectionData(queryRef)
     const [docs, loading, error] = stream
-    console.log('docs', docs)
     const state: StreamState = {
       stream,
       docs,
