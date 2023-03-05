@@ -17,7 +17,7 @@ export default function CollectionViewer <T extends Doc> ({
     return <Alert status='error'> <AlertIcon /> {error.message}</Alert>
   }
   if (data == null) {
-    throw new Error('Loaded data is undefined')
+    return <></>
   }
   if (data.length === 0) {
     return <Alert status='info'><AlertIcon />No Data</Alert>

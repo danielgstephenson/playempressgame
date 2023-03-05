@@ -3,9 +3,9 @@ import { ReactNode, useContext } from 'react'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
 import dbContext from '../db'
 import { Profile } from '../../types'
-import gameContext from '../game'
 import { profileConverter } from '../../service/profile'
 import profilesContext, { ProfilesState } from '.'
+import { gameContext } from '../streamer/game'
 
 export default function ProfilesProvider ({
   children

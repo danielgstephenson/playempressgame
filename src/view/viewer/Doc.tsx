@@ -17,7 +17,7 @@ export default function DocViewer <T extends Doc> ({
     return <Alert status='error'> <AlertIcon /> {error.message}</Alert>
   }
   if (data == null) {
-    throw new Error('Loaded data is undefined')
+    return <></>
   }
   return <View />
 }
