@@ -5,7 +5,6 @@ import { gameContext } from '../context/streamer/game'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
-  console.log('gameContentView gameState:', gameState)
   const timeline = gameState.timeline?.map((rank) => <Box key={rank}>{rank}</Box>)
   return (
     <>

@@ -1,8 +1,7 @@
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 import { FC } from 'react'
-import { Doc } from '../../types'
 
-export default function CollectionViewer <T extends Doc> ({
+export default function CollectionViewer <T extends { id?: string }> ({
   stream,
   View
 }: {

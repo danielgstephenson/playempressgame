@@ -1,13 +1,12 @@
-import { Stack } from '@chakra-ui/react'
-import ProfilesProvider from '../context/profiles/Provider'
-import ProfilesViewer from './viewer/Profiles'
+import { Stack, Text } from '@chakra-ui/react'
+import ProfilesStreamer from '../context/streamer/profiles'
 
 export default function ProfilesView (): JSX.Element {
   return (
-    <ProfilesProvider>
-      <Stack>
-        <ProfilesViewer />
-      </Stack>
-    </ProfilesProvider>
+    <Stack>
+      <ProfilesStreamer>
+        <Text>Profiles</Text>
+      </ProfilesStreamer>
+    </Stack>
   )
 }
