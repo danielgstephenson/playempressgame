@@ -1,13 +1,12 @@
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 import { FC } from 'react'
-import { Doc } from '../../types'
 
-export default function DocViewer <T extends Doc> ({
+export default function DocViewer <T> ({
   stream,
   View
 }: {
   stream: [T | undefined, boolean, Error | undefined, unknown]
-  View: FC
+  View: FC<T>
 }): JSX.Element {
   const [data, loading, error] = stream
   if (loading) {
@@ -19,5 +18,5 @@ export default function DocViewer <T extends Doc> ({
   if (data == null) {
     return <></>
   }
-  return <View />
+  return <View {...data} />
 }

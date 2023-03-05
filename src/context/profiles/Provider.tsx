@@ -15,10 +15,10 @@ export default function ProfilesProvider ({
   const dbState = useContext(dbContext)
   const gameState = useContext(gameContext)
   function getQuery (): Query<Profile> | null {
-    if (dbState.db == null || gameState.game?.id == null) return null
+    if (dbState.db == null || gameState.id == null) return null
     const profilesCollection = collection(dbState.db, 'profiles')
     const profilesConverted = profilesCollection.withConverter(profileConverter)
-    const q = query(profilesConverted, where('gameId', '==', gameState.game?.id))
+    const q = query(profilesConverted, where('gameId', '==', gameState.id))
     return q
   }
   const q = getQuery()
