@@ -4,9 +4,9 @@ import { gameConverter } from '../../service/game'
 import { Game } from '../../types'
 import GameItemView from '../../view/GameItem'
 import dbContext from '../db'
-import streamQuery from './streamQuery'
+import getFirestream from './getFirestream'
 
-export const { QueryStreamer, queryContext: gamesContext } = streamQuery<Game>()
+export const { QueryStreamer, queryContext: gamesContext } = getFirestream<Game>()
 
 export default function GamesStreamer ({
   children

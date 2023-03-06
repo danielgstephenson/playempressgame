@@ -1,7 +1,7 @@
 import { Profile } from '../../types'
-import streamDoc from './streamDoc'
+import getFirestream from './getFirestream'
 
 export const {
   docContext: profileContext,
   DocProvider: ProfileProvider
-} = streamDoc<Profile>({})
+} = getFirestream<Profile>()

@@ -4,9 +4,9 @@ import { Game } from '../../types'
 import dbContext from '../db'
 import { DocumentReference, collection, doc } from 'firebase/firestore'
 import GameContentView from '../../view/GameContent'
-import streamDoc from './streamDoc'
+import getFirestream from './getFirestream'
 
-export const { Streamer, docContext: gameContext } = streamDoc<Game>({ View: GameContentView })
+export const { DocStreamer, docContext: gameContext } = getFirestream<Game>()
 
 export default function GameStreamer ({
   gameId,
@@ -24,5 +24,5 @@ export default function GameStreamer ({
     return gameRef
   }
   const ref = getRef()
-  return <Streamer docRef={ref}>{children}</Streamer>
+  return <DocStreamer docRef={ref} View={GameContentView}>{children}</DocStreamer>
 }

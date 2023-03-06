@@ -3,7 +3,7 @@ import { DocumentReference, DocumentSnapshot, FirestoreError, Query, QuerySnapsh
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
-export default function streamQuery<Doc extends { id?: string }> (): {
+export default function getFirestream<Doc extends { id?: string }> (): {
   DocStreamer: FC<{ docRef?: DocumentReference<Doc>, View: FC<Doc>, children?: ReactNode }>
   QueryStreamer: FC<{ queryRef?: Query<Doc>, View: FC<Doc>, children?: ReactNode }>
   DocViewer: FC<{ View: FC<Doc> }>

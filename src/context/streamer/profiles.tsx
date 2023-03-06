@@ -5,9 +5,9 @@ import { Profile } from '../../types'
 import ProfileItemView from '../../view/ProfileItem'
 import dbContext from '../db'
 import { gameContext } from './game'
-import streamQuery from './streamQuery'
+import getFirestream from './getFirestream'
 
-export const { QueryStreamer, queryContext: profilesContext } = streamQuery<Profile>()
+export const { QueryStreamer, queryContext: profilesContext } = getFirestream<Profile>()
 
 export default function ProfilesStreamer ({
   children
