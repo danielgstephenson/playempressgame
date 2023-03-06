@@ -1,10 +1,10 @@
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { DocumentSnapshot, FirestoreError, DocumentReference } from 'firebase/firestore'
 import { useDocumentData } from 'react-firebase-hooks/firestore'
-import DocViewer from '../../view/viewer/Doc'
+import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
 export default function streamDoc<Doc> ({ View }: {
-  View: FC<Doc>
+  View?: FC<Doc>
 }): {
     Streamer: FC<{ docRef?: DocumentReference<Doc>, children: ReactNode }>
     Viewer: FC
@@ -54,7 +54,17 @@ export default function streamDoc<Doc> ({ View }: {
   function Viewer (): JSX.Element {
     const streamState = useContext(streamContext)
     if (streamState.stream == null) return <></>
-    return <DocViewer stream={streamState.stream} View={View} />
+    const [data, loading, error] = streamState.stream
+    if (loading) {
+      return <Spinner />
+    }
+    if (error != null) {
+      return <Alert status='error'> <AlertIcon /> {error.message}</Alert>
+    }
+    if (data == null) {
+      return <></>
+    }
+    return View != null ? <View {...data} /> : <></>
   }
 
   function Streamer ({
