@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { FirestoreError, Query, QuerySnapshot } from 'firebase/firestore'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
-import CollectionViewer from '../../view/viewer/Collection'
+import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
 export default function streamQuery<Doc extends { id?: string }> ({ View }: {
   View: FC<Doc>
@@ -52,7 +52,26 @@ export default function streamQuery<Doc extends { id?: string }> ({ View }: {
   function Viewer (): JSX.Element {
     const streamState = useContext(streamContext)
     if (streamState.stream == null) return <></>
-    return <CollectionViewer stream={streamState.stream} View={View} />
+    const [data, loading, error] = streamState.stream
+    if (loading) {
+      return <Spinner />
+    }
+    if (error != null) {
+      return <Alert status='error'><AlertIcon /> {error.message}</Alert>
+    }
+    if (data == null) {
+      return <></>
+    }
+    if (data.length === 0) {
+      return <Alert status='info'><AlertIcon />No Data</Alert>
+    }
+    const items = data.map(datum => (
+      <View
+        key={datum.id}
+        {...datum}
+      />
+    ))
+    return <>{items}</>
   }
 
   function Streamer ({
