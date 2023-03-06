@@ -1,16 +1,13 @@
 import { Text } from '@chakra-ui/react'
-import PlayerProvider from '../context/player/Provider'
-import ProfileProvider from '../context/profile/Provider'
+import { ProfileProvider } from '../context/streamer/profile'
 import { Profile } from '../types'
-import PlayerViewer from './viewer/Player'
+import PlayerStreamer from '../context/streamer/player'
 
 export default function ProfileItemView (profile: Profile): JSX.Element {
   return (
-    <ProfileProvider profile={profile}>
+    <ProfileProvider doc={profile}>
       <Text>{profile.userId}</Text>
-      <PlayerProvider>
-        <PlayerViewer />
-      </PlayerProvider>
+      <PlayerStreamer />
     </ProfileProvider>
   )
 }

@@ -4,9 +4,9 @@ import { useCollectionData } from 'react-firebase-hooks/firestore'
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
 export default function streamQuery<Doc extends { id?: string }> ({ View }: {
-  View: FC<Doc>
+  View?: FC<Doc>
 }): {
-    Streamer: FC<{ queryRef?: Query<Doc>, children: ReactNode }>
+    Streamer: FC<{ queryRef?: Query<Doc>, children?: ReactNode }>
     Viewer: FC
     streamContext: React.Context<{
       stream?: [Doc[] | undefined, boolean, FirestoreError | undefined, QuerySnapshot<Doc> | undefined]
@@ -65,7 +65,7 @@ export default function streamQuery<Doc extends { id?: string }> ({ View }: {
     if (data.length === 0) {
       return <Alert status='info'><AlertIcon />No Data</Alert>
     }
-    const items = data.map(datum => (
+    const items = View != null && data.map(datum => (
       <View
         key={datum.id}
         {...datum}
@@ -79,7 +79,7 @@ export default function streamQuery<Doc extends { id?: string }> ({ View }: {
     children
   }: {
     queryRef?: Query<Doc>
-    children: ReactNode
+    children?: ReactNode
   }): JSX.Element {
     const stream = useCollectionData(queryRef)
     const [docs, loading, error] = stream
