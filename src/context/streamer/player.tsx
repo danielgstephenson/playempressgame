@@ -7,7 +7,7 @@ import dbContext from '../db'
 import { profileContext } from './profile'
 import streamQuery from './streamQuery'
 
-export const { Streamer, docsContext: playerContext } = streamQuery<Player>({ View: PlayerView })
+export const { QueryStreamer, queryContext: playerContext } = streamQuery<Player>()
 
 export default function ProfilesStreamer ({
   children
@@ -28,5 +28,5 @@ export default function ProfilesStreamer ({
     return q
   }
   const ref = getRef()
-  return <Streamer queryRef={ref}>{children}</Streamer>
+  return <QueryStreamer View={PlayerView} queryRef={ref}>{children}</QueryStreamer>
 }

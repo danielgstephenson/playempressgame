@@ -6,7 +6,7 @@ import GameItemView from '../../view/GameItem'
 import dbContext from '../db'
 import streamQuery from './streamQuery'
 
-export const { Streamer, docsContext: gamesContext } = streamQuery({ View: GameItemView })
+export const { QueryStreamer, queryContext: gamesContext } = streamQuery<Game>()
 
 export default function GamesStreamer ({
   children
@@ -21,5 +21,5 @@ export default function GamesStreamer ({
     return gamesConverted
   }
   const q = getQuery()
-  return <Streamer queryRef={q}>{children}</Streamer>
+  return <QueryStreamer View={GameItemView} queryRef={q}>{children}</QueryStreamer>
 }

@@ -32,7 +32,6 @@ export default function streamDoc<Doc> ({ View }: {
     children: ReactNode
   }): JSX.Element {
     const state: DocState = doc == null ? {} : { doc, ...doc }
-
     return (
       <docContext.Provider value={state}>
         {children}
