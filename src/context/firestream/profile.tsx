@@ -5,13 +5,13 @@ import { Profile } from '../../types'
 import ProfileItemView from '../../view/ProfileItem'
 import dbContext from '../db'
 import { gameContext } from './game'
-import getFirestream from './getFirestream'
+import firestream from '.'
 
 export const {
   docContext: profileContext,
   DocProvider: ProfileProvider,
   QueryStreamer
-} = getFirestream<Profile>()
+} = firestream<Profile>()
 
 export default function ProfilesStreamer ({
   children

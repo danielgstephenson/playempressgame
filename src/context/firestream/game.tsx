@@ -4,10 +4,10 @@ import { Game } from '../../types'
 import dbContext from '../db'
 import { DocumentReference, collection, doc, Query } from 'firebase/firestore'
 import GameContentView from '../../view/GameContent'
-import getFirestream from './getFirestream'
+import firestream from '.'
 import GameItemView from '../../view/GameItem'
 
-export const { DocStreamer, QueryStreamer, docContext: gameContext } = getFirestream<Game>()
+export const { DocStreamer, QueryStreamer, docContext: gameContext } = firestream<Game>()
 
 export function GameStreamer ({
   gameId,

@@ -1,5 +1,5 @@
 import { Heading } from '@chakra-ui/react'
-import { GameStreamer } from '../context/streamer/game'
+import { GameStreamer } from '../context/firestream/game'
 import JoinGameView from './JoinGame'
 import StartGameView from './StartGame'
 

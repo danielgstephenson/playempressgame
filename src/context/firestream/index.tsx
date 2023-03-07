@@ -7,7 +7,7 @@ type EmptyDocData <Doc> = { doc?: Doc } & Partial<Doc>
 type DocData <Doc> = { doc: Doc } & Doc
 type DocState <Doc> = EmptyDocData<Doc> | DocData<Doc>
 
-export default function getFirestream<Doc extends { id?: string }> (): {
+export default function firestream<Doc extends { id?: string }> (): {
   DocStreamer: FC<{ docRef?: DocumentReference<Doc>, View: FC, children?: ReactNode }>
   QueryStreamer: FC<{ queryRef?: Query<Doc>, View: FC, children?: ReactNode }>
   DocViewer: FC<{ View: FC }>

@@ -1,5 +1,5 @@
 import { Stack, Text } from '@chakra-ui/react'
-import ProfilesStreamer from '../context/streamer/profile'
+import ProfilesStreamer from '../context/firestream/profile'
 
 export default function ProfilesView (): JSX.Element {
   return (
