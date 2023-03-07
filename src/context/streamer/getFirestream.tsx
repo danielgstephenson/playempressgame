@@ -3,11 +3,15 @@ import { DocumentReference, DocumentSnapshot, FirestoreError, Query, QuerySnapsh
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
+type EmptyDocData <Doc> = { doc?: Doc } & Partial<Doc>
+type DocData <Doc> = { doc: Doc } & Doc
+type DocState <Doc> = EmptyDocData<Doc> | DocData<Doc>
+
 export default function getFirestream<Doc extends { id?: string }> (): {
-  DocStreamer: FC<{ docRef?: DocumentReference<Doc>, View: FC<Doc>, children?: ReactNode }>
-  QueryStreamer: FC<{ queryRef?: Query<Doc>, View: FC<Doc>, children?: ReactNode }>
-  DocViewer: FC<{ View: FC<Doc> }>
-  QueryViewer: FC<{ View: FC<Doc> }>
+  DocStreamer: FC<{ docRef?: DocumentReference<Doc>, View: FC, children?: ReactNode }>
+  QueryStreamer: FC<{ queryRef?: Query<Doc>, View: FC, children?: ReactNode }>
+  DocViewer: FC<{ View: FC }>
+  QueryViewer: FC<{ View: FC }>
   docStreamContext: React.Context<{
     stream?: [Doc | undefined, boolean, FirestoreError | undefined, DocumentSnapshot<Doc> | undefined]
     doc?: Doc
@@ -20,16 +24,12 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     loading?: Boolean
     error?: FirestoreError
   }>
-  docContext: React.Context<{ doc?: Doc } & Partial<Doc>>
+  docContext: React.Context<DocState<Doc>>
   queryContext: React.Context<{ docs?: Doc[] }>
   DocProvider: FC<{ doc?: Doc, children?: ReactNode }>
   QueryProvider: FC<{ docs?: Doc[], children?: ReactNode }>
 } {
-  interface DocData {
-    doc?: Doc
-  }
-  type DocState = DocData & Partial<Doc>
-  const docContext = createContext<DocState>({})
+  const docContext = createContext<DocState<Doc>>({})
 
   function DocProvider ({
     doc,
@@ -38,7 +38,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     doc?: Doc
     children?: ReactNode
   }): JSX.Element {
-    const state: DocState = doc == null ? {} : { doc, ...doc }
+    const state: DocState<Doc> = doc == null ? {} : { doc, ...doc }
     return (
       <docContext.Provider value={state}>
         {children}
@@ -87,7 +87,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
   const queryStreamContext = createContext<QueryStreamState>({})
 
   function DocViewer ({ View }: {
-    View: FC<Doc>
+    View: FC
   }): JSX.Element {
     const docStreamState = useContext(docStreamContext)
     if (docStreamState.stream == null) return <></>
@@ -101,7 +101,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     if (data == null) {
       return <></>
     }
-    return View != null ? <View {...data} /> : <></>
+    return <View />
   }
 
   function DocStreamer ({
@@ -110,7 +110,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     children
   }: {
     docRef?: DocumentReference<Doc>
-    View: FC<Doc>
+    View: FC
     children?: ReactNode
   }): JSX.Element {
     const stream = useDocumentData(docRef)
@@ -132,7 +132,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
   }
 
   function QueryViewer ({ View }: {
-    View: FC<Doc>
+    View: FC
   }): JSX.Element {
     const queryStreamState = useContext(queryStreamContext)
     if (queryStreamState.stream == null) return <></>
@@ -149,11 +149,10 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     if (data.length === 0) {
       return <Alert status='info'><AlertIcon />No Data</Alert>
     }
-    const items = View != null && data.map(datum => (
-      <View
-        key={datum.id}
-        {...datum}
-      />
+    const items = data.map(datum => (
+      <DocProvider key={datum.id} doc={datum}>
+        <View />
+      </DocProvider>
     ))
     return <>{items}</>
   }
@@ -164,7 +163,7 @@ export default function getFirestream<Doc extends { id?: string }> (): {
     children
   }: {
     queryRef?: Query<Doc>
-    View: FC<Doc>
+    View: FC
     children?: ReactNode
   }): JSX.Element {
     const stream = useCollectionData(queryRef)

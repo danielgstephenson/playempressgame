@@ -2,13 +2,14 @@ import { useContext, ReactNode } from 'react'
 import { gameConverter } from '../../service/game'
 import { Game } from '../../types'
 import dbContext from '../db'
-import { DocumentReference, collection, doc } from 'firebase/firestore'
+import { DocumentReference, collection, doc, Query } from 'firebase/firestore'
 import GameContentView from '../../view/GameContent'
 import getFirestream from './getFirestream'
+import GameItemView from '../../view/GameItem'
 
-export const { DocStreamer, docContext: gameContext } = getFirestream<Game>()
+export const { DocStreamer, QueryStreamer, docContext: gameContext } = getFirestream<Game>()
 
-export default function GameStreamer ({
+export function GameStreamer ({
   gameId,
   children
 }: {
@@ -25,4 +26,20 @@ export default function GameStreamer ({
   }
   const ref = getRef()
   return <DocStreamer docRef={ref} View={GameContentView}>{children}</DocStreamer>
+}
+
+export function GamesStreamer ({
+  children
+}: {
+  children?: ReactNode
+}): JSX.Element {
+  const dbState = useContext(dbContext)
+  function getQuery (): Query<Game> | undefined {
+    if (dbState.db == null) return undefined
+    const gamesRef = collection(dbState.db, 'games')
+    const gamesConverted = gamesRef.withConverter(gameConverter)
+    return gamesConverted
+  }
+  const q = getQuery()
+  return <QueryStreamer View={GameItemView} queryRef={q}>{children}</QueryStreamer>
 }
