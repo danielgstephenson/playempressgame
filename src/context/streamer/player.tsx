@@ -9,7 +9,7 @@ import getFirestream from './getFirestream'
 
 export const { QueryStreamer, queryContext: playerContext } = getFirestream<Player>()
 
-export default function ProfilesStreamer ({
+export default function PlayerStreamer ({
   children
 }: {
   children?: ReactNode
