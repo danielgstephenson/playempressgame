@@ -3,31 +3,64 @@ import { DocumentReference, DocumentSnapshot, FirestoreError, Query, QuerySnapsh
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
-type EmptyDocData <Doc> = { doc?: Doc } & Partial<Doc>
-type DocData <Doc> = { doc: Doc } & Doc
-type DocState <Doc> = EmptyDocData<Doc> | DocData<Doc>
+export type DocState <Doc> = { doc?: Doc } & Partial<Doc>
+export interface DocStreamerProps <Doc> {
+  docRef?: DocumentReference<Doc>
+  View: FC
+  children?: ReactNode
+}
+export interface QueryStreamerProps <Doc> {
+  queryRef?: Query<Doc>
+  View: FC
+  children?: ReactNode
+}
+export interface ViewerProps {
+  View: FC
+}
+export type Stream <Data, Snapshot> = [
+  Data | undefined,
+  boolean, FirestoreError | undefined,
+  Snapshot | undefined
+]
+export type DocStream <Doc> = Stream<Doc, DocumentSnapshot<Doc>>
+export type QueryStream <Doc> = Stream<Doc[], QuerySnapshot<Doc>>
+export interface StreamState <Stream> {
+  stream?: Stream
+  loading?: Boolean
+  error?: FirestoreError
+}
+export interface DocStreamState <Doc> extends StreamState<DocStream<Doc>> {
+  doc?: Doc
+}
+export interface QueryStreamState <Doc> extends StreamState<QueryStream<Doc>> {
+  docs?: Doc[]
+}
+export interface QueryState <Doc> {
+  docs?: Doc[]
+}
+export interface DocProviderProps <Doc> {
+  doc?: Doc
+  children?: ReactNode
+}
+export interface QueryProviderProps <Doc> {
+  docs?: Doc[]
+  children?: ReactNode
+}
+export interface Identification {
+  id?: string
+}
 
-export default function firestream<Doc extends { id?: string }> (): {
-  DocStreamer: FC<{ docRef?: DocumentReference<Doc>, View: FC, children?: ReactNode }>
-  QueryStreamer: FC<{ queryRef?: Query<Doc>, View: FC, children?: ReactNode }>
-  DocViewer: FC<{ View: FC }>
-  QueryViewer: FC<{ View: FC }>
-  docStreamContext: React.Context<{
-    stream?: [Doc | undefined, boolean, FirestoreError | undefined, DocumentSnapshot<Doc> | undefined]
-    doc?: Doc
-    loading?: Boolean
-    error?: FirestoreError
-  }>
-  queryStreamContext: React.Context<{
-    stream?: [Doc[] | undefined, boolean, FirestoreError | undefined, QuerySnapshot<Doc> | undefined]
-    docs?: Doc[]
-    loading?: Boolean
-    error?: FirestoreError
-  }>
+export default function firestream<Doc extends Identification> (): {
+  DocStreamer: FC<DocStreamerProps<Doc>>
+  QueryStreamer: FC<QueryStreamerProps<Doc>>
+  DocViewer: FC<ViewerProps>
+  QueryViewer: FC<ViewerProps>
+  docStreamContext: React.Context<DocStreamState<Doc>>
+  queryStreamContext: React.Context<QueryStreamState<Doc>>
   docContext: React.Context<DocState<Doc>>
-  queryContext: React.Context<{ docs?: Doc[] }>
-  DocProvider: FC<{ doc?: Doc, children?: ReactNode }>
-  QueryProvider: FC<{ docs?: Doc[], children?: ReactNode }>
+  queryContext: React.Context<QueryState<Doc>>
+  DocProvider: FC<DocProviderProps<Doc>>
+  QueryProvider: FC<QueryProviderProps<Doc>>
 } {
   const docContext = createContext<DocState<Doc>>({})
 
