@@ -4,10 +4,10 @@ import { Game } from '../../types'
 import dbContext from '../db'
 import { DocumentReference, collection, doc, Query } from 'firebase/firestore'
 import GameContentView from '../../view/GameContent'
-import firestream from '.'
 import GameItemView from '../../view/GameItem'
+import chakraFirestream from './chakra'
 
-export const { DocStreamer, QueryStreamer, docContext: gameContext } = firestream<Game>()
+export const { DocStreamer, QueryStreamer, docContext: gameContext } = chakraFirestream<Game>()
 
 export function GameStreamer ({
   gameId,
@@ -25,7 +25,7 @@ export function GameStreamer ({
     return gameRef
   }
   const ref = getRef()
-  return <DocStreamer docRef={ref} View={GameContentView}>{children}</DocStreamer>
+  return <DocStreamer docRef={ref} DocView={GameContentView}>{children}</DocStreamer>
 }
 
 export function GamesStreamer ({
@@ -41,5 +41,5 @@ export function GamesStreamer ({
     return gamesConverted
   }
   const q = getQuery()
-  return <QueryStreamer View={GameItemView} queryRef={q}>{children}</QueryStreamer>
+  return <QueryStreamer DocView={GameItemView} queryRef={q}>{children}</QueryStreamer>
 }

@@ -5,13 +5,13 @@ import { Profile } from '../../types'
 import ProfileItemView from '../../view/ProfileItem'
 import dbContext from '../db'
 import { gameContext } from './game'
-import firestream from '.'
+import chakraFirestream from './chakra'
 
 export const {
   docContext: profileContext,
   DocProvider: ProfileProvider,
   QueryStreamer
-} = firestream<Profile>()
+} = chakraFirestream<Profile>()
 
 export default function ProfilesStreamer ({
   children
@@ -28,5 +28,5 @@ export default function ProfilesStreamer ({
     return q
   }
   const q = getQuery()
-  return <QueryStreamer View={ProfileItemView} queryRef={q}>{children}</QueryStreamer>
+  return <QueryStreamer DocView={ProfileItemView} queryRef={q}>{children}</QueryStreamer>
 }

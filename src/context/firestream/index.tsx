@@ -1,29 +1,35 @@
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { DocumentReference, DocumentSnapshot, FirestoreError, Query, QuerySnapshot } from 'firebase/firestore'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
-import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 
 export type DocState <Doc> = { doc?: Doc } & Partial<Doc>
-export interface DocStreamerProps <Doc> {
+export interface ErrorViewProps {
+  error: Error
+}
+export interface HiderViews {
+  EmptyView: FC
+  LoadingView: FC
+  ErrorView: FC<ErrorViewProps>
+}
+export interface ViewerProps extends HiderViews {
+  DocView: FC
+}
+export interface StreamerProps extends ViewerProps {
+  children?: ReactNode
+}
+export interface DocStreamerProps <Doc> extends StreamerProps {
   docRef?: DocumentReference<Doc>
-  View: FC
-  children?: ReactNode
 }
-export interface QueryStreamerProps <Doc> {
+export interface QueryStreamerProps <Doc> extends StreamerProps {
   queryRef?: Query<Doc>
-  View: FC
-  children?: ReactNode
-}
-export interface ViewerProps {
-  View: FC
 }
 export type Stream <Data, Snapshot> = [
   Data | undefined,
   boolean, FirestoreError | undefined,
   Snapshot | undefined
 ]
-export type DocStream <Doc> = Stream<Doc, DocumentSnapshot<Doc>>
-export type QueryStream <Doc> = Stream<Doc[], QuerySnapshot<Doc>>
+export interface DocStream <Doc> extends Stream<Doc, DocumentSnapshot<Doc>> {}
+export interface QueryStream <Doc> extends Stream<Doc[], QuerySnapshot<Doc>> {}
 export interface StreamState <Stream> {
   stream?: Stream
   loading?: Boolean
@@ -49,8 +55,11 @@ export interface QueryProviderProps <Doc> {
 export interface Identification {
   id?: string
 }
-
-export default function firestream<Doc extends Identification> (): {
+export interface HiderProps <Stream> extends HiderViews {
+  streamState: StreamState<Stream>
+  children: ReactNode
+}
+export interface Firestream <Doc> {
   DocStreamer: FC<DocStreamerProps<Doc>>
   QueryStreamer: FC<QueryStreamerProps<Doc>>
   DocViewer: FC<ViewerProps>
@@ -61,16 +70,15 @@ export default function firestream<Doc extends Identification> (): {
   queryContext: React.Context<QueryState<Doc>>
   DocProvider: FC<DocProviderProps<Doc>>
   QueryProvider: FC<QueryProviderProps<Doc>>
-} {
+}
+
+export default function firestream<Doc extends Identification> (): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})
 
   function DocProvider ({
     doc,
     children
-  }: {
-    doc?: Doc
-    children?: ReactNode
-  }): JSX.Element {
+  }: DocProviderProps<Doc>): JSX.Element {
     const state: DocState<Doc> = doc == null ? {} : { doc, ...doc }
     return (
       <docContext.Provider value={state}>
@@ -78,19 +86,13 @@ export default function firestream<Doc extends Identification> (): {
       </docContext.Provider>
     )
   }
-  interface QueryState {
-    docs?: Doc[]
-  }
-  const queryContext = createContext<QueryState>({})
+  const queryContext = createContext<QueryState<Doc>>({})
 
   function QueryProvider ({
     docs,
     children
-  }: {
-    docs?: Doc[]
-    children?: ReactNode
-  }): JSX.Element {
-    const state: QueryState = { docs }
+  }: QueryProviderProps<Doc>): JSX.Element {
+    const state: QueryState<Doc> = { docs }
 
     return (
       <queryContext.Provider value={state}>
@@ -98,57 +100,51 @@ export default function firestream<Doc extends Identification> (): {
       </queryContext.Provider>
     )
   }
-  type DocStream = [Doc | undefined, boolean, FirestoreError | undefined, DocumentSnapshot<Doc> | undefined]
 
-  interface DocStreamState {
-    stream?: DocStream
-    doc?: Doc
-    loading?: Boolean
-    error?: FirestoreError
-  }
+  const docStreamContext = createContext<DocStreamState<Doc>>({})
+  const queryStreamContext = createContext<QueryStreamState<Doc>>({})
 
-  type QueryStream = [Doc[] | undefined, boolean, FirestoreError | undefined, QuerySnapshot<Doc> | undefined]
-
-  interface QueryStreamState {
-    stream?: QueryStream
-    docs?: Doc[]
-    loading?: Boolean
-    error?: FirestoreError
-  }
-
-  const docStreamContext = createContext<DocStreamState>({})
-  const queryStreamContext = createContext<QueryStreamState>({})
-
-  function DocViewer ({ View }: {
-    View: FC
-  }): JSX.Element {
-    const docStreamState = useContext(docStreamContext)
-    if (docStreamState.stream == null) return <></>
-    const [data, loading, error] = docStreamState.stream
+  function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>> ({
+    streamState,
+    children,
+    EmptyView,
+    LoadingView,
+    ErrorView
+  }: HiderProps<Firestream>): JSX.Element {
+    if (streamState.stream == null) return <></>
+    const [data, loading, error] = streamState.stream
     if (loading) {
-      return <Spinner />
+      return <LoadingView />
     }
     if (error != null) {
-      return <Alert status='error'> <AlertIcon /> {error.message}</Alert>
+      return <ErrorView error={error} />
     }
     if (data == null) {
-      return <></>
+      return <EmptyView />
     }
-    return <View />
+    return <>{children}</>
+  }
+
+  function DocViewer ({ DocView, EmptyView, LoadingView, ErrorView }: ViewerProps): JSX.Element {
+    const docStreamState = useContext(docStreamContext)
+    return (
+      <Hider streamState={docStreamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
+        <DocView />
+      </Hider>
+    )
   }
 
   function DocStreamer ({
     docRef,
-    View,
+    DocView,
+    EmptyView,
+    LoadingView,
+    ErrorView,
     children
-  }: {
-    docRef?: DocumentReference<Doc>
-    View: FC
-    children?: ReactNode
-  }): JSX.Element {
+  }: DocStreamerProps<Doc>): JSX.Element {
     const stream = useDocumentData(docRef)
     const [doc, loading, error] = stream
-    const state: DocStreamState = {
+    const state: DocStreamState<Doc> = {
       stream,
       doc,
       loading,
@@ -158,50 +154,48 @@ export default function firestream<Doc extends Identification> (): {
       <docStreamContext.Provider value={state}>
         <DocProvider doc={doc}>
           {children}
-          <DocViewer View={View} />
+          <DocViewer DocView={DocView} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView} />
         </DocProvider>
       </docStreamContext.Provider>
     )
   }
 
-  function QueryViewer ({ View }: {
-    View: FC
+  function QueryView ({ DocView, EmptyView }: {
+    DocView: FC
+    EmptyView: FC
   }): JSX.Element {
     const queryStreamState = useContext(queryStreamContext)
-    if (queryStreamState.stream == null) return <></>
-    const [data, loading, error] = queryStreamState.stream
-    if (loading) {
-      return <Spinner />
+    if (queryStreamState.docs?.length === 0) {
+      return <EmptyView />
     }
-    if (error != null) {
-      return <Alert status='error'><AlertIcon /> {error.message}</Alert>
-    }
-    if (data == null) {
-      return <></>
-    }
-    if (data.length === 0) {
-      return <Alert status='info'><AlertIcon />No Data</Alert>
-    }
-    const items = data.map(datum => (
+    const items = queryStreamState.docs?.map(datum => (
       <DocProvider key={datum.id} doc={datum}>
-        <View />
+        <DocView />
       </DocProvider>
     ))
     return <>{items}</>
   }
 
+  function QueryViewer ({ DocView, EmptyView, LoadingView, ErrorView }: ViewerProps): JSX.Element {
+    const queryStreamState = useContext(queryStreamContext)
+    return (
+      <Hider streamState={queryStreamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
+        <QueryView DocView={DocView} EmptyView={EmptyView} />
+      </Hider>
+    )
+  }
+
   function QueryStreamer ({
     queryRef,
-    View,
+    DocView,
+    EmptyView,
+    LoadingView,
+    ErrorView,
     children
-  }: {
-    queryRef?: Query<Doc>
-    View: FC
-    children?: ReactNode
-  }): JSX.Element {
+  }: QueryStreamerProps<Doc>): JSX.Element {
     const stream = useCollectionData(queryRef)
     const [docs, loading, error] = stream
-    const state: QueryStreamState = {
+    const state: QueryStreamState<Doc> = {
       stream,
       docs,
       loading,
@@ -211,7 +205,7 @@ export default function firestream<Doc extends Identification> (): {
       <queryStreamContext.Provider value={state}>
         <QueryProvider docs={docs}>
           {children}
-          <QueryViewer View={View} />
+          <QueryViewer DocView={DocView} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView} />
         </QueryProvider>
       </queryStreamContext.Provider>
     )

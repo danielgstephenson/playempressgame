@@ -5,9 +5,9 @@ import { Player } from '../../types'
 import PlayerView from '../../view/Player'
 import dbContext from '../db'
 import { profileContext } from './profile'
-import firestream from '.'
+import chakraFirestream from './chakra'
 
-export const { QueryStreamer, queryContext: playerContext } = firestream<Player>()
+export const { QueryStreamer, queryContext: playerContext } = chakraFirestream<Player>()
 
 export default function PlayerStreamer ({
   children
@@ -28,5 +28,5 @@ export default function PlayerStreamer ({
     return q
   }
   const ref = getRef()
-  return <QueryStreamer View={PlayerView} queryRef={ref}>{children}</QueryStreamer>
+  return <QueryStreamer DocView={PlayerView} queryRef={ref}>{children}</QueryStreamer>
 }
