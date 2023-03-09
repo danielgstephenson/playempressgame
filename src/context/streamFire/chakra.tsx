@@ -1,7 +1,7 @@
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
 import { DocumentReference, Query } from 'firebase/firestore'
 import { FC, ReactNode } from 'react'
-import firestream, { Firestream, Identification } from '.'
+import streamFire, { Firestream, Identification } from '.'
 
 interface ChakraViewerProps {
   DocView: FC
@@ -19,8 +19,8 @@ interface ChakraFirestream<Doc> extends Firestream<Doc> {
   DocStreamer: FC<ChakraViewerProps & { docRef?: DocumentReference<Doc> }>
   QueryStreamer: FC<ChakraViewerProps & { queryRef?: Query<Doc> }>
 }
-export default function chakraFirestream<Doc extends Identification> (): ChakraFirestream<Doc> {
-  const streaming = firestream<Doc>()
+export default function streamChakraFire<Doc extends Identification> (): ChakraFirestream<Doc> {
+  const firestream = streamFire<Doc>()
   function EmptyView (): JSX.Element {
     return <Alert status='info'><AlertIcon /> No Data</Alert>
   }
@@ -32,20 +32,20 @@ export default function chakraFirestream<Doc extends Identification> (): ChakraF
     LoadingView: Spinner,
     ErrorView
   }
-  const chakraStreaming = {
-    ...streaming,
+  const chakraFirestream = {
+    ...firestream,
     DocViewer: function ChakraDocViewer ({ DocView }: ChakraViewerProps): JSX.Element {
-      return <streaming.DocViewer DocView={DocView} {...hiderViews} />
+      return <firestream.DocViewer DocView={DocView} {...hiderViews} />
     },
     QueryViewer: function ChakraQueryViewer ({ DocView }: ChakraViewerProps): JSX.Element {
-      return <streaming.QueryViewer DocView={DocView} {...hiderViews} />
+      return <firestream.QueryViewer DocView={DocView} {...hiderViews} />
     },
     DocStreamer: function ChakraDocStreamer ({ DocView, docRef }: ChakaraDocStreamerProps<Doc>): JSX.Element {
-      return <streaming.DocStreamer DocView={DocView} docRef={docRef} {...hiderViews} />
+      return <firestream.DocStreamer DocView={DocView} docRef={docRef} {...hiderViews} />
     },
     QueryStreamer: function ChakraQueryStreamer ({ DocView, queryRef }: ChakaraQueryStreamerProps<Doc>): JSX.Element {
-      return <streaming.QueryStreamer DocView={DocView} queryRef={queryRef} {...hiderViews} />
+      return <firestream.QueryStreamer DocView={DocView} queryRef={queryRef} {...hiderViews} />
     }
   }
-  return chakraStreaming
+  return chakraFirestream
 }

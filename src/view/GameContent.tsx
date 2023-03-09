@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import ProfilesView from './Profiles'
 import { Box, Text } from '@chakra-ui/react'
-import { gameContext } from '../context/firestream/game'
+import { gameContext } from '../context/streamFire/game'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)

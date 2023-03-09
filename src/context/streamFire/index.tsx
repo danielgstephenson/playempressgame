@@ -72,7 +72,7 @@ export interface Firestream <Doc> {
   QueryProvider: FC<QueryProviderProps<Doc>>
 }
 
-export default function firestream<Doc extends Identification> (): Firestream<Doc> {
+export default function streamFire<Doc extends Identification> (): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})
 
   function DocProvider ({

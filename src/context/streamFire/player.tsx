@@ -5,9 +5,9 @@ import { Player } from '../../types'
 import PlayerView from '../../view/Player'
 import dbContext from '../db'
 import { profileContext } from './profile'
-import chakraFirestream from './chakra'
+import streamChakraFire from './chakra'
 
-export const { QueryStreamer, queryContext: playerContext } = chakraFirestream<Player>()
+export const { QueryStreamer, queryContext: playerContext } = streamChakraFire<Player>()
 
 export default function PlayerStreamer ({
   children

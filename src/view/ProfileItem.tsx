@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react'
-import { profileContext } from '../context/firestream/profile'
-import PlayerStreamer from '../context/firestream/player'
+import { profileContext } from '../context/streamFire/profile'
+import PlayerStreamer from '../context/streamFire/player'
 import { useContext } from 'react'
 
 export default function ProfileItemView (): JSX.Element {

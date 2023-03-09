@@ -5,9 +5,9 @@ import dbContext from '../db'
 import { DocumentReference, collection, doc, Query } from 'firebase/firestore'
 import GameContentView from '../../view/GameContent'
 import GameItemView from '../../view/GameItem'
-import chakraFirestream from './chakra'
+import streamChakraFire from './chakra'
 
-export const { DocStreamer, QueryStreamer, docContext: gameContext } = chakraFirestream<Game>()
+export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>()
 
 export function GameStreamer ({
   gameId,
