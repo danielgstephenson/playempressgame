@@ -1,5 +1,5 @@
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
-import { Firestream, Identification } from '.'
+import { Identification, Firestream } from './types'
 import streamFireViews from './views'
 
 function EmptyAlert (): JSX.Element {

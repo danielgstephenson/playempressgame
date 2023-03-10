@@ -1,5 +1,6 @@
 import { FC } from 'react'
-import streamFire, { DocStreamerProps, ErrorViewProps, Firestream, Identification, QueryStreamerProps, ViewerProps } from '.'
+import streamFire from '.'
+import { Identification, ErrorViewProps, Firestream, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
 
 export default function streamFireViews<Doc extends Identification> ({
   EmptyView: DefaultEmptyView,
