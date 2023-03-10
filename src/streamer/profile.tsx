@@ -6,7 +6,6 @@ import ProfileItemView from '../view/ProfileItem'
 import dbContext from '../context/db'
 import { gameContext } from './game'
 import streamChakraFire from '../streamFire/chakra'
-import getSafe from './getSafe'
 
 export const {
   docContext: profileContext,
@@ -21,14 +20,20 @@ export default function ProfilesStreamer ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   const gameState = useContext(gameContext)
-  const q = getSafe({
-    needs: { db: dbState.db, gameId: gameState.id },
-    getter: (needs) => {
-      const profilesCollection = collection(needs.db, 'profiles')
-      const profilesConverted = profilesCollection.withConverter(profileConverter)
-      const q = query(profilesConverted, where('gameId', '==', needs.gameId))
-      return q
-    }
-  })
-  return <QueryStreamer DocView={ProfileItemView} queryRef={q}>{children}</QueryStreamer>
+  const needs = { db: dbState.db, gameId: gameState.id }
+
+  return (
+    <QueryStreamer
+      DocView={ProfileItemView}
+      refNeeds={needs}
+      getRef={(needs) => {
+        const profilesCollection = collection(needs.db, 'profiles')
+        const profilesConverted = profilesCollection.withConverter(profileConverter)
+        const q = query(profilesConverted, where('gameId', '==', needs.gameId))
+        return q
+      }}
+    >
+      {children}
+    </QueryStreamer>
+  )
 }

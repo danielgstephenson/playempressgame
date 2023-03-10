@@ -1,5 +1,7 @@
+import { DocumentReference, Query } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
+import getSafe from './getSafe'
 import { ViewAndProps, Stream, HiderProps, Identification, Firestream, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
 
 export function Viewing <Props> ({ View, ...props }: ViewAndProps<Props>): JSX.Element {
@@ -107,15 +109,18 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </Viewer>
     )
   }
-  function DocStreamer ({
-    docRef,
+  // interface DocStreamerProps <Needs> extends StreamerProps<Needs, DocumentReference<Doc>> {}
+  function DocStreamer <Needs extends {}> ({
     DocView,
     EmptyView,
     LoadingView,
     ErrorView,
+    refNeeds,
+    getRef,
     children
-  }: DocStreamerProps<Doc>): JSX.Element {
-    const stream = useDocumentData(docRef)
+  }: DocStreamerProps<Doc, Needs>): JSX.Element {
+    const ref = getSafe<Needs, DocumentReference<Doc>>({ needs: refNeeds, getter: getRef })
+    const stream = useDocumentData(ref)
     const [doc, loading, error] = stream
     const state: DocStreamState<Doc> = {
       stream,
@@ -132,16 +137,18 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </docStreamContext.Provider>
     )
   }
-
-  function QueryStreamer ({
+  // interface QueryStreamerProps <Needs> extends StreamerProps<Needs, Query<Doc>> {}
+  function QueryStreamer <Needs extends {}> ({
     children,
-    queryRef,
+    refNeeds,
+    getRef,
     DocView,
     EmptyView,
     LoadingView,
     ErrorView
-  }: QueryStreamerProps<Doc>): JSX.Element {
-    const stream = useCollectionData(queryRef)
+  }: QueryStreamerProps<Doc, Needs>): JSX.Element {
+    const q = getSafe<Needs, Query<Doc>>({ needs: refNeeds, getter: getRef })
+    const stream = useCollectionData(q)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {
       stream,

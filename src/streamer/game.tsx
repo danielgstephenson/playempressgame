@@ -6,7 +6,6 @@ import { collection, doc } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
 import streamChakraFire from '../streamFire/chakra'
-import getSafe from './getSafe'
 
 export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>()
 
@@ -18,16 +17,21 @@ export function GameStreamer ({
   children: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const ref = getSafe({
-    needs: { db: dbState.db, gameId },
-    getter: (needs) => {
-      const gamesRef = collection(needs.db, 'games')
-      const gamesConverted = gamesRef.withConverter(gameConverter)
-      const gameRef = doc(gamesConverted, gameId)
-      return gameRef
-    }
-  })
-  return <DocStreamer docRef={ref} DocView={GameContentView}>{children}</DocStreamer>
+  const needs = { db: dbState.db, gameId }
+  return (
+    <DocStreamer
+      DocView={GameContentView}
+      refNeeds={needs}
+      getRef={(needs) => {
+        const gamesRef = collection(needs.db, 'games')
+        const gamesConverted = gamesRef.withConverter(gameConverter)
+        const gameRef = doc(gamesConverted, needs.gameId)
+        return gameRef
+      }}
+    >
+      {children}
+    </DocStreamer>
+  )
 }
 
 export function GamesStreamer ({
@@ -36,13 +40,18 @@ export function GamesStreamer ({
   children?: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const query = getSafe({
-    needs: { db: dbState.db },
-    getter: (needs) => {
-      const gamesRef = collection(needs.db, 'games')
-      const gamesConverted = gamesRef.withConverter(gameConverter)
-      return gamesConverted
-    }
-  })
-  return <QueryStreamer DocView={GameItemView} queryRef={query}>{children}</QueryStreamer>
+  const needs = { db: dbState.db }
+  return (
+    <QueryStreamer
+      DocView={GameItemView}
+      refNeeds={needs}
+      getRef={(needs) => {
+        const gamesRef = collection(needs.db, 'games')
+        const gamesConverted = gamesRef.withConverter(gameConverter)
+        return gamesConverted
+      }}
+    >
+      {children}
+    </QueryStreamer>
+  )
 }

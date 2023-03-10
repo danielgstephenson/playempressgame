@@ -31,15 +31,16 @@ export interface HiderViews {
 export interface ViewerProps extends HiderViews {
   DocView: FC
 }
-export interface StreamerProps extends ViewerProps {
+type Safe<T> = {
+  [P in keyof T]-?: NonNullable<T[P]>;
+}
+export interface StreamerProps <Needs extends {}, Ref> extends ViewerProps {
   children?: ReactNode
+  refNeeds: Needs
+  getRef: (props: Safe<Needs>) => Ref
 }
-export interface DocStreamerProps <Doc> extends StreamerProps {
-  docRef?: DocumentReference<Doc>
-}
-export interface QueryStreamerProps <Doc> extends StreamerProps {
-  queryRef?: Query<Doc>
-}
+export interface DocStreamerProps <Doc, Needs extends {}> extends StreamerProps<Needs, DocumentReference<Doc>> {}
+export interface QueryStreamerProps <Doc, Needs extends {}> extends StreamerProps<Needs, Query<Doc>> {}
 export interface QueryState <Doc> {
   docs?: Doc[]
 }
@@ -59,8 +60,8 @@ export interface HiderProps <Stream> extends HiderViews {
   children: ReactNode
 }
 export interface Firestream <Doc> {
-  DocStreamer: FC<DocStreamerProps<Doc>>
-  QueryStreamer: FC<QueryStreamerProps<Doc>>
+  DocStreamer: <Needs extends {}> (props: DocStreamerProps<Doc, Needs>) => JSX.Element
+  QueryStreamer: <Needs extends {}> (props: QueryStreamerProps<Doc, Needs>) => JSX.Element
   DocViewer: FC<ViewerProps>
   QueryViewer: FC<ViewerProps>
   docStreamContext: React.Context<DocStreamState<Doc>>
