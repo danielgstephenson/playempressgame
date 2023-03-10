@@ -2,10 +2,9 @@ import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import { ViewAndProps, Stream, HiderProps, Identification, Firestream, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
 
-export function Viewing <Props> (props: ViewAndProps<Props>): JSX.Element {
-  if (props.View == null) return <></>
-  const { View, ...viewProps } = props
-  return <props.View {...viewProps} />
+export function Viewing <Props> ({ View, ...props }: ViewAndProps<Props>): JSX.Element {
+  if (View == null) return <></>
+  return <View {...props} />
 }
 export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>> ({
   streamState,
@@ -32,7 +31,7 @@ export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>
 
 export default function streamFire<Doc extends Identification> (): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})
-
+  const queryContext = createContext<QueryState<Doc>>({})
   function DocProvider ({
     doc,
     children
@@ -44,24 +43,46 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </docContext.Provider>
     )
   }
-  const queryContext = createContext<QueryState<Doc>>({})
-
   function QueryProvider ({
     docs,
     children
   }: QueryProviderProps<Doc>): JSX.Element {
     const state: QueryState<Doc> = { docs }
-
     return (
       <queryContext.Provider value={state}>
         {children}
       </queryContext.Provider>
     )
   }
-
   const docStreamContext = createContext<DocStreamState<Doc>>({})
   const queryStreamContext = createContext<QueryStreamState<Doc>>({})
-
+  function Viewer <Data, Snapshot, Firestream extends Stream<Data, Snapshot>> ({
+    children,
+    streamState,
+    EmptyView,
+    LoadingView,
+    ErrorView
+  }: {
+    children?: ReactNode
+    streamState: StreamState<Firestream>
+    EmptyView?: FC
+    LoadingView?: FC
+    ErrorView?: FC<ErrorViewProps>
+  }): JSX.Element {
+    return (
+      <Hider streamState={streamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
+        {children}
+      </Hider>
+    )
+  }
+  function DocViewer ({ DocView, EmptyView, LoadingView, ErrorView }: ViewerProps): JSX.Element {
+    const docStreamState = useContext(docStreamContext)
+    return (
+      <Viewer streamState={docStreamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
+        <DocView />
+      </Viewer>
+    )
+  }
   function QueryView ({ DocView, EmptyView }: {
     DocView: FC
     EmptyView?: FC
@@ -78,21 +99,6 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
     ))
     return <>{items}</>
   }
-
-  function Viewer <Data, Snapshot, Firestream extends Stream<Data, Snapshot>> ({ children, streamState, EmptyView, LoadingView, ErrorView }: {
-    children?: ReactNode
-    streamState: StreamState<Firestream>
-    EmptyView?: FC
-    LoadingView?: FC
-    ErrorView?: FC<ErrorViewProps>
-  }): JSX.Element {
-    return (
-      <Hider streamState={streamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
-        {children}
-      </Hider>
-    )
-  }
-
   function QueryViewer ({ DocView, EmptyView, LoadingView, ErrorView }: ViewerProps): JSX.Element {
     const queryStreamState = useContext(queryStreamContext)
     return (
@@ -101,16 +107,6 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </Viewer>
     )
   }
-
-  function DocViewer ({ DocView, EmptyView, LoadingView, ErrorView }: ViewerProps): JSX.Element {
-    const docStreamState = useContext(docStreamContext)
-    return (
-      <Viewer streamState={docStreamState} EmptyView={EmptyView} LoadingView={LoadingView} ErrorView={ErrorView}>
-        <DocView />
-      </Viewer>
-    )
-  }
-
   function DocStreamer ({
     docRef,
     DocView,
