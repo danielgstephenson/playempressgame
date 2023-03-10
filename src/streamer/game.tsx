@@ -1,11 +1,11 @@
 import { useContext, ReactNode } from 'react'
-import { gameConverter } from '../../service/game'
-import { Game } from '../../types'
-import dbContext from '../db'
+import { gameConverter } from '../service/game'
+import { Game } from '../types'
+import dbContext from '../context/db'
 import { DocumentReference, collection, doc, Query } from 'firebase/firestore'
-import GameContentView from '../../view/GameContent'
-import GameItemView from '../../view/GameItem'
-import streamChakraFire from './chakra'
+import GameContentView from '../view/GameContent'
+import GameItemView from '../view/GameItem'
+import streamChakraFire from '../streamFire/chakra'
 
 export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>()
 

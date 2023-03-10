@@ -1,5 +1,5 @@
 import { Stack, Text } from '@chakra-ui/react'
-import ProfilesStreamer from '../context/streamFire/profile'
+import ProfilesStreamer from '../streamer/profile'
 
 export default function ProfilesView (): JSX.Element {
   return (

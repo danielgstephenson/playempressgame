@@ -1,6 +1,6 @@
 import { Text } from '@chakra-ui/react'
 import { useContext } from 'react'
-import { playerContext } from '../context/streamFire/player'
+import { playerContext } from '../streamer/player'
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)

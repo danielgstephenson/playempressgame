@@ -1,11 +1,11 @@
 import { Query, collection, query, where } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import { profileConverter } from '../../service/profile'
-import { Profile } from '../../types'
-import ProfileItemView from '../../view/ProfileItem'
-import dbContext from '../db'
+import { profileConverter } from '../service/profile'
+import { Profile } from '../types'
+import ProfileItemView from '../view/ProfileItem'
+import dbContext from '../context/db'
 import { gameContext } from './game'
-import streamChakraFire from './chakra'
+import streamChakraFire from '../streamFire/chakra'
 
 export const {
   docContext: profileContext,

@@ -1,11 +1,11 @@
 import { Query, collection, where, query } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import { playerConverter } from '../../service/player'
-import { Player } from '../../types'
-import PlayerView from '../../view/Player'
-import dbContext from '../db'
+import { playerConverter } from '../service/player'
+import { Player } from '../types'
+import PlayerView from '../view/Player'
+import dbContext from '../context/db'
 import { profileContext } from './profile'
-import streamChakraFire from './chakra'
+import streamChakraFire from '../streamFire/chakra'
 
 export const { QueryStreamer, queryContext: playerContext } = streamChakraFire<Player>()
 
