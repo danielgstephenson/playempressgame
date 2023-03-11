@@ -28,16 +28,17 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   }) => Output
 }): Output | undefined {
   if (db == null) return undefined
+  const r = requirements == null ? {} : requirements
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
-  function hasAllValues (requirements?: Requirements): requirements is Safe<Requirements> {
+  function hasAllValues (requirements?: Requirements | {}): requirements is Safe<Requirements> {
     if (requirements == null) return true
     const values = Object.values(requirements)
     const hasAllValues = values.every((value) => value != null)
     return hasAllValues
   }
-  if (!hasAllValues(requirements)) {
+  if (!hasAllValues(r)) {
     return undefined
   }
-  const query = getter({ collectionRef, requirements })
+  const query = getter({ collectionRef, requirements: r })
   return query
 }

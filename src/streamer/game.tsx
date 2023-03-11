@@ -50,30 +50,6 @@ export function GameStreamer ({
   )
 }
 
-export function SomeGameStreamer ({
-  gameId,
-  children
-}: {
-  gameId: string
-  children: ReactNode
-}): JSX.Element {
-  const dbState = useContext(dbContext)
-  return (
-    <DocStreamer
-      db={dbState.db}
-      collectionName='games'
-      DocView={GameContentView}
-      getRef={({ collectionRef, requirements }) => {
-        // const keys = Object.keys(requirements)
-        const gameRef = doc(collectionRef, 'someGameId')
-        return gameRef
-      }}
-    >
-      {children}
-    </DocStreamer>
-  )
-}
-
 export function GamesStreamer ({
   children
 }: {
@@ -86,7 +62,6 @@ export function GamesStreamer ({
       collectionName='games'
       DocView={GameItemView}
       getRef={({ collectionRef, requirements }) => {
-        const keys = Object.keys(requirements)
         return collectionRef
       }}
     >
