@@ -44,8 +44,12 @@ export interface StreamerProps <Doc, Requirements extends {}, Ref> extends Viewe
     requirements: Safe<Requirements>
   }) => Ref
 }
-export interface DocStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Doc, Requirements, DocumentReference<Doc>> {}
-export interface QueryStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Doc, Requirements, Query<Doc>> {}
+export interface DocStreamerProps <Doc, Requirements extends {}>
+  extends StreamerProps<Doc, Requirements, DocumentReference<Doc>> {}
+
+export interface QueryStreamerProps <Doc, Requirements extends {}>
+  extends StreamerProps<Doc, Requirements, Query<Doc>> {}
+
 export interface QueryState <Doc> {
   docs?: Doc[]
 }

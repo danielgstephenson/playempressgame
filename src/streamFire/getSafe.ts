@@ -13,16 +13,21 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   collectionName: string
   converter: FirestoreDataConverter<Doc>
   requirements: Requirements
-  getter: ({ collectionRef, requirements }: { collectionRef: CollectionReference<Doc>, requirements: Safe<Requirements> }) => Output
+  getter: ({ collectionRef, requirements }: {
+    collectionRef: CollectionReference<Doc>
+    requirements: Safe<Requirements>
+  }) => Output
 }): Output | undefined {
   if (db == null) return undefined
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
-  function hasAllValues (props: Requirements): props is Safe<Requirements> {
-    const values = Object.values(props)
+  function hasAllValues (requirements: Requirements): requirements is Safe<Requirements> {
+    const values = Object.values(requirements)
     const hasAllValues = values.every((value) => value != null)
     return hasAllValues
   }
-  if (!hasAllValues(requirements)) return undefined
+  if (!hasAllValues(requirements)) {
+    return undefined
+  }
   const query = getter({ collectionRef, requirements })
   return query
 }

@@ -56,13 +56,12 @@ export function GamesStreamer ({
   children?: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const requirements = { db: dbState.db }
   return (
     <QueryStreamer
       db={dbState.db}
+      requirements={{}}
       collectionName='games'
       DocView={GameItemView}
-      requirements={requirements}
       getRef={({ collectionRef }) => {
         return collectionRef
       }}
