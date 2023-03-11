@@ -1,4 +1,4 @@
-import { DocumentReference, Query } from 'firebase/firestore'
+import { DocumentData, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import getSafe from './getSafe'
@@ -16,6 +16,7 @@ export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>
   ErrorView
 }: HiderProps<Firestream>): JSX.Element {
   if (streamState.stream == null) return <></>
+  console.log('streamState', streamState)
   const [data, loading, error] = streamState.stream
   if (loading) {
     return <Viewing View={LoadingView} />
@@ -31,7 +32,15 @@ export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>
   return <>{children}</>
 }
 
-export default function streamFire<Doc extends Identification> (): Firestream<Doc> {
+export default function streamFire<Doc extends Identification> ({
+  collectionName,
+  toFirestore,
+  fromFirestore
+}: {
+  collectionName: string
+  toFirestore: (modelObject: WithFieldValue<Doc>) => DocumentData
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
+}): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
   function DocProvider ({
@@ -109,16 +118,24 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </Viewer>
     )
   }
+  const converter = { toFirestore, fromFirestore }
   function DocStreamer <Requirements extends {}> ({
     DocView,
     EmptyView,
     LoadingView,
     ErrorView,
+    db,
     requirements,
     getRef,
     children
   }: DocStreamerProps<Doc, Requirements>): JSX.Element {
-    const ref = getSafe<Requirements, DocumentReference<Doc>>({ requirements, getter: getRef })
+    const ref = getSafe({
+      db,
+      collectionName,
+      converter,
+      requirements,
+      getter: getRef
+    })
     const stream = useDocumentData(ref)
     const [doc, loading, error] = stream
     const state: DocStreamState<Doc> = {
@@ -139,13 +156,21 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
   function QueryStreamer <Requirements extends {}> ({
     children,
     requirements,
+    db,
     getRef,
     DocView,
     EmptyView,
     LoadingView,
     ErrorView
   }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
-    const q = getSafe<Requirements, Query<Doc>>({ requirements, getter: getRef })
+    const q = getSafe({
+      db,
+      collectionName,
+      converter,
+      requirements,
+      getter: getRef
+    })
+    console.log('q test:', q)
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {

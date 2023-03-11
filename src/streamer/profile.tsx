@@ -1,6 +1,5 @@
 import { query, where } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import getProfilesRef from '../service/profile'
 import { Profile } from '../types'
 import ProfileItemView from '../view/ProfileItem'
 import dbContext from '../context/db'
@@ -11,7 +10,17 @@ export const {
   docContext: profileContext,
   DocProvider: ProfileProvider,
   QueryStreamer
-} = streamChakraFire<Profile>()
+} = streamChakraFire<Profile>({
+  collectionName: 'profiles',
+  toFirestore: (profile) => {
+    return { gameId: profile.gameId, userId: profile.userId }
+  },
+  fromFirestore: (snapshot, options) => {
+    const data = snapshot.data(options)
+    const profile = { id: snapshot.id, gameId: data.gameId, userId: data.userId }
+    return profile
+  }
+})
 
 export default function ProfilesStreamer ({
   children
@@ -25,10 +34,11 @@ export default function ProfilesStreamer ({
   return (
     <QueryStreamer
       DocView={ProfileItemView}
+      db={dbState.db}
+      collectionName='profiles'
       requirements={requirements}
-      getRef={(requirements) => {
-        const profilesCollection = getProfilesRef(requirements.db)
-        const q = query(profilesCollection, where('gameId', '==', requirements.gameId))
+      getRef={({ collectionRef, requirements }) => {
+        const q = query(collectionRef, where('gameId', '==', requirements.gameId))
         return q
       }}
     >

@@ -1,4 +1,4 @@
-import { FirestoreError, DocumentSnapshot, QuerySnapshot, DocumentReference, Query } from 'firebase/firestore'
+import { FirestoreError, DocumentSnapshot, QuerySnapshot, DocumentReference, Query, Firestore, CollectionReference } from 'firebase/firestore'
 import { FC, ReactNode } from 'react'
 
 export type Stream <Data, Snapshot> = [
@@ -34,13 +34,18 @@ export interface ViewerProps extends HiderViews {
 export type Safe<T> = {
   [P in keyof T]-?: NonNullable<T[P]>;
 }
-export interface StreamerProps <Requirements extends {}, Ref> extends ViewerProps {
+export interface StreamerProps <Doc, Requirements extends {}, Ref> extends ViewerProps {
   children?: ReactNode
+  collectionName: string
   requirements: Requirements
-  getRef: (props: Safe<Requirements>) => Ref
+  db?: Firestore
+  getRef: ({ collectionRef, requirements }: {
+    collectionRef: CollectionReference<Doc>
+    requirements: Safe<Requirements>
+  }) => Ref
 }
-export interface DocStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Requirements, DocumentReference<Doc>> {}
-export interface QueryStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Requirements, Query<Doc>> {}
+export interface DocStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Doc, Requirements, DocumentReference<Doc>> {}
+export interface QueryStreamerProps <Doc, Requirements extends {}> extends StreamerProps<Doc, Requirements, Query<Doc>> {}
 export interface QueryState <Doc> {
   docs?: Doc[]
 }

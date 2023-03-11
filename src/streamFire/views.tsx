@@ -1,17 +1,24 @@
+import { WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { FC } from 'react'
 import streamFire from '.'
 import { Identification, ErrorViewProps, Firestream, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
 
 export default function streamFireViews<Doc extends Identification> ({
+  collectionName,
+  toFirestore,
+  fromFirestore,
   EmptyView: DefaultEmptyView,
   LoadingView: DefaultLoadingView,
   ErrorView: DefaultErrorView
 }: {
+  collectionName: string
+  toFirestore: (modelObject: WithFieldValue<Doc>) => DocumentData
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
   EmptyView?: FC
   LoadingView?: FC
   ErrorView?: FC<ErrorViewProps>
 }): Firestream<Doc> {
-  const firestream = streamFire<Doc>()
+  const firestream = streamFire<Doc>({ collectionName, toFirestore, fromFirestore })
   function DocViewer ({
     DocView,
     EmptyView = DefaultEmptyView,
@@ -47,6 +54,8 @@ export default function streamFireViews<Doc extends Identification> ({
     children,
     requirements,
     getRef,
+    db,
+    collectionName,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
@@ -54,6 +63,8 @@ export default function streamFireViews<Doc extends Identification> ({
     return (
       <firestream.DocStreamer
         requirements={requirements}
+        db={db}
+        collectionName={collectionName}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}
@@ -67,6 +78,8 @@ export default function streamFireViews<Doc extends Identification> ({
   function QueryStreamer <Requirements extends {}> ({
     DocView,
     requirements,
+    db,
+    collectionName,
     getRef,
     children,
     EmptyView = DefaultEmptyView,
@@ -76,6 +89,8 @@ export default function streamFireViews<Doc extends Identification> ({
     return (
       <firestream.QueryStreamer
         requirements={requirements}
+        db={db}
+        collectionName={collectionName}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}

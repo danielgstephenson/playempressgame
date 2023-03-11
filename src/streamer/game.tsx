@@ -1,13 +1,29 @@
 import { useContext, ReactNode } from 'react'
 import { Game } from '../types'
 import dbContext from '../context/db'
-import { doc } from 'firebase/firestore'
+import { doc, DocumentData } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
 import streamChakraFire from '../streamFire/chakra'
-import getGamesRef from '../service/game'
 
-export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>()
+export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>({
+  collectionName: 'games',
+  toFirestore: (game) => {
+    return { name: game.name }
+  },
+  fromFirestore: (snapshot, options) => {
+    const data: DocumentData = snapshot.data(options)
+    const game: Game = {
+      id: snapshot.id,
+      name: data.name,
+      phase: data.phase,
+      timeline: data.timeline,
+      court: data.court,
+      dungeon: data.dungeon
+    }
+    return game
+  }
+})
 
 export function GameStreamer ({
   gameId,
@@ -20,11 +36,12 @@ export function GameStreamer ({
   const requirements = { db: dbState.db, gameId }
   return (
     <DocStreamer
+      db={dbState.db}
+      collectionName='games'
       DocView={GameContentView}
       requirements={requirements}
-      getRef={(requirements) => {
-        const gamesRef = getGamesRef(requirements.db)
-        const gameRef = doc(gamesRef, requirements.gameId)
+      getRef={({ collectionRef: collection, requirements }) => {
+        const gameRef = doc(collection, requirements.gameId)
         return gameRef
       }}
     >
@@ -39,14 +56,16 @@ export function GamesStreamer ({
   children?: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
+  console.log('gamestreamer dbstate', dbState)
   const requirements = { db: dbState.db }
   return (
     <QueryStreamer
+      db={dbState.db}
+      collectionName='games'
       DocView={GameItemView}
       requirements={requirements}
-      getRef={(requirements) => {
-        const gamesRef = getGamesRef(requirements.db)
-        return gamesRef
+      getRef={({ collectionRef }) => {
+        return collectionRef
       }}
     >
       {children}
