@@ -1,12 +1,11 @@
 import { Heading } from '@chakra-ui/react'
-import GameProvider from '../context/game/Provider'
+import { GameStreamer } from '../streamer/game'
 import JoinGameView from './JoinGame'
 import StartGameView from './StartGame'
-import GameViewer from './viewer/Game'
 
 export default function GameView ({ gameId }: { gameId: string }): JSX.Element {
   return (
-    <GameProvider gameId={gameId}>
+    <GameStreamer gameId={gameId}>
       <Heading>
         Game {gameId}
         {' '}
@@ -14,7 +13,6 @@ export default function GameView ({ gameId }: { gameId: string }): JSX.Element {
         {' '}
         <StartGameView gameId={gameId} />
       </Heading>
-      <GameViewer />
-    </GameProvider>
+    </GameStreamer>
   )
 }
