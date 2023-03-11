@@ -224,7 +224,7 @@ exports.startGame = createCloudFunction(async (props, context, transaction) => {
   console.log('portfolio test:', portfolio)
   const timeline = empressLeft.slice(1)
   console.log('timeline test:', timeline)
-  transaction.update(gameRef, {
+  transaction.update(gameRef,{
     phase: 'play',
     court: [court],
     dungeon: [dungeon],
