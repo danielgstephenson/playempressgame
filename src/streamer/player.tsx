@@ -38,7 +38,7 @@ export default function PlayerStreamer ({
 }): JSX.Element {
   const profileState = useContext(profileContext)
   const dbState = useContext(dbContext)
-  const requirements = { db: dbState.db, gameId: profileState.gameId, userId: profileState.userId }
+  const requirements = { gameId: profileState.gameId, userId: profileState.userId }
   return (
     <QueryStreamer
       DocView={PlayerView}

@@ -49,6 +49,7 @@ export default function streamFireViews<Doc extends Identification> ({
       />
     )
   }
+
   function DocStreamer <Requirements extends {}> ({
     DocView,
     children,

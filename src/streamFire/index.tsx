@@ -128,6 +128,16 @@ export default function streamFire<Doc extends Identification> ({
     requirements,
     getRef,
     children
+  }: DocStreamerProps<Doc, Requirements>): JSX.Element
+  function DocStreamer <Requirements extends {}> ({
+    DocView,
+    EmptyView,
+    LoadingView,
+    ErrorView,
+    db,
+    requirements,
+    getRef,
+    children
   }: DocStreamerProps<Doc, Requirements>): JSX.Element {
     const ref = getSafe({
       db,

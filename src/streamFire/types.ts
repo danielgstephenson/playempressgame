@@ -37,7 +37,7 @@ export type Safe<T> = {
 export interface StreamerProps <Doc, Requirements extends {}, Ref> extends ViewerProps {
   children?: ReactNode
   collectionName: string
-  requirements: Requirements
+  requirements?: Requirements
   db: Firestore | undefined
   getRef: ({ collectionRef, requirements }: {
     collectionRef: CollectionReference<Doc>

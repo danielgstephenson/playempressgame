@@ -33,15 +33,39 @@ export function GameStreamer ({
   children: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const requirements = { db: dbState.db, gameId }
+  const requirements = { gameId }
   return (
     <DocStreamer
       db={dbState.db}
       collectionName='games'
       DocView={GameContentView}
       requirements={requirements}
-      getRef={({ collectionRef: collection, requirements }) => {
-        const gameRef = doc(collection, requirements.gameId)
+      getRef={({ collectionRef, requirements }) => {
+        const gameRef = doc(collectionRef, requirements.gameId)
+        return gameRef
+      }}
+    >
+      {children}
+    </DocStreamer>
+  )
+}
+
+export function SomeGameStreamer ({
+  gameId,
+  children
+}: {
+  gameId: string
+  children: ReactNode
+}): JSX.Element {
+  const dbState = useContext(dbContext)
+  return (
+    <DocStreamer
+      db={dbState.db}
+      collectionName='games'
+      DocView={GameContentView}
+      getRef={({ collectionRef, requirements }) => {
+        // const keys = Object.keys(requirements)
+        const gameRef = doc(collectionRef, 'someGameId')
         return gameRef
       }}
     >
@@ -59,10 +83,10 @@ export function GamesStreamer ({
   return (
     <QueryStreamer
       db={dbState.db}
-      requirements={{}}
       collectionName='games'
       DocView={GameItemView}
-      getRef={({ collectionRef }) => {
+      getRef={({ collectionRef, requirements }) => {
+        const keys = Object.keys(requirements)
         return collectionRef
       }}
     >
