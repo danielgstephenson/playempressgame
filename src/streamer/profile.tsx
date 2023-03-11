@@ -1,6 +1,6 @@
-import { collection, query, where } from 'firebase/firestore'
+import { query, where } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import { profileConverter } from '../service/profile'
+import getProfilesRef from '../service/profile'
 import { Profile } from '../types'
 import ProfileItemView from '../view/ProfileItem'
 import dbContext from '../context/db'
@@ -27,9 +27,8 @@ export default function ProfilesStreamer ({
       DocView={ProfileItemView}
       requirements={requirements}
       getRef={(requirements) => {
-        const profilesCollection = collection(requirements.db, 'profiles')
-        const profilesConverted = profilesCollection.withConverter(profileConverter)
-        const q = query(profilesConverted, where('gameId', '==', requirements.gameId))
+        const profilesCollection = getProfilesRef(requirements.db)
+        const q = query(profilesCollection, where('gameId', '==', requirements.gameId))
         return q
       }}
     >

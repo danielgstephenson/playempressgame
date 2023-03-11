@@ -1,6 +1,6 @@
-import { collection, where, query } from 'firebase/firestore'
+import { where, query } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import { playerConverter } from '../service/player'
+import getPlayersRef from '../service/player'
 import { Player } from '../types'
 import PlayerView from '../view/Player'
 import dbContext from '../context/db'
@@ -22,11 +22,10 @@ export default function PlayerStreamer ({
       DocView={PlayerView}
       requirements={requirements}
       getRef={(requirements) => {
-        const playersCollection = collection(requirements.db, 'players')
-        const playersConverted = playersCollection.withConverter(playerConverter)
+        const playersCollection = getPlayersRef(requirements.db)
         const whereGame = where('gameId', '==', requirements.gameId)
         const whereUser = where('userId', '==', requirements.userId)
-        const q = query(playersConverted, whereGame, whereUser)
+        const q = query(playersCollection, whereGame, whereUser)
         return q
       }}
     >

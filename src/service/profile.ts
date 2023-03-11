@@ -1,13 +1,19 @@
-import { WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { Firestore, CollectionReference } from 'firebase/firestore'
 import { Profile } from '../types'
+import convertCollection from './convertCollection'
 
-export const profileConverter = {
-  toFirestore: (profile: WithFieldValue<Profile>): DocumentData => {
-    return { gameId: profile.gameId, userId: profile.userId }
-  },
-  fromFirestore: (snapshot: QueryDocumentSnapshot, options: SnapshotOptions) => {
-    const data = snapshot.data(options)
-    const profile: Profile = { id: snapshot.id, gameId: data.gameId, userId: data.userId }
-    return profile
-  }
+export default function getProfilesRef (db: Firestore): CollectionReference<Profile> {
+  const gamesRef = convertCollection<Profile>({
+    db,
+    collectionName: 'profiles',
+    toFirestore: (profile) => {
+      return { gameId: profile.gameId, userId: profile.userId }
+    },
+    fromFirestore: (snapshot, options) => {
+      const data = snapshot.data(options)
+      const profile = { id: snapshot.id, gameId: data.gameId, userId: data.userId }
+      return profile
+    }
+  })
+  return gamesRef
 }
