@@ -4,8 +4,7 @@ import { playerContext } from '../streamer/player'
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
-  const player = playerState.docs?.[0]
-  const hand = player?.hand.map((rank) => <Text key={rank}>{rank}</Text>)
+  const hand = playerState.hand?.map((rank) => <Text key={rank}>{rank}</Text>)
   return (
     <>
       <Text>Hand:</Text>

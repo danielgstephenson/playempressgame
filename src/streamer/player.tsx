@@ -1,4 +1,4 @@
-import { where, query } from 'firebase/firestore'
+import { doc } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
 import { Player } from '../types'
 import PlayerView from '../view/Player'
@@ -6,7 +6,7 @@ import dbContext from '../context/db'
 import { profileContext } from './profile'
 import streamChakraFire from '../streamFire/chakra'
 
-export const { QueryStreamer, queryContext: playerContext } = streamChakraFire<Player>({
+export const { DocStreamer, docContext: playerContext } = streamChakraFire<Player>({
   collectionName: 'players',
   toFirestore: (player) => {
     return {
@@ -40,18 +40,17 @@ export default function PlayerStreamer ({
   const dbState = useContext(dbContext)
   const requirements = { gameId: profileState.gameId, userId: profileState.userId }
   return (
-    <QueryStreamer
+    <DocStreamer
       DocView={PlayerView}
       db={dbState.db}
       requirements={requirements}
       getRef={({ collectionRef, requirements }) => {
-        const whereGame = where('gameId', '==', requirements.gameId)
-        const whereUser = where('userId', '==', requirements.userId)
-        const q = query(collectionRef, whereGame, whereUser)
-        return q
+        const playerId = `${requirements.gameId}_${requirements.userId}`
+        const docRef = doc(collectionRef, playerId)
+        return docRef
       }}
     >
       {children}
-    </QueryStreamer>
+    </DocStreamer>
   )
 }

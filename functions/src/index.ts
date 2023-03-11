@@ -241,7 +241,8 @@ exports.startGame = createCloudFunction(async (props, context, transaction) => {
     const deck = [topDeck]
     const discard = [topDiscard]
     const playerData = { userId, gameId: props.gameId, hand, deck, discard }
-    const playerRef = playersRef.doc()
+    const playerId = `${props.gameId}_${userId}`
+    const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData)
   })
   console.log('started!')
