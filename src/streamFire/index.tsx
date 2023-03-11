@@ -174,8 +174,6 @@ export default function streamFire<Doc extends Identification> ({
     LoadingView,
     ErrorView
   }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
-    console.log('queryStreamer db test:', db)
-    console.log('queryStreamer getRef test:', getRef)
     function getSafeRef (): Query<Doc> | undefined {
       if (db == null) return undefined
       if (getRef == null) {
@@ -191,9 +189,7 @@ export default function streamFire<Doc extends Identification> ({
     }
 
     const q = getSafeRef()
-    console.log('queryStreamer q test:', q)
     const stream = useCollectionData(q)
-    console.log('queryStreamer stream test:', stream)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {
       stream,

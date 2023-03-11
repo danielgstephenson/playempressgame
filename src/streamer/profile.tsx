@@ -35,7 +35,6 @@ export default function ProfilesStreamer ({
     <QueryStreamer
       DocView={ProfileItemView}
       db={dbState.db}
-      collectionName='profiles'
       requirements={requirements}
       getRef={({ collectionRef, requirements }) => {
         const q = query(collectionRef, where('gameId', '==', requirements.gameId))

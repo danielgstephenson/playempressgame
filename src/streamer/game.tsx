@@ -6,7 +6,11 @@ import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
 import streamChakraFire from '../streamFire/chakra'
 
-export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamChakraFire<Game>({
+export const {
+  DocStreamer,
+  QueryStreamer,
+  docContext: gameContext
+} = streamChakraFire<Game>({
   collectionName: 'games',
   toFirestore: (game) => {
     return { name: game.name }
@@ -37,7 +41,6 @@ export function GameStreamer ({
   return (
     <DocStreamer
       db={dbState.db}
-      collectionName='games'
       DocView={GameContentView}
       requirements={requirements}
       getRef={({ collectionRef, requirements }) => {
@@ -57,11 +60,7 @@ export function GamesStreamer ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   return (
-    <QueryStreamer
-      db={dbState.db}
-      collectionName='games'
-      DocView={GameItemView}
-    >
+    <QueryStreamer db={dbState.db} DocView={GameItemView}>
       {children}
     </QueryStreamer>
   )

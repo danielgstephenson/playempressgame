@@ -43,7 +43,6 @@ export default function PlayerStreamer ({
     <QueryStreamer
       DocView={PlayerView}
       db={dbState.db}
-      collectionName='players'
       requirements={requirements}
       getRef={({ collectionRef, requirements }) => {
         const whereGame = where('gameId', '==', requirements.gameId)

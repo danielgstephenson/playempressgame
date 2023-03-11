@@ -56,7 +56,6 @@ export default function streamFireViews<Doc extends Identification> ({
     requirements,
     getRef,
     db,
-    collectionName,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
@@ -65,7 +64,6 @@ export default function streamFireViews<Doc extends Identification> ({
       <firestream.DocStreamer
         requirements={requirements}
         db={db}
-        collectionName={collectionName}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}
@@ -80,7 +78,6 @@ export default function streamFireViews<Doc extends Identification> ({
     DocView,
     requirements,
     db,
-    collectionName,
     getRef,
     children,
     EmptyView = DefaultEmptyView,
@@ -91,7 +88,6 @@ export default function streamFireViews<Doc extends Identification> ({
       <firestream.QueryStreamer
         requirements={requirements}
         db={db}
-        collectionName={collectionName}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}
