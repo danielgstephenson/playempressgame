@@ -38,7 +38,7 @@ export interface StreamerProps <Doc, Requirements extends {}, Ref> extends Viewe
   children?: ReactNode
   collectionName: string
   requirements: Requirements
-  db?: Firestore
+  db?: Firestore | undefined
   getRef: ({ collectionRef, requirements }: {
     collectionRef: CollectionReference<Doc>
     requirements: Safe<Requirements>
