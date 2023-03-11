@@ -1,20 +1,18 @@
-type Safe<T> = {
-  [P in keyof T]-?: NonNullable<T[P]>;
-}
+import { Safe } from './types'
 
-export default function getSafe <Needs extends {}, Output> ({
-  needs,
+export default function getSafe <Requirements extends {}, Output> ({
+  requirements,
   getter
 }: {
-  needs: Needs
-  getter: (props: Safe<Needs>) => Output
+  requirements: Requirements
+  getter: (props: Safe<Requirements>) => Output
 }): Output | undefined {
-  function hasAllProps (props: Needs): props is Safe<Needs> {
+  function hasAllValues (props: Requirements): props is Safe<Requirements> {
     const values = Object.values(props)
     const hasAllValues = values.every((value) => value != null)
     return hasAllValues
   }
-  if (!hasAllProps(needs)) return undefined
-  const query = getter(needs)
+  if (!hasAllValues(requirements)) return undefined
+  const query = getter(requirements)
   return query
 }

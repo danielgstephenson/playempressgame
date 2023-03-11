@@ -20,16 +20,16 @@ export default function ProfilesStreamer ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   const gameState = useContext(gameContext)
-  const needs = { db: dbState.db, gameId: gameState.id }
+  const requirements = { db: dbState.db, gameId: gameState.id }
 
   return (
     <QueryStreamer
       DocView={ProfileItemView}
-      refNeeds={needs}
-      getRef={(needs) => {
-        const profilesCollection = collection(needs.db, 'profiles')
+      requirements={requirements}
+      getRef={(requirements) => {
+        const profilesCollection = collection(requirements.db, 'profiles')
         const profilesConverted = profilesCollection.withConverter(profileConverter)
-        const q = query(profilesConverted, where('gameId', '==', needs.gameId))
+        const q = query(profilesConverted, where('gameId', '==', requirements.gameId))
         return q
       }}
     >

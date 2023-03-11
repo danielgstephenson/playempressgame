@@ -109,17 +109,16 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </Viewer>
     )
   }
-  // interface DocStreamerProps <Needs> extends StreamerProps<Needs, DocumentReference<Doc>> {}
-  function DocStreamer <Needs extends {}> ({
+  function DocStreamer <Requirements extends {}> ({
     DocView,
     EmptyView,
     LoadingView,
     ErrorView,
-    refNeeds,
+    requirements,
     getRef,
     children
-  }: DocStreamerProps<Doc, Needs>): JSX.Element {
-    const ref = getSafe<Needs, DocumentReference<Doc>>({ needs: refNeeds, getter: getRef })
+  }: DocStreamerProps<Doc, Requirements>): JSX.Element {
+    const ref = getSafe<Requirements, DocumentReference<Doc>>({ requirements, getter: getRef })
     const stream = useDocumentData(ref)
     const [doc, loading, error] = stream
     const state: DocStreamState<Doc> = {
@@ -137,17 +136,16 @@ export default function streamFire<Doc extends Identification> (): Firestream<Do
       </docStreamContext.Provider>
     )
   }
-  // interface QueryStreamerProps <Needs> extends StreamerProps<Needs, Query<Doc>> {}
-  function QueryStreamer <Needs extends {}> ({
+  function QueryStreamer <Requirements extends {}> ({
     children,
-    refNeeds,
+    requirements,
     getRef,
     DocView,
     EmptyView,
     LoadingView,
     ErrorView
-  }: QueryStreamerProps<Doc, Needs>): JSX.Element {
-    const q = getSafe<Needs, Query<Doc>>({ needs: refNeeds, getter: getRef })
+  }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
+    const q = getSafe<Requirements, Query<Doc>>({ requirements, getter: getRef })
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {

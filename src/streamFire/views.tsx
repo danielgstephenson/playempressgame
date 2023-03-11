@@ -42,18 +42,18 @@ export default function streamFireViews<Doc extends Identification> ({
       />
     )
   }
-  function DocStreamer <Needs extends {}> ({
+  function DocStreamer <Requirements extends {}> ({
     DocView,
     children,
-    refNeeds,
+    requirements,
     getRef,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: DocStreamerProps<Doc, Needs>): JSX.Element {
+  }: DocStreamerProps<Doc, Requirements>): JSX.Element {
     return (
       <firestream.DocStreamer
-        refNeeds={refNeeds}
+        requirements={requirements}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}
@@ -64,18 +64,18 @@ export default function streamFireViews<Doc extends Identification> ({
       </firestream.DocStreamer>
     )
   }
-  function QueryStreamer <Needs extends {}> ({
+  function QueryStreamer <Requirements extends {}> ({
     DocView,
-    refNeeds,
+    requirements,
     getRef,
     children,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: QueryStreamerProps<Doc, Needs>): JSX.Element {
+  }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
     return (
       <firestream.QueryStreamer
-        refNeeds={refNeeds}
+        requirements={requirements}
         getRef={getRef}
         DocView={DocView}
         EmptyView={EmptyView}

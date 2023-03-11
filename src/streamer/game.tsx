@@ -17,15 +17,15 @@ export function GameStreamer ({
   children: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const needs = { db: dbState.db, gameId }
+  const requirements = { db: dbState.db, gameId }
   return (
     <DocStreamer
       DocView={GameContentView}
-      refNeeds={needs}
-      getRef={(needs) => {
-        const gamesRef = collection(needs.db, 'games')
+      requirements={requirements}
+      getRef={(requirements) => {
+        const gamesRef = collection(requirements.db, 'games')
         const gamesConverted = gamesRef.withConverter(gameConverter)
-        const gameRef = doc(gamesConverted, needs.gameId)
+        const gameRef = doc(gamesConverted, requirements.gameId)
         return gameRef
       }}
     >
@@ -40,13 +40,13 @@ export function GamesStreamer ({
   children?: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  const needs = { db: dbState.db }
+  const requirements = { db: dbState.db }
   return (
     <QueryStreamer
       DocView={GameItemView}
-      refNeeds={needs}
-      getRef={(needs) => {
-        const gamesRef = collection(needs.db, 'games')
+      requirements={requirements}
+      getRef={(requirements) => {
+        const gamesRef = collection(requirements.db, 'games')
         const gamesConverted = gamesRef.withConverter(gameConverter)
         return gamesConverted
       }}
