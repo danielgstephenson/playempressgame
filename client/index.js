@@ -3,7 +3,6 @@ const {
   collection,
   getDocs,
   connectFirestoreEmulator,
-  doc,
   addDoc
 } = require('firebase/firestore')
 const { initializeApp } = require('firebase/app')
@@ -23,7 +22,7 @@ async function callHello () {
   const result = await hello()
   console.log('Called hello:', result)
 }
-// callHello()
+callHello()
 
 const addGame = httpsCallable(functions, 'addGame')
 async function callAddGame () {
@@ -54,4 +53,4 @@ async function upload () {
   await download()
 }
 
-// upload()
+upload()

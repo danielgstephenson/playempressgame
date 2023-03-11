@@ -1,13 +1,10 @@
 import { Stack } from '@chakra-ui/react'
-import GamesProvider from '../context/games/Provider'
-import GamesViewer from './viewer/Games'
+import { GamesStreamer } from '../streamer/game'
 
 export default function GamesContentView (): JSX.Element {
   return (
-    <GamesProvider>
-      <Stack>
-        <GamesViewer />
-      </Stack>
-    </GamesProvider>
+    <Stack>
+      <GamesStreamer />
+    </Stack>
   )
 }
