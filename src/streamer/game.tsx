@@ -61,9 +61,6 @@ export function GamesStreamer ({
       db={dbState.db}
       collectionName='games'
       DocView={GameItemView}
-      getRef={({ collectionRef, requirements }) => {
-        return collectionRef
-      }}
     >
       {children}
     </QueryStreamer>

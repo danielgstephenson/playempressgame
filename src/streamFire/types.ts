@@ -34,21 +34,26 @@ export interface ViewerProps extends HiderViews {
 export type Safe<T> = {
   [P in keyof T]-?: NonNullable<T[P]>;
 }
-export interface StreamerProps <Doc, Requirements extends {}, Ref> extends ViewerProps {
+export interface StreamerProps <Requirements extends {}> extends ViewerProps {
   children?: ReactNode
   collectionName: string
   requirements?: Requirements
   db: Firestore | undefined
+}
+export interface DocStreamerProps <Doc, Requirements extends {}>
+  extends StreamerProps<Requirements> {
   getRef: ({ collectionRef, requirements }: {
     collectionRef: CollectionReference<Doc>
     requirements: Safe<Requirements>
-  }) => Ref
+  }) => DocumentReference<Doc>
 }
-export interface DocStreamerProps <Doc, Requirements extends {}>
-  extends StreamerProps<Doc, Requirements, DocumentReference<Doc>> {}
-
 export interface QueryStreamerProps <Doc, Requirements extends {}>
-  extends StreamerProps<Doc, Requirements, Query<Doc>> {}
+  extends StreamerProps<Requirements> {
+  getRef?: ({ collectionRef, requirements }: {
+    collectionRef: CollectionReference<Doc>
+    requirements: Safe<Requirements>
+  }) => Query<Doc>
+}
 
 export interface QueryState <Doc> {
   docs?: Doc[]

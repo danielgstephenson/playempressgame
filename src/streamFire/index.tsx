@@ -1,6 +1,7 @@
-import { DocumentData, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from 'firebase/firestore'
+import { DocumentData, Query, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
+import convertCollection from './convertCollection'
 import getSafe from './getSafe'
 import { ViewAndProps, Stream, HiderProps, Identification, Firestream, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
 
@@ -173,14 +174,26 @@ export default function streamFire<Doc extends Identification> ({
     LoadingView,
     ErrorView
   }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
-    const q = getSafe({
-      db,
-      collectionName,
-      converter,
-      requirements,
-      getter: getRef
-    })
+    console.log('queryStreamer db test:', db)
+    console.log('queryStreamer getRef test:', getRef)
+    function getSafeRef (): Query<Doc> | undefined {
+      if (db == null) return undefined
+      if (getRef == null) {
+        return convertCollection<Doc>({ db, collectionName, converter })
+      }
+      return getSafe({
+        db,
+        collectionName,
+        converter,
+        requirements,
+        getter: getRef
+      })
+    }
+
+    const q = getSafeRef()
+    console.log('queryStreamer q test:', q)
     const stream = useCollectionData(q)
+    console.log('queryStreamer stream test:', stream)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {
       stream,

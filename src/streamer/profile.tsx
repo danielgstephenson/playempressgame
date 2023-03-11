@@ -38,9 +38,6 @@ export default function ProfilesStreamer ({
       collectionName='profiles'
       requirements={requirements}
       getRef={({ collectionRef, requirements }) => {
-        // const x = requirements?.gameId
-        // const y = requirements == null ? null : requirements.gameId
-
         const q = query(collectionRef, where('gameId', '==', requirements.gameId))
         return q
       }}

@@ -76,6 +76,7 @@ exports.addGame = createCloudFunction(async (props, context, transaction) => {
 })
 
 exports.joinGame = createCloudFunction(async (props, context, transaction) => {
+  console.log('props test:', props)
   if (context.auth == null) {
     throw new https.HttpsError(
       'failed-precondition',
