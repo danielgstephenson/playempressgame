@@ -17,7 +17,6 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
 }): Output | undefined {
   if (db == null) return undefined
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
-  console.log('collectionRef', collectionRef)
   function hasAllValues (props: Requirements): props is Safe<Requirements> {
     const values = Object.values(props)
     const hasAllValues = values.every((value) => value != null)

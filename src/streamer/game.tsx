@@ -1,7 +1,7 @@
 import { useContext, ReactNode } from 'react'
 import { Game } from '../types'
 import dbContext from '../context/db'
-import { doc, DocumentData } from 'firebase/firestore'
+import { doc } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
 import streamChakraFire from '../streamFire/chakra'
@@ -12,8 +12,8 @@ export const { DocStreamer, QueryStreamer, docContext: gameContext } = streamCha
     return { name: game.name }
   },
   fromFirestore: (snapshot, options) => {
-    const data: DocumentData = snapshot.data(options)
-    const game: Game = {
+    const data = snapshot.data(options)
+    const game = {
       id: snapshot.id,
       name: data.name,
       phase: data.phase,
@@ -56,7 +56,6 @@ export function GamesStreamer ({
   children?: ReactNode
 }): JSX.Element {
   const dbState = useContext(dbContext)
-  console.log('gamestreamer dbstate', dbState)
   const requirements = { db: dbState.db }
   return (
     <QueryStreamer

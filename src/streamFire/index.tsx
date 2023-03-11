@@ -170,7 +170,6 @@ export default function streamFire<Doc extends Identification> ({
       requirements,
       getter: getRef
     })
-    console.log('q test:', q)
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {
