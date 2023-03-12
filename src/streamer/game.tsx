@@ -13,7 +13,13 @@ export const {
 } = streamChakraFire<Game>({
   collectionName: 'games',
   toFirestore: (game) => {
-    return { name: game.name }
+    return {
+      name: game.name,
+      phase: game.phase,
+      timeline: game.timeline,
+      court: game.court,
+      dungeon: game.dungeon
+    }
   },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)

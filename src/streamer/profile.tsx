@@ -13,7 +13,8 @@ export const {
 } = streamChakraFire<Profile>({
   collectionName: 'profiles',
   toFirestore: (profile) => {
-    return { gameId: profile.gameId, userId: profile.userId }
+    const data: Profile = { gameId: profile.gameId, userId: profile.userId }
+    return data
   },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)

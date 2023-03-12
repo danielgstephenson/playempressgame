@@ -1,5 +1,5 @@
 import { Alert, AlertIcon, Spinner } from '@chakra-ui/react'
-import { WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { Identification, Firestream } from './types'
 import streamFireViews from './views'
 
@@ -15,7 +15,7 @@ export default function streamChakraFire <Doc extends Identification> ({
   fromFirestore
 }: {
   collectionName: string
-  toFirestore: (modelObject: WithFieldValue<Doc>) => DocumentData
+  toFirestore: (modelObject: Doc) => Doc
   fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
 }): Firestream<Doc> {
   return streamFireViews<Doc>({

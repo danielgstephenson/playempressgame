@@ -1,4 +1,4 @@
-import { DocumentData, Query, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from 'firebase/firestore'
+import { DocumentData, Query, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from './convertCollection'
@@ -39,7 +39,7 @@ export default function streamFire<Doc extends Identification> ({
   fromFirestore
 }: {
   collectionName: string
-  toFirestore: (modelObject: WithFieldValue<Doc>) => DocumentData
+  toFirestore: (modelObject: Doc) => Doc
   fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
 }): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})

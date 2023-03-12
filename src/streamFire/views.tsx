@@ -1,4 +1,4 @@
-import { WithFieldValue, DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { FC } from 'react'
 import streamFire from '.'
 import { Identification, ErrorViewProps, Firestream, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
@@ -12,7 +12,7 @@ export default function streamFireViews<Doc extends Identification> ({
   ErrorView: DefaultErrorView
 }: {
   collectionName: string
-  toFirestore: (modelObject: WithFieldValue<Doc>) => DocumentData
+  toFirestore: (modelObject: Doc) => Doc
   fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
   EmptyView?: FC
   LoadingView?: FC
