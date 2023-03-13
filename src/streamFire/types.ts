@@ -41,14 +41,14 @@ export interface StreamerProps <Requirements extends {}> extends ViewerProps {
 }
 export interface DocStreamerProps <Doc, Requirements extends {}>
   extends StreamerProps<Requirements> {
-  getRef: ({ collectionRef, requirements }: {
+  getDocRef: ({ collectionRef, requirements }: {
     collectionRef: CollectionReference<Doc>
     requirements: Safe<Requirements>
   }) => DocumentReference<Doc>
 }
 export interface QueryStreamerProps <Doc, Requirements extends {}>
   extends StreamerProps<Requirements> {
-  getRef?: ({ collectionRef, requirements }: {
+  getQuery?: ({ collectionRef, requirements }: {
     collectionRef: CollectionReference<Doc>
     requirements: Safe<Requirements>
   }) => Query<Doc>

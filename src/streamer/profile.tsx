@@ -37,7 +37,7 @@ export default function ProfilesStreamer ({
       DocView={ProfileItemView}
       db={dbState.db}
       requirements={requirements}
-      getRef={({ collectionRef, requirements }) => {
+      getQuery={({ collectionRef, requirements }) => {
         const q = query(collectionRef, where('gameId', '==', requirements.gameId))
         return q
       }}

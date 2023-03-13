@@ -49,7 +49,7 @@ export function GameStreamer ({
       db={dbState.db}
       DocView={GameContentView}
       requirements={requirements}
-      getRef={({ collectionRef, requirements }) => {
+      getDocRef={({ collectionRef, requirements }) => {
         const gameRef = doc(collectionRef, requirements.gameId)
         return gameRef
       }}

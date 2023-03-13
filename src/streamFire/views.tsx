@@ -1,4 +1,4 @@
-import { DocumentData, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { FC } from 'react'
 import streamFire from '.'
 import { Identification, ErrorViewProps, Firestream, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
@@ -13,7 +13,7 @@ export default function streamFireViews<Doc extends Identification> ({
 }: {
   collectionName: string
   toFirestore: (modelObject: Doc) => Doc
-  fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
+  fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
   EmptyView?: FC
   LoadingView?: FC
   ErrorView?: FC<ErrorViewProps>
@@ -54,7 +54,7 @@ export default function streamFireViews<Doc extends Identification> ({
     DocView,
     children,
     requirements,
-    getRef,
+    getDocRef,
     db,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
@@ -64,7 +64,7 @@ export default function streamFireViews<Doc extends Identification> ({
       <firestream.DocStreamer
         requirements={requirements}
         db={db}
-        getRef={getRef}
+        getDocRef={getDocRef}
         DocView={DocView}
         EmptyView={EmptyView}
         LoadingView={LoadingView}
@@ -78,7 +78,7 @@ export default function streamFireViews<Doc extends Identification> ({
     DocView,
     requirements,
     db,
-    getRef,
+    getQuery,
     children,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
@@ -88,7 +88,7 @@ export default function streamFireViews<Doc extends Identification> ({
       <firestream.QueryStreamer
         requirements={requirements}
         db={db}
-        getRef={getRef}
+        getQuery={getQuery}
         DocView={DocView}
         EmptyView={EmptyView}
         LoadingView={LoadingView}

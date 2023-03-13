@@ -1,4 +1,4 @@
-import { DocumentData, Query, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { Query, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from './convertCollection'
@@ -40,7 +40,7 @@ export default function streamFire<Doc extends Identification> ({
 }: {
   collectionName: string
   toFirestore: (modelObject: Doc) => Doc
-  fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options?: SnapshotOptions) => Doc
+  fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
 }): Firestream<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
@@ -127,7 +127,7 @@ export default function streamFire<Doc extends Identification> ({
     ErrorView,
     db,
     requirements,
-    getRef,
+    getDocRef,
     children
   }: DocStreamerProps<Doc, Requirements>): JSX.Element
   function DocStreamer <Requirements extends {}> ({
@@ -137,7 +137,7 @@ export default function streamFire<Doc extends Identification> ({
     ErrorView,
     db,
     requirements,
-    getRef,
+    getDocRef,
     children
   }: DocStreamerProps<Doc, Requirements>): JSX.Element {
     const ref = getSafe({
@@ -145,7 +145,7 @@ export default function streamFire<Doc extends Identification> ({
       collectionName,
       converter,
       requirements,
-      getter: getRef
+      getter: getDocRef
     })
     const stream = useDocumentData(ref)
     const [doc, loading, error] = stream
@@ -168,7 +168,7 @@ export default function streamFire<Doc extends Identification> ({
     children,
     requirements,
     db,
-    getRef,
+    getQuery,
     DocView,
     EmptyView,
     LoadingView,
@@ -176,7 +176,7 @@ export default function streamFire<Doc extends Identification> ({
   }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
     function getSafeRef (): Query<Doc> | undefined {
       if (db == null) return undefined
-      if (getRef == null) {
+      if (getQuery == null) {
         return convertCollection<Doc>({ db, collectionName, converter })
       }
       return getSafe({
@@ -184,7 +184,7 @@ export default function streamFire<Doc extends Identification> ({
         collectionName,
         converter,
         requirements,
-        getter: getRef
+        getter: getQuery
       })
     }
 

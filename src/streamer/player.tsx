@@ -44,7 +44,7 @@ export default function PlayerStreamer ({
       DocView={PlayerView}
       db={dbState.db}
       requirements={requirements}
-      getRef={({ collectionRef, requirements }) => {
+      getDocRef={({ collectionRef, requirements }) => {
         const playerId = `${requirements.gameId}_${requirements.userId}`
         const docRef = doc(collectionRef, playerId)
         return docRef
