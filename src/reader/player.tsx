@@ -4,9 +4,9 @@ import { Player } from '../types'
 import PlayerView from '../view/Player'
 import dbContext from '../context/db'
 import { profileContext } from './profile'
-import firereaderChakra from '../firereader/chakra'
+import createChakraReaders from '../fireread/chakra'
 
-export const { DocReader, docContext: playerContext } = firereaderChakra<Player>({
+export const { DocReader, docContext: playerContext } = createChakraReaders<Player>({
   collectionName: 'players',
   toFirestore: (player) => {
     return {
@@ -31,7 +31,7 @@ export const { DocReader, docContext: playerContext } = firereaderChakra<Player>
   }
 })
 
-export default function PlayerStreamer ({
+export default function PlayerReader ({
   children
 }: {
   children?: ReactNode

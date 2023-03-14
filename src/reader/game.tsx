@@ -4,13 +4,13 @@ import dbContext from '../context/db'
 import { doc } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
-import firereaderChakra from '../firereader/chakra'
+import createChakraReaders from '../fireread/chakra'
 
 export const {
   DocReader,
   QueryReader,
   docContext: gameContext
-} = firereaderChakra<Game>({
+} = createChakraReaders<Game>({
   collectionName: 'games',
   toFirestore: (game) => {
     return {
@@ -35,7 +35,7 @@ export const {
   }
 })
 
-export function GameStreamer ({
+export function GameReader ({
   gameId,
   children
 }: {
@@ -59,7 +59,7 @@ export function GameStreamer ({
   )
 }
 
-export function GamesStreamer ({
+export function GamesReader ({
   children
 }: {
   children?: ReactNode

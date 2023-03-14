@@ -4,12 +4,12 @@ import { Profile } from '../types'
 import ProfileItemView from '../view/ProfileItem'
 import dbContext from '../context/db'
 import { gameContext } from './game'
-import shareFireChakra from '../firereader/chakra'
+import createChakraReaders from '../fireread/chakra'
 
 export const {
   docContext: profileContext,
   QueryReader
-} = shareFireChakra<Profile>({
+} = createChakraReaders<Profile>({
   collectionName: 'profiles',
   toFirestore: (profile) => {
     const data = { gameId: profile.gameId, userId: profile.userId }
@@ -22,7 +22,7 @@ export const {
   }
 })
 
-export default function ProfilesSharer ({
+export default function ProfilesReader ({
   children
 }: {
   children: ReactNode

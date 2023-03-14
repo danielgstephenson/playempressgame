@@ -79,7 +79,7 @@ export type DocStreamerComponent <Doc> = <Requirements extends {}> (
 export type QueryStreamerComponent <Doc> = <Requirements extends {}> (
   props: QuerySharerProps<Doc, Requirements>
 ) => JSX.Element
-export interface CollectionReaders <Doc> {
+export interface Readers <Doc> {
   DocReader: DocStreamerComponent<Doc>
   QueryReader: QueryStreamerComponent<Doc>
   DocViewer: FC<ViewerProps>

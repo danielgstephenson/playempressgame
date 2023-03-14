@@ -1,9 +1,9 @@
 import { QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { FC } from 'react'
-import firereader from './create'
-import { Identification, ErrorViewProps, CollectionReaders as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
+import createReaders from './createReaders'
+import { Identification, ErrorViewProps, Readers as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
 
-export default function firereaderViews<Doc extends Identification> ({
+export default function createViewReaders<Doc extends Identification> ({
   collectionName,
   toFirestore,
   fromFirestore,
@@ -18,7 +18,7 @@ export default function firereaderViews<Doc extends Identification> ({
   LoadingView?: FC
   ErrorView?: FC<ErrorViewProps>
 }): Fireshare<Doc> {
-  const firestream = firereader<Doc>({ collectionName, toFirestore, fromFirestore })
+  const firereader = createReaders<Doc>({ collectionName, toFirestore, fromFirestore })
   function DocViewer ({
     DocView,
     EmptyView = DefaultEmptyView,
@@ -26,7 +26,7 @@ export default function firereaderViews<Doc extends Identification> ({
     ErrorView = DefaultErrorView
   }: ViewerProps): JSX.Element {
     return (
-      <firestream.DocViewer
+      <firereader.DocViewer
         DocView={DocView}
         EmptyView={EmptyView}
         LoadingView={LoadingView}
@@ -41,7 +41,7 @@ export default function firereaderViews<Doc extends Identification> ({
     ErrorView = DefaultErrorView
   }: ViewerProps): JSX.Element {
     return (
-      <firestream.QueryViewer
+      <firereader.QueryViewer
         DocView={DocView}
         EmptyView={EmptyView}
         LoadingView={LoadingView}
@@ -61,7 +61,7 @@ export default function firereaderViews<Doc extends Identification> ({
     ErrorView = DefaultErrorView
   }: DocSharerProps<Doc, Requirements>): JSX.Element {
     return (
-      <firestream.DocReader
+      <firereader.DocReader
         requirements={requirements}
         db={db}
         getDocRef={getDocRef}
@@ -71,7 +71,7 @@ export default function firereaderViews<Doc extends Identification> ({
         ErrorView={ErrorView}
       >
         {children}
-      </firestream.DocReader>
+      </firereader.DocReader>
     )
   }
   function QueryStreamer <Requirements extends {}> ({
@@ -85,7 +85,7 @@ export default function firereaderViews<Doc extends Identification> ({
     ErrorView = DefaultErrorView
   }: QuerySharerProps<Doc, Requirements>): JSX.Element {
     return (
-      <firestream.QueryReader
+      <firereader.QueryReader
         requirements={requirements}
         db={db}
         getQuery={getQuery}
@@ -95,11 +95,11 @@ export default function firereaderViews<Doc extends Identification> ({
         ErrorView={ErrorView}
       >
         {children}
-      </firestream.QueryReader>
+      </firereader.QueryReader>
     )
   }
   const viewsFirestream = {
-    ...firestream,
+    ...firereader,
     DocViewer,
     QueryViewer,
     DocStreamer,

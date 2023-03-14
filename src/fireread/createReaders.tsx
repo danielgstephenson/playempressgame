@@ -3,7 +3,7 @@ import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from './convertCollection'
 import getSafe from './getSafe'
-import { ViewAndProps, Stream, HiderProps, Identification, CollectionReaders, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
+import { ViewAndProps, Stream, HiderProps, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
 
 export function Viewing <Props> ({ View, ...props }: ViewAndProps<Props>): JSX.Element {
   if (View == null) return <></>
@@ -33,7 +33,7 @@ export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>
   return <>{children}</>
 }
 
-export default function streamFire<Doc extends Identification> ({
+export default function createReaders<Doc extends Identification> ({
   collectionName,
   toFirestore,
   fromFirestore
@@ -41,7 +41,7 @@ export default function streamFire<Doc extends Identification> ({
   collectionName: string
   toFirestore: (modelObject: Doc) => Doc
   fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
-}): CollectionReaders<Doc> {
+}): Readers<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
   function DocProvider ({
