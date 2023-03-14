@@ -1,12 +1,12 @@
 import { Stack, Text } from '@chakra-ui/react'
-import ProfilesStreamer from '../streamer/profile'
+import ProfilesSharer from '../reader/profile'
 
 export default function ProfilesView (): JSX.Element {
   return (
     <Stack>
-      <ProfilesStreamer>
+      <ProfilesSharer>
         <Text>Profiles</Text>
-      </ProfilesStreamer>
+      </ProfilesSharer>
     </Stack>
   )
 }

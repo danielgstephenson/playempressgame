@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { gameContext } from '../streamer/game'
+import { gameContext } from '../reader/game'
 import ChakraLinkView from './ChakraLink'
 
 export default function GameItemView (): JSX.Element {

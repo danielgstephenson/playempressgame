@@ -1,8 +1,8 @@
 import { Text } from '@chakra-ui/react'
-import { profileContext } from '../streamer/profile'
-import PlayerStreamer from '../streamer/player'
+import { profileContext } from '../reader/profile'
+import PlayerStreamer from '../reader/player'
 import { useContext } from 'react'
-import { gameContext } from '../streamer/game'
+import { gameContext } from '../reader/game'
 
 export default function ProfileItemView (): JSX.Element {
   const profileState = useContext(profileContext)

@@ -4,9 +4,9 @@ import { Player } from '../types'
 import PlayerView from '../view/Player'
 import dbContext from '../context/db'
 import { profileContext } from './profile'
-import streamChakraFire from '../streamFire/chakra'
+import firereaderChakra from '../firereader/chakra'
 
-export const { DocStreamer, docContext: playerContext } = streamChakraFire<Player>({
+export const { DocReader, docContext: playerContext } = firereaderChakra<Player>({
   collectionName: 'players',
   toFirestore: (player) => {
     return {
@@ -40,7 +40,7 @@ export default function PlayerStreamer ({
   const dbState = useContext(dbContext)
   const requirements = { gameId: profileState.gameId, userId: profileState.userId }
   return (
-    <DocStreamer
+    <DocReader
       DocView={PlayerView}
       db={dbState.db}
       requirements={requirements}
@@ -51,6 +51,6 @@ export default function PlayerStreamer ({
       }}
     >
       {children}
-    </DocStreamer>
+    </DocReader>
   )
 }

@@ -1,15 +1,6 @@
-import { CollectionReference, Firestore, FirestoreDataConverter } from 'firebase/firestore'
+import { Firestore, FirestoreDataConverter } from 'firebase/firestore'
 import convertCollection from './convertCollection'
-import { Safe } from './types'
-
-// interface X {
-//   a: number | undefined
-//   b?: {
-//     c?: number
-//   }
-// }
-// type Y = Safe<X>
-// export const y: Y = { b: {} }
+import { GetterProps, Safe } from './types'
 
 export default function getSafe <Doc, Requirements extends {}, Output> ({
   db,
@@ -22,12 +13,9 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   collectionName: string
   converter: FirestoreDataConverter<Doc>
   requirements?: Requirements
-  getter: ({ collectionRef, requirements }: {
-    collectionRef: CollectionReference<Doc>
-    requirements: Safe<Requirements>
-  }) => Output
-}): Output | undefined {
-  if (db == null) return undefined
+  getter: (props: GetterProps<Doc, Requirements>) => Output
+}): Output | null {
+  if (db == null) return null
   const r = requirements == null ? {} : requirements
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
   function hasAllValues (requirements?: Requirements | {}): requirements is Safe<Requirements> {
@@ -37,7 +25,7 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
     return hasAllValues
   }
   if (!hasAllValues(r)) {
-    return undefined
+    return null
   }
   const query = getter({ collectionRef, requirements: r })
   return query

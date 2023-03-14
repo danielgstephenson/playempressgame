@@ -4,13 +4,13 @@ import dbContext from '../context/db'
 import { doc } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
-import streamChakraFire from '../streamFire/chakra'
+import firereaderChakra from '../firereader/chakra'
 
 export const {
-  DocStreamer,
-  QueryStreamer,
+  DocReader,
+  QueryReader,
   docContext: gameContext
-} = streamChakraFire<Game>({
+} = firereaderChakra<Game>({
   collectionName: 'games',
   toFirestore: (game) => {
     return {
@@ -45,7 +45,7 @@ export function GameStreamer ({
   const dbState = useContext(dbContext)
   const requirements = { gameId }
   return (
-    <DocStreamer
+    <DocReader
       db={dbState.db}
       DocView={GameContentView}
       requirements={requirements}
@@ -55,7 +55,7 @@ export function GameStreamer ({
       }}
     >
       {children}
-    </DocStreamer>
+    </DocReader>
   )
 }
 
@@ -66,8 +66,8 @@ export function GamesStreamer ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   return (
-    <QueryStreamer db={dbState.db} DocView={GameItemView}>
+    <QueryReader db={dbState.db} DocView={GameItemView}>
       {children}
-    </QueryStreamer>
+    </QueryReader>
   )
 }

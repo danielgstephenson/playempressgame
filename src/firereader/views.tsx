@@ -1,9 +1,9 @@
 import { QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
 import { FC } from 'react'
-import streamFire from '.'
-import { Identification, ErrorViewProps, Firestream, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
+import firereader from './create'
+import { Identification, ErrorViewProps, CollectionReaders as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
 
-export default function streamFireViews<Doc extends Identification> ({
+export default function firereaderViews<Doc extends Identification> ({
   collectionName,
   toFirestore,
   fromFirestore,
@@ -17,8 +17,8 @@ export default function streamFireViews<Doc extends Identification> ({
   EmptyView?: FC
   LoadingView?: FC
   ErrorView?: FC<ErrorViewProps>
-}): Firestream<Doc> {
-  const firestream = streamFire<Doc>({ collectionName, toFirestore, fromFirestore })
+}): Fireshare<Doc> {
+  const firestream = firereader<Doc>({ collectionName, toFirestore, fromFirestore })
   function DocViewer ({
     DocView,
     EmptyView = DefaultEmptyView,
@@ -59,9 +59,9 @@ export default function streamFireViews<Doc extends Identification> ({
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: DocStreamerProps<Doc, Requirements>): JSX.Element {
+  }: DocSharerProps<Doc, Requirements>): JSX.Element {
     return (
-      <firestream.DocStreamer
+      <firestream.DocReader
         requirements={requirements}
         db={db}
         getDocRef={getDocRef}
@@ -71,7 +71,7 @@ export default function streamFireViews<Doc extends Identification> ({
         ErrorView={ErrorView}
       >
         {children}
-      </firestream.DocStreamer>
+      </firestream.DocReader>
     )
   }
   function QueryStreamer <Requirements extends {}> ({
@@ -83,9 +83,9 @@ export default function streamFireViews<Doc extends Identification> ({
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
+  }: QuerySharerProps<Doc, Requirements>): JSX.Element {
     return (
-      <firestream.QueryStreamer
+      <firestream.QueryReader
         requirements={requirements}
         db={db}
         getQuery={getQuery}
@@ -95,7 +95,7 @@ export default function streamFireViews<Doc extends Identification> ({
         ErrorView={ErrorView}
       >
         {children}
-      </firestream.QueryStreamer>
+      </firestream.QueryReader>
     )
   }
   const viewsFirestream = {

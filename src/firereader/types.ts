@@ -39,19 +39,19 @@ export interface StreamerProps <Requirements extends {}> extends ViewerProps {
   requirements?: Requirements
   db: Firestore | undefined
 }
-export interface DocStreamerProps <Doc, Requirements extends {}>
-  extends StreamerProps<Requirements> {
-  getDocRef: ({ collectionRef, requirements }: {
-    collectionRef: CollectionReference<Doc>
-    requirements: Safe<Requirements>
-  }) => DocumentReference<Doc>
+export interface GetterProps <Doc, Requirements extends {}> {
+  collectionRef: CollectionReference<Doc>
+  requirements: Safe<Requirements>
 }
-export interface QueryStreamerProps <Doc, Requirements extends {}>
+export type DocRefGetter <Doc, Requirements extends {}> = (props: GetterProps<Doc, Requirements>) => DocumentReference<Doc>
+export type QueryGetter <Doc, Requirements extends {}> = (props: GetterProps<Doc, Requirements>) => Query<Doc>
+export interface DocSharerProps <Doc, Requirements extends {}>
   extends StreamerProps<Requirements> {
-  getQuery?: ({ collectionRef, requirements }: {
-    collectionRef: CollectionReference<Doc>
-    requirements: Safe<Requirements>
-  }) => Query<Doc>
+  getDocRef: DocRefGetter<Doc, Requirements>
+}
+export interface QuerySharerProps <Doc, Requirements extends {}>
+  extends StreamerProps<Requirements> {
+  getQuery?: QueryGetter<Doc, Requirements>
 }
 
 export interface QueryState <Doc> {
@@ -72,9 +72,16 @@ export interface HiderProps <Stream> extends HiderViews {
   streamState: StreamState<Stream>
   children: ReactNode
 }
-export interface Firestream <Doc> {
-  DocStreamer: <Requirements extends {}> (props: DocStreamerProps<Doc, Requirements>) => JSX.Element
-  QueryStreamer: <Requirements extends {}> (props: QueryStreamerProps<Doc, Requirements>) => JSX.Element
+
+export type DocStreamerComponent <Doc> = <Requirements extends {}> (
+  props: DocSharerProps<Doc, Requirements>
+) => JSX.Element
+export type QueryStreamerComponent <Doc> = <Requirements extends {}> (
+  props: QuerySharerProps<Doc, Requirements>
+) => JSX.Element
+export interface CollectionReaders <Doc> {
+  DocReader: DocStreamerComponent<Doc>
+  QueryReader: QueryStreamerComponent<Doc>
   DocViewer: FC<ViewerProps>
   QueryViewer: FC<ViewerProps>
   docStreamContext: React.Context<DocStreamState<Doc>>
@@ -84,8 +91,8 @@ export interface Firestream <Doc> {
   DocProvider: FC<DocProviderProps<Doc>>
   QueryProvider: FC<QueryProviderProps<Doc>>
 }
-
 export interface ViewProp <Props> {
-  View?: FC<Omit<ViewAndProps<Props>, 'View'>>
+  View?: FC<JustProps<Props>>
 }
 export type ViewAndProps <Props> = ViewProp<Props> & Props
+export type JustProps <Props> = Omit<ViewAndProps<Props>, 'View'>

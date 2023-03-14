@@ -3,7 +3,7 @@ import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from './convertCollection'
 import getSafe from './getSafe'
-import { ViewAndProps, Stream, HiderProps, Identification, Firestream, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocStreamerProps, QueryStreamerProps } from './types'
+import { ViewAndProps, Stream, HiderProps, Identification, CollectionReaders, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
 
 export function Viewing <Props> ({ View, ...props }: ViewAndProps<Props>): JSX.Element {
   if (View == null) return <></>
@@ -41,7 +41,7 @@ export default function streamFire<Doc extends Identification> ({
   collectionName: string
   toFirestore: (modelObject: Doc) => Doc
   fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
-}): Firestream<Doc> {
+}): CollectionReaders<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
   function DocProvider ({
@@ -120,7 +120,7 @@ export default function streamFire<Doc extends Identification> ({
     )
   }
   const converter = { toFirestore, fromFirestore }
-  function DocStreamer <Requirements extends {}> ({
+  function DocReader <Requirements extends {}> ({
     DocView,
     EmptyView,
     LoadingView,
@@ -129,8 +129,8 @@ export default function streamFire<Doc extends Identification> ({
     requirements,
     getDocRef,
     children
-  }: DocStreamerProps<Doc, Requirements>): JSX.Element
-  function DocStreamer <Requirements extends {}> ({
+  }: DocSharerProps<Doc, Requirements>): JSX.Element
+  function DocReader <Requirements extends {}> ({
     DocView,
     EmptyView,
     LoadingView,
@@ -139,7 +139,7 @@ export default function streamFire<Doc extends Identification> ({
     requirements,
     getDocRef,
     children
-  }: DocStreamerProps<Doc, Requirements>): JSX.Element {
+  }: DocSharerProps<Doc, Requirements>): JSX.Element {
     const ref = getSafe({
       db,
       collectionName,
@@ -164,7 +164,8 @@ export default function streamFire<Doc extends Identification> ({
       </docStreamContext.Provider>
     )
   }
-  function QueryStreamer <Requirements extends {}> ({
+
+  function QueryReader <Requirements extends {}> ({
     children,
     requirements,
     db,
@@ -173,9 +174,9 @@ export default function streamFire<Doc extends Identification> ({
     EmptyView,
     LoadingView,
     ErrorView
-  }: QueryStreamerProps<Doc, Requirements>): JSX.Element {
-    function getSafeRef (): Query<Doc> | undefined {
-      if (db == null) return undefined
+  }: QuerySharerProps<Doc, Requirements>): JSX.Element {
+    function getSafeQuery (): Query<Doc> | null {
+      if (db == null) return null
       if (getQuery == null) {
         return convertCollection<Doc>({ db, collectionName, converter })
       }
@@ -188,7 +189,7 @@ export default function streamFire<Doc extends Identification> ({
       })
     }
 
-    const q = getSafeRef()
+    const q = getSafeQuery()
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
     const state: QueryStreamState<Doc> = {
@@ -208,8 +209,8 @@ export default function streamFire<Doc extends Identification> ({
   }
 
   return {
-    DocStreamer,
-    QueryStreamer,
+    DocReader,
+    QueryReader,
     DocViewer,
     QueryViewer,
     docContext,

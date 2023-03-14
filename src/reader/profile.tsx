@@ -4,16 +4,15 @@ import { Profile } from '../types'
 import ProfileItemView from '../view/ProfileItem'
 import dbContext from '../context/db'
 import { gameContext } from './game'
-import streamChakraFire from '../streamFire/chakra'
+import shareFireChakra from '../firereader/chakra'
 
 export const {
   docContext: profileContext,
-  DocProvider: ProfileProvider,
-  QueryStreamer
-} = streamChakraFire<Profile>({
+  QueryReader
+} = shareFireChakra<Profile>({
   collectionName: 'profiles',
   toFirestore: (profile) => {
-    const data: Profile = { gameId: profile.gameId, userId: profile.userId }
+    const data = { gameId: profile.gameId, userId: profile.userId }
     return data
   },
   fromFirestore: (snapshot, options) => {
@@ -23,7 +22,7 @@ export const {
   }
 })
 
-export default function ProfilesStreamer ({
+export default function ProfilesSharer ({
   children
 }: {
   children: ReactNode
@@ -33,7 +32,7 @@ export default function ProfilesStreamer ({
   const requirements = { gameId: gameState.id }
 
   return (
-    <QueryStreamer
+    <QueryReader
       DocView={ProfileItemView}
       db={dbState.db}
       requirements={requirements}
@@ -43,6 +42,6 @@ export default function ProfilesStreamer ({
       }}
     >
       {children}
-    </QueryStreamer>
+    </QueryReader>
   )
 }
