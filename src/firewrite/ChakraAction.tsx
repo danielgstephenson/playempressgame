@@ -1,7 +1,7 @@
 import { Button, Spinner } from '@chakra-ui/react'
-import WarningView from './Warning'
+import WarningView from '../view/Warning'
 
-export default function ActionView ({
+export default function ChakraAction ({
   action,
   label,
   loading,

@@ -16,8 +16,8 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   getter: (props: GetterProps<Doc, Requirements>) => Output
 }): Output | null {
   if (db == null) return null
-  const r = requirements == null ? {} : requirements
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
+  const r = requirements == null ? {} : requirements
   function hasAllValues (requirements?: Requirements | {}): requirements is Safe<Requirements> {
     if (requirements == null) return true
     const values = Object.values(requirements)
@@ -27,6 +27,7 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   if (!hasAllValues(r)) {
     return null
   }
+  console.log(r)
   const query = getter({ collectionRef, requirements: r })
   return query
 }

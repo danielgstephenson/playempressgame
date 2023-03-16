@@ -1,16 +1,21 @@
 import { useContext } from 'react'
 import authContext from '../context/auth'
-import CallerView from './Caller'
+import functionsContext from '../context/functions'
+import Writer from '../firewrite'
+import ChakraWrite from '../firewrite/ChakraWrite'
 
 export default function AddGameView (): JSX.Element {
   const authState = useContext(authContext)
+  const functionsState = useContext(functionsContext)
   if (authState.authed !== true) {
     return <></>
   }
   return (
-    <CallerView
+    <Writer
       label='Add Game'
-      action='addGame'
+      fn='addGame'
+      functions={functionsState.functions}
+      WriteView={ChakraWrite}
     />
   )
 }

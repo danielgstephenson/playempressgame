@@ -17,7 +17,6 @@ export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>
   ErrorView
 }: HiderProps<Firestream>): JSX.Element {
   if (streamState.stream == null) return <></>
-  console.log('streamState', streamState)
   const [data, loading, error] = streamState.stream
   if (loading) {
     return <Viewing View={LoadingView} />
