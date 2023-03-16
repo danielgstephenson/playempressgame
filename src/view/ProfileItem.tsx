@@ -1,8 +1,8 @@
 import { Text } from '@chakra-ui/react'
-import { profileContext } from '../reader/profile'
-import PlayerReader from '../reader/player'
+import { profileContext } from './reader/profile'
+import PlayerReader from './reader/player'
 import { useContext } from 'react'
-import { gameContext } from '../reader/game'
+import { gameContext } from './reader/game'
 
 export default function ProfileItemView (): JSX.Element {
   const profileState = useContext(profileContext)
