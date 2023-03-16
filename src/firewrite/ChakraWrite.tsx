@@ -1,5 +1,5 @@
 import ChakraAction from './ChakraAction'
-import createWrite from './createWriteView'
+import createWrite from './createWrite'
 
 const ChakraWrite = createWrite({ WriteView: ChakraAction })
 export default ChakraWrite

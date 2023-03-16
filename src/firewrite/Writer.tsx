@@ -1,33 +1,6 @@
-import { Functions, HttpsCallableResult } from 'firebase/functions'
-import { createContext, FC } from 'react'
 import { useHttpsCallable } from 'react-firebase-hooks/functions'
-
-export type CloudCaller = <Props> (props?: Props) => Promise<HttpsCallableResult<unknown> | undefined>
-
-interface WriteProps <Props extends {}> {
-  fn: string
-  label: string
-  onCall?: (caller: CloudCaller, props: Props) => Promise<void>
-  props?: Props
-  WriteView: FC
-}
-
-interface WritingProps <Props extends {}> extends WriteProps<Props> {
-  functions: Functions
-}
-
-interface WriterProps <Props extends {}> extends WriteProps<Props> {
-  functions?: Functions
-}
-
-interface WriteState {
-  write?: () => Promise<void>
-  loading?: boolean
-  error?: Error | undefined
-  label?: string
-}
-
-export const writeContext = createContext<WriteState>({})
+import { writeContext } from './context'
+import { WriteState, WritingProps, WriterProps } from './types'
 
 function Writing <Props extends {}> ({
   fn,

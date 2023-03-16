@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import functionsContext from '../context/functions'
-import Writer from '../firewrite'
+import Writer from '../firewrite/Writer'
 import ChakraWrite from '../firewrite/ChakraWrite'
 
 export default function AddGameView (): JSX.Element {
