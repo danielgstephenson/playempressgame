@@ -1,10 +1,10 @@
 import { useContext, ReactNode } from 'react'
-import { Game } from '../../types'
-import dbContext from '../../context/db'
+import { Game } from '../types'
+import dbContext from '../context/db'
 import { doc } from 'firebase/firestore'
-import GameContentView from '../GameContent'
-import GameItemView from '../GameItem'
-import createChakraReaders from '../../lib/fireread/chakra'
+import GameContentView from '../view/GameContent'
+import GameItemView from '../view/GameItem'
+import createChakraReaders from '../lib/fireread/chakra'
 
 export const {
   DocReader,

@@ -1,5 +1,5 @@
 import { Heading } from '@chakra-ui/react'
-import { GameReader } from './reader/game'
+import { GameReader } from '../reader/game'
 import JoinGameView from './JoinGame'
 import StartGameView from './StartGame'
 

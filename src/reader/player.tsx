@@ -1,10 +1,10 @@
 import { doc } from 'firebase/firestore'
 import { ReactNode, useContext } from 'react'
-import { Player } from '../../types'
-import PlayerView from '../Player'
-import dbContext from '../../context/db'
+import { Player } from '../types'
+import PlayerView from '../view/Player'
+import dbContext from '../context/db'
 import { profileContext } from './profile'
-import createChakraReaders from '../../lib/fireread/chakra'
+import createChakraReaders from '../lib/fireread/chakra'
 
 export const { DocReader, docContext: playerContext } = createChakraReaders<Player>({
   collectionName: 'players',
