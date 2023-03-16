@@ -1,7 +1,7 @@
 import { WarningIcon } from '@chakra-ui/icons'
 import { Tooltip } from '@chakra-ui/react'
 
-export default function WarningView ({ error }: { error?: Error}): JSX.Element {
+export default function ChakraWarning ({ error }: { error?: Error}): JSX.Element {
   if (error != null) {
     return (
       <Tooltip label={error.message} aria-label={error.message}>

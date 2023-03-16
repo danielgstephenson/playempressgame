@@ -1,34 +1,26 @@
-import { Functions } from 'firebase/functions'
-import { FC, useContext } from 'react'
-import { CloudCaller } from './types'
+import { FC } from 'react'
+import { CreatedWriterProps } from './types'
 import Writer from './Writer'
 
-export default function createWriter <Props extends {}> ({
-  functionsContext,
-  WriteView
+export default function createWriter ({
+  WritingView
 }: {
-  functionsContext: React.Context<{ functions?: Functions }>
-  WriteView: FC
-}): FC<any> {
-  return function CreatedWriter ({
+  WritingView: FC
+}): <Props extends {}>({ fn, functions, label, onCall, props }: CreatedWriterProps<Props>) => JSX.Element {
+  return function CreatedWriter <Props extends {}> ({
     fn,
+    functions,
     label,
     onCall,
     props
-  }: {
-    fn: string
-    label: string
-    onCall?: (caller: CloudCaller, props: Props) => Promise<void>
-    props?: Props
-  }): JSX.Element {
-    const functionsState = useContext(functionsContext)
+  }: CreatedWriterProps<Props>): JSX.Element {
     return (
       <Writer
         fn={fn}
-        WriteView={WriteView}
+        WritingView={WritingView}
         label={label}
         onCall={onCall}
-        functions={functionsState.functions}
+        functions={functions}
         props={props}
       />
     )
