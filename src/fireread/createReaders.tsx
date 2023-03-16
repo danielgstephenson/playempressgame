@@ -3,34 +3,8 @@ import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from './convertCollection'
 import getSafe from './getSafe'
-import { ViewAndProps, Stream, HiderProps, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
-
-export function Viewing <Props> ({ View, ...props }: ViewAndProps<Props>): JSX.Element {
-  if (View == null) return <></>
-  return <View {...props} />
-}
-export function Hider <Data, Snapshot, Firestream extends Stream<Data, Snapshot>> ({
-  streamState,
-  children,
-  EmptyView,
-  LoadingView,
-  ErrorView
-}: HiderProps<Firestream>): JSX.Element {
-  if (streamState.stream == null) return <></>
-  const [data, loading, error] = streamState.stream
-  if (loading) {
-    return <Viewing View={LoadingView} />
-  }
-  if (error != null) {
-    if (ErrorView == null) return <></>
-    return <Viewing View={ErrorView} error={error} />
-  }
-  if (data == null) {
-    if (EmptyView == null) return <></>
-    return <EmptyView />
-  }
-  return <>{children}</>
-}
+import Hider from './Hider'
+import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
 
 export default function createReaders<Doc extends Identification> ({
   collectionName,
