@@ -4,7 +4,7 @@ import { Profile } from '../../types'
 import ProfileItemView from '../ProfileItem'
 import dbContext from '../../context/db'
 import { gameContext } from './game'
-import createChakraReaders from '../../fireread/chakra'
+import createChakraReaders from '../../lib/fireread/chakra'
 
 export const {
   docContext: profileContext,

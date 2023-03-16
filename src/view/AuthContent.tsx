@@ -1,7 +1,7 @@
 import { Auth, User, signInAnonymously } from 'firebase/auth'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
-import ChakraWriting from '../firewrite/chakra/Writing'
+import ChakraWriting from '../lib/firewrite/chakra/Writing'
 import { useNavigate } from 'react-router-dom'
 
 export default function AuthContentView ({
