@@ -4,7 +4,7 @@ import { WriteProviderProps, WriteState } from './types'
 
 export default function WriteProvider <Props extends {}> ({
   fn,
-  WritingView,
+  WriteConsumer,
   label,
   onCall,
   functions,
@@ -28,7 +28,7 @@ export default function WriteProvider <Props extends {}> ({
   }
   return (
     <writeContext.Provider value={writeState}>
-      <WritingView />
+      <WriteConsumer />
     </writeContext.Provider>
   )
 }

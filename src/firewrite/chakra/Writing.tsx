@@ -1,5 +1,19 @@
-import ChakraWrite from './Write'
-import createWriting from '../createWriting'
+import { Button, Spinner } from '@chakra-ui/react'
+import { WritingProps } from '../types'
+import ChakraWarning from './Warning'
 
-const ChakraWriting = createWriting({ WriteView: ChakraWrite })
-export default ChakraWriting
+export default function ChakraWriting ({
+  write,
+  label,
+  loading,
+  error
+}: WritingProps): JSX.Element {
+  const loadingView = loading && <Spinner ml='10px' />
+  return (
+    <Button onClick={write} isDisabled={loading}>
+      {label}
+      {loadingView}
+      <ChakraWarning error={error} />
+    </Button>
+  )
+}

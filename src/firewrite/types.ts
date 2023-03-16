@@ -15,7 +15,7 @@ export interface CreatedWriterProps <Props extends {}> extends ConsumerWriterPro
 }
 
 export interface WriterProps <Props extends {}> extends CreatedWriterProps<Props> {
-  WritingView: FC
+  WriteConsumer: FC
 }
 
 export interface WriteProviderProps <Props extends {}> extends WriterProps<Props> {
@@ -29,10 +29,10 @@ export interface WriteState {
   label?: string
 }
 
-export interface WriteProps {
+export interface WritingProps {
   write: () => void
   label: string
   loading: boolean
   error?: Error
 }
-export type WriteComponent = FC<WriteProps>
+export type WritingComponent = FC<WritingProps>

@@ -1,7 +1,7 @@
 import { Auth, User, signInAnonymously } from 'firebase/auth'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
-import ChakraWrite from '../firewrite/chakra/Write'
+import ChakraWriting from '../firewrite/chakra/Writing'
 import { useNavigate } from 'react-router-dom'
 
 export default function AuthContentView ({
@@ -24,11 +24,11 @@ export default function AuthContentView ({
     }
   }
   if (user == null) {
-    return <ChakraWrite label='New Account' write={createAccount} loading={createAccountLoading} error={createAccountError} />
+    return <ChakraWriting label='New Account' write={createAccount} loading={createAccountLoading} error={createAccountError} />
   }
   async function signOutToHome (): Promise<void> {
     await signOut()
     navigate('/')
   }
-  return <ChakraWrite label='Sign Out' write={signOutToHome} loading={signOutLoading} error={signOutError} />
+  return <ChakraWriting label='Sign Out' write={signOutToHome} loading={signOutLoading} error={signOutError} />
 }

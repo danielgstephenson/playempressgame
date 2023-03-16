@@ -1,17 +1,17 @@
 import { FC, useContext } from 'react'
 import { writeContext } from './context'
-import { WriteComponent } from './types'
+import { WritingComponent } from './types'
 
-export default function createWriting ({ WriteView }: {
-  WriteView: WriteComponent
+export default function CreateWriteConsumer ({ WritingView }: {
+  WritingView: WritingComponent
 }): FC {
-  return function Writing (): JSX.Element {
+  return function WriteConsumer (): JSX.Element {
     const writeState = useContext(writeContext)
     if (writeState.write == null || writeState.label == null || writeState.loading == null) {
       return <></>
     }
     return (
-      <WriteView
+      <WritingView
         write={writeState.write}
         loading={writeState.loading}
         label={writeState.label}

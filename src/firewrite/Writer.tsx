@@ -7,7 +7,7 @@ export default function Writer <Props extends {}> ({
   onCall,
   functions,
   props,
-  WritingView
+  WriteConsumer
 }: WriterProps<Props>): JSX.Element {
   if (functions == null) {
     return <></>
@@ -15,7 +15,7 @@ export default function Writer <Props extends {}> ({
   return (
     <WriteProvider
       fn={fn}
-      WritingView={WritingView}
+      WriteConsumer={WriteConsumer}
       label={label}
       onCall={onCall}
       functions={functions}

@@ -3,9 +3,9 @@ import { CreatedWriterProps } from './types'
 import Writer from './Writer'
 
 export default function createWriter ({
-  WritingView
+  WriteConsumer
 }: {
-  WritingView: FC
+  WriteConsumer: FC
 }): <Props extends {}>({ fn, functions, label, onCall, props }: CreatedWriterProps<Props>) => JSX.Element {
   return function CreatedWriter <Props extends {}> ({
     fn,
@@ -17,7 +17,7 @@ export default function createWriter ({
     return (
       <Writer
         fn={fn}
-        WritingView={WritingView}
+        WriteConsumer={WriteConsumer}
         label={label}
         onCall={onCall}
         functions={functions}
