@@ -4,7 +4,7 @@ import { Player } from '../types'
 import PlayerView from '../view/Player'
 import dbContext from '../context/db'
 import { profileContext } from './profile'
-import createChakraReaders from '../lib/fireread/chakra'
+import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
 export const { DocReader, docContext: playerContext } = createChakraReaders<Player>({
   collectionName: 'players',

@@ -4,7 +4,7 @@ import dbContext from '../context/db'
 import { doc } from 'firebase/firestore'
 import GameContentView from '../view/GameContent'
 import GameItemView from '../view/GameItem'
-import createChakraReaders from '../lib/fireread/chakra'
+import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
 export const {
   DocReader,

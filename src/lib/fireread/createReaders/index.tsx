@@ -1,20 +1,16 @@
-import { Query, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
+import { Query } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
-import convertCollection from './convertCollection'
-import getSafe from './getSafe'
-import Hider from './Hider'
-import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
+import convertCollection from '../convertCollection'
+import getSafe from '../getSafe'
+import Hider from '../Hider'
+import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps, CreateReadersProps } from '../types'
 
 export default function createReaders<Doc extends Identification> ({
   collectionName,
   toFirestore,
   fromFirestore
-}: {
-  collectionName: string
-  toFirestore: (modelObject: Doc) => Doc
-  fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
-}): Readers<Doc> {
+}: CreateReadersProps<Doc>): Readers<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
   function DocProvider ({
@@ -93,16 +89,6 @@ export default function createReaders<Doc extends Identification> ({
     )
   }
   const converter = { toFirestore, fromFirestore }
-  function DocReader <Requirements extends {}> ({
-    DocView,
-    EmptyView,
-    LoadingView,
-    ErrorView,
-    db,
-    requirements,
-    getDocRef,
-    children
-  }: DocSharerProps<Doc, Requirements>): JSX.Element
   function DocReader <Requirements extends {}> ({
     DocView,
     EmptyView,

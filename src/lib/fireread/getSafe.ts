@@ -1,6 +1,5 @@
-import { Firestore, FirestoreDataConverter } from 'firebase/firestore'
 import convertCollection from './convertCollection'
-import { GetterProps, Safe } from './types'
+import { GetSafeProps, Safe } from './types'
 
 export default function getSafe <Doc, Requirements extends {}, Output> ({
   db,
@@ -8,13 +7,7 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   requirements,
   converter,
   getter
-}: {
-  db?: Firestore
-  collectionName: string
-  converter: FirestoreDataConverter<Doc>
-  requirements?: Requirements
-  getter: (props: GetterProps<Doc, Requirements>) => Output
-}): Output | null {
+}: GetSafeProps<Doc, Requirements, Output>): Output | null {
   if (db == null) return null
   const collectionRef = convertCollection<Doc>({ db, collectionName, converter })
   const r = requirements == null ? {} : requirements

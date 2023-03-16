@@ -1,7 +1,5 @@
-import { QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore'
-import { FC } from 'react'
-import createReaders from './createReaders'
-import { Identification, ErrorViewProps, Readers as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps } from './types'
+import createReaders from '.'
+import { Identification, Readers as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps, CreateViewReaderProps } from '../types'
 
 export default function createViewReaders<Doc extends Identification> ({
   collectionName,
@@ -10,14 +8,7 @@ export default function createViewReaders<Doc extends Identification> ({
   EmptyView: DefaultEmptyView,
   LoadingView: DefaultLoadingView,
   ErrorView: DefaultErrorView
-}: {
-  collectionName: string
-  toFirestore: (modelObject: Doc) => Doc
-  fromFirestore: (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
-  EmptyView?: FC
-  LoadingView?: FC
-  ErrorView?: FC<ErrorViewProps>
-}): Fireshare<Doc> {
+}: CreateViewReaderProps<Doc>): Fireshare<Doc> {
   const firereader = createReaders<Doc>({ collectionName, toFirestore, fromFirestore })
   function DocViewer ({
     DocView,

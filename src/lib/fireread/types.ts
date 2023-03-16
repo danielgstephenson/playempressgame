@@ -1,4 +1,4 @@
-import { FirestoreError, DocumentSnapshot, QuerySnapshot, DocumentReference, Query, Firestore, CollectionReference } from 'firebase/firestore'
+import { FirestoreError, DocumentSnapshot, QuerySnapshot, DocumentReference, Query, Firestore, CollectionReference, QueryDocumentSnapshot, SnapshotOptions, FirestoreDataConverter } from 'firebase/firestore'
 import { FC, ReactNode } from 'react'
 
 export type Stream <Data, Snapshot> = [
@@ -72,7 +72,6 @@ export interface HiderProps <Stream> extends HiderViews {
   streamState: StreamState<Stream>
   children: ReactNode
 }
-
 export type DocStreamerComponent <Doc> = <Requirements extends {}> (
   props: DocSharerProps<Doc, Requirements>
 ) => JSX.Element
@@ -96,3 +95,27 @@ export interface ViewProp <Props> {
 }
 export type ViewAndProps <Props> = ViewProp<Props> & Props
 export type JustProps <Props> = Omit<ViewAndProps<Props>, 'View'>
+export type ToFirestore <Doc> = (doc: Doc) => Doc
+export type FromFirestore <Doc> = (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
+export interface CreateReadersProps <Doc> {
+  collectionName: string
+  toFirestore: ToFirestore<Doc>
+  fromFirestore: FromFirestore<Doc>
+}
+export interface CreateViewReaderProps <Doc> extends CreateReadersProps<Doc> {
+  EmptyView?: FC
+  LoadingView?: FC
+  ErrorView?: FC<ErrorViewProps>
+}
+export interface CollectionProps <Doc> {
+  collectionName: string
+  converter: FirestoreDataConverter<Doc>
+}
+export interface ConvertCollectionProps <Doc> extends CollectionProps<Doc> {
+  db: Firestore
+}
+export interface GetSafeProps <Doc, Requirements extends {}, Output> extends CollectionProps<Doc>{
+  db?: Firestore
+  requirements?: Requirements
+  getter: (props: GetterProps<Doc, Requirements>) => Output
+}
