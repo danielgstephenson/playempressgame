@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import authContext from '../context/auth'
-import Writer from './Writer'
+import authContext from '../../context/auth'
+import Writer from '../Writer'
 
-export default function AddGameView (): JSX.Element {
+export default function AddGameWriter (): JSX.Element {
   const authState = useContext(authContext)
   if (authState.authed !== true) {
     return <></>
