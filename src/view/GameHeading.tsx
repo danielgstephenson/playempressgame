@@ -1,15 +1,14 @@
 import { Heading } from '@chakra-ui/react'
-import JoinGameWriter from './writer/JoinGame'
-import StartGameWriter from './writer/StartGame'
+import { useContext } from 'react'
+import { gameContext } from '../reader/game'
+import GameWriters from './GameWriters'
 
-export default function GameHeading ({ gameId }: { gameId: string }): JSX.Element {
+export default function GameHeading (): JSX.Element {
+  const gameState = useContext(gameContext)
   return (
     <Heading>
-      Game {gameId}
-      {' '}
-      <JoinGameWriter gameId={gameId} />
-      {' '}
-      <StartGameWriter gameId={gameId} />
+      Game {gameState.id}
+      <GameWriters />
     </Heading>
   )
 }
