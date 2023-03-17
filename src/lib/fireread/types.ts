@@ -34,7 +34,7 @@ export interface ViewerProps extends HiderViews {
 export type Safe<T> = {
   [P in keyof T]-?: NonNullable<T[P]>;
 }
-export interface StreamerProps <Requirements extends {}> extends ViewerProps {
+export interface ReaderProps <Requirements extends {}> extends ViewerProps {
   children?: ReactNode
   requirements?: Requirements
   db: Firestore | undefined
@@ -45,12 +45,12 @@ export interface GetterProps <Doc, Requirements extends {}> {
 }
 export type DocRefGetter <Doc, Requirements extends {}> = (props: GetterProps<Doc, Requirements>) => DocumentReference<Doc>
 export type QueryGetter <Doc, Requirements extends {}> = (props: GetterProps<Doc, Requirements>) => Query<Doc>
-export interface DocSharerProps <Doc, Requirements extends {}>
-  extends StreamerProps<Requirements> {
+export interface DocReaderProps <Doc, Requirements extends {}>
+  extends ReaderProps<Requirements> {
   getDocRef: DocRefGetter<Doc, Requirements>
 }
-export interface QuerySharerProps <Doc, Requirements extends {}>
-  extends StreamerProps<Requirements> {
+export interface QueryReaderProps <Doc, Requirements extends {}>
+  extends ReaderProps<Requirements> {
   getQuery?: QueryGetter<Doc, Requirements>
 }
 
@@ -72,15 +72,15 @@ export interface HiderProps <Stream> extends HiderViews {
   streamState: StreamState<Stream>
   children: ReactNode
 }
-export type DocStreamerComponent <Doc> = <Requirements extends {}> (
-  props: DocSharerProps<Doc, Requirements>
+export type DocReaderComponent <Doc> = <Requirements extends {}> (
+  props: DocReaderProps<Doc, Requirements>
 ) => JSX.Element
-export type QueryStreamerComponent <Doc> = <Requirements extends {}> (
-  props: QuerySharerProps<Doc, Requirements>
+export type QueryReaderComponent <Doc> = <Requirements extends {}> (
+  props: QueryReaderProps<Doc, Requirements>
 ) => JSX.Element
 export interface Readers <Doc> {
-  DocReader: DocStreamerComponent<Doc>
-  QueryReader: QueryStreamerComponent<Doc>
+  DocReader: DocReaderComponent<Doc>
+  QueryReader: QueryReaderComponent<Doc>
   DocViewer: FC<ViewerProps>
   QueryViewer: FC<ViewerProps>
   docStreamContext: React.Context<DocStreamState<Doc>>
