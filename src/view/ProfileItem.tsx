@@ -11,8 +11,11 @@ export default function ProfileItemView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playing = gameState.phase !== 'join'
   return (
-    <Curtain open={playing} openElement={<PlayerReader DocView={PlayerView} />}>
+    <>
       <Text>Profile: {profileState.userId}</Text>
-    </Curtain>
+      <Curtain open={playing}>
+        <PlayerReader DocView={PlayerView} />
+      </Curtain>
+    </>
   )
 }

@@ -1,16 +1,28 @@
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
-import JoinGameWriter from './writer/JoinGame'
-import StartGameWriter from './writer/StartGame'
+import Writer from './Writer'
 
 export default function GameWriters (): JSX.Element {
   const gameState = useContext(gameContext)
   if (gameState.id == null) return <></>
   return (
     <>
-      <JoinGameWriter gameId={gameState.id} />
+      <Writer
+        fn='joinGame'
+        label='Join Game'
+        props={{ gameId: gameState.id }}
+      />
       {' '}
-      <StartGameWriter gameId={gameState.id} />
+      <Writer
+        fn='startGame'
+        label='Start Game'
+        props={{ gameId: gameState.id }}
+        onCall={async (cloudFunction, props) => {
+          console.log('before')
+          await cloudFunction(props)
+          console.log('after')
+        }}
+      />
     </>
   )
 }

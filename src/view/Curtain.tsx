@@ -3,19 +3,12 @@ import { ReactNode } from 'react'
 export default function Curtain ({
   children,
   open,
-  openElement = <></>,
-  closedElement = <></>
+  hider = <></>
 }: {
   children?: ReactNode
   open: boolean
-  openElement?: JSX.Element
-  closedElement?: JSX.Element
+  hider?: JSX.Element
 }): JSX.Element {
-  const element = open ? openElement : closedElement
-  return (
-    <>
-      {children}
-      {element}
-    </>
-  )
+  const element = open ? children : hider
+  return <>{element}</>
 }
