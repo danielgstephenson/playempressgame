@@ -1,11 +1,11 @@
 import { useContext } from 'react'
 import ProfilesView from './Profiles'
-import { Box, Text } from '@chakra-ui/react'
+import { Text } from '@chakra-ui/react'
 import { gameContext } from '../reader/game'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
-  const timeline = gameState.timeline?.map((rank) => <Box key={rank}>{rank}</Box>)
+  const timeline = gameState.timeline?.map((rank) => <Text key={rank}>{rank}</Text>)
   return (
     <>
       <Text>Phase: {gameState.phase}</Text>

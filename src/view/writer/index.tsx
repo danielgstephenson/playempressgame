@@ -1,7 +1,7 @@
-import ChakraWriter from '../lib/firewrite/chakra/Writer'
-import functionsContext from '../context/functions'
+import ChakraWriter from '../../lib/firewrite/chakra/Writer'
+import functionsContext from '../../context/functions'
 import { useContext } from 'react'
-import { ConsumerWriterProps } from '../lib/firewrite/types'
+import { ConsumerWriterProps } from '../../lib/firewrite/types'
 
 export default function Writer <Props extends {}> ({
   fn,

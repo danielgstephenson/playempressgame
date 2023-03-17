@@ -1,6 +1,6 @@
-import Writer from './Writer'
+import Writer from '.'
 
-export default function StartGameView ({ gameId }: { gameId: string }): JSX.Element {
+export default function StartGameWriter ({ gameId }: { gameId: string }): JSX.Element {
   return (
     <Writer
       fn='startGame'

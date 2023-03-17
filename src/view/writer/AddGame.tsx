@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import authContext from '../../context/auth'
-import Writer from '../Writer'
+import Writer from '.'
 
 export default function AddGameWriter (): JSX.Element {
   const authState = useContext(authContext)

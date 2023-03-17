@@ -1,15 +1,15 @@
 import { Heading } from '@chakra-ui/react'
-import JoinGameView from './JoinGame'
-import StartGameView from './StartGame'
+import JoinGameWriter from './writer/JoinGame'
+import StartGameWriter from './writer/StartGame'
 
 export default function GameHeading ({ gameId }: { gameId: string }): JSX.Element {
   return (
     <Heading>
       Game {gameId}
       {' '}
-      <JoinGameView gameId={gameId} />
+      <JoinGameWriter gameId={gameId} />
       {' '}
-      <StartGameView gameId={gameId} />
+      <StartGameWriter gameId={gameId} />
     </Heading>
   )
 }
