@@ -1,7 +1,6 @@
 import { doc } from 'firebase/firestore'
-import { ReactNode, useContext } from 'react'
+import { FC, ReactNode, useContext } from 'react'
 import { Player } from '../types'
-import PlayerView from '../view/Player'
 import dbContext from '../context/db'
 import { profileContext } from './profile'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
@@ -32,16 +31,18 @@ export const { DocReader, docContext: playerContext } = createChakraReaders<Play
 })
 
 export default function PlayerReader ({
-  children
+  children,
+  DocView
 }: {
   children?: ReactNode
+  DocView: FC
 }): JSX.Element {
   const profileState = useContext(profileContext)
   const dbState = useContext(dbContext)
   const requirements = { gameId: profileState.gameId, userId: profileState.userId }
   return (
     <DocReader
-      DocView={PlayerView}
+      DocView={DocView}
       db={dbState.db}
       requirements={requirements}
       getDocRef={({ collectionRef, requirements }) => {

@@ -2,6 +2,7 @@ import { Alert, AlertIcon, Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import { GamesReader } from '../reader/game'
+import GameItemView from './GameItem'
 
 export default function GamesContentView (): JSX.Element {
   const authState = useContext(authContext)
@@ -16,7 +17,7 @@ export default function GamesContentView (): JSX.Element {
   }
   return (
     <Stack>
-      <GamesReader />
+      <GamesReader DocView={GameItemView} />
     </Stack>
   )
 }

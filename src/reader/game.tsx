@@ -1,9 +1,7 @@
-import { useContext, ReactNode } from 'react'
+import { useContext, ReactNode, FC } from 'react'
 import { Game } from '../types'
 import dbContext from '../context/db'
 import { doc } from 'firebase/firestore'
-import GameContentView from '../view/GameContent'
-import GameItemView from '../view/GameItem'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
 export const {
@@ -37,17 +35,19 @@ export const {
 
 export function GameReader ({
   gameId,
-  children
+  children,
+  DocView
 }: {
   gameId: string
-  children: ReactNode
+  children?: ReactNode
+  DocView: FC
 }): JSX.Element {
   const dbState = useContext(dbContext)
   const requirements = { gameId }
   return (
     <DocReader
       db={dbState.db}
-      DocView={GameContentView}
+      DocView={DocView}
       requirements={requirements}
       getDocRef={({ collectionRef, requirements }) => {
         const gameRef = doc(collectionRef, requirements.gameId)
@@ -60,13 +60,15 @@ export function GameReader ({
 }
 
 export function GamesReader ({
-  children
+  children,
+  DocView
 }: {
   children?: ReactNode
+  DocView: FC
 }): JSX.Element {
   const dbState = useContext(dbContext)
   return (
-    <QueryReader db={dbState.db} DocView={GameItemView}>
+    <QueryReader db={dbState.db} DocView={DocView}>
       {children}
     </QueryReader>
   )
