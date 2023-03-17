@@ -1,5 +1,5 @@
 import createReaders from '.'
-import { Identification, Readers as Fireshare, ViewerProps, DocSharerProps, QuerySharerProps, CreateViewReaderProps } from '../types'
+import { Identification, Readers as Fireshare, ViewerProps, DocReaderProps, QueryReaderProps, CreateViewReaderProps } from '../types'
 
 export default function createViewReaders<Doc extends Identification> ({
   collectionName,
@@ -41,7 +41,7 @@ export default function createViewReaders<Doc extends Identification> ({
     )
   }
 
-  function DocStreamer <Requirements extends {}> ({
+  function DocReader <Requirements extends {}> ({
     DocView,
     children,
     requirements,
@@ -50,7 +50,7 @@ export default function createViewReaders<Doc extends Identification> ({
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: DocSharerProps<Doc, Requirements>): JSX.Element {
+  }: DocReaderProps<Doc, Requirements>): JSX.Element {
     return (
       <firereader.DocReader
         requirements={requirements}
@@ -65,7 +65,7 @@ export default function createViewReaders<Doc extends Identification> ({
       </firereader.DocReader>
     )
   }
-  function QueryStreamer <Requirements extends {}> ({
+  function QueryReader <Requirements extends {}> ({
     DocView,
     requirements,
     db,
@@ -74,7 +74,7 @@ export default function createViewReaders<Doc extends Identification> ({
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
-  }: QuerySharerProps<Doc, Requirements>): JSX.Element {
+  }: QueryReaderProps<Doc, Requirements>): JSX.Element {
     return (
       <firereader.QueryReader
         requirements={requirements}
@@ -93,8 +93,8 @@ export default function createViewReaders<Doc extends Identification> ({
     ...firereader,
     DocViewer,
     QueryViewer,
-    DocStreamer,
-    QueryStreamer
+    DocReader,
+    QueryReader
   }
   return viewsFirestream
 }

@@ -4,7 +4,7 @@ import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firesto
 import convertCollection from '../convertCollection'
 import getSafe from '../getSafe'
 import Hider from '../Hider'
-import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocSharerProps, QuerySharerProps, CreateReadersProps } from '../types'
+import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocReaderProps, QueryReaderProps, CreateReadersProps } from '../types'
 
 export default function createReaders<Doc extends Identification> ({
   collectionName,
@@ -98,7 +98,7 @@ export default function createReaders<Doc extends Identification> ({
     requirements,
     getDocRef,
     children
-  }: DocSharerProps<Doc, Requirements>): JSX.Element {
+  }: DocReaderProps<Doc, Requirements>): JSX.Element {
     const ref = getSafe({
       db,
       collectionName,
@@ -133,7 +133,7 @@ export default function createReaders<Doc extends Identification> ({
     EmptyView,
     LoadingView,
     ErrorView
-  }: QuerySharerProps<Doc, Requirements>): JSX.Element {
+  }: QueryReaderProps<Doc, Requirements>): JSX.Element {
     function getSafeQuery (): Query<Doc> | null {
       if (db == null) return null
       if (getQuery == null) {
