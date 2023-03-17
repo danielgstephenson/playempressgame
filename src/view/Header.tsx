@@ -7,12 +7,11 @@ import Curtain from './Curtain'
 
 export default function HeaderView (): JSX.Element {
   const authState = useContext(authContext)
-  const authed = authState.authed === true
   return (
     <HStack spacing='20px'>
       <AuthView />
       <ChakraLinkView to='/'>Home</ChakraLinkView>
-      <Curtain open={authed}>
+      <Curtain open={authState.authed}>
         <ChakraLinkView to='/games'>Games</ChakraLinkView>
       </Curtain>
     </HStack>

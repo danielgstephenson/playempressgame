@@ -6,9 +6,9 @@ export default function Curtain ({
   hider = <></>
 }: {
   children?: ReactNode
-  open: boolean
+  open?: boolean
   hider?: JSX.Element
 }): JSX.Element {
-  const element = open ? children : hider
+  const element = open === true ? children : hider
   return <>{element}</>
 }

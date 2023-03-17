@@ -9,17 +9,16 @@ import Writer from './Writer'
 
 export default function GamesView (): JSX.Element {
   const authState = useContext(authContext)
-  const authed = authState.authed === true
   return (
     <>
       <Heading>
         Games
         {' '}
-        <Curtain open={authed}>
+        <Curtain open={authState.authed}>
           <Writer label='Add Game' fn='addGame' />
         </Curtain>
       </Heading>
-      <Curtain open={authed} hider={<AuthWarning />}>
+      <Curtain open={authState.authed} hider={<AuthWarning />}>
         <Stack>
           <GamesReader DocView={GameItemView} />
         </Stack>
