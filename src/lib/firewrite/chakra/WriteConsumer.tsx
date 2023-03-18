@@ -1,5 +1,5 @@
-import ChakraWriting from './Writing'
+import ChakraButton from './Button'
 import createWriteConsumer from '../createWriteConsumer'
 
-const ChakraWriteConsumer = createWriteConsumer({ WritingView: ChakraWriting })
+const ChakraWriteConsumer = createWriteConsumer({ WriterView: ChakraButton })
 export default ChakraWriteConsumer
