@@ -1,7 +1,7 @@
 import { Auth } from 'firebase/auth'
 import { useSignOut } from 'react-firebase-hooks/auth'
 import { useNavigate } from 'react-router-dom'
-import ChakraWriting from '../lib/firewrite/chakra/Writing'
+import ChakraButton from '../lib/firewrite/chakra/Button'
 
 export default function SignOutView ({ auth }: {
   auth: Auth
@@ -12,5 +12,5 @@ export default function SignOutView ({ auth }: {
     await signOut()
     navigate('/')
   }
-  return <ChakraWriting label='Sign Out' write={signOutToHome} loading={signOutLoading} error={signOutError} />
+  return <ChakraButton label='Sign Out' onClick={signOutToHome} loading={signOutLoading} error={signOutError} />
 }

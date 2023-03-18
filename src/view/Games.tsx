@@ -5,7 +5,7 @@ import { GamesReader } from '../reader/game'
 import Curtain from './Curtain'
 import GameItemView from './GameItem'
 import Warning from './Warning'
-import Writer from './Writer'
+import Action from './Action'
 
 export default function GamesView (): JSX.Element {
   const authState = useContext(authContext)
@@ -16,7 +16,7 @@ export default function GamesView (): JSX.Element {
         Games
         {' '}
         <Curtain open={authState.authed}>
-          <Writer label='Add Game' fn='addGame' />
+          <Action label='Add Game' fn='addGame' />
         </Curtain>
       </Heading>
       <Curtain open={authState.authed} hider={warning}>

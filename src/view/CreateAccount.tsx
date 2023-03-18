@@ -1,6 +1,6 @@
 import { Auth, signInAnonymously } from 'firebase/auth'
 import { useState } from 'react'
-import ChakraWriting from '../lib/firewrite/chakra/Writing'
+import ChakraButton from '../lib/firewrite/chakra/Button'
 
 export default function CreateAccountView ({ auth }: {
   auth: Auth
@@ -17,9 +17,9 @@ export default function CreateAccountView ({ auth }: {
     }
   }
   return (
-    <ChakraWriting
+    <ChakraButton
       label='New Account'
-      write={createAccount}
+      onClick={createAccount}
       loading={createAccountLoading}
       error={createAccountError}
     />
