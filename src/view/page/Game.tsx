@@ -4,9 +4,5 @@ import GameView from '../Game'
 export default function GamePageView (): JSX.Element {
   const params = useParams()
   if (params.gameId == null) return <></>
-  return (
-    <>
-      <GameView gameId={params.gameId} />
-    </>
-  )
+  return <GameView gameId={params.gameId} />
 }

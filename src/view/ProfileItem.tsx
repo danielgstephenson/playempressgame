@@ -3,16 +3,19 @@ import { profileContext } from '../reader/profile'
 import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
+import Curtain from './Curtain'
 import PlayerView from './Player'
 
 export default function ProfileItemView (): JSX.Element {
   const profileState = useContext(profileContext)
   const gameState = useContext(gameContext)
-  const player = gameState.phase !== 'join' && <PlayerReader DocView={PlayerView} />
+  const playing = gameState.phase !== 'join'
   return (
     <>
       <Text>Profile: {profileState.userId}</Text>
-      {player}
+      <Curtain open={playing}>
+        <PlayerReader DocView={PlayerView} />
+      </Curtain>
     </>
   )
 }
