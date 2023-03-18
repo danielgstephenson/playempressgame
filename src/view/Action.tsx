@@ -3,7 +3,7 @@ import functionsContext from '../context/functions'
 import { useContext } from 'react'
 import { ConsumerWriterProps } from '../lib/firewrite/types'
 
-export default function Writer <Props extends {}> ({
+export default function Action <Props extends {}> ({
   fn,
   label,
   onCall,

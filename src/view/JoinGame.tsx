@@ -1,8 +1,8 @@
-import Writer from './Writer'
+import Action from './Action'
 
 export default function JoinGameView ({ gameId }: { gameId: string }): JSX.Element {
   return (
-    <Writer
+    <Action
       fn='joinGame'
       label='Join Game'
       props={{ gameId }}

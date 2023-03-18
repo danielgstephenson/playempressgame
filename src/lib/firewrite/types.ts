@@ -29,10 +29,10 @@ export interface WriteState {
   label?: string
 }
 
-export interface WritingProps {
-  write: () => void
+export interface WriterComponentProps {
+  onClick: () => void
   label: string
   loading: boolean
   error?: Error
 }
-export type WritingComponent = FC<WritingProps>
+export type WriterComponent = FC<WriterComponentProps>

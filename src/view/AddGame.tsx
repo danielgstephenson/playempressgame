@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import authContext from '../context/auth'
-import Writer from './Writer'
+import Action from './Action'
 
 export default function AddGameView (): JSX.Element {
   const authState = useContext(authContext)
@@ -8,7 +8,7 @@ export default function AddGameView (): JSX.Element {
     return <></>
   }
   return (
-    <Writer
+    <Action
       label='Add Game'
       fn='addGame'
     />

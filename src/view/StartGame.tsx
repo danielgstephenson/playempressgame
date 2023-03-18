@@ -1,8 +1,8 @@
-import Writer from './Writer'
+import Action from './Action'
 
 export default function StartGameView ({ gameId }: { gameId: string }): JSX.Element {
   return (
-    <Writer
+    <Action
       fn='startGame'
       label='Start Game'
       props={{ gameId }}
