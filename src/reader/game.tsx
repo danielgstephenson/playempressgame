@@ -1,7 +1,7 @@
 import { useContext, ReactNode, FC } from 'react'
 import { Game } from '../types'
 import dbContext from '../context/db'
-import { doc } from 'firebase/firestore'
+import { collection, doc, orderBy, query } from 'firebase/firestore'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
 export const {
@@ -16,18 +16,21 @@ export const {
       phase: game.phase,
       timeline: game.timeline,
       court: game.court,
-      dungeon: game.dungeon
+      dungeon: game.dungeon,
+      createdAt: game.createdAt
     }
   },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)
+    console.log(data)
     const game = {
       id: snapshot.id,
       name: data.name,
       phase: data.phase,
       timeline: data.timeline,
       court: data.court,
-      dungeon: data.dungeon
+      dungeon: data.dungeon,
+      createdAt: data.createdAt
     }
     return game
   }
@@ -68,7 +71,14 @@ export function GamesReader ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   return (
-    <QueryReader db={dbState.db} DocView={DocView}>
+    <QueryReader
+      db={dbState.db}
+      DocView={DocView}
+      getQuery={({ collectionRef }) => {
+        const order = orderBy('createdAt', 'desc')
+        return query(collectionRef, order)
+      }}
+    >
       {children}
     </QueryReader>
   )

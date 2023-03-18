@@ -5,7 +5,7 @@ import { https, runWith, auth } from "firebase-functions"
 import { firebaseConfig } from './secret'
 import yeast from 'yeast'
 import firebase from 'firebase/app'
-import { Transaction } from 'firebase-admin/firestore';
+import { Transaction, FieldValue } from 'firebase-admin/firestore';
 
 // process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080'
 
@@ -63,6 +63,7 @@ exports.addGame = createCloudFunction(async (props, context, transaction) => {
   const id = createId()
   const newData = {
     name: id,
+    createdAt: FieldValue.serverTimestamp(),
     phase: 'join',
     userIds: [],
     court: [],

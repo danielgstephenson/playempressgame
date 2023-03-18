@@ -9,6 +9,7 @@ import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
 import Router from './Router'
 import HeaderView from './view/Header'
+import { Container } from '@chakra-ui/react'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -37,8 +38,10 @@ export default function App (): JSX.Element {
       <AuthProvider auth={auth}>
         <DbProvider db={db}>
           <FunctionsProvider functions={functions}>
-            <HeaderView />
-            <Router />
+            <Container>
+              <HeaderView />
+              <Router />
+            </Container>
           </FunctionsProvider>
         </DbProvider>
       </AuthProvider>

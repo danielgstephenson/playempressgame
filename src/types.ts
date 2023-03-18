@@ -10,6 +10,10 @@ export interface Game extends Doc {
   timeline: number[]
   court: number[]
   dungeon: number[]
+  createdAt: {
+    seconds: number
+    nanoseconds: number
+  }
 }
 
 export interface Profile extends Doc {
