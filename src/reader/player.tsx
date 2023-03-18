@@ -46,7 +46,7 @@ export default function PlayerReader ({
       db={dbState.db}
       requirements={requirements}
       getDocRef={({ collectionRef, requirements }) => {
-        const playerId = `${requirements.gameId}_${requirements.userId}`
+        const playerId = `${requirements.userId}_${requirements.gameId}`
         const docRef = doc(collectionRef, playerId)
         return docRef
       }}

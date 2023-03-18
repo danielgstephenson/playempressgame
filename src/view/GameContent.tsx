@@ -1,16 +1,21 @@
 import { useContext } from 'react'
 import ProfilesView from './Profiles'
-import { HStack, Text } from '@chakra-ui/react'
+import { Text } from '@chakra-ui/react'
 import { gameContext } from '../reader/game'
+import CardStackView from './CardStack'
+import Curtain from './Curtain'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
-  const timeline = gameState.timeline?.map((rank) => <Text key={rank}>{rank}</Text>)
+  const showContent = gameState.phase !== 'join'
   return (
     <>
       <Text>Phase: {gameState.phase}</Text>
-      <Text>Timeline:</Text>
-      <HStack>{timeline}</HStack>
+      <Curtain open={showContent}>
+        <CardStackView label='Timeline' cardGroup={gameState.timeline} />
+        <CardStackView label='Court' cardGroup={gameState.court} />
+        <CardStackView label='Dungeon' cardGroup={gameState.dungeon} />
+      </Curtain>
       <ProfilesView />
     </>
   )

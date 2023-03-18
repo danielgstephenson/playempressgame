@@ -20,6 +20,9 @@ export interface Game extends Doc {
 export interface Profile extends Doc {
   gameId: string
   userId: string
+  displayName: string
+  gold?: number
+  topDiscard?: number
 }
 
 export interface Player extends Doc {

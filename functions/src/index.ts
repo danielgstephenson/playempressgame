@@ -93,7 +93,7 @@ exports.joinGame = createCloudFunction(async (props, context, transaction) => {
     )
   }
   const userData = userDoc.data()
-  if (!userData == null) {
+  if (userData == null) {
     throw new https.HttpsError(
       'failed-precondition',
       'This user is empty.'
@@ -127,8 +127,13 @@ exports.joinGame = createCloudFunction(async (props, context, transaction) => {
     )
   }
   console.log(`joining game ${props.gameId}...`)
-  const profileRef = profilesRef.doc()
-  transaction.set(profileRef, { userId: context.auth.uid, gameId: props.gameId })
+  const profileId = `${context.auth.uid}_${props.gameId}`
+  const profileRef = profilesRef.doc(profileId)
+  transaction.set(profileRef, { 
+    userId: context.auth.uid,
+    gameId: props.gameId,
+    displayName: userData.displayName,
+  })
   transaction.update(gameRef, {
     userIds: admin.firestore.FieldValue.arrayUnion(context.auth.uid)
   })
@@ -242,9 +247,14 @@ exports.startGame = createCloudFunction(async (props, context, transaction) => {
     const deck = [topDeck]
     const discard = [topDiscard]
     const playerData = { userId, gameId: props.gameId, hand, deck, discard }
-    const playerId = `${props.gameId}_${userId}`
+    const playerId = `${userId}_${props.gameId}`
     const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData)
+    const profileRef = profilesRef.doc(playerId)
+    transaction.update(profileRef,{
+      topDiscard,
+      gold: 40
+    })
   })
   console.log('started!')
 })

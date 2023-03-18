@@ -1,5 +1,5 @@
 import { query, where } from 'firebase/firestore'
-import { FC, ReactNode, useContext } from 'react'
+import { FC, Fragment, ReactNode, useContext } from 'react'
 import { Profile } from '../types'
 import dbContext from '../context/db'
 import { gameContext } from './game'
@@ -11,12 +11,25 @@ export const {
 } = createChakraReaders<Profile>({
   collectionName: 'profiles',
   toFirestore: (profile) => {
-    const data = { gameId: profile.gameId, userId: profile.userId }
+    const data = {
+      gameId: profile.gameId,
+      userId: profile.userId,
+      displayName: profile.displayName,
+      gold: profile.gold,
+      topDiscard: profile.topDiscard
+    }
     return data
   },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)
-    const profile = { id: snapshot.id, gameId: data.gameId, userId: data.userId }
+    const profile = {
+      id: snapshot.id,
+      gameId: data.gameId,
+      userId: data.userId,
+      displayName: data.displayName,
+      gold: data.gold,
+      topDiscard: data.topDiscard
+    }
     return profile
   }
 })
@@ -25,7 +38,7 @@ export default function ProfilesReader ({
   children,
   DocView
 }: {
-  children: ReactNode
+  children?: ReactNode
   DocView: FC
 }): JSX.Element {
   const dbState = useContext(dbContext)
@@ -36,6 +49,7 @@ export default function ProfilesReader ({
     <QueryReader
       DocView={DocView}
       db={dbState.db}
+      EmptyView={Fragment}
       requirements={requirements}
       getQuery={({ collectionRef, requirements }) => {
         const q = query(collectionRef, where('gameId', '==', requirements.gameId))
