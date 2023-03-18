@@ -1,7 +1,7 @@
 import { useContext, ReactNode, FC } from 'react'
 import { Game } from '../types'
 import dbContext from '../context/db'
-import { collection, doc, orderBy, query } from 'firebase/firestore'
+import { doc, orderBy, query } from 'firebase/firestore'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
 export const {
@@ -17,7 +17,8 @@ export const {
       timeline: game.timeline,
       court: game.court,
       dungeon: game.dungeon,
-      createdAt: game.createdAt
+      createdAt: game.createdAt,
+      userIds: game.userIds
     }
   },
   fromFirestore: (snapshot, options) => {
@@ -30,7 +31,8 @@ export const {
       timeline: data.timeline,
       court: data.court,
       dungeon: data.dungeon,
-      createdAt: data.createdAt
+      createdAt: data.createdAt,
+      userIds: data.userIds
     }
     return game
   }

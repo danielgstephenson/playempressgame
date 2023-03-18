@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react'
+import { HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { playerContext } from '../reader/player'
 
@@ -8,7 +8,7 @@ export default function HandView (): JSX.Element {
   return (
     <>
       <Text>Hand:</Text>
-      {hand}
+      <HStack>{hand}</HStack>
     </>
   )
 }
