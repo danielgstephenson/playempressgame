@@ -52,6 +52,7 @@ export interface DocReaderProps <Doc, Requirements extends {}>
 export interface QueryReaderProps <Doc, Requirements extends {}>
   extends ReaderProps<Requirements> {
   getQuery?: QueryGetter<Doc, Requirements>
+  transformDocs?: (docs?: Doc[]) => Doc[]
 }
 
 export interface QueryState <Doc> {

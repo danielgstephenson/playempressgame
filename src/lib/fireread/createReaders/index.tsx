@@ -132,7 +132,8 @@ export default function createReaders<Doc extends Identification> ({
     DocView,
     EmptyView,
     LoadingView,
-    ErrorView
+    ErrorView,
+    transformDocs
   }: QueryReaderProps<Doc, Requirements>): JSX.Element {
     function getSafeQuery (): Query<Doc> | null {
       if (db == null) return null
@@ -151,9 +152,10 @@ export default function createReaders<Doc extends Identification> ({
     const q = getSafeQuery()
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
+    const transformed = transformDocs?.(docs) ?? docs
     const state: QueryStreamState<Doc> = {
       stream,
-      docs,
+      docs: transformed,
       loading,
       error
     }
