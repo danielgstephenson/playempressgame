@@ -71,6 +71,7 @@ export default function createViewReaders<Doc extends Identification> ({
     db,
     getQuery,
     children,
+    transformDocs,
     EmptyView = DefaultEmptyView,
     LoadingView = DefaultLoadingView,
     ErrorView = DefaultErrorView
@@ -80,6 +81,7 @@ export default function createViewReaders<Doc extends Identification> ({
         requirements={requirements}
         db={db}
         getQuery={getQuery}
+        transformDocs={transformDocs}
         DocView={DocView}
         EmptyView={EmptyView}
         LoadingView={LoadingView}
