@@ -4,6 +4,7 @@ import { Profile } from '../types'
 import dbContext from '../context/db'
 import { gameContext } from './game'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
+import authContext from '../context/auth'
 
 export const {
   docContext: profileContext,
@@ -43,6 +44,7 @@ export default function ProfilesReader ({
 }): JSX.Element {
   const dbState = useContext(dbContext)
   const gameState = useContext(gameContext)
+  const authState = useContext(authContext)
   const requirements = { gameId: gameState.id }
 
   return (
@@ -55,6 +57,18 @@ export default function ProfilesReader ({
         const q = query(collectionRef, where('gameId', '==', requirements.gameId))
         return q
       }}
+      transformDocs={(docs) => {
+        if (docs == null) {
+          return docs
+        }
+        const currentProfile = docs.find((doc) => doc.userId === authState.currentUser?.uid)
+        if (currentProfile == null) {
+          return docs
+        }
+        const otherProfiles = docs.filter((doc) => doc.userId !== authState.currentUser?.uid)
+        const sortedProfiles = [currentProfile, ...otherProfiles]
+        return sortedProfiles
+      })
     >
       {children}
     </QueryReader>
