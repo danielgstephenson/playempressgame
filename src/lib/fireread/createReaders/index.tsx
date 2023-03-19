@@ -152,7 +152,7 @@ export default function createReaders<Doc extends Identification> ({
     const q = getSafeQuery()
     const stream = useCollectionData(q)
     const [docs, loading, error] = stream
-    const transformed = transformDocs?.(docs) ?? docs
+    const transformed = transformDocs == null ? docs : transformDocs(docs)
     const state: QueryStreamState<Doc> = {
       stream,
       docs: transformed,
