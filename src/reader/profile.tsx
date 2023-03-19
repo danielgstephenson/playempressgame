@@ -68,7 +68,7 @@ export default function ProfilesReader ({
         const otherProfiles = docs.filter((doc) => doc.userId !== authState.currentUser?.uid)
         const sortedProfiles = [currentProfile, ...otherProfiles]
         return sortedProfiles
-      })
+      }}
     >
       {children}
     </QueryReader>
