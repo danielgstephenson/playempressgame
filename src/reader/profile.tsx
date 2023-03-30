@@ -17,6 +17,7 @@ export const {
       userId: profile.userId,
       displayName: profile.displayName,
       gold: profile.gold,
+      deckEmpty: profile.deckEmpty,
       topDiscard: profile.topDiscard
     }
     return data
@@ -29,6 +30,7 @@ export const {
       userId: data.userId,
       displayName: data.displayName,
       gold: data.gold,
+      deckEmpty: data.deckEmpty,
       topDiscard: data.topDiscard
     }
     return profile

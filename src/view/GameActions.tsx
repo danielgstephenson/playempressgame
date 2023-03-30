@@ -12,7 +12,7 @@ export default function GameActions (): JSX.Element {
   const joined = gameState.userIds?.includes(authState.currentUser?.uid)
   const joinPhase = gameState.phase === 'join'
   const showJoin = !joined
-  const showStart = joined && joinPhase
+  const showStart = joined && joinPhase && gameState.userIds.length > 1
   return (
     <Box>
       <Curtain open={showJoin}>

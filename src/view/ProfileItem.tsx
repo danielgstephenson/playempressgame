@@ -14,6 +14,7 @@ export default function ProfileItemView (): JSX.Element {
   const playing = gameState.phase !== 'join'
   const showPlayer = authState.currentUser?.uid === profileState.userId
   const Container = showPlayer ? Alert : Fragment
+  const deckEmpty = profileState.deckEmpty === true ? 'True' : 'False'
   return (
     <Container>
       <Box>
@@ -26,6 +27,10 @@ export default function ProfileItemView (): JSX.Element {
           <HStack>
             <Heading size='sm'>Top Discard:</Heading>
             <Text>{profileState.topDiscard}</Text>
+          </HStack>
+          <HStack>
+            <Heading size='sm'>Deck Empty:</Heading>
+            <Text>{deckEmpty}</Text>
           </HStack>
           <Curtain open={showPlayer}>
             <PlayerReader DocView={PlayerView} />

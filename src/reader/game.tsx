@@ -23,7 +23,6 @@ export const {
   },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)
-    console.log(data)
     const game = {
       id: snapshot.id,
       name: data.name,

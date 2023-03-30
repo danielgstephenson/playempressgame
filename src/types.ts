@@ -23,6 +23,7 @@ export interface Profile extends Doc {
   displayName: string
   gold?: number
   topDiscard?: number
+  deckEmpty?: boolean
 }
 
 export interface Player extends Doc {

@@ -20,7 +20,6 @@ export default function getSafe <Doc, Requirements extends {}, Output> ({
   if (!hasAllValues(r)) {
     return null
   }
-  console.log(r)
   const query = getter({ collectionRef, requirements: r })
   return query
 }
