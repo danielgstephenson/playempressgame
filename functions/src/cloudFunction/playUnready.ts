@@ -4,12 +4,12 @@ import { gamesRef } from "../db"
 import { FieldValue } from "firebase-admin/firestore"
 
 const playUnready = createCloudFunction(async (props, context, transaction) => {
-  const { profileRef } = await guardPlayDocs({
+  const { playerId, profileRef } = await guardPlayDocs({
     gameId: props.gameId,
     transaction,
     context
   })
-  console.log(`Setting ${context.auth?.uid} unready...`)
+  console.log(`Setting ${playerId} unready...`)
   transaction.update(profileRef, {
     ready: false
   })
@@ -17,6 +17,6 @@ const playUnready = createCloudFunction(async (props, context, transaction) => {
   transaction.update(gameRef, {
     readyCount: FieldValue.increment(-1)
   })
-  console.log(`${context.auth?.uid} is unready!`)
+  console.log(`${playerId} is unready!`)
 })
 export default playUnready
