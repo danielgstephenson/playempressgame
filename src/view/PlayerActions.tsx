@@ -11,7 +11,7 @@ export default function PlayerActionsView (): JSX.Element {
   const playerState = useContext(playerContext)
   const profileState = useContext(profileContext)
   const showReady = playerState.trashIndex != null && playerState.playIndex != null && profileState.ready !== true
-  const showUnready = profileState.ready !== false
+  const showUnready = profileState.ready === true
   return (
     <Box>
       <Curtain open={showReady}>

@@ -14,7 +14,8 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     userIds: [],
     court: [],
     dungeon: [],
-    timeline: []
+    timeline: [],
+    readyCount: 0
   }
   const gameRef = gamesRef.doc(id)
   console.log(`adding game ${id}...`)

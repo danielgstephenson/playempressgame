@@ -15,8 +15,8 @@ export default function ProfileItemView (): JSX.Element {
   const playing = gameState.phase !== 'join'
   const showPlayer = authState.currentUser?.uid === profileState.userId
   const Container = showPlayer ? Alert : Fragment
-  const deckEmpty = profileState.deckEmpty === true ? 'True' : 'False'
-  console.log('profileState', profileState)
+  const deckEmpty = profileState.deckEmpty === true
+  const ready = profileState.ready === true
   return (
     <Container>
       <Box>
@@ -27,7 +27,7 @@ export default function ProfileItemView (): JSX.Element {
           <Status label='Deck Empty' value={deckEmpty} />
           <Status label='Play Area Empty' value={profileState.playEmpty} />
           <Status label='Trash Area Empty' value={profileState.trashEmpty} />
-          <Status label='Ready' value={profileState.ready} />
+          <Status label='Ready' value={ready} />
           <Curtain open={showPlayer}>
             <PlayerReader DocView={PlayerView} />
           </Curtain>

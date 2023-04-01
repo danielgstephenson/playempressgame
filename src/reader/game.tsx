@@ -18,7 +18,8 @@ export const {
       court: game.court,
       dungeon: game.dungeon,
       createdAt: game.createdAt,
-      userIds: game.userIds
+      userIds: game.userIds,
+      readyCount: game.readyCount
     }
   },
   fromFirestore: (snapshot, options) => {
@@ -31,7 +32,8 @@ export const {
       court: data.court,
       dungeon: data.dungeon,
       createdAt: data.createdAt,
-      userIds: data.userIds
+      userIds: data.userIds,
+      readyCount: data.readyCount
     }
     return game
   }

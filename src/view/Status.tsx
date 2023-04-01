@@ -4,7 +4,7 @@ export default function StatusView ({ label, value }: {
   label: string
   value?: string | number | boolean
 }): JSX.Element {
-  const valueString = value?.toString()
+  const valueString = value == null ? 'Empty' : value?.toString()
   return (
     <HStack alignItems='baseline'>
       <Heading size='sm'>{label}:</Heading>

@@ -12,7 +12,7 @@ export default function PlayAreaView ({ fn, index, label }: {
 }): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
-  const value = index != null && playerState.hand?.[index]
+  const value = index == null ? index : playerState.hand?.[index]
   const showAction = index != null
   return (
     <>

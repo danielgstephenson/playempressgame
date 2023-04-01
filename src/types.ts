@@ -11,6 +11,7 @@ export interface Game extends Doc {
   court: number[]
   dungeon: number[]
   userIds: string[]
+  readyCount: number
   createdAt: {
     seconds: number
     nanoseconds: number
