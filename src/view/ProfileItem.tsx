@@ -6,6 +6,7 @@ import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PlayerView from './Player'
 import authContext from '../context/auth'
+import Status from './Status'
 
 export default function ProfileItemView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -20,18 +21,9 @@ export default function ProfileItemView (): JSX.Element {
       <Box>
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>
-          <HStack>
-            <Heading size='sm'>Gold:</Heading>
-            <Text>{profileState.gold}</Text>
-          </HStack>
-          <HStack>
-            <Heading size='sm'>Top Discard:</Heading>
-            <Text>{profileState.topDiscard}</Text>
-          </HStack>
-          <HStack>
-            <Heading size='sm'>Deck Empty:</Heading>
-            <Text>{deckEmpty}</Text>
-          </HStack>
+          <Status label='Gold' value={profileState.gold} />
+          <Status label='Top Discard' value={profileState.topDiscard} />
+          <Status label='Deck Empty' value={deckEmpty} />
           <Curtain open={showPlayer}>
             <PlayerReader DocView={PlayerView} />
           </Curtain>

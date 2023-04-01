@@ -4,6 +4,7 @@ import joinGame from './cloudFunction/joinGame';
 import startGame from './cloudFunction/startGame';
 import onCreateUser from './cloudFunction/onCreateUser';
 import onDeleteUser from './cloudFunction/onDeleteUser';
+import trashScheme from './cloudFunction/trashScheme';
 
 // process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080'
 
@@ -16,3 +17,6 @@ exports.startGame = startGame
 exports.onCreateUser = onCreateUser
 
 exports.onDeleteUser = onDeleteUser
+
+exports.trashScheme = trashScheme
+

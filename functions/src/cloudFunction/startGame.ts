@@ -1,4 +1,5 @@
 import { https } from "firebase-functions/v1"
+import checkUserJoined from "../check/userJoined"
 import checkCurrentUid from "../check/currentUid"
 import checkDocData from "../check/docData"
 import checkJoinPhase from "../check/joinPhase"
@@ -21,12 +22,7 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
     docId: props.gameId,
     transaction
   })
-  if (!gameData.userIds.includes(currentUid)) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'This user has not joined the game.'
-    )
-  }
+  checkUserJoined({gameData,userId: currentUid})
   if (gameData.userIds.length < 2) {
     throw new https.HttpsError(
       'failed-precondition',

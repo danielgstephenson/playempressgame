@@ -32,6 +32,7 @@ export interface Player extends Doc {
   gameId: string
   hand: number[]
   userId: string
+  trashScheme: number
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>
