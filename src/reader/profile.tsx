@@ -18,7 +18,10 @@ export const {
       displayName: profile.displayName,
       gold: profile.gold,
       deckEmpty: profile.deckEmpty,
-      topDiscard: profile.topDiscard
+      topDiscard: profile.topDiscard,
+      trashEmpty: profile.trashEmpty,
+      playEmpty: profile.playEmpty,
+      ready: profile.ready
     }
     return data
   },
@@ -31,7 +34,10 @@ export const {
       displayName: data.displayName,
       gold: data.gold,
       deckEmpty: data.deckEmpty,
-      topDiscard: data.topDiscard
+      topDiscard: data.topDiscard,
+      trashEmpty: data.trashEmpty,
+      playEmpty: data.playEmpty,
+      ready: data.ready
     }
     return profile
   }

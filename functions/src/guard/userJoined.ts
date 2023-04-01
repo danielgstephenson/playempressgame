@@ -1,7 +1,7 @@
 import { https } from "firebase-functions";
 
 
-export default function checkUserJoined({
+export default function guardUserJoined({
   gameData,
   userId
 }:{

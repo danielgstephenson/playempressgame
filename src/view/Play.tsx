@@ -2,9 +2,9 @@ import { useContext } from 'react'
 import { playerContext } from '../reader/player'
 import PlayAreaView from './PlayArea'
 
-export default function TrashView (): JSX.Element {
+export default function PlayView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
-    <PlayAreaView fn='untrashScheme' label='Trash' index={playerState.trashIndex} />
+    <PlayAreaView fn='unplayScheme' label='Play' index={playerState.playIndex} />
   )
 }

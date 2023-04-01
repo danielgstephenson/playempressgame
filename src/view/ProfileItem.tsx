@@ -1,4 +1,4 @@
-import { Alert, Box, Heading, HStack, Text } from '@chakra-ui/react'
+import { Alert, Box, Heading } from '@chakra-ui/react'
 import { profileContext } from '../reader/profile'
 import PlayerReader from '../reader/player'
 import { Fragment, useContext } from 'react'
@@ -16,6 +16,7 @@ export default function ProfileItemView (): JSX.Element {
   const showPlayer = authState.currentUser?.uid === profileState.userId
   const Container = showPlayer ? Alert : Fragment
   const deckEmpty = profileState.deckEmpty === true ? 'True' : 'False'
+  console.log('profileState', profileState)
   return (
     <Container>
       <Box>
@@ -24,6 +25,9 @@ export default function ProfileItemView (): JSX.Element {
           <Status label='Gold' value={profileState.gold} />
           <Status label='Top Discard' value={profileState.topDiscard} />
           <Status label='Deck Empty' value={deckEmpty} />
+          <Status label='Play Area Empty' value={profileState.playEmpty} />
+          <Status label='Trash Area Empty' value={profileState.trashEmpty} />
+          <Status label='Ready' value={profileState.ready} />
           <Curtain open={showPlayer}>
             <PlayerReader DocView={PlayerView} />
           </Curtain>

@@ -1,5 +1,5 @@
 import { FieldValue } from "firebase-admin/firestore"
-import checkCurrentUid from "../check/currentUid"
+import checkCurrentUid from "../guard/currentUid"
 import { createCloudFunction } from "../createCloudFunction"
 import { createId } from "../createId"
 import { gamesRef } from "../db"

@@ -1,7 +1,7 @@
 import { https } from "firebase-functions/v1"
-import checkCurrentUid from "../check/currentUid"
-import checkDocData from "../check/docData"
-import checkJoinPhase from "../check/joinPhase"
+import checkCurrentUid from "../guard/currentUid"
+import checkDocData from "../guard/docData"
+import checkJoinPhase from "../guard/joinPhase"
 import { createCloudFunction } from "../createCloudFunction"
 import { gamesRef, profilesRef, usersRef } from "../db"
 import admin from 'firebase-admin';

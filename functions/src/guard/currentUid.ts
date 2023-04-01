@@ -1,6 +1,6 @@
 import { https } from "firebase-functions/v1";
 
-export default function checkCurrentUid({context}:{
+export default function guardCurrentUid({context}:{
   context: https.CallableContext
 }): string {
   if (context.auth == null) {

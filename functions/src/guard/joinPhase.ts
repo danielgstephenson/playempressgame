@@ -1,7 +1,7 @@
 import { CollectionReference, DocumentData, Transaction } from "firebase-admin/firestore";
 import { https } from "firebase-functions/v1";
 
-export default function checkJoinPhase({
+export default function guardJoinPhase({
   gameData
 } : {
   gameData: DocumentData

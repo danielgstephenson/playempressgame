@@ -14,7 +14,8 @@ export const { DocReader, docContext: playerContext } = createChakraReaders<Play
       gameId: player.gameId,
       hand: player.hand,
       userId: player.userId,
-      trashScheme: player.trashScheme
+      trashIndex: player.trashIndex,
+      playIndex: player.playIndex
     }
   },
   fromFirestore: (snapshot, options) => {
@@ -26,7 +27,8 @@ export const { DocReader, docContext: playerContext } = createChakraReaders<Play
       gameId: data.gameId,
       hand: data.hand,
       userId: data.userId,
-      trashScheme: data.trashScheme
+      trashIndex: data.trashIndex,
+      playIndex: data.playIndex
     }
     return player
   }

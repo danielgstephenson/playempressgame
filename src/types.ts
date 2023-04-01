@@ -24,6 +24,9 @@ export interface Profile extends Doc {
   gold?: number
   topDiscard?: number
   deckEmpty?: boolean
+  trashEmpty?: boolean
+  playEmpty?: boolean
+  ready?: boolean
 }
 
 export interface Player extends Doc {
@@ -32,7 +35,8 @@ export interface Player extends Doc {
   gameId: string
   hand: number[]
   userId: string
-  trashScheme: number
+  trashIndex?: number
+  playIndex?: number
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>
