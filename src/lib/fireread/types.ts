@@ -100,8 +100,8 @@ export type ToFirestore <Doc> = (doc: Doc) => Doc
 export type FromFirestore <Doc> = (snapshot: QueryDocumentSnapshot<Doc>, options?: SnapshotOptions) => Doc
 export interface CreateReadersProps <Doc> {
   collectionName: string
-  toFirestore: ToFirestore<Doc>
-  fromFirestore: FromFirestore<Doc>
+  toFirestore?: ToFirestore<Doc>
+  fromFirestore?: FromFirestore<Doc>
 }
 export interface CreateViewReaderProps <Doc> extends CreateReadersProps<Doc> {
   EmptyView?: FC

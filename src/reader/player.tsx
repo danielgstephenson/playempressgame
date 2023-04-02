@@ -5,34 +5,10 @@ import dbContext from '../context/db'
 import { profileContext } from './profile'
 import createChakraReaders from '../lib/fireread/createReaders/chakra'
 
-export const { DocReader, docContext: playerContext } = createChakraReaders<Player>({
-  collectionName: 'players',
-  toFirestore: (player) => {
-    return {
-      deck: player.deck,
-      discard: player.discard,
-      gameId: player.gameId,
-      hand: player.hand,
-      userId: player.userId,
-      trashIndex: player.trashIndex,
-      playIndex: player.playIndex
-    }
-  },
-  fromFirestore: (snapshot, options) => {
-    const data = snapshot.data(options)
-    const player = {
-      id: snapshot.id,
-      deck: data.deck,
-      discard: data.discard,
-      gameId: data.gameId,
-      hand: data.hand,
-      userId: data.userId,
-      trashIndex: data.trashIndex,
-      playIndex: data.playIndex
-    }
-    return player
-  }
-})
+export const {
+  DocReader,
+  docContext: playerContext
+} = createChakraReaders<Player>({ collectionName: 'players' })
 
 export default function PlayerReader ({
   children,

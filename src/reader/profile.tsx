@@ -9,39 +9,7 @@ import authContext from '../context/auth'
 export const {
   docContext: profileContext,
   QueryReader
-} = createChakraReaders<Profile>({
-  collectionName: 'profiles',
-  toFirestore: (profile) => {
-    const data = {
-      gameId: profile.gameId,
-      userId: profile.userId,
-      displayName: profile.displayName,
-      gold: profile.gold,
-      deckEmpty: profile.deckEmpty,
-      topDiscard: profile.topDiscard,
-      trashEmpty: profile.trashEmpty,
-      playEmpty: profile.playEmpty,
-      ready: profile.ready
-    }
-    return data
-  },
-  fromFirestore: (snapshot, options) => {
-    const data = snapshot.data(options)
-    const profile = {
-      id: snapshot.id,
-      gameId: data.gameId,
-      userId: data.userId,
-      displayName: data.displayName,
-      gold: data.gold,
-      deckEmpty: data.deckEmpty,
-      topDiscard: data.topDiscard,
-      trashEmpty: data.trashEmpty,
-      playEmpty: data.playEmpty,
-      ready: data.ready
-    }
-    return profile
-  }
-})
+} = createChakraReaders<Profile>({ collectionName: 'profiles' })
 
 export default function ProfilesReader ({
   children,
@@ -62,10 +30,12 @@ export default function ProfilesReader ({
       EmptyView={Fragment}
       requirements={requirements}
       getQuery={({ collectionRef, requirements }) => {
-        const q = query(collectionRef, where('gameId', '==', requirements.gameId))
+        const whereGame = where('gameId', '==', requirements.gameId)
+        const q = query(collectionRef, whereGame)
         return q
       }}
       transformDocs={(docs) => {
+        console.log('docs test:', docs)
         if (docs == null) {
           return docs
         }
