@@ -8,36 +8,7 @@ export const {
   DocReader,
   QueryReader,
   docContext: gameContext
-} = createChakraReaders<Game>({
-  collectionName: 'games',
-  toFirestore: (game) => {
-    return {
-      name: game.name,
-      phase: game.phase,
-      timeline: game.timeline,
-      court: game.court,
-      dungeon: game.dungeon,
-      createdAt: game.createdAt,
-      userIds: game.userIds,
-      readyCount: game.readyCount
-    }
-  },
-  fromFirestore: (snapshot, options) => {
-    const data = snapshot.data(options)
-    const game = {
-      id: snapshot.id,
-      name: data.name,
-      phase: data.phase,
-      timeline: data.timeline,
-      court: data.court,
-      dungeon: data.dungeon,
-      createdAt: data.createdAt,
-      userIds: data.userIds,
-      readyCount: data.readyCount
-    }
-    return game
-  }
-})
+} = createChakraReaders<Game>({ collectionName: 'games' })
 
 export function GameReader ({
   gameId,

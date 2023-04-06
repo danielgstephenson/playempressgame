@@ -2,14 +2,16 @@ import { Query } from 'firebase/firestore'
 import { createContext, useContext, ReactNode, FC } from 'react'
 import { useCollectionData, useDocumentData } from 'react-firebase-hooks/firestore'
 import convertCollection from '../convertCollection'
+import dataFromFirestore from '../dataFromFirestore'
+import dataToFirestore from '../dataToFirestore'
 import getSafe from '../getSafe'
 import Hider from '../Hider'
 import { Stream, Identification, Readers, DocState, DocProviderProps, QueryState, QueryProviderProps, DocStreamState, QueryStreamState, StreamState, ErrorViewProps, ViewerProps, DocReaderProps, QueryReaderProps, CreateReadersProps } from '../types'
 
 export default function createReaders<Doc extends Identification> ({
   collectionName,
-  toFirestore,
-  fromFirestore
+  toFirestore = dataToFirestore,
+  fromFirestore = dataFromFirestore
 }: CreateReadersProps<Doc>): Readers<Doc> {
   const docContext = createContext<DocState<Doc>>({})
   const queryContext = createContext<QueryState<Doc>>({})
