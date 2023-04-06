@@ -17,13 +17,13 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
     docId: props.gameId,
     transaction
   })
-  if (playerData.trashIndex == null) {
+  if (playerData.trashId == null) {
     throw new https.HttpsError(
       'failed-precondition',
       `This player has not trashed a scheme.`
     )
   }
-  if (playerData.playIndex == null) {
+  if (playerData.playId == null) {
     throw new https.HttpsError(
       'failed-precondition',
       `This player has not played a scheme.`
@@ -58,8 +58,8 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
     console.log('play id test:', id)
     const playerRef = playersRef.doc(id)
     transaction.update(playerRef, {
-      hand: playerData.hand.filter((scheme: any, index: any) => index !== playerData.trashIndex),
-      trashIndex: FieldValue.delete(),
+      hand: playerData.hand.filter((scheme: any) => scheme.id !== playerData.trashId),
+      trashId: FieldValue.delete(),
       ready: false
     })
   }

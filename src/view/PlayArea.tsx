@@ -5,20 +5,20 @@ import Action from './Action'
 import Curtain from './Curtain'
 import StatusView from './Status'
 
-export default function PlayAreaView ({ fn, index, label }: {
+export default function PlayAreaView ({ fn, id, label }: {
   fn: string
-  index?: number
+  id?: string
   label: string
 }): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
-  const value = index == null ? index : playerState.hand?.[index]
-  const showAction = index != null
+  const scheme = id == null ? id : playerState.hand?.find(scheme => scheme.id === id)
+  const showAction = id != null
   return (
     <>
       <StatusView
         label={label}
-        value={value}
+        value={scheme?.rank}
       />
       <Curtain open={showAction}>
         <Action

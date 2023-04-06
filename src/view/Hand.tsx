@@ -7,22 +7,22 @@ import Action from './Action'
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
-  const schemeViews = playerState.hand?.map((scheme, index) => {
-    if (index === playerState.trashIndex || index === playerState.playIndex) {
-      return <Fragment key={index} />
+  const schemeViews = playerState.hand?.map(scheme => {
+    if (scheme.id === playerState.trashId || scheme.id === playerState.playId) {
+      return <Fragment key={scheme.id} />
     }
     return (
-      <Box key={index}>
-        <Text>{scheme}</Text>
+      <Box key={scheme.id}>
+        <Text>{scheme.rank}</Text>
         <Action
           fn='trashScheme'
           label='Trash'
-          props={{ handIndex: index, gameId: gameState.id }}
+          props={{ id: scheme.id, gameId: gameState.id }}
         />
         <Action
           fn='playScheme'
           label='Play'
-          props={{ handIndex: index, gameId: gameState.id }}
+          props={{ id: scheme.id, gameId: gameState.id }}
         />
       </Box>
     )
