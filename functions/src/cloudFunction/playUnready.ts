@@ -1,4 +1,4 @@
-import { createCloudFunction } from "../createCloudFunction"
+import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayDocs from "../guard/playDocs"
 import { gamesRef } from "../db"
 import { FieldValue } from "firebase-admin/firestore"

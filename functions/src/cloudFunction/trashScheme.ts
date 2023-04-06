@@ -1,5 +1,5 @@
-import { createCloudFunction } from "../createCloudFunction"
-import guardPlayIndex from "../guard/playIndex"
+import { createCloudFunction } from "../create/cloudFunction"
+import guardPlayId from "../guard/playId"
 import guardPlayDocs from "../guard/playDocs"
 
 const trashScheme = createCloudFunction(async (props, context, transaction) => {
@@ -8,15 +8,15 @@ const trashScheme = createCloudFunction(async (props, context, transaction) => {
     transaction,
     context
   })
-  guardPlayIndex({ hand: playerData.hand, index: props.handIndex })
-  console.log(`trashing scheme at index ${props.schemeIndex}...`)
+  guardPlayId({ hand: playerData.hand, id: props.id })
+  console.log(`trashing scheme with id ${props.id}...`)
   transaction.update(playerRef, {
-    trashIndex: props.handIndex
+    trashId: props.id
   })
   transaction.update(profileRef, {
     trashEmpty: false,
     ready: false
   })
-  console.log(`trashed scheme at index ${props.schemeIndex}!`)
+  console.log(`trashed scheme with id ${props.id}!`)
 })
 export default trashScheme

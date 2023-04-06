@@ -3,9 +3,11 @@ import checkUserJoined from "../guard/userJoined"
 import checkCurrentUid from "../guard/currentUid"
 import checkDocData from "../guard/docData"
 import checkJoinPhase from "../guard/joinPhase"
-import { createCloudFunction } from "../createCloudFunction"
-import { createRange } from "../createRange"
+import { createCloudFunction } from "../create/cloudFunction"
+import { createRange } from "../create/range"
 import { gamesRef, green, playersRef, profilesRef, red, usersRef, yellow } from "../db"
+import { createId } from "../create/id"
+import { createScheme } from "../create/scheme"
 
 const startGame = createCloudFunction(async (props, context, transaction) => {
   const currentUid = checkCurrentUid({ context })
@@ -72,10 +74,12 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
   console.log('portfolio test:', portfolio)
   const timeline = empressLeft.slice(1)
   console.log('timeline test:', timeline)
+  const courtScheme = createScheme(court)
+  const dungeonScheme = createScheme(dungeon)
   transaction.update(gameRef,{
     phase: 'play',
-    court: [court],
-    dungeon: [dungeon],
+    court: [courtScheme],
+    dungeon: [dungeonScheme],
     timeline
   })
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
@@ -85,15 +89,18 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
   const topDiscard = sortedPortfolio[sortedPortfolio.length - 1]
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
   gameData.userIds.forEach((userId: string) => {
-    const deck = [topDeck]
-    const discard = [topDiscard]
-    const playerData = { userId, gameId: props.gameId, hand, deck, discard }
+    const topDeckScheme = createScheme(topDeck)
+    const topDiscardScheme = createScheme(topDiscard) 
+    const deck = [topDeckScheme]
+    const discard = [topDiscardScheme]
+    const handSchemes = hand.map(rank => createScheme(rank))
+    const playerData = { userId, gameId: props.gameId, hand: handSchemes, deck, discard }
     const playerId = `${userId}_${props.gameId}`
     const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData)
     const profileRef = profilesRef.doc(playerId)
     transaction.update(profileRef,{
-      topDiscard,
+      topDiscardScheme,
       deckEmpty: false,
       gold: 40
     })

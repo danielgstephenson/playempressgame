@@ -1,7 +1,7 @@
 import { FieldValue } from "firebase-admin/firestore"
 import checkCurrentUid from "../guard/currentUid"
-import { createCloudFunction } from "../createCloudFunction"
-import { createId } from "../createId"
+import { createCloudFunction } from "../create/cloudFunction"
+import { createId } from "../create/id"
 import { gamesRef } from "../db"
 
 const addGame = createCloudFunction(async (props, context, transaction) => {

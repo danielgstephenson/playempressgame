@@ -1,6 +1,6 @@
 import { Transaction } from "firebase-admin/firestore"
 import { https, runWith } from "firebase-functions/v1"
-import { db } from "./db"
+import { db } from "../db"
 
 export function createCloudFunction(
   callback: (

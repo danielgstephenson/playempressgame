@@ -1,4 +1,4 @@
-import { createCloudFunction } from "../createCloudFunction"
+import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayDocs from "../guard/playDocs"
 import { FieldValue } from "firebase-admin/firestore"
 
@@ -10,7 +10,7 @@ const untrashScheme = createCloudFunction(async (props, context, transaction) =>
   })
   console.log(`untrashing scheme...`)
   transaction.update(playerRef, {
-    trashIndex: FieldValue.delete()
+    trashId: FieldValue.delete()
   })
   transaction.update(profileRef, {
     trashEmpty: true,

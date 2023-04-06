@@ -5,3 +5,8 @@ export interface DocCheck {
   doc: DocumentSnapshot<DocumentData>
   docData: DocumentData
 }
+
+export interface Scheme {
+  id: string,
+  rank: number, 
+}

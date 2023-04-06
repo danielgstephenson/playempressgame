@@ -4,12 +4,17 @@ export interface Doc {
   id?: string
 }
 
+export interface Scheme {
+  id: string
+  rank: number
+}
+
 export interface Game extends Doc {
   name: string
   phase: string
-  timeline: number[]
-  court: number[]
-  dungeon: number[]
+  timeline: Scheme[]
+  court: Scheme[]
+  dungeon: Scheme[]
   userIds: string[]
   readyCount: number
   createdAt: {
@@ -23,7 +28,7 @@ export interface Profile extends Doc {
   userId: string
   displayName: string
   gold?: number
-  topDiscard?: number
+  topDiscard?: Scheme
   deckEmpty?: boolean
   trashEmpty?: boolean
   playEmpty?: boolean
@@ -31,13 +36,13 @@ export interface Profile extends Doc {
 }
 
 export interface Player extends Doc {
-  deck: number[]
-  discard: number[]
+  deck: Scheme[]
+  discard: Scheme[]
   gameId: string
-  hand: number[]
+  hand: Scheme[]
   userId: string
-  trashIndex?: number
-  playIndex?: number
+  trashId?: string
+  playId?: string
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>

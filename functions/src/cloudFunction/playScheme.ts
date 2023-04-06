@@ -1,5 +1,5 @@
-import { createCloudFunction } from "../createCloudFunction"
-import guardPlayIndex from "../guard/playIndex"
+import { createCloudFunction } from "../create/cloudFunction"
+import guardPlayId from "../guard/playId"
 import guardPlayDocs from "../guard/playDocs"
 
 const playScheme = createCloudFunction(async (props, context, transaction) => {
@@ -8,15 +8,15 @@ const playScheme = createCloudFunction(async (props, context, transaction) => {
     transaction,
     context
   })
-  guardPlayIndex({ hand: playerData.hand, index: props.handIndex })
-  console.log(`playing scheme at index ${props.schemeIndex}...`)
+  guardPlayId({ hand: playerData.hand, id: props.id })
+  console.log(`playing scheme with id ${props.id}...`)
   transaction.update(playerRef, {
-    playIndex: props.handIndex
+    playId: props.id
   })
   transaction.update(profileRef, {
     playEmpty: false,
     ready: false
   })
-  console.log(`played scheme at index ${props.schemeIndex}!`)
+  console.log(`played scheme with id ${props.id}!`)
 })
 export default playScheme

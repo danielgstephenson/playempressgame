@@ -1,4 +1,4 @@
-import { createCloudFunction } from "../createCloudFunction"
+import { createCloudFunction } from "../create/cloudFunction"
 import { FieldValue } from "firebase-admin/firestore"
 import guardPlayDocs from "../guard/playDocs"
 
@@ -12,7 +12,7 @@ const unplayScheme = createCloudFunction(async (props, context, transaction) => 
   console.log('playerRef', playerRef)
   console.log(`unplaying scheme...`)
   transaction.update(playerRef, {
-    playIndex: FieldValue.delete() 
+    playId: FieldValue.delete() 
   })
   transaction.update(profileRef, {
     playEmpty: true,

@@ -1,5 +1,5 @@
-import { createCloudFunction } from "../createCloudFunction"
-import guardPlayIndex from "../guard/playIndex"
+import { createCloudFunction } from "../create/cloudFunction"
+import guardPlayId from "../guard/playId"
 import guardPlayDocs from "../guard/playDocs"
 import guardDocData from "../guard/docData"
 import { gamesRef, playersRef, profilesRef } from "../db"
