@@ -28,7 +28,7 @@ initializeAppCheck(app, {
 const db = getFirestore(app)
 if (isLocalhost) connectFirestoreEmulator(db, 'localhost', 8080)
 const auth = getAuth()
-if (isLocalhost) connectAuthEmulator(auth, 'http://localhost:9099')
+if (isLocalhost) connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
 const functions = getFunctions(app)
 if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
 

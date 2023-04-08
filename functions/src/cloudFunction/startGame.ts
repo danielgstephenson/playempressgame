@@ -8,10 +8,12 @@ import { createRange } from "../create/range"
 import { gamesRef, green, playersRef, profilesRef, red, usersRef, yellow } from "../db"
 import { createId } from "../create/id"
 import { createScheme } from "../create/scheme"
+import admin, { firestore } from 'firebase-admin';
+import { createEvent } from "../create/event"
 
 const startGame = createCloudFunction(async (props, context, transaction) => {
   const currentUid = checkCurrentUid({ context })
-  await checkDocData({
+  const {docData : userData } = await checkDocData({
     collectionRef: usersRef,
     docId: currentUid,
     transaction
@@ -32,6 +34,15 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
     )
   }
   checkJoinPhase({gameData})
+  const query = usersRef.where(firestore.FieldPath.documentId(), 'in', gameData.userIds)
+  const snapshot = await query.get()
+  const users = snapshot.docs.map(docSnapshot => {
+    const data = docSnapshot.data()
+    return {
+      id: docSnapshot.id,
+      ...data
+    }
+  })
   console.log(`starting game...`)
   const range = createRange(26) // [0..25]
   console.log('range test:', range)
@@ -74,13 +85,16 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
   console.log('portfolio test:', portfolio)
   const timeline = empressLeft.slice(1)
   console.log('timeline test:', timeline)
+  const timelineSchemes = timeline.map(rank => createScheme(rank))
   const courtScheme = createScheme(court)
   const dungeonScheme = createScheme(dungeon)
+  const startEvent = createEvent(`${userData.displayName} started game ${props.gameId}`)
   transaction.update(gameRef,{
     phase: 'play',
     court: [courtScheme],
     dungeon: [dungeonScheme],
-    timeline
+    timeline: timelineSchemes,
+    history: admin.firestore.FieldValue.arrayUnion(startEvent)
   })
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
     return aRank - bRank
@@ -88,14 +102,22 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
   const topDeck = sortedPortfolio[sortedPortfolio.length - 2]
   const topDiscard = sortedPortfolio[sortedPortfolio.length - 1]
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
-  gameData.userIds.forEach((userId: string) => {
+  users.forEach( (user : any) => {
     const topDeckScheme = createScheme(topDeck)
     const topDiscardScheme = createScheme(topDiscard) 
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
-    const playerData = { userId, gameId: props.gameId, hand: handSchemes, deck, discard }
-    const playerId = `${userId}_${props.gameId}`
+    const playerData = { 
+      userId: user.id, 
+      gameId: props.gameId, 
+      hand: handSchemes, 
+      deck, 
+      discard, 
+      history: [...gameData.history, startEvent],
+      displayName: user.displayName
+    }
+    const playerId = `${user.id}_${props.gameId}`
     const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData)
     const profileRef = profilesRef.doc(playerId)

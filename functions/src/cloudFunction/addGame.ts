@@ -3,6 +3,7 @@ import checkCurrentUid from "../guard/currentUid"
 import { createCloudFunction } from "../create/cloudFunction"
 import { createId } from "../create/id"
 import { gamesRef } from "../db"
+import { createEvent } from "../create/event"
 
 const addGame = createCloudFunction(async (props, context, transaction) => {
   checkCurrentUid({context})
@@ -15,6 +16,7 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     court: [],
     dungeon: [],
     timeline: [],
+    history: [createEvent(`${props.displayName} created game ${id}`)],
     readyCount: 0
   }
   const gameRef = gamesRef.doc(id)

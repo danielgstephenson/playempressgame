@@ -4,6 +4,7 @@ import { gameContext } from '../reader/game'
 import CardStackView from './CardStack'
 import Curtain from './Curtain'
 import Status from './Status'
+import GameHistoryView from './GameHistory'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -19,6 +20,7 @@ export default function GameContentView (): JSX.Element {
         <CardStackView label='Dungeon' cardGroup={gameState.dungeon} />
       </Curtain>
       <ProfilesView />
+      <GameHistoryView />
     </>
   )
 }

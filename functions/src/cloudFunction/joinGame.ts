@@ -5,6 +5,7 @@ import checkJoinPhase from "../guard/joinPhase"
 import { createCloudFunction } from "../create/cloudFunction"
 import { gamesRef, profilesRef, usersRef } from "../db"
 import admin from 'firebase-admin';
+import { createEvent } from "../create/event"
 
 const joinGame = createCloudFunction(async (props, context, transaction) => {
   const currentUid = checkCurrentUid({ context })
@@ -39,7 +40,10 @@ const joinGame = createCloudFunction(async (props, context, transaction) => {
     displayName: userData.displayName,
   })
   transaction.update(gameRef, {
-    userIds: admin.firestore.FieldValue.arrayUnion(currentUid)
+    userIds: admin.firestore.FieldValue.arrayUnion(currentUid),
+    history: admin.firestore.FieldValue.arrayUnion(
+      createEvent(`${userData.displayName} joined game ${props.gameId}`)
+    )
   })
   console.log(`joined game ${props.gameId}!`)
 })

@@ -5,6 +5,7 @@ import HandView from './Hand'
 import TrashView from './Trash'
 import PlayView from './Play'
 import PlayerActionsView from './PlayerActions'
+import PlayerHistoryView from './PlayerHistory'
 
 export default function PlayerView (): JSX.Element {
   return (
@@ -16,6 +17,7 @@ export default function PlayerView (): JSX.Element {
         <DeckView />
         <DiscardView />
         <PlayerActionsView />
+        <PlayerHistoryView />
       </Box>
     </Alert>
   )

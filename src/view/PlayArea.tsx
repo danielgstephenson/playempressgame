@@ -24,7 +24,7 @@ export default function PlayAreaView ({ fn, id, label }: {
         <Action
           fn={fn}
           label='Return to hand'
-          props={{ gameId: gameState.id }}
+          props={{ gameId: gameState.id, schemeId: id }}
         />
       </Curtain>
     </>

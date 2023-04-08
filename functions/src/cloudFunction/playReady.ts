@@ -5,9 +5,10 @@ import guardDocData from "../guard/docData"
 import { gamesRef, playersRef, profilesRef } from "../db"
 import { https } from "firebase-functions/v1"
 import { FieldValue } from "firebase-admin/firestore"
+import { createEvent } from "../create/event"
 
 const playReady = createCloudFunction(async (props, context, transaction) => {
-  const { playerData, playerId, profileRef } = await guardPlayDocs({
+  const { playerData, playerRef, playerId, profileRef } = await guardPlayDocs({
     gameId: props.gameId,
     transaction,
     context
@@ -40,7 +41,15 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
   const gameRef = gamesRef.doc(props.gameId)
   if (waiting) {
     transaction.update(gameRef, {
-      readyCount: FieldValue.increment(1)
+      readyCount: FieldValue.increment(1),
+      history: FieldValue.arrayUnion(
+        createEvent(`${playerData.displayName} is ready`)
+      )
+    })
+    transaction.update(playerRef, {
+      history: FieldValue.arrayUnion(
+        createEvent(`You are ready`)
+      )
     })
     transaction.update(profileRef, {
       ready: true
@@ -60,6 +69,9 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
     transaction.update(playerRef, {
       hand: playerData.hand.filter((scheme: any) => scheme.id !== playerData.trashId),
       trashId: FieldValue.delete(),
+      history: FieldValue.arrayUnion(
+        createEvent(`Everyone is ready`)
+      ),
       ready: false
     })
   }
@@ -70,6 +82,9 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
   console.log('context.auth?.uid', context.auth?.uid)
   play({ data: playerData, id: playerId })
   transaction.update(gameRef, {
+    history: FieldValue.arrayUnion(
+      createEvent(`Everyone is ready`)
+    ),
     readyCount: 0
   })
 })

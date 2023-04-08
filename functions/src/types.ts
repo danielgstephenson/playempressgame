@@ -6,6 +6,12 @@ export interface DocCheck {
   docData: DocumentData
 }
 
+export interface HistoryEvent {
+  message: string
+  children?: HistoryEvent[]
+  timestamp: number
+}
+
 export interface Scheme {
   id: string,
   rank: number, 

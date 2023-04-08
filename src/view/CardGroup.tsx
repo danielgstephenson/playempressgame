@@ -11,6 +11,7 @@ export default function CardGroupView ({
   children?: ReactNode
   cardGroup?: Scheme[]
 }): JSX.Element {
+  console.log(cardGroup)
   const group = cardGroup?.map(scheme => <Text key={scheme.id}>{scheme.rank}</Text>)
   return (
     <>

@@ -9,6 +9,12 @@ export interface Scheme {
   rank: number
 }
 
+export interface HistoryEvent {
+  message: string
+  children?: HistoryEvent[]
+  timestamp: number
+}
+
 export interface Game extends Doc {
   name: string
   phase: string
@@ -17,6 +23,7 @@ export interface Game extends Doc {
   dungeon: Scheme[]
   userIds: string[]
   readyCount: number
+  history: HistoryEvent[]
   createdAt: {
     seconds: number
     nanoseconds: number
@@ -43,6 +50,8 @@ export interface Player extends Doc {
   userId: string
   trashId?: string
   playId?: string
+  history: HistoryEvent[]
+  displayName: string
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>
