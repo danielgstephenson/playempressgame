@@ -1,12 +1,12 @@
 import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayId from "../guard/playId"
 import guardPlayDocs from "../guard/playDocs"
-import { gamesRef } from "../db"
+import { gamesRef, playersRef } from "../db"
 import { firestore } from "firebase-admin"
 import { createEvent } from "../create/event"
 
 const trashScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, playerData, profileRef } = await guardPlayDocs({
+  const { playerRef, playerData, profileRef, gameData, currentUid } = await guardPlayDocs({
     gameId: props.gameId,
     transaction,
     context
@@ -18,17 +18,24 @@ const trashScheme = createCloudFunction(async (props, context, transaction) => {
   transaction.update(playerRef, {
     trashId: props.id,
     history: firestore.FieldValue.arrayUnion(
-      createEvent(`You trashed scheme ${trashScheme.rank}`)
+      createEvent(`You are trashing scheme ${trashScheme.rank}`)
     )
   })
   transaction.update(profileRef, {
     trashEmpty: false,
     ready: false
   })
+  const trashEvent = createEvent(`${playerData.displayName} is trashing a scheme`)
   transaction.update(gameRef, {
-    history: firestore.FieldValue.arrayUnion(
-      createEvent(`${playerData.displayName} trashed a scheme`)
-    )
+    history: firestore.FieldValue.arrayUnion(trashEvent)
+  })
+  gameData.userIds.forEach( (userId : any) => {
+    if(userId === currentUid) return
+    const playerId = `${userId}_${props.gameId}`
+    const playerRef = playersRef.doc(playerId)
+    transaction.update(playerRef, {
+      history: firestore.FieldValue.arrayUnion(trashEvent)
+    })
   })
   console.log(`trashed scheme with id ${props.id}!`)
 })

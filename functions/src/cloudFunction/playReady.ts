@@ -8,15 +8,10 @@ import { FieldValue } from "firebase-admin/firestore"
 import { createEvent } from "../create/event"
 
 const playReady = createCloudFunction(async (props, context, transaction) => {
-  const { playerData, playerRef, playerId, profileRef } = await guardPlayDocs({
+  const { playerData, playerRef, playerId, profileRef, gameData, currentUid } = await guardPlayDocs({
     gameId: props.gameId,
     transaction,
     context
-  })
-  const { docData : gameData } = await guardDocData({
-    collectionRef : gamesRef,
-    docId: props.gameId,
-    transaction
   })
   if (playerData.trashId == null) {
     throw new https.HttpsError(
@@ -39,17 +34,23 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
   const waiting = realReadyCount < gameData.userIds.length
   console.log('waiting', waiting)
   const gameRef = gamesRef.doc(props.gameId)
+  const youEvent = createEvent(`You are ready`)
   if (waiting) {
+    const readyEvent = createEvent(`${playerData.displayName} is ready`) 
     transaction.update(gameRef, {
       readyCount: FieldValue.increment(1),
-      history: FieldValue.arrayUnion(
-        createEvent(`${playerData.displayName} is ready`)
-      )
+      history: FieldValue.arrayUnion(readyEvent)
+    })
+    gameData.userIds.forEach( (userId : any) => {
+      if(userId === currentUid) return
+      const playerId = `${userId}_${props.gameId}`
+      const playerRef = playersRef.doc(playerId)
+      transaction.update(playerRef, {
+        history: FieldValue.arrayUnion(readyEvent)
+      })
     })
     transaction.update(playerRef, {
-      history: FieldValue.arrayUnion(
-        createEvent(`You are ready`)
-      )
+      history: FieldValue.arrayUnion(youEvent)
     })
     transaction.update(profileRef, {
       ready: true
@@ -60,20 +61,52 @@ const playReady = createCloudFunction(async (props, context, transaction) => {
     .where('gameId', '==', props.gameId)
     .where('userId', '!=', context.auth?.uid)
   const otherPlayers = await transaction.get(otherPlayersQuery)
-  function play ({ data: playerData, id }: {
+  const otherPlayersData: any[] = []
+  otherPlayers.forEach(otherPlayer => {
+    const otherPlayerData = otherPlayer.data()
+    otherPlayersData.push({
+      id: otherPlayer.id,
+      ...otherPlayerData
+    })
+  })
+  const allPlayersData = [...otherPlayersData, { id: playerId, ...playerData }]  
+  const publicEvents = allPlayersData.map(player => {
+    console.log('player test:', player)
+    const playScheme = player.hand.find((scheme: any) => scheme.id === player.playId)
+    console.log('playScheme test:', playScheme)
+    return {
+      id: player.id,
+      event: createEvent(`${player.displayName} played scheme ${playScheme.rank}`)
+    }
+  })
+  function play ({ data: playData, id }: {
     data: any,
     id: string
   }): void {
     console.log('play id test:', id)
     const playerRef = playersRef.doc(id)
+    const current = id === playerId
+    const privateEvent = current ? youEvent : createEvent(`${playerData.displayName} is ready`)
+    const playEvents = publicEvents.filter(event => event.id !== id).map(event => event.event)
+    const trashScheme = playData.hand.find((scheme: any) => scheme.id === playData.trashId)
+    const playScheme = playData.hand.find((scheme: any) => scheme.id === playData.playId)
     transaction.update(playerRef, {
-      hand: playerData.hand.filter((scheme: any) => scheme.id !== playerData.trashId),
+      hand: playData.hand.filter((scheme: any) => scheme.id !== playData.trashId),
       trashId: FieldValue.delete(),
       history: FieldValue.arrayUnion(
-        createEvent(`Everyone is ready`)
+        privateEvent,
+        createEvent(`Everyone is ready`),
+        createEvent(`You trashed scheme ${trashScheme.rank}`),
+        ...playEvents,
+        createEvent(`You played scheme ${playScheme.rank}`)
       ),
-      ready: false
     })
+    const profileRef = profilesRef.doc(id)
+    if (!current) {
+      transaction.update(profileRef, {
+        ready: false
+      })
+    }
   }
   otherPlayers.forEach(otherPlayer => {
     console.log('otherPlayer.id', otherPlayer.id)

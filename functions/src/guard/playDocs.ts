@@ -6,10 +6,12 @@ import guardDocData from "./docData"
 import guardUserJoined from "./userJoined"
 
 interface PlayRefs {
+  currentUid: string
   playerData: DocumentData
   playerRef: DocumentReference
   playerId: string
   profileRef: DocumentReference
+  gameData: DocumentData
 }
 
 export default async function guardPlayDocs ({
@@ -52,5 +54,5 @@ export default async function guardPlayDocs ({
     transaction
   })
   const profileRef = profilesRef.doc(playerId)
-  return { playerRef, playerData, playerId, profileRef }
+  return { playerRef, playerData, playerId, profileRef, gameData, currentUid }
 }
