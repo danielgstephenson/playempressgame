@@ -1,22 +1,24 @@
 import { createCloudFunction } from "../create/cloudFunction"
-import { FieldValue } from "firebase-admin/firestore"
-import guardPlayDocs from "../guard/playDocs"
+import guardPlayerData from "../guard/playerData"
 import { createEvent } from "../create/event"
-import { gamesRef } from "../db"
+import { gamesLord } from "../db"
+import { UnplaySchemeProps } from "../types"
+import guardHandScheme from "../guard/handScheme"
+import { arrayUnion, deleteField } from "firelord"
 
-const unplayScheme = createCloudFunction(async (props, context, transaction) => {
+const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, context, transaction) => {
   console.log('props.gameId', props.gameId)
-  const { playerRef, profileRef, playerData } = await guardPlayDocs({
+  const { playerRef, profileRef, playerData } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
   })
   console.log('playerRef', playerRef)
   console.log(`unplaying scheme...`)
-  const unplayScheme = playerData.hand.find( (scheme: any) => scheme.id === props.schemeId)
+  const unplayScheme = guardHandScheme({ hand: playerData.hand, schemeId: props.schemeId })
   transaction.update(playerRef, {
-    playId: FieldValue.delete(),
-    history: FieldValue.arrayUnion(
+    playId: deleteField(),
+    history: arrayUnion(
       createEvent(`You returned scheme ${unplayScheme.rank} from play`)
     )
   })
@@ -24,9 +26,9 @@ const unplayScheme = createCloudFunction(async (props, context, transaction) => 
     playEmpty: true,
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
+  const gameRef = gamesLord.doc(props.gameId)
   transaction.update(gameRef, {
-    history: FieldValue.arrayUnion(
+    history: arrayUnion(
       createEvent(`${playerData.displayName} returned their scheme from play.`)
     )
   })

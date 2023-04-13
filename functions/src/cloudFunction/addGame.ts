@@ -1,16 +1,17 @@
-import { FieldValue } from "firebase-admin/firestore"
-import checkCurrentUid from "../guard/currentUid"
+import guardCurrentuid from "../guard/currentUid"
 import { createCloudFunction } from "../create/cloudFunction"
 import { createId } from "../create/id"
-import { gamesRef } from "../db"
+import { gamesLord } from "../db"
 import { createEvent } from "../create/event"
+import { serverTimestamp } from 'firelord'
+import { AddGameProps } from "../types"
 
-const addGame = createCloudFunction(async (props, context, transaction) => {
-  checkCurrentUid({context})
+const addGame = createCloudFunction<AddGameProps>(async (props, context, transaction) => {
+  guardCurrentuid({ context })
   const id = createId()
   const newData = {
     name: id,
-    createdAt: FieldValue.serverTimestamp(),
+    createdAt: serverTimestamp(),
     phase: 'join',
     userIds: [],
     court: [],
@@ -19,9 +20,9 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     history: [createEvent(`${props.displayName} created game ${id}`)],
     readyCount: 0
   }
-  const gameRef = gamesRef.doc(id)
+  const gameRef = gamesLord.doc(id)
   console.log(`adding game ${id}...`)
-  transaction.set(gameRef, newData)
+  transaction.create(gameRef, newData)
   console.log('game added!')
 })
 export default addGame

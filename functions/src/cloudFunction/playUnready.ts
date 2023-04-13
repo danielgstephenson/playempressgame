@@ -1,11 +1,12 @@
 import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayDocs from "../guard/playDocs"
-import { gamesRef } from "../db"
-import { FieldValue } from "firebase-admin/firestore"
+import guardPlayerData from "../guard/playerData"
+import { gamesLord } from "../db"
 import { createEvent } from "../create/event"
+import { PlayUnreadyProps } from "../types"
+import { arrayUnion, increment } from "firelord"
 
-const playUnready = createCloudFunction(async (props, context, transaction) => {
-  const { playerId, profileRef, playerRef, playerData } = await guardPlayDocs({
+const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context, transaction) => {
+  const { playerId, profileRef, playerRef, playerData } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
@@ -14,15 +15,15 @@ const playUnready = createCloudFunction(async (props, context, transaction) => {
   transaction.update(profileRef, {
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
+  const gameRef = gamesLord.doc(props.gameId)
   transaction.update(gameRef, {
-    readyCount: FieldValue.increment(-1),
-    history: FieldValue.arrayUnion(
+    readyCount: increment(-1),
+    history: arrayUnion(
       createEvent(`${playerData.displayName} is not ready`)
     )
   })
   transaction.update(playerRef, {
-    history: FieldValue.arrayUnion(
+    history: arrayUnion(
       createEvent(`You are not ready`)
     )
   })

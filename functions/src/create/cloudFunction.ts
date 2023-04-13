@@ -1,10 +1,9 @@
-import { Transaction } from "firebase-admin/firestore"
 import { https, runWith } from "firebase-functions/v1"
-import { db } from "../db"
+import { Transaction, runTransaction } from 'firelord'
 
-export function createCloudFunction(
+export function createCloudFunction <T> (
   callback: (
-    props: any, 
+    props: T, 
     context: https.CallableContext, 
     transaction: Transaction
   ) => Promise<any>
@@ -18,7 +17,7 @@ export function createCloudFunction(
         'The function must be called from an App Check verified app.'
       )
     }
-    return db.runTransaction(async transaction => {
+    return runTransaction(async transaction => {
       return callback(props, context, transaction)
     })
   })

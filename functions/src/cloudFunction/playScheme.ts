@@ -1,23 +1,26 @@
 import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayId from "../guard/playId"
-import guardPlayDocs from "../guard/playDocs"
-import { firestore } from "firebase-admin"
+import guardPlayerData from "../guard/playerData"
 import { createEvent } from "../create/event"
-import { gamesRef } from "../db"
+import { gamesLord } from "../db"
+import { PlaySchemeProps } from "../types"
+import guardDefined from "../guard/defined"
+import { arrayUnion } from "firelord"
 
-const playScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, playerData, profileRef } = await guardPlayDocs({
+const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
+  const { playerRef, playerData, profileRef } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
   })
-  guardPlayId({ hand: playerData.hand, id: props.id })
-  console.log(`playing scheme with id ${props.id}...`)
-  const gameRef = gamesRef.doc(props.gameId)
-  const playScheme = playerData.hand.find( (scheme: any) => scheme.id === props.id)
+  guardPlayId({ hand: playerData.hand, id: props.schemeId })
+  console.log(`playing scheme with id ${props.schemeId}...`)
+  const gameRef = gamesLord.doc(props.gameId)
+  const scheme = playerData.hand.find((scheme: any) => scheme.id === props.schemeId)
+  const playScheme = guardDefined(scheme, 'Play Scheme')
   transaction.update(playerRef, {
-    playId: props.id,
-    history: firestore.FieldValue.arrayUnion(
+    playId: props.schemeId,
+    history: arrayUnion(
       createEvent(`You played scheme ${playScheme.rank}`)
     )
   })
@@ -26,10 +29,10 @@ const playScheme = createCloudFunction(async (props, context, transaction) => {
     ready: false
   })
   transaction.update(gameRef, {
-    history: firestore.FieldValue.arrayUnion(
+    history: arrayUnion(
       createEvent(`${playerData.displayName} played a scheme`)
     )
   })
-  console.log(`played scheme with id ${props.id}!`)
+  console.log(`played scheme with id ${props.schemeId}!`)
 })
 export default playScheme

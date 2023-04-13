@@ -1,27 +1,24 @@
 import { https } from "firebase-functions/v1"
-import checkCurrentUid from "../guard/currentUid"
-import checkDocData from "../guard/docData"
-import checkJoinPhase from "../guard/joinPhase"
+import guardCurrentUid from "../guard/currentUid"
+import guardDocData from "../guard/docData"
+import guardJoinPhase from "../guard/joinPhase"
 import { createCloudFunction } from "../create/cloudFunction"
-import { gamesRef, profilesRef, usersRef } from "../db"
+import { gamesLord, profilesLord, usersLord } from "../db"
 import admin from 'firebase-admin';
 import { createEvent } from "../create/event"
+import { JoinGameProps } from "../types"
+import { arrayUnion } from "firelord"
 
-const joinGame = createCloudFunction(async (props, context, transaction) => {
-  const currentUid = checkCurrentUid({ context })
-  const {
-    docData : userData
-  } = await checkDocData({
-    collectionRef: usersRef,
-    docId: currentUid,
+const joinGame = createCloudFunction<JoinGameProps>(async (props, context, transaction) => {
+  const currentUid = guardCurrentUid({ context })
+  const gameRef = gamesLord.doc(props.gameId)
+  const gameData = await guardDocData({
+    docRef: gameRef,
     transaction
   })
-  const { 
-    docData : gameData, 
-    docRef : gameRef 
-  } = await checkDocData({
-    collectionRef: gamesRef,
-    docId: props.gameId,
+  const userRef = usersLord.doc(currentUid)
+  const userData = await guardDocData({
+    docRef: userRef,
     transaction
   })
   if (gameData.userIds.includes(currentUid)) {
@@ -30,18 +27,18 @@ const joinGame = createCloudFunction(async (props, context, transaction) => {
       'This user has already joined the game.'
     )
   }
-  checkJoinPhase({gameData})
+  guardJoinPhase({gameData})
   console.log(`joining game ${props.gameId}...`)
   const profileId = `${currentUid}_${props.gameId}`
-  const profileRef = profilesRef.doc(profileId)
-  transaction.set(profileRef, { 
+  const profileRef = profilesLord.doc(profileId)
+  transaction.set(profileRef, {
     userId: currentUid,
     gameId: props.gameId,
     displayName: userData.displayName,
-  })
+  }, { merge: true })
   transaction.update(gameRef, {
-    userIds: admin.firestore.FieldValue.arrayUnion(currentUid),
-    history: admin.firestore.FieldValue.arrayUnion(
+    userIds: arrayUnion(currentUid),
+    history: arrayUnion(
       createEvent(`${userData.displayName} joined game ${props.gameId}`)
     )
   })

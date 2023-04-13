@@ -1,10 +1,10 @@
-import { CollectionReference, DocumentData, Transaction } from "firebase-admin/firestore";
 import { https } from "firebase-functions/v1";
+import { GameData } from "../types";
 
 export default function guardJoinPhase({
   gameData
 } : {
-  gameData: DocumentData
+  gameData: GameData 
 }) {
   if (gameData.phase !== 'join') {
     throw new https.HttpsError(

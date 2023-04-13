@@ -1,20 +1,23 @@
 import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayDocs from "../guard/playDocs"
-import { FieldValue } from "firebase-admin/firestore"
+import guardPlayerData from "../guard/playerData"
 import { createEvent } from "../create/event"
-import { gamesRef } from "../db"
+import { gamesLord } from "../db"
+import { UntrashSchemeProps } from "../types"
+import { arrayUnion, deleteField } from "firelord"
+import guardDefined from "../guard/defined"
 
-const untrashScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, profileRef, playerData } = await guardPlayDocs({
+const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, context, transaction) => {
+  const { playerRef, profileRef, playerData } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
   })
   console.log(`untrashing scheme...`)
-  const untrashScheme = playerData.hand.find( (scheme: any) => scheme.id === props.schemeId)
+  const scheme = playerData.hand.find( (scheme: any) => scheme.id === props.schemeId)
+  const untrashScheme = guardDefined(scheme, 'Untrash Scheme')
   transaction.update(playerRef, {
-    trashId: FieldValue.delete(),
-    history: FieldValue.arrayUnion(
+    trashId: deleteField(),
+    history: arrayUnion(
       createEvent(`You returned scheme ${untrashScheme.rank} from your trash`)
     )
   })
@@ -22,9 +25,9 @@ const untrashScheme = createCloudFunction(async (props, context, transaction) =>
     trashEmpty: true,
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
+  const gameRef = gamesLord.doc(props.gameId)
   transaction.update(gameRef, {
-    history: FieldValue.arrayUnion(
+    history: arrayUnion(
       createEvent(`${playerData.displayName} returned the scheme from their trash.`)
     )
   })
