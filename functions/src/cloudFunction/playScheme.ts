@@ -2,13 +2,13 @@ import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayId from "../guard/playId"
 import guardPlayerData from "../guard/playerData"
 import { createEvent } from "../create/event"
-import { gamesLord } from "../db"
+import { gamesLord, playersLord } from "../db"
 import { PlaySchemeProps } from "../types"
 import guardDefined from "../guard/defined"
 import { arrayUnion } from "firelord"
 
 const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
-  const { playerRef, playerData, profileRef } = await guardPlayerData({
+  const { gameData, currentUid, playerRef, playerData, profileRef } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
@@ -21,17 +21,26 @@ const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, t
   transaction.update(playerRef, {
     playId: props.schemeId,
     history: arrayUnion(
-      createEvent(`You played scheme ${playScheme.rank}`)
+      createEvent(`You are playing scheme ${playScheme.rank}`)
     )
   })
   transaction.update(profileRef, {
     playEmpty: false,
     ready: false
   })
+  const playEvent = createEvent(`${playerData.displayName} is playing a scheme`)
   transaction.update(gameRef, {
     history: arrayUnion(
-      createEvent(`${playerData.displayName} played a scheme`)
+      playEvent
     )
+  })
+  gameData.userIds.forEach( (userId : any) => {
+    if(userId === currentUid) return
+    const playerId = `${userId}_${props.gameId}`
+    const playerRef = playersLord.doc(playerId)
+    transaction.update(playerRef, {
+      history: arrayUnion(playEvent)
+    })
   })
   console.log(`played scheme with id ${props.schemeId}!`)
 })

@@ -1,13 +1,13 @@
 import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayerData from "../guard/playerData"
 import { createEvent } from "../create/event"
-import { gamesLord } from "../db"
+import { playersLord } from "../db"
 import { UntrashSchemeProps } from "../types"
 import { arrayUnion, deleteField } from "firelord"
 import guardDefined from "../guard/defined"
 
 const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, context, transaction) => {
-  const { playerRef, profileRef, playerData } = await guardPlayerData({
+  const { currentUid, gameData, gameRef, playerRef, profileRef, playerData } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
@@ -25,11 +25,19 @@ const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, cont
     trashEmpty: true,
     ready: false
   })
-  const gameRef = gamesLord.doc(props.gameId)
+  const untrashEvent = createEvent(`${playerData.displayName} returned the scheme from their trash.`)
   transaction.update(gameRef, {
     history: arrayUnion(
-      createEvent(`${playerData.displayName} returned the scheme from their trash.`)
+      untrashEvent
     )
+  })
+  gameData.userIds.forEach( (userId : any) => {
+    if(userId === currentUid) return
+    const playerId = `${userId}_${props.gameId}`
+    const playerRef = playersLord.doc(playerId)
+    transaction.update(playerRef, {
+      history: arrayUnion(untrashEvent)
+    })
   })
   console.log('untrashed scheme!')
 })

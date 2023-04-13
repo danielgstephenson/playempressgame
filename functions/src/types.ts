@@ -66,6 +66,7 @@ export interface JoinedGameGuard {
 export interface PlayerGuard {
   currentUid: string
   gameData: Game['read']
+  gameRef: DocumentReference<Game>
   playerData: Player['read']
   playerId: string
   playerRef: DocumentReference<Player>

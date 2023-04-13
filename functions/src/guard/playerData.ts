@@ -12,7 +12,7 @@ export default async function guardPlayerData ({
   transaction: Transaction
   gameId: string
 }): Promise<PlayerGuard> {
-  const { currentUid, gameData } = await guardJoinedGame({
+  const { currentUid, gameData, gameRef } = await guardJoinedGame({
     context,
     gameId,
     transaction
@@ -30,5 +30,5 @@ export default async function guardPlayerData ({
     transaction
   })
   const profileRef = profilesLord.doc(playerId)
-  return { currentUid, gameData, playerRef, playerData, playerId, profileRef }
+  return { currentUid, gameData, gameRef, playerRef, playerData, playerId, profileRef }
 }

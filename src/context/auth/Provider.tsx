@@ -14,7 +14,6 @@ export default function AuthProvider ({
   const [currentUser, currentUserLoading, currentUserError] = useAuthState(auth)
   const authed = currentUser != null
   const state: AuthState = { auth, authed, currentUser, currentUserLoading, currentUserError }
-
   return (
     <authContext.Provider value={state}>
       {children}

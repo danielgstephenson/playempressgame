@@ -1,12 +1,12 @@
 import { createCloudFunction } from "../create/cloudFunction"
 import guardPlayerData from "../guard/playerData"
-import { gamesLord } from "../db"
+import { gamesLord, playersLord } from "../db"
 import { createEvent } from "../create/event"
 import { PlayUnreadyProps } from "../types"
 import { arrayUnion, increment } from "firelord"
 
 const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context, transaction) => {
-  const { playerId, profileRef, playerRef, playerData } = await guardPlayerData({
+  const { currentUid, gameData, playerId, profileRef, playerRef, playerData } = await guardPlayerData({
     gameId: props.gameId,
     transaction,
     context
@@ -16,11 +16,18 @@ const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context,
     ready: false
   })
   const gameRef = gamesLord.doc(props.gameId)
+  const unreadyEvent = createEvent(`${playerData.displayName} is not ready`)
   transaction.update(gameRef, {
     readyCount: increment(-1),
-    history: arrayUnion(
-      createEvent(`${playerData.displayName} is not ready`)
-    )
+    history: arrayUnion(unreadyEvent)
+  })
+  gameData.userIds.forEach( (userId : any) => {
+    if(userId === currentUid) return
+    const playerId = `${userId}_${props.gameId}`
+    const playerRef = playersLord.doc(playerId)
+    transaction.update(playerRef, {
+      history: arrayUnion(unreadyEvent)
+    })
   })
   transaction.update(playerRef, {
     history: arrayUnion(
