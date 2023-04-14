@@ -1,5 +1,5 @@
 import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, PossiblyReadAsUndefined } from 'firelord'
-import { ArrayUnionOrRemove } from 'firelord/dist/types'
+import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
 
 export interface HistoryEvent {
   message: string
@@ -12,15 +12,22 @@ export interface Scheme {
   rank: number
 }
 
+export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
+
+export interface GameUser {
+  id: string
+  displayName: string
+}
+
 export type Game = MetaTypeCreator<{
   name: string
   createdAt: ServerTimestamp
   phase: string
-  userIds: string[]
+  users: GameUser[]
+  history: HistoryEvent[]
   court: Scheme[]
   dungeon: Scheme[]
   timeline: Scheme[]
-  history: HistoryEvent[]
   readyCount: number
 }, 'games', string>
 
@@ -53,25 +60,22 @@ export type Player = MetaTypeCreator<{
   playId: string | DeleteField
 }, 'players', string>
 
-export interface JoinedGameGuard {
-  gameData: Game['read']
-  gameRef: DocumentReference<Game>
+export interface CurrentGameGuard {
+  currentGameData: Game['read']
+  currentGameRef: DocumentReference<Game>
   currentUid: string
-  userRef: DocumentReference<User>
+  currentUserRef: DocumentReference<User>
 }
 
-export interface PlayerGuard {
+export interface CurrentPlayerGuard {
   currentUid: string
-  gameData: Game['read']
-  gameRef: DocumentReference<Game>
-  playerData: Player['read']
-  playerId: string
-  playerRef: DocumentReference<Player>
-  profileRef: DocumentReference<Profile>
-}
-
-export interface AddGameProps {
-  displayName: string
+  currentGameData: Game['read']
+  currentGameRef: DocumentReference<Game>
+  currentPlayer: Result<Player>
+  currentPlayerData: Player['read']
+  currentPlayerId: string
+  currentPlayerRef: DocumentReference<Player>
+  currentProfileRef: DocumentReference<Profile>
 }
 
 export interface JoinGameProps {
@@ -112,4 +116,15 @@ export interface PlayUnreadyProps {
 
 export interface HistoryUpdate {
   history: ArrayUnionOrRemove<HistoryEvent>
+}
+
+export interface CurrentHandGuard extends CurrentPlayerGuard {
+  scheme: Scheme
+}
+
+export interface CurrentUserGuard {
+  currentUserRef: DocumentReference<User>
+  currentUserData: User['read']
+  currentUid: string
+  currentUser: Result<User>
 }

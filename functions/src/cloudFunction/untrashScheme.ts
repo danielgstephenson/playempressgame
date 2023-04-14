@@ -1,40 +1,47 @@
 import { createCloudFunction } from '../create/cloudFunction'
-import guardCurrentPlayer from '../guard/currentPlayer'
 import { createEvent } from '../create/event'
 import { UntrashSchemeProps } from '../types'
 import { arrayUnion, deleteField } from 'firelord'
-import guardDefined from '../guard/defined'
 import createEventUpdate from '../create/eventUpdate'
 import updateOtherPlayers from '../updatePlayers'
+import guardCurrentHand from '../guard/current/hand'
 
 const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, context, transaction) => {
-  console.log('untrashing scheme...')
-  const { currentUid, gameData, gameRef, playerRef, profileRef, playerData } = await guardCurrentPlayer({
+  console.log(`Untrashing scheme ${props.schemeId}...`)
+  const {
+    currentUid,
+    currentGameData,
+    currentGameRef,
+    currentPlayerRef,
+    currentProfileRef,
+    currentPlayerData,
+    scheme: untrashScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Untrash scheme'
   })
-  const scheme = playerData.hand.find((scheme: any) => scheme.id === props.schemeId)
-  const untrashScheme = guardDefined(scheme, 'Untrash Scheme')
-  transaction.update(playerRef, {
+  transaction.update(currentPlayerRef, {
     trashId: deleteField(),
     history: arrayUnion(
       createEvent(`You returned scheme ${untrashScheme.rank} from your trash`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     trashEmpty: true,
     ready: false
   })
-  const displayNameUpdate = createEventUpdate(`${playerData.displayName} returned the scheme from their trash.`)
-  transaction.update(gameRef, displayNameUpdate)
+  const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} returned the scheme from their trash.`)
+  transaction.update(currentGameRef, displayNameUpdate)
   updateOtherPlayers({
     currentUid,
     gameId: props.gameId,
     transaction,
-    userIds: gameData.userIds,
+    users: currentGameData.users,
     update: displayNameUpdate
   })
-  console.log('untrashed scheme!')
+  console.log(`Untrashed scheme with id ${props.schemeId}!`)
 })
 export default untrashScheme

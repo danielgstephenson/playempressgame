@@ -1,40 +1,45 @@
 import { createCloudFunction } from '../create/cloudFunction'
-import guardPlayId from '../guard/playId'
-import guardCurrentPlayer from '../guard/currentPlayer'
+import guardCurrentHand from '../guard/current/hand'
 import { createEvent } from '../create/event'
 import { PlaySchemeProps } from '../types'
-import guardDefined from '../guard/defined'
 import { arrayUnion } from 'firelord'
 import updateOtherPlayers from '../updatePlayers'
 import createEventUpdate from '../create/eventUpdate'
 
 const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
-  const { gameData, gameRef, currentUid, playerRef, playerData, profileRef } = await guardCurrentPlayer({
+  console.log(`playing scheme with id ${props.schemeId}...`)
+  const {
+    currentGameData,
+    currentGameRef,
+    currentUid,
+    currentPlayerRef,
+    currentPlayerData,
+    currentProfileRef,
+    scheme: playScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Play Scheme'
   })
-  guardPlayId({ hand: playerData.hand, id: props.schemeId })
-  console.log(`playing scheme with id ${props.schemeId}...`)
-  const scheme = playerData.hand.find((scheme: any) => scheme.id === props.schemeId)
-  const playScheme = guardDefined(scheme, 'Play Scheme')
-  transaction.update(playerRef, {
+  transaction.update(currentPlayerRef, {
     playId: props.schemeId,
     history: arrayUnion(
       createEvent(`You are playing scheme ${playScheme.rank}`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     playEmpty: false,
     ready: false
   })
-  const displayNameUpdate = createEventUpdate(`${playerData.displayName} is playing a scheme`)
-  transaction.update(gameRef, displayNameUpdate)
+  const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is playing a scheme`)
+  transaction.update(currentGameRef, displayNameUpdate)
   updateOtherPlayers({
     currentUid,
     gameId: props.gameId,
     transaction,
-    userIds: gameData.userIds,
+    users: currentGameData.users,
     update: displayNameUpdate
   })
   console.log(`played scheme with id ${props.schemeId}!`)

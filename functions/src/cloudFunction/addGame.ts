@@ -1,28 +1,28 @@
-import guardCurrentuid from '../guard/currentUid'
 import { createCloudFunction } from '../create/cloudFunction'
 import { createId } from '../create/id'
 import { gamesRef } from '../db'
 import { createEvent } from '../create/event'
 import { serverTimestamp } from 'firelord'
-import { AddGameProps } from '../types'
+import { Game } from '../types'
+import guardCurrentUser from '../guard/current/user'
 
-const addGame = createCloudFunction<AddGameProps>(async (props, context, transaction) => {
-  guardCurrentuid({ context })
+const addGame = createCloudFunction(async (props, context, transaction) => {
+  console.log('Adding game...')
+  const { currentUser } = await guardCurrentUser({ context, transaction })
   const id = createId()
-  const newData = {
+  const newData: Game['write'] = {
     name: id,
     createdAt: serverTimestamp(),
     phase: 'join',
-    userIds: [],
+    users: [],
     court: [],
     dungeon: [],
     timeline: [],
-    history: [createEvent(`${props.displayName} created game ${id}`)],
+    history: [createEvent(`${currentUser.displayName} created game ${id}.`)],
     readyCount: 0
   }
   const gameRef = gamesRef.doc(id)
-  console.log(`adding game ${id}...`)
   transaction.create(gameRef, newData)
-  console.log('game added!')
+  console.log(`Added game with id ${id}`)
 })
 export default addGame

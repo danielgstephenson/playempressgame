@@ -16,7 +16,7 @@ export default function GamesView (): JSX.Element {
         Games
         {' '}
         <Curtain open={authState.authed}>
-          <Action label='Add Game' fn='addGame' props={{ displayName: authState.displayName }} />
+          <Action label='Add Game' fn='addGame' />
         </Curtain>
       </Heading>
       <Curtain open={authState.authed} hider={warning}>
