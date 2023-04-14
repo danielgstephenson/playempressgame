@@ -4,7 +4,7 @@ import { createEvent } from '../create/event'
 import { PlayUnreadyProps } from '../types'
 import { arrayUnion, increment } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'
-import updateOtherPlayers from '../update/players'
+import updateOtherPlayers from '../update/otherPlayers'
 
 const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context, transaction) => {
   const {

@@ -8,7 +8,7 @@ import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
-import updateOtherPlayers from '../update/players'
+import updateOtherPlayers from '../update/otherPlayers'
 import getQuery from '../getQuery'
 
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {

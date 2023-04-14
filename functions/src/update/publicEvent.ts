@@ -1,7 +1,7 @@
 import { Transaction } from 'firelord'
 import { Game } from '../types'
 import createEventUpdate from '../create/eventUpdate'
-import updateOtherPlayers from './players'
+import updateOtherPlayers from './otherPlayers'
 import { gamesRef } from '../db'
 
 export default function updatePublicEvent ({ currentUid, message, gameId, gameData, transaction }: {
