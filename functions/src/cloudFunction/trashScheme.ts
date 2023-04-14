@@ -1,7 +1,6 @@
 import { createCloudFunction } from '../create/cloudFunction'
 import guardPlayId from '../guard/playId'
 import guardCurrentPlayer from '../guard/currentPlayer'
-import { gamesLord } from '../db'
 import { createEvent } from '../create/event'
 import { TrashSchemeProps } from '../types'
 import guardDefined from '../guard/defined'
@@ -10,7 +9,7 @@ import createEventUpdate from '../create/eventUpdate'
 import updateOtherPlayers from '../updatePlayers'
 
 const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context, transaction) => {
-  const { currentUid, gameData, playerRef, playerData, profileRef } = await guardCurrentPlayer({
+  const { currentUid, gameData, gameRef, playerRef, playerData, profileRef } = await guardCurrentPlayer({
     gameId: props.gameId,
     transaction,
     context
@@ -18,7 +17,6 @@ const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context,
   console.log('playerData test:', playerData)
   console.log('props.schemeId test:', props.schemeId)
   guardPlayId({ hand: playerData.hand, id: props.schemeId })
-  const gameRef = gamesLord.doc(props.gameId)
   console.log(`trashing scheme with id ${props.schemeId}...`)
   const trashScheme = playerData.hand.find((scheme) => scheme.id === props.schemeId)
   const scheme = guardDefined(trashScheme, 'Trash Scheme')

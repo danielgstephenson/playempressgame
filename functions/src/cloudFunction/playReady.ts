@@ -1,10 +1,10 @@
 import { createCloudFunction } from '../create/cloudFunction'
 import guardCurrentPlayer from '../guard/currentPlayer'
 import guardDocData from '../guard/docData'
-import { gamesLord, playersLord, profilesLord } from '../db'
+import { gamesRef, playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import { createEvent } from '../create/event'
-import { HistoryEvent, PlayReadyProps, Scheme } from '../types'
+import { PlayReadyProps, Player } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -17,7 +17,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     transaction,
     context
   })
-  const gameRef = gamesLord.doc(props.gameId)
+  const gameRef = gamesRef.doc(props.gameId)
   const gameData = await guardDocData({
     docRef: gameRef,
     transaction
@@ -37,10 +37,10 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   console.log(`Setting ${currentUid} ready...`)
   const realReadyCount = gameData.readyCount + 1
   const waiting = realReadyCount < gameData.userIds.length
-  const youEvent = createEvent('You are ready')
+  const youEvent = createEvent('You are ready.')
   const youUpdate = createHistoryUpdate(youEvent)
   if (waiting) {
-    const displayNameUpdate = createEventUpdate(`${playerData.displayName} is ready`)
+    const displayNameUpdate = createEventUpdate(`${playerData.displayName} is ready.`)
     transaction.update(gameRef, {
       readyCount: increment(1),
       ...displayNameUpdate
@@ -59,20 +59,9 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   }
   const whereGameId = where('gameId', '==', props.gameId)
   const whereUserId = where('userId', '!=', currentUid)
-  const otherPlayersQuery = query(playersLord.collection(), whereGameId, whereUserId)
+  const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
   const otherPlayers = await transaction.get(otherPlayersQuery)
-  const otherPlayersData: Array<{
-    userId: string
-    gameId: string
-    hand: Scheme[]
-    deck: Scheme[]
-    discard: Scheme[]
-    history: HistoryEvent[]
-    displayName: string
-    trashId: string | undefined
-    playId: string | undefined
-    id: string
-  }> = []
+  const otherPlayersData: Array<Player['read'] & { id: string }> = []
   otherPlayers.forEach(otherPlayer => {
     const otherPlayerData = otherPlayer.data()
     otherPlayersData.push({
@@ -84,40 +73,39 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   const allPlayersData = [...otherPlayersData, currentPlayer]
   const publicEvents = allPlayersData.map(player => {
     const playScheme = guardHandScheme({
-      hand: player.hand, schemeId: player.playId, label: 'Play Scheme'
+      hand: player.hand, schemeId: player.playId, label: 'Play scheme'
     })
     return {
       id: player.id,
-      event: createEvent(`${player.displayName} played scheme ${playScheme.rank}`)
+      event: createEvent(`${player.displayName} played scheme ${playScheme.rank}.`)
     }
   })
   function play ({ data: playData, id }: {
     data: any
     id: string
   }): void {
-    const playerRef = playersLord.doc(id)
+    const playerRef = playersRef.doc(id)
     const current = id === playerId
-    const lastEvent = current ? youEvent : createEvent(`${playerData.displayName} is ready`)
+    const lastEvent = current ? youEvent : createEvent(`${playerData.displayName} is ready.`)
     const playEvents = publicEvents.filter(event => event.id !== id).map(event => event.event)
-    const trashScheme = guardHandScheme({ hand: playData.hand, schemeId: playData.trashId, label: 'Trash Scheme' })
-    const playScheme = guardHandScheme({ hand: playData.hand, schemeId: playData.playId, label: 'Play Scheme' })
+    const trashScheme = guardHandScheme({ hand: playData.hand, schemeId: playData.trashId, label: 'Trash scheme' })
+    const playScheme = guardHandScheme({ hand: playData.hand, schemeId: playData.playId, label: 'Play scheme' })
     transaction.update(playerRef, {
       hand: playData.hand.filter((scheme: any) => scheme.id !== playData.trashId),
       trashId: deleteField(),
       history: arrayUnion(
         lastEvent,
-        createEvent('Everyone is ready'),
-        createEvent(`You trashed scheme ${trashScheme.rank}`),
+        createEvent('Everyone is ready.'),
+        createEvent(`You trashed scheme ${trashScheme.rank}.`),
         ...playEvents,
-        createEvent(`You played scheme ${playScheme.rank}`)
+        createEvent(`You played scheme ${playScheme.rank}.`)
       )
     })
-    const profileRef = profilesLord.doc(id)
-    if (!current) {
-      transaction.update(profileRef, {
-        ready: false
-      })
-    }
+    const profileRef = profilesRef.doc(id)
+    transaction.update(profileRef, {
+      ready: false,
+      trashEmpty: true
+    })
   }
   otherPlayers.forEach(otherPlayer => {
     play({ data: otherPlayer.data(), id: otherPlayer.id })
@@ -125,7 +113,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   play({ data: playerData, id: playerId })
   transaction.update(gameRef, {
     history: arrayUnion(
-      createEvent('Everyone is ready')
+      createEvent('Everyone is ready.')
     ),
     readyCount: 0
   })

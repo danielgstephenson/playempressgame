@@ -1,6 +1,6 @@
 import { https } from 'firebase-functions'
 import { Transaction } from 'firelord'
-import { playersLord, profilesLord } from '../db'
+import { playersRef, profilesRef } from '../db'
 import { PlayerGuard as CurrentPlayerGuard } from '../types'
 import guardDocData from './docData'
 import guardJoinedGame from './joinedGame'
@@ -24,11 +24,11 @@ export default async function guardCurrentPlayer ({
     )
   }
   const playerId = `${currentUid}_${gameId}`
-  const playerRef = playersLord.doc(playerId)
+  const playerRef = playersRef.doc(playerId)
   const playerData = await guardDocData({
     docRef: playerRef,
     transaction
   })
-  const profileRef = profilesLord.doc(playerId)
+  const profileRef = profilesRef.doc(playerId)
   return { currentUid, gameData, gameRef, playerRef, playerData, playerId, profileRef }
 }

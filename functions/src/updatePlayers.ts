@@ -1,5 +1,5 @@
 import { Transaction } from 'firelord'
-import { playersLord } from './db'
+import { playersRef } from './db'
 import { HistoryUpdate } from './types'
 
 export default function updateOtherPlayers ({ currentUid, gameId, transaction, userIds, update }: {
@@ -12,7 +12,7 @@ export default function updateOtherPlayers ({ currentUid, gameId, transaction, u
   userIds.forEach((userId) => {
     if (userId === currentUid) return
     const playerId = `${userId}_${gameId}`
-    const playerRef = playersLord.doc(playerId)
+    const playerRef = playersRef.doc(playerId)
     transaction.update(playerRef, update)
   })
 }

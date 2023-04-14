@@ -3,7 +3,7 @@ import guardDocData from '../guard/docData'
 import guardJoinPhase from '../guard/joinPhase'
 import { createCloudFunction } from '../create/cloudFunction'
 import { createRange } from '../create/range'
-import { green, playersLord, profilesLord, red, usersLord, yellow } from '../db'
+import { green, playersRef, profilesRef, red, usersRef, yellow } from '../db'
 import { createScheme } from '../create/scheme'
 import { createEvent } from '../create/event'
 import guardJoinedGame from '../guard/joinedGame'
@@ -30,7 +30,7 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   guardJoinPhase({ gameData })
   const idField = documentId()
   const whereId = where(idField, 'in', gameData.userIds)
-  const q = query(usersLord.collection(), whereId)
+  const q = query(usersRef.collection(), whereId)
   const snapshot = await transaction.get(q)
   const users = snapshot.docs.map(docSnapshot => {
     const data = docSnapshot.data()
@@ -114,9 +114,9 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
       displayName: user.displayName
     }
     const playerId = `${user.id}_${props.gameId}`
-    const playerRef = playersLord.doc(playerId)
+    const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData, { merge: true })
-    const profileRef = profilesLord.doc(playerId)
+    const profileRef = profilesRef.doc(playerId)
     transaction.update(profileRef, {
       topDiscardScheme,
       deckEmpty: false,

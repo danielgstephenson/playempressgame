@@ -3,19 +3,19 @@ import guardCurrentUid from '../guard/currentUid'
 import guardDocData from '../guard/docData'
 import guardJoinPhase from '../guard/joinPhase'
 import { createCloudFunction } from '../create/cloudFunction'
-import { gamesLord, profilesLord, usersLord } from '../db'
+import { gamesRef, profilesRef, usersRef } from '../db'
 import { createEvent } from '../create/event'
 import { JoinGameProps } from '../types'
 import { arrayUnion } from 'firelord'
 
 const joinGame = createCloudFunction<JoinGameProps>(async (props, context, transaction) => {
   const currentUid = guardCurrentUid({ context })
-  const gameRef = gamesLord.doc(props.gameId)
+  const gameRef = gamesRef.doc(props.gameId)
   const gameData = await guardDocData({
     docRef: gameRef,
     transaction
   })
-  const userRef = usersLord.doc(currentUid)
+  const userRef = usersRef.doc(currentUid)
   const userData = await guardDocData({
     docRef: userRef,
     transaction
@@ -29,7 +29,7 @@ const joinGame = createCloudFunction<JoinGameProps>(async (props, context, trans
   guardJoinPhase({ gameData })
   console.log(`joining game ${props.gameId}...`)
   const profileId = `${currentUid}_${props.gameId}`
-  const profileRef = profilesLord.doc(profileId)
+  const profileRef = profilesRef.doc(profileId)
   transaction.set(profileRef, {
     userId: currentUid,
     gameId: props.gameId,
