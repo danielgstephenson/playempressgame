@@ -30,7 +30,7 @@ export interface WriteState {
 }
 
 export interface WriterComponentProps {
-  onClick: () => void
+  onClick?: () => void
   label: string
   loading: boolean
   error?: Error

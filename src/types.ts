@@ -1,4 +1,14 @@
+import { Auth, User } from 'firebase/auth'
 import { HttpsCallableResult } from 'firebase/functions'
+
+export interface AuthState {
+  auth?: Auth
+  authed?: boolean
+  currentUser?: User | null
+  currentUserLoading?: Boolean
+  currentUserError?: Error | undefined
+  displayName?: string
+}
 
 export interface Doc {
   id?: string
