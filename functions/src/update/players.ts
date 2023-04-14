@@ -1,6 +1,6 @@
 import { Transaction } from 'firelord'
-import { playersRef } from './db'
-import { GameUser, HistoryUpdate } from './types'
+import { playersRef } from '../db'
+import { GameUser, HistoryUpdate } from '../types'
 
 export default function updateOtherPlayers ({ currentUid, gameId, transaction, users, update }: {
   currentUid: string

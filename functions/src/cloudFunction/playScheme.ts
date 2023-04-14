@@ -3,14 +3,12 @@ import guardCurrentHand from '../guard/current/hand'
 import { createEvent } from '../create/event'
 import { PlaySchemeProps } from '../types'
 import { arrayUnion } from 'firelord'
-import updateOtherPlayers from '../updatePlayers'
-import createEventUpdate from '../create/eventUpdate'
+import updatePublicEvent from '../update/publicEvent'
 
 const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
   console.log(`playing scheme with id ${props.schemeId}...`)
   const {
     currentGameData,
-    currentGameRef,
     currentUid,
     currentPlayerRef,
     currentPlayerData,
@@ -33,15 +31,12 @@ const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, t
     playEmpty: false,
     ready: false
   })
-  const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is playing a scheme`)
-  transaction.update(currentGameRef, displayNameUpdate)
-  updateOtherPlayers({
+  updatePublicEvent({
     currentUid,
     gameId: props.gameId,
     transaction,
-    users: currentGameData.users,
-    update: displayNameUpdate
+    gameData: currentGameData,
+    message: `${currentPlayerData.displayName} is playing a scheme.`
   })
-  console.log(`played scheme with id ${props.schemeId}!`)
 })
 export default playScheme

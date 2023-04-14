@@ -25,13 +25,18 @@ export interface HistoryEvent {
   timestamp: number
 }
 
+export interface GameUser {
+  id: string
+  displayName: string
+}
+
 export interface Game extends Doc {
   name: string
   phase: string
   timeline: Scheme[]
   court: Scheme[]
   dungeon: Scheme[]
-  userIds: string[]
+  users: GameUser[]
   readyCount: number
   history: HistoryEvent[]
   createdAt: {

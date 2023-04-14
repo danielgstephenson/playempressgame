@@ -8,7 +8,7 @@ import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
-import updateOtherPlayers from '../updatePlayers'
+import updateOtherPlayers from '../update/players'
 import getQuery from '../getQuery'
 
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
@@ -16,6 +16,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     currentGameRef,
     currentGameData,
     currentUid,
+    currentPlayer,
     currentPlayerData,
     currentPlayerRef,
     currentPlayerId,
@@ -64,7 +65,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   const whereUserId = where('userId', '!=', currentUid)
   const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
   const otherPlayers = await getQuery({ query: otherPlayersQuery, transaction })
-  const currentPlayer = { id: currentPlayerId, ...currentPlayerData }
   const allPlayers = [...otherPlayers, currentPlayer]
   const publicEvents = allPlayers.map(player => {
     const playScheme = guardHandScheme({
@@ -99,10 +99,8 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       trashEmpty: true
     })
   }
-  otherPlayers.forEach(otherPlayer => {
-    play(otherPlayer)
-  })
-  play({ ...currentPlayerData, id: currentPlayerId })
+  otherPlayers.forEach(play)
+  play(currentPlayer)
   transaction.update(currentGameRef, {
     history: arrayUnion(
       createEvent('Everyone is ready.')
