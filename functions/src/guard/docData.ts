@@ -1,11 +1,11 @@
-import { https } from "firebase-functions/v1";
-import { DocumentReference, MetaType, Transaction } from "firelord";
+import { https } from 'firebase-functions'
+import { DocumentReference, MetaType, Transaction } from 'firelord'
 
 export default async function guardDocData <T extends MetaType> ({
   docRef,
   transaction
-} : {
-  docRef: DocumentReference<T>,
+}: {
+  docRef: DocumentReference<T>
   transaction: Transaction
 }): Promise<T['read']> {
   const doc = await transaction.get(docRef)

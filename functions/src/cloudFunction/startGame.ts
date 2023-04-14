@@ -1,16 +1,15 @@
-import { https } from "firebase-functions/v1"
-import guardDocData from "../guard/docData"
-import guardJoinPhase from "../guard/joinPhase"
-import { createCloudFunction } from "../create/cloudFunction"
-import { createRange } from "../create/range"
-import { green, playersLord, profilesLord, red, usersLord, yellow } from "../db"
-import { createScheme } from "../create/scheme"
-import admin from 'firebase-admin';
-import { createEvent } from "../create/event"
-import guardJoinedGame from "../guard/joinedGame"
-import { arrayUnion, documentId, query, where } from "firelord"
-import guardDefined from "../guard/defined"
-import { StartGameProps } from "../types"
+import { https } from 'firebase-functions/v1'
+import guardDocData from '../guard/docData'
+import guardJoinPhase from '../guard/joinPhase'
+import { createCloudFunction } from '../create/cloudFunction'
+import { createRange } from '../create/range'
+import { green, playersLord, profilesLord, red, usersLord, yellow } from '../db'
+import { createScheme } from '../create/scheme'
+import { createEvent } from '../create/event'
+import guardJoinedGame from '../guard/joinedGame'
+import { arrayUnion, documentId, query, where } from 'firelord'
+import guardDefined from '../guard/defined'
+import { StartGameProps } from '../types'
 
 const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
   const { gameData, gameRef, userRef } = await guardJoinedGame({
@@ -40,7 +39,7 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
       ...data
     }
   })
-  console.log(`starting game...`)
+  console.log('starting game...')
   const range = createRange(26) // [0..25]
   console.log('range test:', range)
   const separated = [1, 7]
@@ -78,7 +77,7 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const courtScheme = createScheme(court)
   const dungeonScheme = createScheme(dungeon)
   const startEvent = createEvent(`${userData.displayName} started game ${props.gameId}`)
-  transaction.update(gameRef,{
+  transaction.update(gameRef, {
     phase: 'play',
     court: [courtScheme],
     dungeon: [dungeonScheme],
@@ -99,18 +98,18 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const discardIndex = sortedPortfolio.length - 1
   const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top Discard')
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
-  users.forEach( (user : any) => {
+  users.forEach((user) => {
     const topDeckScheme = createScheme(topDeck)
-    const topDiscardScheme = createScheme(topDiscard) 
+    const topDiscardScheme = createScheme(topDiscard)
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
-    const playerData = { 
-      userId: user.id, 
-      gameId: props.gameId, 
-      hand: handSchemes, 
-      deck, 
-      discard, 
+    const playerData = {
+      userId: user.id,
+      gameId: props.gameId,
+      hand: handSchemes,
+      deck,
+      discard,
       history: [...gameData.history, startEvent],
       displayName: user.displayName
     }
@@ -118,7 +117,7 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
     const playerRef = playersLord.doc(playerId)
     transaction.set(playerRef, playerData, { merge: true })
     const profileRef = profilesLord.doc(playerId)
-    transaction.update(profileRef,{
+    transaction.update(profileRef, {
       topDiscardScheme,
       deckEmpty: false,
       gold: 40

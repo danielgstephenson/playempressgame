@@ -1,21 +1,22 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayerData from "../guard/playerData"
-import { createEvent } from "../create/event"
-import { playersLord } from "../db"
-import { UnplaySchemeProps } from "../types"
-import guardHandScheme from "../guard/handScheme"
-import { arrayUnion, deleteField } from "firelord"
+import { createCloudFunction } from '../create/cloudFunction'
+import guardCurrentPlayer from '../guard/currentPlayer'
+import { createEvent } from '../create/event'
+import { UnplaySchemeProps } from '../types'
+import guardHandScheme from '../guard/handScheme'
+import { arrayUnion, deleteField } from 'firelord'
+import createEventUpdate from '../create/eventUpdate'
+import updateOtherPlayers from '../updatePlayers'
 
 const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, context, transaction) => {
   console.log('props.gameId', props.gameId)
-  const { currentUid, gameData, gameRef, playerRef, profileRef, playerData } = await guardPlayerData({
+  const { currentUid, gameData, gameRef, playerRef, profileRef, playerData } = await guardCurrentPlayer({
     gameId: props.gameId,
     transaction,
     context
   })
   console.log('playerRef', playerRef)
-  console.log(`unplaying scheme...`)
-  const unplayScheme = guardHandScheme({ hand: playerData.hand, schemeId: props.schemeId })
+  console.log('unplaying scheme...')
+  const unplayScheme = guardHandScheme({ hand: playerData.hand, schemeId: props.schemeId, label: 'unplay scheme' })
   transaction.update(playerRef, {
     playId: deleteField(),
     history: arrayUnion(
@@ -26,17 +27,14 @@ const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, contex
     playEmpty: true,
     ready: false
   })
-  const unplayEvent = createEvent(`${playerData.displayName} returned their scheme from play.`)
-  transaction.update(gameRef, {
-    history: arrayUnion(unplayEvent)
-  })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersLord.doc(playerId)
-    transaction.update(playerRef, {
-      history: arrayUnion(unplayEvent)
-    })
+  const displayNameUpdate = createEventUpdate(`${playerData.displayName} returned their scheme from play.`)
+  transaction.update(gameRef, displayNameUpdate)
+  updateOtherPlayers({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    userIds: gameData.userIds,
+    update: displayNameUpdate
   })
   console.log('unplayed scheme!')
 })

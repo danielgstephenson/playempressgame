@@ -1,6 +1,6 @@
 import { deleteDoc } from 'firelord'
-import { auth } from "firebase-functions"
-import { usersLord } from "../db"
+import { auth } from 'firebase-functions'
+import { usersLord } from '../db'
 
 const onDeleteUser = auth.user().onDelete(async user => {
   console.log(`deleting ${user.uid}...`)

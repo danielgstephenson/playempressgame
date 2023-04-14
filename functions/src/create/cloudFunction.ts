@@ -1,13 +1,13 @@
-import { https, runWith } from "firebase-functions/v1"
+import { HttpsFunction, https, runWith } from 'firebase-functions'
 import { Transaction, runTransaction } from 'firelord'
 
 export function createCloudFunction <T> (
   callback: (
-    props: T, 
-    context: https.CallableContext, 
+    props: T,
+    context: https.CallableContext,
     transaction: Transaction
   ) => Promise<any>
-) {
+): HttpsFunction {
   return runWith({
     enforceAppCheck: true
   }).https.onCall(async (props, context) => {
@@ -17,8 +17,8 @@ export function createCloudFunction <T> (
         'The function must be called from an App Check verified app.'
       )
     }
-    return runTransaction(async transaction => {
-      return callback(props, context, transaction)
+    return await runTransaction(async transaction => {
+      return await callback(props, context, transaction)
     })
   })
 }

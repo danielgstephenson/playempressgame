@@ -1,10 +1,10 @@
-import guardCurrentuid from "../guard/currentUid"
-import { createCloudFunction } from "../create/cloudFunction"
-import { createId } from "../create/id"
-import { gamesLord } from "../db"
-import { createEvent } from "../create/event"
+import guardCurrentuid from '../guard/currentUid'
+import { createCloudFunction } from '../create/cloudFunction'
+import { createId } from '../create/id'
+import { gamesLord } from '../db'
+import { createEvent } from '../create/event'
 import { serverTimestamp } from 'firelord'
-import { AddGameProps } from "../types"
+import { AddGameProps } from '../types'
 
 const addGame = createCloudFunction<AddGameProps>(async (props, context, transaction) => {
   guardCurrentuid({ context })

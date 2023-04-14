@@ -1,7 +1,7 @@
-import { auth } from "firebase-functions"
-import { createDoc } from "firelord"
-import { createId } from "../create/id"
-import { adminAuth, usersLord } from "../db"
+import { auth } from 'firebase-functions'
+import { createDoc } from 'firelord'
+import { createId } from '../create/id'
+import { adminAuth, usersLord } from '../db'
 
 const onCreateUser = auth.user().onCreate(async user => {
   const displayName = createId()

@@ -1,17 +1,17 @@
-import { https } from "firebase-functions"
-import { Transaction } from "firelord"
-import { playersLord, profilesLord } from "../db"
-import { PlayerGuard } from "../types"
-import guardDocData from "./docData"
-import guardJoinedGame from "./joinedGame"
+import { https } from 'firebase-functions'
+import { Transaction } from 'firelord'
+import { playersLord, profilesLord } from '../db'
+import { PlayerGuard as CurrentPlayerGuard } from '../types'
+import guardDocData from './docData'
+import guardJoinedGame from './joinedGame'
 
-export default async function guardPlayerData ({
+export default async function guardCurrentPlayer ({
   context, transaction, gameId
 }: {
   context: https.CallableContext
   transaction: Transaction
   gameId: string
-}): Promise<PlayerGuard> {
+}): Promise<CurrentPlayerGuard> {
   const { currentUid, gameData, gameRef } = await guardJoinedGame({
     context,
     gameId,

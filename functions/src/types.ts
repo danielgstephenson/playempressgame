@@ -1,4 +1,5 @@
 import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, PossiblyReadAsUndefined } from 'firelord'
+import { ArrayUnionOrRemove } from 'firelord/dist/types'
 
 export interface HistoryEvent {
   message: string
@@ -11,26 +12,24 @@ export interface Scheme {
   rank: number
 }
 
-export type GameData = {
-  name: string,
-  createdAt: ServerTimestamp,
-  phase: string,
-  userIds: string[],
-  court: Scheme[],
-  dungeon: Scheme[],
-  timeline: Scheme[],
-  history: HistoryEvent[],
+export type Game = MetaTypeCreator<{
+  name: string
+  createdAt: ServerTimestamp
+  phase: string
+  userIds: string[]
+  court: Scheme[]
+  dungeon: Scheme[]
+  timeline: Scheme[]
+  history: HistoryEvent[]
   readyCount: number
-}
-export type Game = MetaTypeCreator<GameData, 'games', string>
+}, 'games', string>
 
-export type UserData = {
+export type User = MetaTypeCreator<{
   displayName: string
   uid: string
-}
-export type User = MetaTypeCreator<UserData, 'users', string>
+}, 'users', string>
 
-export type ProfileData = {
+export type Profile = MetaTypeCreator<{
   userId: string
   gameId: string
   deckEmpty: boolean | PossiblyReadAsUndefined
@@ -40,10 +39,9 @@ export type ProfileData = {
   trashEmpty: boolean | DeleteField
   playEmpty: boolean | DeleteField
   ready: boolean | DeleteField
-}
-export type Profile = MetaTypeCreator<ProfileData, 'profiles', string>
+}, 'profiles', string>
 
-export type PlayerData = {
+export type Player = MetaTypeCreator<{
   userId: string
   gameId: string
   hand: Scheme[]
@@ -53,8 +51,7 @@ export type PlayerData = {
   displayName: string
   trashId: string | DeleteField
   playId: string | DeleteField
-}
-export type Player = MetaTypeCreator<PlayerData, 'players', string>
+}, 'players', string>
 
 export interface JoinedGameGuard {
   gameData: Game['read']
@@ -70,7 +67,7 @@ export interface PlayerGuard {
   playerData: Player['read']
   playerId: string
   playerRef: DocumentReference<Player>
-  profileRef: DocumentReference<Profile> 
+  profileRef: DocumentReference<Profile>
 }
 
 export interface AddGameProps {
@@ -111,4 +108,8 @@ export interface PlayReadyProps {
 
 export interface PlayUnreadyProps {
   gameId: string
+}
+
+export interface HistoryUpdate {
+  history: ArrayUnionOrRemove<HistoryEvent>
 }

@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/yeast": "^0.1.1",
+    "ts-standard": "^12.0.2",
     "typescript": "^5.0.4"
   },
   "private": true

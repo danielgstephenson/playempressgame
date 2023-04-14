@@ -1,13 +1,13 @@
-import { https } from "firebase-functions";
+import { https } from 'firebase-functions'
+import { Game } from '../types'
 
-
-export default function guardUserJoined({
+export default function guardUserJoined ({
   gameData,
   userId
-}:{
-  gameData: any
+}: {
+  gameData: Game['read']
   userId: string
-}) {
+}): void {
   if (!gameData.userIds.includes(userId)) {
     throw new https.HttpsError(
       'failed-precondition',

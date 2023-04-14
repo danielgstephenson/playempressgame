@@ -1,14 +1,16 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayId from "../guard/playId"
-import guardPlayerData from "../guard/playerData"
-import { gamesLord, playersLord } from "../db"
-import { createEvent } from "../create/event"
-import { TrashSchemeProps } from "../types"
-import guardDefined from "../guard/defined"
-import { arrayUnion } from "firelord"
+import { createCloudFunction } from '../create/cloudFunction'
+import guardPlayId from '../guard/playId'
+import guardCurrentPlayer from '../guard/currentPlayer'
+import { gamesLord } from '../db'
+import { createEvent } from '../create/event'
+import { TrashSchemeProps } from '../types'
+import guardDefined from '../guard/defined'
+import { arrayUnion } from 'firelord'
+import createEventUpdate from '../create/eventUpdate'
+import updateOtherPlayers from '../updatePlayers'
 
 const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context, transaction) => {
-  const { currentUid, gameData, playerRef, playerData, profileRef } = await guardPlayerData({
+  const { currentUid, gameData, playerRef, playerData, profileRef } = await guardCurrentPlayer({
     gameId: props.gameId,
     transaction,
     context
@@ -30,17 +32,14 @@ const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context,
     trashEmpty: false,
     ready: false
   })
-  const trashEvent = createEvent(`${playerData.displayName} is trashing a scheme`)
-  transaction.update(gameRef, {
-    history: arrayUnion(trashEvent)
-  })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersLord.doc(playerId)
-    transaction.update(playerRef, {
-      history: arrayUnion(trashEvent)
-    })
+  const displayNameUpdate = createEventUpdate(`${playerData.displayName} is trashing a scheme`)
+  transaction.update(gameRef, displayNameUpdate)
+  updateOtherPlayers({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    userIds: gameData.userIds,
+    update: displayNameUpdate
   })
   console.log(`trashed scheme with id ${props.schemeId}!`)
 })
