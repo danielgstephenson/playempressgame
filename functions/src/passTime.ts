@@ -1,11 +1,14 @@
+import { DocumentReference, Transaction } from 'firelord'
 import { createEvent } from './create/event'
 import guardHandScheme from './guard/handScheme'
 import guardTime from './guard/time'
-import { PassTime, Player, Scheme } from './types'
+import { Game, PassTime, Player, Scheme } from './types'
 
-export default function passTime ({ allPlayers, timeline }: {
+export default function passTime ({ allPlayers, gameRef, timeline, transaction }: {
   allPlayers: Array<Player['read']>
+  gameRef: DocumentReference<Game>
   timeline: Scheme[]
+  transaction: Transaction
 }): PassTime {
   const totalTime = allPlayers.reduce((total, player) => {
     const playScheme = guardHandScheme({
@@ -14,7 +17,7 @@ export default function passTime ({ allPlayers, timeline }: {
     const time = guardTime(playScheme.rank)
     return total + time
   }, 0)
-  const totalMessage = `The total time is ${totalTime}, `
+  const totalMessage = `The total time is ${totalTime}`
   const timePasses = totalTime > allPlayers.length
   if (timePasses) {
     const [passed, ...remaining] = timeline
@@ -28,6 +31,9 @@ export default function passTime ({ allPlayers, timeline }: {
   }
   const timeResult = `not more than the ${allPlayers.length} players, so time does not pass.`
   const timeEvent = createEvent(`The total time is ${totalTime}, ${timeResult}`)
+  transaction.update(gameRef, {
+    timeline
+  })
   return {
     passedTimeline: timeline,
     timeEvent

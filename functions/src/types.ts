@@ -1,5 +1,5 @@
 import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, PossiblyReadAsUndefined } from 'firelord'
-import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
+import { ArrayUnionOrRemove, MetaType, Transaction } from 'firelord/dist/types'
 
 export interface HistoryEvent {
   message: string
@@ -133,3 +133,16 @@ export interface PassTime {
   passedTimeline: Scheme[]
   timeEvent: HistoryEvent
 }
+
+export interface SchemeEffectProps {
+  allPlayers: Array<Player['read']>
+  currentPlayer: Player['read']
+  gameData: Game['read']
+  gameRef: DocumentReference<Game>
+  hand: Scheme[]
+  passedTimeline: Scheme[]
+  playerRef: DocumentReference<Player>
+  transaction: Transaction
+}
+
+export type SchemeEffect = (props: SchemeEffectProps) => void
