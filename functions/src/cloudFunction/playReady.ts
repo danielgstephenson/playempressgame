@@ -12,14 +12,6 @@ import updateOtherPlayers from '../update/otherPlayers'
 import getQuery from '../getQuery'
 import passTime from '../passTime'
 
-type Enumerate<N extends number, Acc extends number[] = []> = Acc['length'] extends N
-  ? Acc[number]
-  : Enumerate<N, [...Acc, Acc['length']]>
-
-type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>
-
-type T = IntRange<20, 300>
-
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
   const {
     currentGameRef,
@@ -97,7 +89,9 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const playEvents = publicEvents.filter(event => event.id !== result.id).map(event => event.event)
     const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashId, label: 'Trash scheme' })
     const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playId, label: 'Play scheme' })
+
     const time = times[playScheme.rank]
+
     transaction.update(playerRef, {
       hand: result.hand.filter((scheme: any) => scheme.id !== result.trashId),
       trashId: deleteField(),
