@@ -128,3 +128,8 @@ export interface CurrentUserGuard {
   currentUid: string
   currentUser: Result<User>
 }
+
+export interface PassTime {
+  passedTimeline: Scheme[]
+  timeEvent: HistoryEvent
+}
