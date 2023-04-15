@@ -7,9 +7,12 @@ export interface HistoryEvent {
   timestamp: number
 }
 
+export type SchemeColor = 'yellow' | 'green' | 'red'
+
 export interface Scheme {
   id: string
   rank: number
+  color: SchemeColor
 }
 
 export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
@@ -19,16 +22,22 @@ export interface GameUser {
   displayName: string
 }
 
+export interface Choice {
+  playerId: string
+  type: 'trash'
+}
+
 export type Game = MetaTypeCreator<{
-  name: string
+  choices: Choice[]
   createdAt: ServerTimestamp
-  phase: string
-  users: GameUser[]
-  history: HistoryEvent[]
   court: Scheme[]
   dungeon: Scheme[]
-  timeline: Scheme[]
+  history: HistoryEvent[]
+  name: string
+  phase: string
   readyCount: number
+  timeline: Scheme[]
+  users: GameUser[]
 }, 'games', string>
 
 export type User = MetaTypeCreator<{
@@ -136,7 +145,7 @@ export interface PassTime {
 
 export interface SchemeEffectProps {
   allPlayers: Array<Player['read']>
-  currentPlayer: Player['read']
+  playerData: Player['read']
   gameData: Game['read']
   gameRef: DocumentReference<Game>
   hand: Scheme[]
@@ -146,3 +155,14 @@ export interface SchemeEffectProps {
 }
 
 export type SchemeEffect = (props: SchemeEffectProps) => void
+
+export interface DrawResult {
+  drawnList: Scheme[]
+  drawnDeck: Scheme[]
+  drawnDiscard: Scheme[]
+}
+
+export interface ReviveResult {
+  revivedList: Scheme[]
+  revivedDiscard: Scheme[]
+}

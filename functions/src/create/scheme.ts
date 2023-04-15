@@ -1,6 +1,8 @@
 import { Scheme } from '../types'
+import createColor from './color'
 import { createId } from './id'
 
 export function createScheme (rank: number): Scheme {
-  return { id: createId(), rank }
+  const color = createColor(rank)
+  return { id: createId(), rank, color }
 }

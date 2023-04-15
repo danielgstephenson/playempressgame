@@ -1,30 +1,23 @@
-import { DocumentReference, Transaction, arrayUnion } from 'firelord'
-import { createScheme } from '../create/scheme'
-import { Game, Player, Scheme } from '../types'
+import { arrayUnion } from 'firelord'
+import { SchemeEffectProps } from '../types'
+import createPrivelege from '../create/privelege'
 
 export default function effectZero ({
   allPlayers,
-  currentPlayer,
+  playerData,
   gameData,
   gameRef,
   hand,
   passedTimeline,
   playerRef,
   transaction
-}: {
-  allPlayers: Array<Player['read']>
-  currentPlayer: Player['read']
-  gameData: Game['read']
-  gameRef: DocumentReference<Game>
-  hand: Scheme[]
-  passedTimeline: Scheme[]
-  playerRef: DocumentReference<Player>
-  transaction: Transaction
-}): void {
-  const privelegeRanks = [1, 1, 1, 1, 1, 1, 1, 1]
-  const privelegeSchemes = privelegeRanks.map(createScheme)
+}: SchemeEffectProps): void {
+  const drawSchemes = createPrivelege(8)
+  const drawnHand = [...hand, ...drawSchemes]
 
+  const deckSchemes = createPrivelege(2)
   transaction.update(playerRef, {
-    hand: arrayUnion(...privelegeSchemes)
+    hand: drawnHand,
+    deck: arrayUnion(...deckSchemes)
   })
 }

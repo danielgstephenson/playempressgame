@@ -116,7 +116,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const effect = guardEffect(playScheme.rank)
     effect({
       allPlayers,
-      currentPlayer,
+      playerData: result,
       gameData: currentGameData,
       gameRef: currentGameRef,
       hand: playedHand,
