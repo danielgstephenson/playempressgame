@@ -1,44 +1,42 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayId from "../guard/playId"
-import guardPlayDocs from "../guard/playDocs"
-import { firestore } from "firebase-admin"
-import { createEvent } from "../create/event"
-import { gamesRef, playersRef } from "../db"
+import { createCloudFunction } from '../create/cloudFunction'
+import guardCurrentHand from '../guard/current/hand'
+import { createEvent } from '../create/event'
+import { PlaySchemeProps } from '../types'
+import { arrayUnion } from 'firelord'
+import updatePublicEvent from '../update/publicEvent'
 
-const playScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, playerData, profileRef, gameData, currentUid} = await guardPlayDocs({
+const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
+  console.log(`playing scheme with id ${props.schemeId}...`)
+  const {
+    currentGameData,
+    currentUid,
+    currentPlayerRef,
+    currentPlayerData,
+    currentProfileRef,
+    scheme: playScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Play Scheme'
   })
-  guardPlayId({ hand: playerData.hand, id: props.id })
-  console.log(`playing scheme with id ${props.id}...`)
-  const gameRef = gamesRef.doc(props.gameId)
-  const playScheme = playerData.hand.find( (scheme: any) => scheme.id === props.id)
-  transaction.update(playerRef, {
-    playId: props.id,
-    history: firestore.FieldValue.arrayUnion(
+  transaction.update(currentPlayerRef, {
+    playId: props.schemeId,
+    history: arrayUnion(
       createEvent(`You are playing scheme ${playScheme.rank}`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     playEmpty: false,
     ready: false
   })
-  const playEvent = createEvent(`${playerData.displayName} is playing a scheme`)
-  transaction.update(gameRef, {
-    history: firestore.FieldValue.arrayUnion(
-      playEvent
-    )
+  updatePublicEvent({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    gameData: currentGameData,
+    message: `${currentPlayerData.displayName} is playing a scheme.`
   })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersRef.doc(playerId)
-    transaction.update(playerRef, {
-      history: firestore.FieldValue.arrayUnion(playEvent)
-    })
-  })
-  console.log(`played scheme with id ${props.id}!`)
 })
 export default playScheme

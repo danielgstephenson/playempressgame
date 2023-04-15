@@ -8,11 +8,12 @@ import Curtain from './Curtain'
 export default function GameActions (): JSX.Element {
   const gameState = useContext(gameContext)
   const authState = useContext(authContext)
-  if (gameState.id == null || gameState.userIds == null || authState.currentUser == null) return <></>
-  const joined = gameState.userIds?.includes(authState.currentUser?.uid)
+  if (gameState.id == null || gameState.users == null || authState.authed !== true || authState.currentUser?.uid == null) return <></>
+  const joinedUser = gameState.users.find((user) => user.id === authState.currentUser?.uid)
+  const joined = joinedUser != null
   const joinPhase = gameState.phase === 'join'
   const showJoin = !joined && joinPhase
-  const showStart = joined && joinPhase && gameState.userIds.length > 1
+  const showStart = joined && joinPhase && gameState.users.length > 1
   return (
     <Box>
       <Curtain open={showJoin}>

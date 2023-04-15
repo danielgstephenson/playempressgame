@@ -1,124 +1,123 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayId from "../guard/playId"
-import guardPlayDocs from "../guard/playDocs"
-import guardDocData from "../guard/docData"
-import { gamesRef, playersRef, profilesRef } from "../db"
-import { https } from "firebase-functions/v1"
-import { FieldValue } from "firebase-admin/firestore"
-import { createEvent } from "../create/event"
+import { createCloudFunction } from '../create/cloudFunction'
+import guardCurrentPlayer from '../guard/current/player'
+import { playersRef, profilesRef, times } from '../db'
+import { https } from 'firebase-functions/v1'
+import { createEvent } from '../create/event'
+import { PlayReadyProps, Player, Result } from '../types'
+import { arrayUnion, deleteField, increment, query, where } from 'firelord'
+import createHistoryUpdate from '../create/historyUpdate'
+import createEventUpdate from '../create/eventUpdate'
+import guardHandScheme from '../guard/handScheme'
+import updateOtherPlayers from '../update/otherPlayers'
+import getQuery from '../getQuery'
+import passTime from '../passTime'
 
-const playReady = createCloudFunction(async (props, context, transaction) => {
-  const { playerData, playerRef, playerId, profileRef, gameData, currentUid } = await guardPlayDocs({
+const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
+  const {
+    currentGameRef,
+    currentGameData,
+    currentUid,
+    currentPlayer,
+    currentPlayerData,
+    currentPlayerRef,
+    currentPlayerId,
+    currentProfileRef
+  } = await guardCurrentPlayer({
     gameId: props.gameId,
     transaction,
     context
   })
-  if (playerData.trashId == null) {
+  if (currentPlayerData.trashId == null) {
     throw new https.HttpsError(
       'failed-precondition',
-      `This player has not trashed a scheme.`
+      'This player has not trashed a scheme.'
     )
   }
-  if (playerData.playId == null) {
+  if (currentPlayerData.playId == null) {
     throw new https.HttpsError(
       'failed-precondition',
-      `This player has not played a scheme.`
+      'This player has not played a scheme.'
     )
   }
-  console.log(`Setting ${context.auth?.uid} ready...`)
-  console.log(`${context.auth?.uid} is ready!`)
-  console.log('readyCount', gameData.readyCount)
-  console.log('userIds.length', gameData.userIds.length)
-  const realReadyCount = gameData.readyCount + 1
-  console.log('realReadyCount', realReadyCount)
-  const waiting = realReadyCount < gameData.userIds.length
-  console.log('waiting', waiting)
-  const gameRef = gamesRef.doc(props.gameId)
-  const youEvent = createEvent(`You are ready`)
+  console.log(`Setting ${currentUid} ready...`)
+  const realReadyCount = currentGameData.readyCount + 1
+  const waiting = realReadyCount < currentGameData.users.length
+  const youEvent = createEvent('You are ready.')
+  const youUpdate = createHistoryUpdate(youEvent)
   if (waiting) {
-    const readyEvent = createEvent(`${playerData.displayName} is ready`) 
-    transaction.update(gameRef, {
-      readyCount: FieldValue.increment(1),
-      history: FieldValue.arrayUnion(readyEvent)
+    const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is ready.`)
+    transaction.update(currentGameRef, {
+      readyCount: increment(1),
+      ...displayNameUpdate
     })
-    gameData.userIds.forEach( (userId : any) => {
-      if(userId === currentUid) return
-      const playerId = `${userId}_${props.gameId}`
-      const playerRef = playersRef.doc(playerId)
-      transaction.update(playerRef, {
-        history: FieldValue.arrayUnion(readyEvent)
-      })
+    updateOtherPlayers({
+      currentUid,
+      gameId:
+      props.gameId,
+      transaction,
+      users: currentGameData.users,
+      update: displayNameUpdate
     })
-    transaction.update(playerRef, {
-      history: FieldValue.arrayUnion(youEvent)
-    })
-    transaction.update(profileRef, {
-      ready: true
-    })
+    transaction.update(currentPlayerRef, youUpdate)
+    transaction.update(currentProfileRef, { ready: true })
     return
   }
-  const otherPlayersQuery = playersRef
-    .where('gameId', '==', props.gameId)
-    .where('userId', '!=', context.auth?.uid)
-  const otherPlayers = await transaction.get(otherPlayersQuery)
-  const otherPlayersData: any[] = []
-  otherPlayers.forEach(otherPlayer => {
-    const otherPlayerData = otherPlayer.data()
-    otherPlayersData.push({
-      id: otherPlayer.id,
-      ...otherPlayerData
+  const whereGameId = where('gameId', '==', props.gameId)
+  const whereUserId = where('userId', '!=', currentUid)
+  const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
+  const otherPlayers = await getQuery({ query: otherPlayersQuery, transaction })
+  const allPlayers = [...otherPlayers, currentPlayer]
+  const publicEvents = allPlayers.map(player => {
+    const playScheme = guardHandScheme({
+      hand: player.hand, schemeId: player.playId, label: 'Play scheme'
     })
-  })
-  const allPlayersData = [...otherPlayersData, { id: playerId, ...playerData }]  
-  const publicEvents = allPlayersData.map(player => {
-    console.log('player test:', player)
-    const playScheme = player.hand.find((scheme: any) => scheme.id === player.playId)
-    console.log('playScheme test:', playScheme)
+    const time = times[playScheme.rank]
     return {
       id: player.id,
-      event: createEvent(`${player.displayName} played scheme ${playScheme.rank}`)
+      event: createEvent(`${player.displayName} played scheme ${playScheme.rank} with ${time} time.`)
     }
   })
-  function play ({ data: playData, id }: {
-    data: any,
-    id: string
-  }): void {
-    console.log('play id test:', id)
-    const playerRef = playersRef.doc(id)
-    const current = id === playerId
-    const privateEvent = current ? youEvent : createEvent(`${playerData.displayName} is ready`)
-    const playEvents = publicEvents.filter(event => event.id !== id).map(event => event.event)
-    const trashScheme = playData.hand.find((scheme: any) => scheme.id === playData.trashId)
-    const playScheme = playData.hand.find((scheme: any) => scheme.id === playData.playId)
+  const {
+    passedTimeline,
+    timeEvent
+  } = passTime({ allPlayers, timeline: currentGameData.timeline })
+
+  function play (result: Result<Player>): void {
+    const playerRef = playersRef.doc(result.id)
+    const current = result.id === currentPlayerId
+    const lastEvent = current ? youEvent : createEvent(`${currentPlayerData.displayName} is ready.`)
+    const playEvents = publicEvents.filter(event => event.id !== result.id).map(event => event.event)
+    const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashId, label: 'Trash scheme' })
+    const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playId, label: 'Play scheme' })
+
+    const time = times[playScheme.rank]
+
     transaction.update(playerRef, {
-      hand: playData.hand.filter((scheme: any) => scheme.id !== playData.trashId),
-      trashId: FieldValue.delete(),
-      history: FieldValue.arrayUnion(
-        privateEvent,
-        createEvent(`Everyone is ready`),
-        createEvent(`You trashed scheme ${trashScheme.rank}`),
+      hand: result.hand.filter((scheme: any) => scheme.id !== result.trashId),
+      trashId: deleteField(),
+      history: arrayUnion(
+        lastEvent,
+        createEvent('Everyone is ready.'),
+        createEvent(`You trashed scheme ${trashScheme.rank}.`),
         ...playEvents,
-        createEvent(`You played scheme ${playScheme.rank}`)
-      ),
+        createEvent(`You played scheme ${playScheme.rank} with ${time} time.`),
+        timeEvent
+      )
     })
-    const profileRef = profilesRef.doc(id)
-    if (!current) {
-      transaction.update(profileRef, {
-        ready: false
-      })
-    }
+    const profileRef = profilesRef.doc(result.id)
+    transaction.update(profileRef, {
+      ready: false,
+      trashEmpty: true
+    })
   }
-  otherPlayers.forEach(otherPlayer => {
-    console.log('otherPlayer.id', otherPlayer.id)
-    play({ data: otherPlayer.data(), id: otherPlayer.id })
-  })
-  console.log('context.auth?.uid', context.auth?.uid)
-  play({ data: playerData, id: playerId })
-  transaction.update(gameRef, {
-    history: FieldValue.arrayUnion(
-      createEvent(`Everyone is ready`)
+  allPlayers.forEach(play)
+  transaction.update(currentGameRef, {
+    history: arrayUnion(
+      createEvent('Everyone is ready.')
     ),
+    timeline: passedTimeline,
     readyCount: 0
   })
+  console.log(`${currentUid} is ready!`)
 })
 export default playReady

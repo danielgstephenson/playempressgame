@@ -1,42 +1,43 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import { FieldValue } from "firebase-admin/firestore"
-import guardPlayDocs from "../guard/playDocs"
-import { createEvent } from "../create/event"
-import { gamesRef, playersRef } from "../db"
+import { createCloudFunction } from '../create/cloudFunction'
+import { createEvent } from '../create/event'
+import { UnplaySchemeProps } from '../types'
+import guardCurrentHand from '../guard/current/hand'
+import { arrayUnion, deleteField } from 'firelord'
+import updatePublicEvent from '../update/publicEvent'
 
-const unplayScheme = createCloudFunction(async (props, context, transaction) => {
-  console.log('props.gameId', props.gameId)
-  const { playerRef, profileRef, playerData, gameData, currentUid } = await guardPlayDocs({
+const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, context, transaction) => {
+  console.log('Unplaying scheme...')
+  const {
+    currentUid,
+    currentGameData,
+    currentPlayerRef,
+    currentProfileRef,
+    currentPlayerData,
+    scheme: unplayScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Play scheme'
   })
-  console.log('playerRef', playerRef)
-  console.log(`unplaying scheme...`)
-  const unplayScheme = playerData.hand.find( (scheme: any) => scheme.id === props.schemeId)
-  transaction.update(playerRef, {
-    playId: FieldValue.delete(),
-    history: FieldValue.arrayUnion(
-      createEvent(`You returned scheme ${unplayScheme.rank} from play`)
+  transaction.update(currentPlayerRef, {
+    playId: deleteField(),
+    history: arrayUnion(
+      createEvent(`You returned scheme ${unplayScheme.rank} from play.`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     playEmpty: true,
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
-  const unplayEvent = createEvent(`${playerData.displayName} returned their scheme from play.`)
-  transaction.update(gameRef, {
-    history: FieldValue.arrayUnion(unplayEvent)
+  updatePublicEvent({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    gameData: currentGameData,
+    message: `${currentPlayerData.displayName} returned the their play scheme.`
   })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersRef.doc(playerId)
-    transaction.update(playerRef, {
-      history: FieldValue.arrayUnion(unplayEvent)
-    })
-  })
-  console.log('unplayed scheme!')
+  console.log('Unplayed scheme!')
 })
 export default unplayScheme

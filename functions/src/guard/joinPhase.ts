@@ -1,11 +1,11 @@
-import { CollectionReference, DocumentData, Transaction } from "firebase-admin/firestore";
-import { https } from "firebase-functions/v1";
+import { https } from 'firebase-functions'
+import { Game } from '../types'
 
-export default function guardJoinPhase({
+export default function guardJoinPhase ({
   gameData
-} : {
-  gameData: DocumentData
-}) {
+}: {
+  gameData: Game['read']
+}): void {
   if (gameData.phase !== 'join') {
     throw new https.HttpsError(
       'failed-precondition',

@@ -9,7 +9,6 @@ import Action from './Action'
 
 export default function GamesView (): JSX.Element {
   const authState = useContext(authContext)
-  console.log('authState', authState)
   const warning = <Warning>You are not signed in yet.</Warning>
   return (
     <>
@@ -17,7 +16,7 @@ export default function GamesView (): JSX.Element {
         Games
         {' '}
         <Curtain open={authState.authed}>
-          <Action label='Add Game' fn='addGame' props={{ displayName: authState.currentUser?.displayName }} />
+          <Action label='Add Game' fn='addGame' />
         </Curtain>
       </Heading>
       <Curtain open={authState.authed} hider={warning}>

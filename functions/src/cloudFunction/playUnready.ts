@@ -1,38 +1,46 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayDocs from "../guard/playDocs"
-import { gamesRef, playersRef } from "../db"
-import { FieldValue } from "firebase-admin/firestore"
-import { createEvent } from "../create/event"
+import { createCloudFunction } from '../create/cloudFunction'
+import guardCurrentPlayer from '../guard/current/player'
+import { createEvent } from '../create/event'
+import { PlayUnreadyProps } from '../types'
+import { arrayUnion, increment } from 'firelord'
+import createEventUpdate from '../create/eventUpdate'
+import updateOtherPlayers from '../update/otherPlayers'
 
-const playUnready = createCloudFunction(async (props, context, transaction) => {
-  const { playerId, profileRef, playerRef, playerData, gameData, currentUid } = await guardPlayDocs({
+const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context, transaction) => {
+  const {
+    currentUid,
+    currentGameData,
+    currentGameRef,
+    currentPlayerId,
+    currentProfileRef,
+    currentPlayerRef,
+    currentPlayerData
+  } = await guardCurrentPlayer({
     gameId: props.gameId,
     transaction,
     context
   })
-  console.log(`Setting ${playerId} unready...`)
-  transaction.update(profileRef, {
+  console.log(`Setting ${currentPlayerId} unready...`)
+  transaction.update(currentProfileRef, {
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
-  const unreadyEvent = createEvent(`${playerData.displayName} is not ready`)
-  transaction.update(gameRef, {
-    readyCount: FieldValue.increment(-1),
-    history: FieldValue.arrayUnion(unreadyEvent)
+  const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is not ready`)
+  transaction.update(currentGameRef, {
+    readyCount: increment(-1),
+    ...displayNameUpdate
   })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersRef.doc(playerId)
-    transaction.update(playerRef, {
-      history: FieldValue.arrayUnion(unreadyEvent)
-    })
+  updateOtherPlayers({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    users: currentGameData.users,
+    update: displayNameUpdate
   })
-  transaction.update(playerRef, {
-    history: FieldValue.arrayUnion(
-      createEvent(`You are not ready`)
+  transaction.update(currentPlayerRef, {
+    history: arrayUnion(
+      createEvent('You are not ready')
     )
   })
-  console.log(`${playerId} is unready!`)
+  console.log(`${currentPlayerId} is unready!`)
 })
 export default playUnready

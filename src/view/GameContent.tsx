@@ -12,7 +12,7 @@ export default function GameContentView (): JSX.Element {
   return (
     <>
       <Status label='Phase' value={gameState.phase} />
-      <Status label='Player Count' value={gameState.userIds?.length} />
+      <Status label='Player Count' value={gameState.users?.length} />
       <Status label='Ready Count' value={gameState.readyCount} />
       <Curtain open={showContent}>
         <CardStackView label='Timeline' cardGroup={gameState.timeline} />

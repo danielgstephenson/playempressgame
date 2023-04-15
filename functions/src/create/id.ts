@@ -1,5 +1,5 @@
-import yeast from "yeast";
+import yeast from 'yeast'
 
-export function createId(): string {
+export function createId (): string {
   return yeast().split('').reverse().join('')
 }

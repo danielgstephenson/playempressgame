@@ -1,4 +1,14 @@
+import { Auth, User } from 'firebase/auth'
 import { HttpsCallableResult } from 'firebase/functions'
+
+export interface AuthState {
+  auth?: Auth
+  authed?: boolean
+  currentUser?: User | null
+  currentUserLoading?: Boolean
+  currentUserError?: Error | undefined
+  displayName?: string
+}
 
 export interface Doc {
   id?: string
@@ -15,13 +25,18 @@ export interface HistoryEvent {
   timestamp: number
 }
 
+export interface GameUser {
+  id: string
+  displayName: string
+}
+
 export interface Game extends Doc {
   name: string
   phase: string
   timeline: Scheme[]
   court: Scheme[]
   dungeon: Scheme[]
-  userIds: string[]
+  users: GameUser[]
   readyCount: number
   history: HistoryEvent[]
   createdAt: {

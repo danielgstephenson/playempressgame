@@ -1,6 +1,6 @@
-import { Scheme } from "../types";
-import { createId } from "./id";
+import { Scheme } from '../types'
+import { createId } from './id'
 
-export function createScheme(rank: number): Scheme {
+export function createScheme (rank: number): Scheme {
   return { id: createId(), rank }
 }

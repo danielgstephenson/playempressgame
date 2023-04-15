@@ -1,51 +1,36 @@
-import { https } from "firebase-functions/v1"
-import checkUserJoined from "../guard/userJoined"
-import checkCurrentUid from "../guard/currentUid"
-import checkDocData from "../guard/docData"
-import checkJoinPhase from "../guard/joinPhase"
-import { createCloudFunction } from "../create/cloudFunction"
-import { createRange } from "../create/range"
-import { gamesRef, green, playersRef, profilesRef, red, usersRef, yellow } from "../db"
-import { createId } from "../create/id"
-import { createScheme } from "../create/scheme"
-import admin, { firestore } from 'firebase-admin';
-import { createEvent } from "../create/event"
+import { https } from 'firebase-functions/v1'
+import guardJoinPhase from '../guard/joinPhase'
+import { createCloudFunction } from '../create/cloudFunction'
+import { createRange } from '../create/range'
+import { green, playersRef, profilesRef, red, usersRef, yellow } from '../db'
+import { createScheme } from '../create/scheme'
+import { createEvent } from '../create/event'
+import guardCurrentGame from '../guard/current/game'
+import { arrayUnion, documentId, query, where } from 'firelord'
+import guardDefined from '../guard/defined'
+import { StartGameProps } from '../types'
+import getQuery from '../getQuery'
 
-const startGame = createCloudFunction(async (props, context, transaction) => {
-  const currentUid = checkCurrentUid({ context })
-  const {docData : userData } = await checkDocData({
-    collectionRef: usersRef,
-    docId: currentUid,
+const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
+  console.log(`Starting game ${props.gameId}...`)
+  const { currentGameData, currentGameRef } = await guardCurrentGame({
+    context,
+    gameId: props.gameId,
     transaction
   })
-  const { 
-    docRef : gameRef, 
-    docData: gameData 
-  } = await checkDocData({
-    collectionRef: gamesRef,
-    docId: props.gameId,
-    transaction
-  })
-  checkUserJoined({gameData,userId: currentUid})
-  if (gameData.userIds.length < 2) {
+  if (currentGameData.users.length < 2) {
     throw new https.HttpsError(
       'failed-precondition',
       'This game does not have enough players.'
     )
   }
-  checkJoinPhase({gameData})
-  const query = usersRef.where(firestore.FieldPath.documentId(), 'in', gameData.userIds)
-  const snapshot = await query.get()
-  const users = snapshot.docs.map(docSnapshot => {
-    const data = docSnapshot.data()
-    return {
-      id: docSnapshot.id,
-      ...data
-    }
-  })
-  console.log(`starting game...`)
+  guardJoinPhase({ gameData: currentGameData })
+  const idField = documentId()
+  const currentUserIds = currentGameData.users.map(user => user.id)
+  const whereId = where(idField, 'in', currentUserIds)
+  const currentUsersQuery = query(usersRef.collection(), whereId)
+  const users = await getQuery({ query: currentUsersQuery, transaction })
   const range = createRange(26) // [0..25]
-  console.log('range test:', range)
   const separated = [1, 7]
   const rangeSeparated = range.filter(rank => !separated.includes(rank))
   const randomRange = range.map(() => Math.random())
@@ -54,79 +39,70 @@ const startGame = createCloudFunction(async (props, context, transaction) => {
     const randomB = randomRange[bRank] as number
     return randomA - randomB
   })
-  console.log('shuffled test:', shuffled)
-  const empressSize = 13 + gameData.userIds.length
-  console.log('empressSize test:', empressSize)
+  const empressSize = 13 + currentGameData.users.length
   const empressSlice = shuffled.slice(0, empressSize)
-  console.log('empressSlice test:', empressSlice)
   const sorted = [...empressSlice].sort((aRank, bRank) => {
     return aRank - bRank
   })
-  console.log('sorted test:', sorted)
-  const court = sorted[0]
-  const dungeon = sorted[1]
+  const court = guardDefined(sorted[0], 'Court')
+  const dungeon = guardDefined(sorted[1], 'Dungeon')
   const palaceSlice = sorted.slice(2)
-  console.log('palaceSlice test:', palaceSlice)
   const empressGreen = palaceSlice.filter(rank => green.includes(rank))
   const empressRed = palaceSlice.filter(rank => red.includes(rank))
   const empressYellow = palaceSlice.filter(rank => yellow.includes(rank))
-  const lowestYellow = empressYellow[0]
-  console.log('lowestYellow test:', lowestYellow)
+  const lowestYellow = guardDefined(empressYellow[0], 'Empress yellow')
   const lowGreen = empressGreen.slice(0, 2)
-  console.log('lowGreen test:', lowGreen)
   const lowRed = empressRed.slice(0, 2)
-  console.log('lowRed test:', lowRed)
   const basePortfolio = [7, lowestYellow, ...lowGreen, ...lowRed]
-  console.log('basePortfolio test:', basePortfolio)
   const empressLeft = palaceSlice.filter(rank => !basePortfolio.includes(rank))
-  console.log('empressLeft test:', empressLeft)
-  const lowestLeft = empressLeft[0]
+  const lowestLeft = guardDefined(empressLeft[0], 'Lowest left')
   const portfolio = [...basePortfolio, lowestLeft]
-  console.log('portfolio test:', portfolio)
   const timeline = empressLeft.slice(1)
-  console.log('timeline test:', timeline)
   const timelineSchemes = timeline.map(rank => createScheme(rank))
   const courtScheme = createScheme(court)
   const dungeonScheme = createScheme(dungeon)
-  const startEvent = createEvent(`${userData.displayName} started game ${props.gameId}`)
-  transaction.update(gameRef,{
+  const currentUser = guardDefined(users.find(user => user.id === context.auth?.uid), 'Current user')
+  const startEvent = createEvent(`${currentUser.displayName} started game ${props.gameId}.`)
+  transaction.update(currentGameRef, {
     phase: 'play',
     court: [courtScheme],
     dungeon: [dungeonScheme],
     timeline: timelineSchemes,
-    history: admin.firestore.FieldValue.arrayUnion(startEvent)
+    history: arrayUnion(startEvent)
   })
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
     return aRank - bRank
   })
-  const topDeck = sortedPortfolio[sortedPortfolio.length - 2]
-  const topDiscard = sortedPortfolio[sortedPortfolio.length - 1]
+  const deckIndex = sortedPortfolio.length - 2
+  const topDeck = guardDefined(sortedPortfolio[deckIndex], 'Top deck')
+  const discardIndex = sortedPortfolio.length - 1
+  const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
-  users.forEach( (user : any) => {
+  users.forEach((user) => {
     const topDeckScheme = createScheme(topDeck)
-    const topDiscardScheme = createScheme(topDiscard) 
+    const topDiscardScheme = createScheme(topDiscard)
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
-    const playerData = { 
-      userId: user.id, 
-      gameId: props.gameId, 
-      hand: handSchemes, 
-      deck, 
-      discard, 
-      history: [...gameData.history, startEvent],
+    const playerData = {
+      userId: user.id,
+      gameId: props.gameId,
+      hand: handSchemes,
+      deck,
+      discard,
+      history: [...currentGameData.history, startEvent],
       displayName: user.displayName
     }
     const playerId = `${user.id}_${props.gameId}`
     const playerRef = playersRef.doc(playerId)
-    transaction.set(playerRef, playerData)
+    transaction.set(playerRef, playerData, { merge: true })
     const profileRef = profilesRef.doc(playerId)
-    transaction.update(profileRef,{
+    transaction.update(profileRef, {
       topDiscardScheme,
       deckEmpty: false,
       gold: 40
     })
   })
-  console.log('started!')
+  console.log(`Started game with id ${props.gameId}!`)
 })
 export default startGame

@@ -1,42 +1,43 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayDocs from "../guard/playDocs"
-import { FieldValue } from "firebase-admin/firestore"
-import { createEvent } from "../create/event"
-import { gamesRef, playersRef } from "../db"
+import { createCloudFunction } from '../create/cloudFunction'
+import { createEvent } from '../create/event'
+import { UntrashSchemeProps } from '../types'
+import { arrayUnion, deleteField } from 'firelord'
+import guardCurrentHand from '../guard/current/hand'
+import updatePublicEvent from '../update/publicEvent'
 
-const untrashScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, profileRef, playerData, gameData, currentUid } = await guardPlayDocs({
+const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, context, transaction) => {
+  console.log(`Untrashing scheme ${props.schemeId}...`)
+  const {
+    currentUid,
+    currentGameData,
+    currentPlayerRef,
+    currentProfileRef,
+    currentPlayerData,
+    scheme: untrashScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Untrash scheme'
   })
-  console.log(`untrashing scheme...`)
-  const untrashScheme = playerData.hand.find( (scheme: any) => scheme.id === props.schemeId)
-  transaction.update(playerRef, {
-    trashId: FieldValue.delete(),
-    history: FieldValue.arrayUnion(
-      createEvent(`You returned scheme ${untrashScheme.rank} from your trash`)
+  transaction.update(currentPlayerRef, {
+    trashId: deleteField(),
+    history: arrayUnion(
+      createEvent(`You returned scheme ${untrashScheme.rank} from your trash.`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     trashEmpty: true,
     ready: false
   })
-  const gameRef = gamesRef.doc(props.gameId)
-  const untrashEvent = createEvent(`${playerData.displayName} returned the scheme from their trash.`)
-  transaction.update(gameRef, {
-    history: FieldValue.arrayUnion(
-      untrashEvent
-    )
+  updatePublicEvent({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    gameData: currentGameData,
+    message: `${currentPlayerData.displayName} returned the their trash scheme.`
   })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersRef.doc(playerId)
-    transaction.update(playerRef, {
-      history: FieldValue.arrayUnion(untrashEvent)
-    })
-  })
-  console.log('untrashed scheme!')
+  console.log(`Untrashed scheme with id ${props.schemeId}!`)
 })
 export default untrashScheme

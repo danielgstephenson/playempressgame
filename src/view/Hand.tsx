@@ -17,12 +17,12 @@ export default function HandView (): JSX.Element {
         <Action
           fn='trashScheme'
           label='Trash'
-          props={{ id: scheme.id, gameId: gameState.id }}
+          props={{ schemeId: scheme.id, gameId: gameState.id }}
         />
         <Action
           fn='playScheme'
           label='Play'
-          props={{ id: scheme.id, gameId: gameState.id }}
+          props={{ schemeId: scheme.id, gameId: gameState.id }}
         />
       </Box>
     )

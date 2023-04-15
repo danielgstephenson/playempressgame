@@ -1,42 +1,43 @@
-import { createCloudFunction } from "../create/cloudFunction"
-import guardPlayId from "../guard/playId"
-import guardPlayDocs from "../guard/playDocs"
-import { gamesRef, playersRef } from "../db"
-import { firestore } from "firebase-admin"
-import { createEvent } from "../create/event"
+import { createCloudFunction } from '../create/cloudFunction'
+import { createEvent } from '../create/event'
+import { TrashSchemeProps } from '../types'
+import { arrayUnion } from 'firelord'
+import updatePublicEvent from '../update/publicEvent'
+import guardCurrentHand from '../guard/current/hand'
 
-const trashScheme = createCloudFunction(async (props, context, transaction) => {
-  const { playerRef, playerData, profileRef, gameData, currentUid } = await guardPlayDocs({
+const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context, transaction) => {
+  console.log(`Trashing scheme ${props.schemeId}...`)
+  const {
+    currentGameData,
+    currentUid,
+    currentPlayerRef,
+    currentPlayerData,
+    currentProfileRef,
+    scheme: trashScheme
+  } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
-    context
+    context,
+    schemeId: props.schemeId,
+    label: 'Play scheme'
   })
-  guardPlayId({ hand: playerData.hand, id: props.id })
-  const gameRef = gamesRef.doc(props.gameId)
-  console.log(`trashing scheme with id ${props.id}...`)
-  const trashScheme = playerData.hand.find( (scheme: any) => scheme.id === props.id)
-  transaction.update(playerRef, {
-    trashId: props.id,
-    history: firestore.FieldValue.arrayUnion(
-      createEvent(`You are trashing scheme ${trashScheme.rank}`)
+  transaction.update(currentPlayerRef, {
+    trashId: props.schemeId,
+    history: arrayUnion(
+      createEvent(`You are trashing scheme ${trashScheme.rank}.`)
     )
   })
-  transaction.update(profileRef, {
+  transaction.update(currentProfileRef, {
     trashEmpty: false,
     ready: false
   })
-  const trashEvent = createEvent(`${playerData.displayName} is trashing a scheme`)
-  transaction.update(gameRef, {
-    history: firestore.FieldValue.arrayUnion(trashEvent)
+  updatePublicEvent({
+    currentUid,
+    gameId: props.gameId,
+    transaction,
+    gameData: currentGameData,
+    message: `${currentPlayerData.displayName} is trashing a scheme.`
   })
-  gameData.userIds.forEach( (userId : any) => {
-    if(userId === currentUid) return
-    const playerId = `${userId}_${props.gameId}`
-    const playerRef = playersRef.doc(playerId)
-    transaction.update(playerRef, {
-      history: firestore.FieldValue.arrayUnion(trashEvent)
-    })
-  })
-  console.log(`trashed scheme with id ${props.id}!`)
+  console.log(`Trashed scheme with id ${props.schemeId}!`)
 })
 export default trashScheme

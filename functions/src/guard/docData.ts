@@ -1,33 +1,27 @@
-import { CollectionReference, DocumentData, Transaction } from "firebase-admin/firestore";
-import { https } from "firebase-functions/v1";
-import { DocCheck } from "../types";
+import { https } from 'firebase-functions'
+import { DocumentReference, MetaType, Transaction } from 'firelord'
 
-export default async function guardDocData({
-  collectionRef,
-  docId,
+export default async function guardDocData <T extends MetaType> ({
+  docRef,
   transaction
-} : {
-  collectionRef : CollectionReference,
-  docId: string,
+}: {
+  docRef: DocumentReference<T>
   transaction: Transaction
-}): Promise<DocCheck> {
-  const docRef = collectionRef.doc(docId)
+}): Promise<T['read']> {
   const doc = await transaction.get(docRef)
   if (!doc.exists) {
-    const path = `${collectionRef.path}/${docId}`
     throw new https.HttpsError(
       'unavailable',
-      `${path} does not exist.`
+      `${docRef.path} does not exist.`
     )
   }
   const docData = doc.data()
   if (docData == null) {
-    const path = `${collectionRef.path}/${docId}`
     throw new https.HttpsError(
       'failed-precondition',
-      `${path} is empty.`
+      `${docRef.path} is empty.`
     )
   }
 
-  return {docRef, doc, docData}
+  return docData
 }

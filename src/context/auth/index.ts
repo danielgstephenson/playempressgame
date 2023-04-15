@@ -1,13 +1,5 @@
 import { createContext } from 'react'
-import { Auth, User } from 'firebase/auth'
-
-export interface AuthState {
-  auth?: Auth
-  authed?: boolean
-  currentUser?: User | null
-  currentUserLoading?: Boolean
-  currentUserError?: Error | undefined
-}
+import { AuthState } from '../../types'
 
 const authContext = createContext<AuthState>({})
 export default authContext
