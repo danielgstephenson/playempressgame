@@ -1,7 +1,8 @@
+import { arrayUnion } from 'firelord'
+import { createEvent } from '../create/event'
 import drawMultiple from '../draw/multiple'
-import guardHandScheme from '../guard/handScheme'
-import guardTime from '../guard/time'
-import reviveMultiple from '../revive/multiple'
+import getLowestTime from '../get/lowestTime'
+import revive from '../revive'
 import { SchemeEffectProps } from '../types'
 
 export default function effectTwo ({
@@ -14,26 +15,29 @@ export default function effectTwo ({
   playerRef,
   transaction
 }: SchemeEffectProps): void {
-  const allTimes = allPlayers.map(player => {
-    const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
-    const time = guardTime(playScheme.rank)
-    return time
-  })
-  const minimumTime = Math.min(...allTimes)
+  const lowestTime = getLowestTime(allPlayers)
   const {
     revivedDiscard,
-    revivedList
-  } = reviveMultiple({ discard: playerData.discard, reviveList: [], depth: minimumTime })
-  const { drawnDeck, drawnList, drawnDiscard } = drawMultiple({
+    revivedHand,
+    reviveEvents
+  } = revive({
+    discard: playerData.discard,
+    hand,
+    depth: lowestTime
+  })
+  const timeEvent = createEvent(`The lowest time in play is ${lowestTime}.`)
+  const firstChildren = [timeEvent, ...reviveEvents]
+  const firstEvent = createEvent('First, you revive the lowest time in play', firstChildren)
+  const { drawnDeck, drawnHand, drawnDiscard } = drawMultiple({
     deck: playerData.deck,
     discard: revivedDiscard,
-    drawList: revivedList,
+    hand: revivedHand,
     depth: gameData.dungeon.length
   })
-  const drawnHand = [...hand, ...drawnList]
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,
-    discard: drawnDiscard
+    discard: drawnDiscard,
+    history: arrayUnion(firstEvent)
   })
 }

@@ -2,14 +2,15 @@ import { https } from 'firebase-functions/v1'
 import guardJoinPhase from '../guard/joinPhase'
 import { createCloudFunction } from '../create/cloudFunction'
 import { createRange } from '../create/range'
-import { green, playersRef, profilesRef, red, usersRef, yellow } from '../db'
-import { createScheme } from '../create/scheme'
+import { playersRef, profilesRef, usersRef } from '../db'
+import { createSchemeRef } from '../create/schemeRef'
 import { createEvent } from '../create/event'
 import guardCurrentGame from '../guard/current/game'
 import { arrayUnion, documentId, query, where } from 'firelord'
 import guardDefined from '../guard/defined'
 import { StartGameProps } from '../types'
 import getQuery from '../getQuery'
+import guardSchemeData from '../guard/schemeData'
 
 const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
   console.info(`Starting game ${props.gameId}...`)
@@ -47,9 +48,9 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const court = guardDefined(sorted[0], 'Court')
   const dungeon = guardDefined(sorted[1], 'Dungeon')
   const palaceSlice = sorted.slice(2)
-  const empressGreen = palaceSlice.filter(rank => green.includes(rank))
-  const empressRed = palaceSlice.filter(rank => red.includes(rank))
-  const empressYellow = palaceSlice.filter(rank => yellow.includes(rank))
+  const empressGreen = palaceSlice.filter(rank => guardSchemeData(rank).color === 'green')
+  const empressRed = palaceSlice.filter(rank => guardSchemeData(rank).color === 'red')
+  const empressYellow = palaceSlice.filter(rank => guardSchemeData(rank).color === 'yellow')
   const lowestYellow = guardDefined(empressYellow[0], 'Empress yellow')
   const lowGreen = empressGreen.slice(0, 2)
   const lowRed = empressRed.slice(0, 2)
@@ -58,9 +59,9 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const lowestLeft = guardDefined(empressLeft[0], 'Lowest left')
   const portfolio = [...basePortfolio, lowestLeft]
   const timeline = empressLeft.slice(1)
-  const timelineSchemes = timeline.map(rank => createScheme(rank))
-  const courtScheme = createScheme(court)
-  const dungeonScheme = createScheme(dungeon)
+  const timelineSchemes = timeline.map(rank => createSchemeRef(rank))
+  const courtScheme = createSchemeRef(court)
+  const dungeonScheme = createSchemeRef(dungeon)
   const currentUser = guardDefined(users.find(user => user.id === context.auth?.uid), 'Current user')
   const startEvent = createEvent(`${currentUser.displayName} started game ${props.gameId}.`)
   transaction.update(currentGameRef, {
@@ -79,11 +80,11 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
   users.forEach((user) => {
-    const topDeckScheme = createScheme(topDeck)
-    const topDiscardScheme = createScheme(topDiscard)
+    const topDeckScheme = createSchemeRef(topDeck)
+    const topDiscardScheme = createSchemeRef(topDiscard)
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
-    const handSchemes = hand.map(rank => createScheme(rank))
+    const handSchemes = hand.map(rank => createSchemeRef(rank))
     const playerData = {
       userId: user.id,
       gameId: props.gameId,

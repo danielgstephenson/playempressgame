@@ -2,7 +2,7 @@ import drawMultiple from '../draw/multiple'
 import guardHandScheme from '../guard/handScheme'
 import guardTime from '../guard/time'
 import { SchemeEffectProps } from '../types'
-import { createScheme } from '../create/scheme'
+import { createSchemeRef } from '../create/schemeRef'
 import { createEvent } from '../create/event'
 import { arrayUnion } from 'firelord'
 
@@ -17,8 +17,8 @@ export default function effectFour ({
   transaction
 }: SchemeEffectProps): void {
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
-  const privelege = createScheme(1)
-  const bankList = [privelege]
+  const privelege = createSchemeRef(1)
+  const bankHand = [...hand, privelege]
   const secondEvent = createEvent('Second, you draw the lowest time in play.')
   const allTimes = allPlayers.map(player => {
     const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
@@ -29,14 +29,13 @@ export default function effectFour ({
   const {
     drawnDeck,
     drawnDiscard,
-    drawnList
+    drawnHand
   } = drawMultiple({
     deck: playerData.deck,
     discard: playerData.deck,
-    drawList: bankList,
+    hand: bankHand,
     depth: minimumTime
   })
-  const drawnHand = [...hand, ...drawnList]
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,

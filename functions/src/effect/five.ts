@@ -1,10 +1,11 @@
 import drawMultiple from '../draw/multiple'
 import guardHandScheme from '../guard/handScheme'
 import guardTime from '../guard/time'
-import { SchemeColor, SchemeEffectProps } from '../types'
-import reviveMultiple from '../revive/multiple'
+import { HistoryEvent, SchemeEffectProps } from '../types'
 import { createEvent } from '../create/event'
 import { arrayUnion } from 'firelord'
+import revive from '../revive'
+import guardDefined from '../guard/defined'
 
 export default function effectFive ({
   allPlayers,
@@ -16,35 +17,41 @@ export default function effectFive ({
   playerRef,
   transaction
 }: SchemeEffectProps): void {
-  const firstEvent = createEvent("First, you revive your top discard scheme's time")
-  function getTopDiscardSchemeTime (): number {
-    if (playerData.discard.length === 0) return 0
+  function getTopDiscardSchemeTime (): { time: number, timeEvent: HistoryEvent } {
+    if (playerData.discard.length === 0) {
+      return {
+        time: 0,
+        timeEvent: createEvent('Your discard is empty, so you do not revive.')
+      }
+    }
     const topDiscardSlice = playerData.discard.slice(-1)
-    const topDiscardScheme = topDiscardSlice[0]
-    if (topDiscardScheme == null) return 0
+    const topDiscardScheme = guardDefined(topDiscardSlice[0], 'Top discard scheme')
     const topDiscardSchemeTime = guardTime(topDiscardScheme.rank)
-    return topDiscardSchemeTime
+    return {
+      time: topDiscardSchemeTime,
+      timeEvent: createEvent(`Your top discard scheme is ${topDiscardScheme.rank} with ${topDiscardSchemeTime} time.`)
+    }
   }
-  const reviveNumber = getTopDiscardSchemeTime()
-  const { revivedDiscard, revivedList } = reviveMultiple({
+  const { time, timeEvent } = getTopDiscardSchemeTime()
+  const { revivedDiscard, revivedHand, reviveEvents } = revive({
     discard: playerData.discard,
-    reviveList: playerData.discard,
-    depth: reviveNumber
+    hand,
+    depth: time
   })
-
+  const firstChildren = [timeEvent, ...reviveEvents]
+  const firstEvent = createEvent("First, you revive your top discard scheme's time", firstChildren)
   const secondEvent = createEvent('Second, you draw twice the number of colors in play.')
-  const uniqueColors = allPlayers.reduce<SchemeColor[]>((uniqueColors, player) => {
+  const uniqueColors = allPlayers.reduce<string[]>((uniqueColors, player) => {
     const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
     return [...uniqueColors, playScheme.color]
   }, [])
-  const { drawnDeck, drawnDiscard, drawnList } = drawMultiple({
+  const { drawnDeck, drawnDiscard, drawnHand } = drawMultiple({
     deck: playerData.deck,
     discard: revivedDiscard,
-    drawList: revivedList,
+    hand: revivedHand,
     depth: uniqueColors.length * 2
   })
-  const drawnHand = [...hand, ...drawnList]
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,

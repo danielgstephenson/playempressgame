@@ -1,26 +1,26 @@
-import { DrawResult, Scheme } from '../types'
-import draw from '.'
+import { DrawRefs, SchemeRef } from '../types'
+import drawOne from './one'
 
 export default function drawMultiple ({
   depth,
   discard,
-  drawList,
+  hand,
   deck
 }: {
   depth: number
-  discard: Scheme[]
-  drawList: Scheme[]
-  deck: Scheme[]
-}): DrawResult {
+  discard: SchemeRef[]
+  hand: SchemeRef[]
+  deck: SchemeRef[]
+}): DrawRefs {
   if (depth === 0) {
     return {
-      drawnList: drawList,
+      drawnHand: hand,
       drawnDeck: deck,
       drawnDiscard: discard
     }
   }
-  const { drawnList, drawnDeck, drawnDiscard } = draw({ drawList, deck, discard })
+  const { drawnHand, drawnDeck, drawnDiscard } = drawOne({ hand, deck, discard })
   return drawMultiple({
-    depth: depth - 1, drawList: drawnList, deck: drawnDeck, discard: drawnDiscard
+    depth: depth - 1, hand: drawnHand, deck: drawnDeck, discard: drawnDiscard
   })
 }

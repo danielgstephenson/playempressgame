@@ -1,21 +1,24 @@
-import { ReviveResult, Scheme } from '../types'
-import revive from '.'
+import { ReviveRefs, SchemeRef } from '../types'
+import reviveOne from './one'
 
 export default function reviveMultiple ({
   depth,
-  reviveList,
-  discard
+  discard,
+  hand,
+  list = []
 }: {
   depth: number
-  reviveList: Scheme[]
-  discard: Scheme[]
-}): ReviveResult {
+  hand: SchemeRef[]
+  discard: SchemeRef[]
+  list?: SchemeRef[]
+}): ReviveRefs {
   if (depth === 0) {
     return {
-      revivedList: reviveList,
-      revivedDiscard: discard
+      revivedHand: hand,
+      revivedDiscard: discard,
+      revivedList: list
     }
   }
-  const { revivedList, revivedDiscard } = revive({ reviveList, discard })
-  return reviveMultiple({ depth: depth - 1, reviveList: revivedList, discard: revivedDiscard })
+  const { revivedHand, revivedDiscard, revivedList } = reviveOne({ hand, discard, list })
+  return reviveMultiple({ depth: depth - 1, hand: revivedHand, discard: revivedDiscard, list: revivedList })
 }

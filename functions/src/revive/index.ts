@@ -1,20 +1,29 @@
-import { ReviveResult, Scheme } from '../types'
+import { createEvent } from '../create/event'
+import { ReviveResult, SchemeRef } from '../types'
+import reviveMultiple from './multiple'
 
-export default function revive ({ discard, reviveList }: {
-  discard: Scheme[]
-  reviveList: Scheme[]
+export default function revive ({ depth, discard, hand }: {
+  depth: number
+  discard: SchemeRef[]
+  hand: SchemeRef[]
 }): ReviveResult {
-  if (discard.length === 0) {
-    return {
-      revivedDiscard: [],
-      revivedList: []
-    }
+  const reviveEvents = []
+  if (discard.length < depth) {
+    const discardEvent = createEvent(`Your discard only has ${discard.length} schemes, so you revive ${discard.length}.`)
+    reviveEvents.push(discardEvent)
   }
-  const revivedDiscard = discard.slice(0, -1)
-  const topScheme = discard.slice(-1)
-  const revivedList = [...reviveList, ...topScheme]
+  const { revivedDiscard, revivedHand, revivedList } = reviveMultiple({
+    discard,
+    hand,
+    depth
+  })
+  const listRanks = revivedList.map(scheme => scheme.rank).join(', ')
+  const listEvent = createEvent(`You revive ${listRanks}.`)
+  reviveEvents.push(listEvent)
   return {
     revivedDiscard,
-    revivedList
+    revivedHand,
+    revivedList,
+    reviveEvents
   }
 }

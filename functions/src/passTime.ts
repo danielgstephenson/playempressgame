@@ -2,12 +2,12 @@ import { DocumentReference, Transaction } from 'firelord'
 import { createEvent } from './create/event'
 import guardHandScheme from './guard/handScheme'
 import guardTime from './guard/time'
-import { Game, PassTime, Player, Scheme } from './types'
+import { Game, PassTime, Player, SchemeRef } from './types'
 
 export default function passTime ({ allPlayers, gameRef, timeline, transaction }: {
   allPlayers: Array<Player['read']>
   gameRef: DocumentReference<Game>
-  timeline: Scheme[]
+  timeline: SchemeRef[]
   transaction: Transaction
 }): PassTime {
   const totalTime = allPlayers.reduce((total, player) => {

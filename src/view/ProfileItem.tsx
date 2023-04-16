@@ -19,7 +19,7 @@ export default function ProfileItemView (): JSX.Element {
   const ready = profileState.ready === true
   return (
     <Container>
-      <Box>
+      <Box width='100%'>
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>
           <Status label='Gold' value={profileState.gold} />

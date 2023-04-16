@@ -12,13 +12,12 @@ export default function effectOne ({
   playerRef,
   transaction
 }: SchemeEffectProps): void {
-  const { drawnDeck, drawnDiscard, drawnList } = drawMultiple({
+  const { drawnDeck, drawnDiscard, drawnHand } = drawMultiple({
     deck: playerData.deck,
     discard: playerData.discard,
-    drawList: [],
+    hand,
     depth: 2
   })
-  const drawnHand = [...hand, ...drawnList]
 
   transaction.update(playerRef, {
     hand: drawnHand,

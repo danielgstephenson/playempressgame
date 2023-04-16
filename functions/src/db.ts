@@ -2,13 +2,15 @@ import { getFirelord, getFirestore } from 'firelord'
 import admin from 'firebase-admin'
 import { getAuth } from 'firebase-admin/auth'
 import { firebaseConfig } from './secret'
-import { Game, Player, Profile, User } from './types'
+import { Game, Player, Profile, SchemeData, User } from './types'
 import effectZero from './effect/zero'
 import effectOne from './effect/one'
 import effectTwo from './effect/two'
 import effectThree from './effect/three'
 import effectFour from './effect/four'
 import effectFive from './effect/five'
+import schemesJson from './schemes.json'
+import effectSix from './effect/six'
 
 admin.initializeApp(firebaseConfig)
 export const adminAuth = getAuth()
@@ -18,10 +20,6 @@ export const gamesRef = getFirelord<Game>(db, 'games')
 export const usersRef = getFirelord<User>(db, 'users')
 export const profilesRef = getFirelord<Profile>(db, 'profiles')
 export const playersRef = getFirelord<Player>(db, 'players')
-export const green = [0, 1, 2, 3, 4, 5, 6, 23, 24, 25]
-export const red = [8, 9, 10, 11, 12, 13, 14, 15]
-export const yellow = [7, 16, 17, 18, 19, 20, 21, 22]
-export const times = [3, 3, 3, 1, 3, 0, 0, 1, 0, 3, 3, 0, 2, 2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2]
 export const effects = [
   effectZero,
   effectOne,
@@ -29,7 +27,7 @@ export const effects = [
   effectThree,
   effectFour,
   effectFive,
-  effectZero,
+  effectSix,
   effectZero,
   effectZero,
   effectZero,
@@ -54,3 +52,10 @@ export const effects = [
   effectZero,
   effectZero
 ]
+export const schemeData: SchemeData[] = schemesJson.map((scheme, index) => {
+  const effect = effects[index]
+  return {
+    ...scheme,
+    effect
+  }
+})

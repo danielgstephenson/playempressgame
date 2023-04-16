@@ -1,8 +1,7 @@
 import drawMultiple from '../draw/multiple'
-import guardHandScheme from '../guard/handScheme'
-import guardTime from '../guard/time'
 import createPrivelege from '../create/privelege'
 import { SchemeEffectProps } from '../types'
+import getHighestTime from '../get/highestTime'
 
 export default function effectThree ({
   allPlayers,
@@ -16,23 +15,17 @@ export default function effectThree ({
 }: SchemeEffectProps): void {
   const discardPrivelege = createPrivelege(3)
   const bankDiscard = [...playerData.discard, ...discardPrivelege]
-  const allTimes = allPlayers.map(player => {
-    const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
-    const time = guardTime(playScheme.rank)
-    return time
-  })
-  const maximiumTime = Math.max(...allTimes)
+  const highestTime = getHighestTime(allPlayers)
   const {
     drawnDeck,
     drawnDiscard,
-    drawnList
+    drawnHand
   } = drawMultiple({
     deck: playerData.deck,
     discard: bankDiscard,
-    drawList: [],
-    depth: maximiumTime
+    hand,
+    depth: highestTime
   })
-  const drawnHand = [...hand, ...drawnList]
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,

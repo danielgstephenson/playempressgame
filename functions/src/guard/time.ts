@@ -1,8 +1,5 @@
-import { times } from '../db'
-import guardDefined from './defined'
+import guardSchemeData from './schemeData'
 
 export default function guardTime (rank: number): number {
-  const time = times[rank]
-  const label = `Invalid time rank: ${rank}`
-  return guardDefined(time, label)
+  return guardSchemeData(rank).time
 }

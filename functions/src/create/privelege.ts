@@ -1,9 +1,9 @@
-import { createScheme } from './scheme'
-import { Scheme } from '../types'
+import { createSchemeRef } from './schemeRef'
+import { SchemeRef } from '../types'
 
-export default function takePrivelege (count: number): Scheme[] {
+export default function takePrivelege (count: number): SchemeRef[] {
   const schemes = new Array(count).fill(0).map((_, i) => {
-    return createScheme(1)
+    return createSchemeRef(1)
   })
   return schemes
 }
