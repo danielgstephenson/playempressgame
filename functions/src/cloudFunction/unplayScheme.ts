@@ -6,7 +6,7 @@ import { arrayUnion, deleteField } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
 
 const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, context, transaction) => {
-  console.log('Unplaying scheme...')
+  console.info(`Unplaying scheme... ${props.schemeId}`)
   const {
     currentUid,
     currentGameData,
@@ -38,6 +38,6 @@ const unplayScheme = createCloudFunction<UnplaySchemeProps>(async (props, contex
     gameData: currentGameData,
     message: `${currentPlayerData.displayName} returned the their play scheme.`
   })
-  console.log('Unplayed scheme!')
+  console.info(`Unplayed scheme ${props.schemeId}!`)
 })
 export default unplayScheme

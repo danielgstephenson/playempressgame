@@ -29,6 +29,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     transaction,
     context
   })
+  console.info(`Setting ${currentUid} ready...`)
   if (currentPlayerData.trashId == null) {
     throw new https.HttpsError(
       'failed-precondition',
@@ -41,13 +42,11 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       'This player has not played a scheme.'
     )
   }
-  console.log(`Setting ${currentUid} ready...`)
   const realReadyCount = currentGameData.readyCount + 1
   const waiting = realReadyCount < currentGameData.users.length
   const youEvent = createEvent('You are ready.')
   const youUpdate = createHistoryUpdate(youEvent)
   if (waiting) {
-    console.log('waiting')
     const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is ready.`)
     transaction.update(currentGameRef, {
       readyCount: increment(1),
@@ -65,7 +64,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     transaction.update(currentProfileRef, { ready: true })
     return
   }
-  console.log('not waiting')
   const whereGameId = where('gameId', '==', props.gameId)
   const whereUserId = where('userId', '!=', currentUid)
   const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
@@ -92,7 +90,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   })
 
   function play (result: Result<Player>): void {
-    console.log('playing', result)
     const playerRef = playersRef.doc(result.id)
     const current = result.id === currentPlayerId
     const lastEvent = current ? youEvent : createEvent(`${currentPlayerData.displayName} is ready.`)
@@ -132,7 +129,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     })
   }
   allPlayers.forEach(play)
-  console.log('updating game')
   transaction.update(currentGameRef, {
     history: arrayUnion(
       createEvent('Everyone is ready.')
@@ -140,6 +136,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     timeline: passedTimeline,
     readyCount: 0
   })
-  console.log(`${currentUid} is ready!`)
+  console.info(`${currentUid} is ready!`)
 })
 export default playReady

@@ -13,9 +13,17 @@ export default function useDisplayName (auth?: Auth): string | undefined {
         if (authUser == null) {
           return
         }
+
+        console.info('Reloading user without display name...')
         await authUser?.reload()
         if (authUser?.displayName == null) {
-          throw new Error('This user has no display name.')
+          await authUser?.reload()
+          console.warn('Reloading user without display name...')
+          if (authUser?.displayName == null) {
+            throw new Error('This user has no display name.')
+          } else {
+            setDisplayName(authUser.displayName)
+          }
         } else {
           setDisplayName(authUser.displayName)
         }

@@ -20,7 +20,7 @@ const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context,
     transaction,
     context
   })
-  console.log(`Setting ${currentPlayerId} unready...`)
+  console.info(`Setting ${currentPlayerId} unready...`)
   transaction.update(currentProfileRef, {
     ready: false
   })
@@ -41,6 +41,6 @@ const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context,
       createEvent('You are not ready')
     )
   })
-  console.log(`${currentPlayerId} is unready!`)
+  console.info(`${currentPlayerId} is unready!`)
 })
 export default playUnready

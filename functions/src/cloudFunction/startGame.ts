@@ -12,7 +12,7 @@ import { StartGameProps } from '../types'
 import getQuery from '../getQuery'
 
 const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
-  console.log(`Starting game ${props.gameId}...`)
+  console.info(`Starting game ${props.gameId}...`)
   const { currentGameData, currentGameRef } = await guardCurrentGame({
     context,
     gameId: props.gameId,
@@ -103,6 +103,6 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
       gold: 40
     })
   })
-  console.log(`Started game with id ${props.gameId}!`)
+  console.info(`Started game with id ${props.gameId}!`)
 })
 export default startGame

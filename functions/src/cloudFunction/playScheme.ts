@@ -6,7 +6,7 @@ import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
 
 const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
-  console.log(`playing scheme with id ${props.schemeId}...`)
+  console.info(`Playing scheme ${props.schemeId}...`)
   const {
     currentGameData,
     currentUid,
@@ -38,5 +38,6 @@ const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, t
     gameData: currentGameData,
     message: `${currentPlayerData.displayName} is playing a scheme.`
   })
+  console.info(`Played scheme ${props.schemeId}!`)
 })
 export default playScheme

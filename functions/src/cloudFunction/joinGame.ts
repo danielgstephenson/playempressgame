@@ -9,7 +9,7 @@ import { arrayUnion } from 'firelord'
 import guardCurrentUser from '../guard/current/user'
 
 const joinGame = createCloudFunction<JoinGameProps>(async (props, context, transaction) => {
-  console.log(`Joining game ${props.gameId}...`)
+  console.info(`Joining game ${props.gameId}...`)
   const { currentUser, currentUid } = await guardCurrentUser({ context, transaction })
   const gameRef = gamesRef.doc(props.gameId)
   const gameData = await guardDocData({
@@ -41,6 +41,6 @@ const joinGame = createCloudFunction<JoinGameProps>(async (props, context, trans
       createEvent(`${currentUser.displayName} joined game ${props.gameId}.`)
     )
   })
-  console.log(`Joined game ${props.gameId}!`)
+  console.info(`Joined game ${props.gameId}!`)
 })
 export default joinGame

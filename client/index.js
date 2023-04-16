@@ -18,17 +18,17 @@ connectFunctionsEmulator(functions, 'localhost', 5001)
 
 const hello = httpsCallable(functions, 'hello')
 async function callHello () {
-  console.log('Calling hello...')
+  console.info('Calling hello...')
   const result = await hello()
-  console.log('Called hello:', result)
+  console.info('Called hello:', result)
 }
 callHello()
 
 const addGame = httpsCallable(functions, 'addGame')
 async function callAddGame () {
-  console.log('Calling addGame...')
+  console.info('Calling addGame...')
   const result = await addGame()
-  console.log('Called addGame:', result)
+  console.info('Called addGame:', result)
 }
 callAddGame()
 
@@ -37,7 +37,7 @@ const gamesRef = collection(db, 'games')
 async function download () {
   const querySnapshot = await getDocs(gamesRef)
   querySnapshot.forEach((doc) => {
-    console.log(doc.id, ' => ', doc.data())
+    console.info(doc.id, ' => ', doc.data())
   })
 }
 
@@ -48,7 +48,7 @@ async function upload () {
   const data = {
     name: 'game2'
   }
-  console.log('adding...')
+  console.info('adding...')
   await addDoc(gamesRef, data)
   await download()
 }

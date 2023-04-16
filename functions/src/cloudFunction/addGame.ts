@@ -7,7 +7,7 @@ import { Game } from '../types'
 import guardCurrentUser from '../guard/current/user'
 
 const addGame = createCloudFunction(async (props, context, transaction) => {
-  console.log('Adding game...')
+  console.info('Adding game...')
   const { currentUser } = await guardCurrentUser({ context, transaction })
   const id = createId()
   const newData: Game['write'] = {
@@ -24,6 +24,6 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
   }
   const gameRef = gamesRef.doc(id)
   transaction.create(gameRef, newData)
-  console.log(`Added game with id ${id}`)
+  console.info(`Added game with id ${id}`)
 })
 export default addGame

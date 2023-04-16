@@ -3,6 +3,8 @@ import guardHandScheme from '../guard/handScheme'
 import guardTime from '../guard/time'
 import { SchemeColor, SchemeEffectProps } from '../types'
 import reviveMultiple from '../revive/multiple'
+import { createEvent } from '../create/event'
+import { arrayUnion } from 'firelord'
 
 export default function effectFive ({
   allPlayers,
@@ -14,6 +16,7 @@ export default function effectFive ({
   playerRef,
   transaction
 }: SchemeEffectProps): void {
+  const firstEvent = createEvent("First, you revive your top discard scheme's time")
   function getTopDiscardSchemeTime (): number {
     if (playerData.discard.length === 0) return 0
     const topDiscardSlice = playerData.discard.slice(-1)
@@ -28,6 +31,8 @@ export default function effectFive ({
     reviveList: playerData.discard,
     depth: reviveNumber
   })
+
+  const secondEvent = createEvent('Second, you draw twice the number of colors in play.')
   const uniqueColors = allPlayers.reduce<SchemeColor[]>((uniqueColors, player) => {
     const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
@@ -43,6 +48,7 @@ export default function effectFive ({
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,
-    discard: drawnDiscard
+    discard: drawnDiscard,
+    history: arrayUnion(firstEvent, secondEvent)
   })
 }

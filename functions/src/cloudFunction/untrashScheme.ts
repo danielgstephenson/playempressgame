@@ -6,7 +6,7 @@ import guardCurrentHand from '../guard/current/hand'
 import updatePublicEvent from '../update/publicEvent'
 
 const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, context, transaction) => {
-  console.log(`Untrashing scheme ${props.schemeId}...`)
+  console.info(`Untrashing scheme ${props.schemeId}...`)
   const {
     currentUid,
     currentGameData,
@@ -38,6 +38,6 @@ const untrashScheme = createCloudFunction<UntrashSchemeProps>(async (props, cont
     gameData: currentGameData,
     message: `${currentPlayerData.displayName} returned the their trash scheme.`
   })
-  console.log(`Untrashed scheme with id ${props.schemeId}!`)
+  console.info(`Untrashed scheme with id ${props.schemeId}!`)
 })
 export default untrashScheme

@@ -35,7 +35,6 @@ export default function ProfilesReader ({
         return q
       }}
       transformDocs={(docs) => {
-        console.log('docs test:', docs)
         if (docs == null) {
           return docs
         }

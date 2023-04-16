@@ -1,6 +1,7 @@
-import { Heading, HStack, Text } from '@chakra-ui/react'
+import { Heading } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import { Scheme } from '../types'
+import CardGroupContentView from './CardGroupContent'
 
 export default function CardGroupView ({
   label,
@@ -11,12 +12,12 @@ export default function CardGroupView ({
   children?: ReactNode
   cardGroup?: Scheme[]
 }): JSX.Element {
-  console.log(cardGroup)
-  const group = cardGroup?.map(scheme => <Text key={scheme.id}>{scheme.rank}</Text>)
+  console.log('label', label)
+  console.log('cardGroup', cardGroup)
   return (
     <>
       <Heading size='sm'>{label}: {children}</Heading>
-      <HStack>{group}</HStack>
+      <CardGroupContentView cardGroup={cardGroup} />
     </>
   )
 }
