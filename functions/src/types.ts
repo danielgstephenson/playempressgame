@@ -169,6 +169,13 @@ export interface DrawRefs {
   drawnHand: SchemeRef[]
   drawnDeck: SchemeRef[]
   drawnDiscard: SchemeRef[]
+  deckDrawn: SchemeRef[]
+  discardDrawn: SchemeRef[]
+  flipped: boolean
+  privelegeTaken: SchemeRef[]
+}
+export interface DrawResult extends DrawRefs {
+  drawEvents: HistoryEvent[]
 }
 
 export interface ReviveRefs {

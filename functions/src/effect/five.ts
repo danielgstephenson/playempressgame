@@ -1,4 +1,3 @@
-import drawMultiple from '../draw/multiple'
 import guardHandScheme from '../guard/handScheme'
 import guardTime from '../guard/time'
 import { HistoryEvent, SchemeEffectProps } from '../types'
@@ -6,6 +5,7 @@ import { createEvent } from '../create/event'
 import { arrayUnion } from 'firelord'
 import revive from '../revive'
 import guardDefined from '../guard/defined'
+import draw from '../draw'
 
 export default function effectFive ({
   allPlayers,
@@ -40,18 +40,22 @@ export default function effectFive ({
   })
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent("First, you revive your top discard scheme's time", firstChildren)
-  const secondEvent = createEvent('Second, you draw twice the number of colors in play.')
   const uniqueColors = allPlayers.reduce<string[]>((uniqueColors, player) => {
     const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
     return [...uniqueColors, playScheme.color]
   }, [])
-  const { drawnDeck, drawnDiscard, drawnHand } = drawMultiple({
+  const doubleColors = uniqueColors.length * 2
+  const colorMessage = uniqueColors.length === 1 ? `is ${uniqueColors.length} color` : `are ${uniqueColors.length} colors`
+  const colorsEvent = createEvent(`There ${colorMessage} in play, so you draw ${doubleColors}`)
+  const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
     deck: playerData.deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: uniqueColors.length * 2
   })
+  const secondChildren = [colorsEvent, ...drawEvents]
+  const secondEvent = createEvent('Second, you draw twice the number of colors in play.', secondChildren)
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,

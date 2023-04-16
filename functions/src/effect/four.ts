@@ -1,10 +1,9 @@
-import drawMultiple from '../draw/multiple'
-import guardHandScheme from '../guard/handScheme'
-import guardTime from '../guard/time'
 import { SchemeEffectProps } from '../types'
 import { createSchemeRef } from '../create/schemeRef'
 import { createEvent } from '../create/event'
 import { arrayUnion } from 'firelord'
+import draw from '../draw'
+import getLowestTime from '../get/lowestTime'
 
 export default function effectFour ({
   allPlayers,
@@ -19,23 +18,21 @@ export default function effectFour ({
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
   const privelege = createSchemeRef(1)
   const bankHand = [...hand, privelege]
-  const secondEvent = createEvent('Second, you draw the lowest time in play.')
-  const allTimes = allPlayers.map(player => {
-    const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
-    const time = guardTime(playScheme.rank)
-    return time
-  })
-  const minimumTime = Math.min(...allTimes)
+  const lowestTime = getLowestTime(allPlayers)
+  const timeEvent = createEvent(`The lowest time in play is ${lowestTime}.`)
   const {
     drawnDeck,
     drawnDiscard,
-    drawnHand
-  } = drawMultiple({
+    drawnHand,
+    drawEvents
+  } = draw({
     deck: playerData.deck,
     discard: playerData.deck,
     hand: bankHand,
-    depth: minimumTime
+    depth: lowestTime
   })
+  const secondChildren = [timeEvent, ...drawEvents]
+  const secondEvent = createEvent('Second, you draw the lowest time in play.', secondChildren)
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,

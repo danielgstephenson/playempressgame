@@ -1,9 +1,9 @@
-import drawMultiple from '../draw/multiple'
 import { SchemeEffectProps } from '../types'
 import { createEvent } from '../create/event'
 import { arrayUnion } from 'firelord'
 import getHighestTime from '../get/highestTime'
 import revive from '../revive'
+import draw from '../draw'
 
 export default function effectSix ({
   allPlayers,
@@ -24,15 +24,17 @@ export default function effectSix ({
   })
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent('First, you revive the highest time in play', firstChildren)
-  const secondEvent = createEvent('Second, draw the lowest rank in the dungeon')
   const dungeonRanks = gameData.dungeon.map(scheme => scheme.rank)
   const lowestDungeon = Math.min(...dungeonRanks)
-  const { drawnDeck, drawnDiscard, drawnHand } = drawMultiple({
+  const dungeonEvent = createEvent(`The lowest rank in the dungeon is ${lowestDungeon}.`)
+  const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
     deck: playerData.deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: lowestDungeon
   })
+  const secondChildren = [dungeonEvent, ...drawEvents]
+  const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon', secondChildren)
   transaction.update(playerRef, {
     hand: drawnHand,
     deck: drawnDeck,
