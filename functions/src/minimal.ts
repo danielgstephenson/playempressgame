@@ -1,4 +1,4 @@
-import { getFirelord, getFirestore, MetaTypeCreator, runTransaction, PossiblyReadAsUndefined } from 'firelord'
+import { getFirelord, getFirestore, MetaTypeCreator, PossiblyReadAsUndefined, arrayUnion, updateDoc, DocumentReference } from 'firelord'
 import { initializeApp } from 'firebase-admin'
 import { firebaseConfig } from './secret'
 import { https } from 'firebase-functions'
@@ -8,12 +8,17 @@ type User = MetaTypeCreator<{
 }, 'users'>
 initializeApp(firebaseConfig)
 const db = getFirestore()
-const usersLord = getFirelord<User>(db, 'users')
+const usersRef = getFirelord<User>(db, 'users')
+function getChanges (userRef: DocumentReference<User>): Partial<User['write']> {
+  const changes: Partial<User['write']> = { friendNames: arrayUnion('someName') }
+  if (userRef.id === 'someId') {
+    changes.name = 'someOtherName'
+  }
+  return changes
+}
 export const cloudFunction = https.onCall(async (props, context) => {
-  await runTransaction(async transaction => {
-    const userRef = usersLord.doc('someId')
-    transaction.set(userRef, { name: 'someName' }, { merge: true })
-    // Argument of type '{}' is not assignable to parameter of type '{ friendNames: readonly string[] | ArrayUnionOrRemove<string>; }'.
-    //  Property 'friendNames' is missing in type '{}' but required in type '{ friendNames: readonly string[] | ArrayUnionOrRemove<string>; }'.
-  })
+  const userRef = usersRef.doc('someId')
+
+  const changes = getChanges(userRef)
+  await updateDoc(userRef, changes)
 })

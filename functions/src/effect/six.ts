@@ -1,24 +1,20 @@
-import { SchemeEffectProps } from '../types'
+import { SchemeEffectProps, SchemeResult } from '../types'
 import { createEvent } from '../create/event'
-import { arrayUnion } from 'firelord'
 import getHighestTime from '../get/highestTime'
 import revive from '../revive'
 import draw from '../draw'
 
 export default function effectSix ({
   allPlayers,
-  playerData,
+  playerResult,
   gameData,
-  gameRef,
   hand,
-  passedTimeline,
-  playerRef,
-  transaction
-}: SchemeEffectProps): void {
+  passedTimeline
+}: SchemeEffectProps): SchemeResult {
   const highestTime = getHighestTime(allPlayers)
   const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
   const { revivedDiscard, revivedHand, reviveEvents } = revive({
-    discard: playerData.discard,
+    discard: playerResult.discard,
     hand,
     depth: highestTime
   })
@@ -28,17 +24,19 @@ export default function effectSix ({
   const lowestDungeon = Math.min(...dungeonRanks)
   const dungeonEvent = createEvent(`The lowest rank in the dungeon is ${lowestDungeon}.`)
   const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
-    deck: playerData.deck,
+    deck: playerResult.deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: lowestDungeon
   })
   const secondChildren = [dungeonEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon', secondChildren)
-  transaction.update(playerRef, {
+  return {
     hand: drawnHand,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    history: arrayUnion(firstEvent, secondEvent)
-  })
+    playerChanges: {
+      deck: drawnDeck,
+      discard: drawnDiscard
+    },
+    playerEvents: [firstEvent, secondEvent]
+  }
 }

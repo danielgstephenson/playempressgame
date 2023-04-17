@@ -1,22 +1,18 @@
 import createPrivelege from '../create/privelege'
-import { SchemeEffectProps } from '../types'
+import { SchemeEffectProps, SchemeResult } from '../types'
 import getHighestTime from '../get/highestTime'
 import draw from '../draw'
 import { createEvent } from '../create/event'
-import { arrayUnion } from 'firelord'
 
 export default function effectThree ({
   allPlayers,
-  playerData,
+  playerResult,
   gameData,
-  gameRef,
   hand,
-  passedTimeline,
-  playerRef,
-  transaction
-}: SchemeEffectProps): void {
+  passedTimeline
+}: SchemeEffectProps): SchemeResult {
   const discardPrivelege = createPrivelege(3)
-  const bankDiscard = [...playerData.discard, ...discardPrivelege]
+  const bankDiscard = [...playerResult.discard, ...discardPrivelege]
   const firstEvent = createEvent('First, you put 3 privelege on your discard.')
   const highestTime = getHighestTime(allPlayers)
   const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
@@ -26,17 +22,19 @@ export default function effectThree ({
     drawEvents,
     drawnHand
   } = draw({
-    deck: playerData.deck,
+    deck: playerResult.deck,
     discard: bankDiscard,
     hand,
     depth: highestTime
   })
   const secondChildren = [timeEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the highest time in play', secondChildren)
-  transaction.update(playerRef, {
+  return {
     hand: drawnHand,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    history: arrayUnion(firstEvent, secondEvent)
-  })
+    playerChanges: {
+      deck: drawnDeck,
+      discard: drawnDiscard
+    },
+    playerEvents: [firstEvent, secondEvent]
+  }
 }

@@ -1,5 +1,5 @@
 import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, PossiblyReadAsUndefined } from 'firelord'
-import { ArrayUnionOrRemove, MetaType, Transaction } from 'firelord/dist/types'
+import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
 
 export interface HistoryEvent {
   message: string
@@ -154,16 +154,26 @@ export interface PassTime {
 
 export interface SchemeEffectProps {
   allPlayers: Array<Player['read']>
-  playerData: Player['read']
+  playerResult: Result<Player>
   gameData: Game['read']
-  gameRef: DocumentReference<Game>
   hand: SchemeRef[]
   passedTimeline: SchemeRef[]
-  playerRef: DocumentReference<Player>
-  transaction: Transaction
 }
 
-export type SchemeEffect = (props: SchemeEffectProps) => void
+type PartialPlayerWrite = Partial<Player['write']>
+
+type SchemePlayerResult = Omit<PartialPlayerWrite, 'hand' | 'history'>
+
+export interface SchemeResult {
+  appointments?: SchemeRef[]
+  choices?: Choice[]
+  hand: SchemeRef[]
+  playerChanges?: SchemePlayerResult
+  profileChanges?: Partial<Profile['write']>
+  playerEvents: HistoryEvent[]
+}
+
+export type SchemeEffect = (props: SchemeEffectProps) => SchemeResult
 
 export interface DrawRefs {
   drawnHand: SchemeRef[]
@@ -186,4 +196,12 @@ export interface ReviveRefs {
 
 export interface ReviveResult extends ReviveRefs {
   reviveEvents: HistoryEvent[]
+}
+
+export interface Grammar {
+  count: string
+  verb: string
+  noun: string
+  phrase: string
+  object: string
 }

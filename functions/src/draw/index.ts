@@ -1,4 +1,5 @@
 import { createEvent } from '../create/event'
+import getGrammar from '../get/grammar'
 import { DrawResult, HistoryEvent, SchemeRef } from '../types'
 import drawMultiple from './multiple'
 
@@ -28,10 +29,14 @@ export default function draw ({
     discard,
     hand
   })
-  if (deck.length < depth) {
+  if (deck.length === 0) {
+    const deckEvent = createEvent('Your deck is empty.')
+    drawEvents.push(deckEvent)
+  } else if (deck.length < depth) {
     const deckDrawnRanks = deckDrawn.map((scheme) => scheme.rank).join(', ')
-    const discardEvent = createEvent(`Your deck only has ${deck.length} schemes, so you draw them all: ${deckDrawnRanks}.`)
-    drawEvents.push(discardEvent)
+    const { count, object } = getGrammar(deck.length, 'scheme', 'schemes')
+    const deckEvent = createEvent(`Your deck only has ${count}, so you draw ${object}: ${deckDrawnRanks}.`)
+    drawEvents.push(deckEvent)
   } else {
     const deckDrawnRanks = deckDrawn.map((scheme) => scheme.rank).join(', ')
     const deckEvent = createEvent(`You draw ${deckDrawn.length} from your deck: ${deckDrawnRanks}.`)

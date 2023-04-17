@@ -3,7 +3,7 @@ import guardCurrentPlayer from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import { createEvent } from '../create/event'
-import { PlayReadyProps, Player, Result } from '../types'
+import { Choice, Game, PlayReadyProps, Player, Result, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -88,7 +88,8 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     timeline: currentGameData.timeline,
     transaction
   })
-
+  const gameAppointments: SchemeRef[] = []
+  const gameChoices: Choice[] = []
   function play (result: Result<Player>): void {
     const playerRef = playersRef.doc(result.id)
     const current = result.id === currentPlayerId
@@ -97,7 +98,27 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashId, label: 'Trash scheme' })
     const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playId, label: 'Play scheme' })
     const playedHand = result.hand.filter((scheme) => scheme.id !== trashScheme.id && scheme.id !== playScheme.id)
-
+    const profileRef = profilesRef.doc(result.id)
+    const effect = guardEffect(playScheme.rank)
+    const {
+      appointments,
+      choices,
+      playerChanges,
+      profileChanges,
+      playerEvents
+    } = effect({
+      allPlayers,
+      playerResult: result,
+      gameData: currentGameData,
+      hand: playedHand,
+      passedTimeline
+    })
+    if (appointments != null) {
+      gameAppointments.push(...appointments)
+    }
+    if (choices != null) {
+      gameChoices.push(...choices)
+    }
     const time = guardTime(playScheme.rank)
     transaction.update(playerRef, {
       trashId: deleteField(),
@@ -107,35 +128,34 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
         createEvent(`You trashed scheme ${trashScheme.rank}.`),
         ...playEvents,
         createEvent(`You played scheme ${playScheme.rank} with ${time} time.`),
-        timeEvent
-      )
-    })
-    const effect = guardEffect(playScheme.rank)
-    effect({
-      allPlayers,
-      playerData: result,
-      gameData: currentGameData,
-      gameRef: currentGameRef,
-      hand: playedHand,
-      passedTimeline,
-      playerRef,
-      transaction
+        timeEvent,
+        ...playerEvents
+      ),
+      ...playerChanges
     })
 
-    const profileRef = profilesRef.doc(result.id)
-    transaction.update(profileRef, {
-      ready: false,
-      trashEmpty: true
-    })
+    const profileUpdate = {
+      ...profileChanges,
+      ready: true,
+      trashEmpty: false
+    }
+    transaction.update(profileRef, profileUpdate)
   }
   allPlayers.forEach(play)
-  transaction.update(currentGameRef, {
+  const gameChanges: Partial<Game['write']> = {
     history: arrayUnion(
       createEvent('Everyone is ready.')
     ),
     timeline: passedTimeline,
     readyCount: 0
-  })
+  }
+  if (gameAppointments.length > 0) {
+    gameChanges.court = arrayUnion(...gameAppointments)
+  }
+  if (gameChoices.length > 0) {
+    gameChanges.choices = arrayUnion(...gameChoices)
+  }
+  transaction.update(currentGameRef, gameChanges)
   console.info(`${currentUid} is ready!`)
 })
 export default playReady

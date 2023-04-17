@@ -1,27 +1,23 @@
-import { arrayUnion } from 'firelord'
 import { createEvent } from '../create/event'
 import getLowestTime from '../get/lowestTime'
 import revive from '../revive'
-import { SchemeEffectProps } from '../types'
+import { SchemeEffectProps, SchemeResult } from '../types'
 import draw from '../draw'
 
 export default function effectTwo ({
   allPlayers,
-  playerData,
+  playerResult,
   gameData,
-  gameRef,
   hand,
-  passedTimeline,
-  playerRef,
-  transaction
-}: SchemeEffectProps): void {
+  passedTimeline
+}: SchemeEffectProps): SchemeResult {
   const lowestTime = getLowestTime(allPlayers)
   const {
     revivedDiscard,
     revivedHand,
     reviveEvents
   } = revive({
-    discard: playerData.discard,
+    discard: playerResult.discard,
     hand,
     depth: lowestTime
   })
@@ -29,7 +25,7 @@ export default function effectTwo ({
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent('First, you revive the lowest time in play', firstChildren)
   const { drawnDeck, drawnHand, drawnDiscard, drawEvents } = draw({
-    deck: playerData.deck,
+    deck: playerResult.deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: gameData.dungeon.length
@@ -37,10 +33,14 @@ export default function effectTwo ({
   const dungeonEvent = createEvent(`The are ${gameData.dungeon.length} schemes in the dungeon.`)
   const secondChildren = [dungeonEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon', secondChildren)
-  transaction.update(playerRef, {
-    hand: drawnHand,
+  const playerChanges = {
     deck: drawnDeck,
-    discard: drawnDiscard,
-    history: arrayUnion(firstEvent, secondEvent)
-  })
+    discard: drawnDiscard
+  }
+
+  return {
+    hand: drawnHand,
+    playerEvents: [firstEvent, secondEvent],
+    playerChanges
+  }
 }

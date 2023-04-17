@@ -31,9 +31,6 @@ export default function passTime ({ allPlayers, gameRef, timeline, transaction }
   }
   const timeResult = `not more than the ${allPlayers.length} players, so time does not pass.`
   const timeEvent = createEvent(`The total time is ${totalTime}, ${timeResult}`)
-  transaction.update(gameRef, {
-    timeline
-  })
   return {
     passedTimeline: timeline,
     timeEvent

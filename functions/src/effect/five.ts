@@ -1,30 +1,27 @@
 import guardHandScheme from '../guard/handScheme'
 import guardTime from '../guard/time'
-import { HistoryEvent, SchemeEffectProps } from '../types'
+import { HistoryEvent, SchemeEffectProps, SchemeResult } from '../types'
 import { createEvent } from '../create/event'
-import { arrayUnion } from 'firelord'
 import revive from '../revive'
 import guardDefined from '../guard/defined'
 import draw from '../draw'
+import getGrammar from '../get/grammar'
 
 export default function effectFive ({
   allPlayers,
-  playerData,
+  playerResult,
   gameData,
-  gameRef,
   hand,
-  passedTimeline,
-  playerRef,
-  transaction
-}: SchemeEffectProps): void {
+  passedTimeline
+}: SchemeEffectProps): SchemeResult {
   function getTopDiscardSchemeTime (): { time: number, timeEvent: HistoryEvent } {
-    if (playerData.discard.length === 0) {
+    if (playerResult.discard.length === 0) {
       return {
         time: 0,
         timeEvent: createEvent('Your discard is empty, so you do not revive.')
       }
     }
-    const topDiscardSlice = playerData.discard.slice(-1)
+    const topDiscardSlice = playerResult.discard.slice(-1)
     const topDiscardScheme = guardDefined(topDiscardSlice[0], 'Top discard scheme')
     const topDiscardSchemeTime = guardTime(topDiscardScheme.rank)
     return {
@@ -34,7 +31,7 @@ export default function effectFive ({
   }
   const { time, timeEvent } = getTopDiscardSchemeTime()
   const { revivedDiscard, revivedHand, reviveEvents } = revive({
-    discard: playerData.discard,
+    discard: playerResult.discard,
     hand,
     depth: time
   })
@@ -46,20 +43,22 @@ export default function effectFive ({
     return [...uniqueColors, playScheme.color]
   }, [])
   const doubleColors = uniqueColors.length * 2
-  const colorMessage = uniqueColors.length === 1 ? `is ${uniqueColors.length} color` : `are ${uniqueColors.length} colors`
-  const colorsEvent = createEvent(`There ${colorMessage} in play, so you draw ${doubleColors}`)
+  const { phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
+  const colorsEvent = createEvent(`There ${phrase} in play, so you draw ${doubleColors}`)
   const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
-    deck: playerData.deck,
+    deck: playerResult.deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: uniqueColors.length * 2
   })
   const secondChildren = [colorsEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw twice the number of colors in play.', secondChildren)
-  transaction.update(playerRef, {
+  return {
     hand: drawnHand,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    history: arrayUnion(firstEvent, secondEvent)
-  })
+    playerChanges: {
+      deck: drawnDeck,
+      discard: drawnDiscard
+    },
+    playerEvents: [firstEvent, secondEvent]
+  }
 }

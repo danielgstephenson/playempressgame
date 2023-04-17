@@ -1,20 +1,16 @@
-import { SchemeEffectProps } from '../types'
+import { SchemeEffectProps, SchemeResult } from '../types'
 import { createSchemeRef } from '../create/schemeRef'
 import { createEvent } from '../create/event'
-import { arrayUnion } from 'firelord'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
 
 export default function effectFour ({
   allPlayers,
-  playerData,
+  playerResult,
   gameData,
-  gameRef,
   hand,
-  passedTimeline,
-  playerRef,
-  transaction
-}: SchemeEffectProps): void {
+  passedTimeline
+}: SchemeEffectProps): SchemeResult {
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
   const privelege = createSchemeRef(1)
   const bankHand = [...hand, privelege]
@@ -26,17 +22,19 @@ export default function effectFour ({
     drawnHand,
     drawEvents
   } = draw({
-    deck: playerData.deck,
-    discard: playerData.deck,
+    deck: playerResult.deck,
+    discard: playerResult.deck,
     hand: bankHand,
     depth: lowestTime
   })
   const secondChildren = [timeEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the lowest time in play.', secondChildren)
-  transaction.update(playerRef, {
+  return {
     hand: drawnHand,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    history: arrayUnion(firstEvent, secondEvent)
-  })
+    playerChanges: {
+      deck: drawnDeck,
+      discard: drawnDiscard
+    },
+    playerEvents: [firstEvent, secondEvent]
+  }
 }
