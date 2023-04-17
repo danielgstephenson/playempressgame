@@ -3,30 +3,34 @@ import draw from '../draw'
 import { createEvent } from '../create/event'
 
 export default function effectOne ({
-  allPlayers,
-  playerResult,
-  gameData,
+  appointments,
+  choices,
+  deck,
+  discard,
+  dungeon,
+  gold,
+  passedTimeline,
   hand,
-  passedTimeline
+  playerId,
+  playSchemes
 }: SchemeEffectProps): SchemeResult {
-  const { drawnDeck, drawnDiscard, drawEvents, drawnHand } = draw({
-    deck: playerResult.deck,
-    discard: playerResult.discard,
-    hand,
-    depth: 2
-  })
+  const {
+    drawnDeck,
+    drawnDiscard,
+    drawEvents,
+    drawnHand
+  } = draw({ deck, discard, hand, depth: 2 })
   const firstEvent = createEvent('First, you draw two cards.', drawEvents)
   const secondEvent = createEvent('Second, you must select a scheme from your hand to trash.')
-  const playerChanges = {
-    deck: drawnDeck,
-    discard: drawnDiscard
-  }
-  const choices = [{ playerId: playerResult.id, type: 'trash' } as const]
-
+  const trashChoice = { playerId, type: 'trash' } as const
+  const trashedChoices = [...choices, trashChoice]
   return {
-    choices,
+    appointments,
+    choices: trashedChoices,
+    deck: drawnDeck,
+    discard: drawnDiscard,
+    gold,
     hand: drawnHand,
-    playerChanges,
     playerEvents: [firstEvent, secondEvent]
   }
 }

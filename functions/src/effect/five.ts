@@ -1,44 +1,47 @@
-import guardHandScheme from '../guard/handScheme'
-import guardTime from '../guard/time'
 import { HistoryEvent, SchemeEffectProps, SchemeResult } from '../types'
 import { createEvent } from '../create/event'
 import revive from '../revive'
-import guardDefined from '../guard/defined'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
+import guardSchemeData from '../guard/schemeData'
+import getTop from '../get/top'
 
 export default function effectFive ({
-  allPlayers,
-  playerResult,
-  gameData,
+  appointments,
+  choices,
+  deck,
+  discard,
+  dungeon,
+  gold,
+  passedTimeline,
   hand,
-  passedTimeline
+  playerId,
+  playSchemes
 }: SchemeEffectProps): SchemeResult {
   function getTopDiscardSchemeTime (): { time: number, timeEvent: HistoryEvent } {
-    if (playerResult.discard.length === 0) {
+    const top = getTop(discard)
+    if (top == null) {
       return {
         time: 0,
         timeEvent: createEvent('Your discard is empty, so you do not revive.')
       }
     }
-    const topDiscardSlice = playerResult.discard.slice(-1)
-    const topDiscardScheme = guardDefined(topDiscardSlice[0], 'Top discard scheme')
-    const topDiscardSchemeTime = guardTime(topDiscardScheme.rank)
+    const topData = guardSchemeData(top.rank)
     return {
-      time: topDiscardSchemeTime,
-      timeEvent: createEvent(`Your top discard scheme is ${topDiscardScheme.rank} with ${topDiscardSchemeTime} time.`)
+      time: topData.time,
+      timeEvent: createEvent(`Your top discard scheme is ${topData.rank} with ${topData.time} time.`)
     }
   }
   const { time, timeEvent } = getTopDiscardSchemeTime()
   const { revivedDiscard, revivedHand, reviveEvents } = revive({
-    discard: playerResult.discard,
+    discard,
     hand,
     depth: time
   })
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent("First, you revive your top discard scheme's time", firstChildren)
-  const uniqueColors = allPlayers.reduce<string[]>((uniqueColors, player) => {
-    const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
+  const uniqueColors = playSchemes.reduce<string[]>((uniqueColors, scheme) => {
+    const playScheme = guardSchemeData(scheme.rank)
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
     return [...uniqueColors, playScheme.color]
   }, [])
@@ -46,7 +49,7 @@ export default function effectFive ({
   const { phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
   const colorsEvent = createEvent(`There ${phrase} in play, so you draw ${doubleColors}`)
   const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
-    deck: playerResult.deck,
+    deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: uniqueColors.length * 2
@@ -54,11 +57,12 @@ export default function effectFive ({
   const secondChildren = [colorsEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw twice the number of colors in play.', secondChildren)
   return {
+    appointments,
+    choices,
+    deck: drawnDeck,
+    discard: drawnDiscard,
+    gold,
     hand: drawnHand,
-    playerChanges: {
-      deck: drawnDeck,
-      discard: drawnDiscard
-    },
     playerEvents: [firstEvent, secondEvent]
   }
 }

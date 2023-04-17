@@ -11,6 +11,11 @@ import effectFour from './effect/four'
 import effectFive from './effect/five'
 import schemesJson from './schemes.json'
 import effectSix from './effect/six'
+import guardEffect from './guard/effect'
+import effectSeven from './effect/seven'
+import effectEight from './effect/eight'
+import effectNine from './effect/nine'
+import effectTen from './effect/ten'
 
 admin.initializeApp(firebaseConfig)
 export const adminAuth = getAuth()
@@ -28,10 +33,10 @@ export const effects: SchemeEffect[] = [
   effectFour,
   effectFive,
   effectSix,
-  effectZero,
-  effectZero,
-  effectZero,
-  effectZero,
+  effectSeven,
+  effectEight,
+  effectNine,
+  effectTen,
   effectZero,
   effectZero,
   effectZero,
@@ -52,8 +57,8 @@ export const effects: SchemeEffect[] = [
   effectZero,
   effectZero
 ]
-export const schemeData: SchemeData[] = schemesJson.map((scheme, index) => {
-  const effect = effects[index]
+export const schemeData: SchemeData[] = schemesJson.map((scheme) => {
+  const effect = guardEffect(scheme.rank)
   return {
     ...scheme,
     effect

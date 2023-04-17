@@ -3,7 +3,7 @@ import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
 
 export interface HistoryEvent {
   message: string
-  children: HistoryEvent[] | undefined
+  children: HistoryEvent[]
   timestamp: number
 }
 
@@ -21,6 +21,7 @@ export interface SchemeData {
   threat?: string
   link1: string
   link2: string
+  effect: SchemeEffect
 }
 export type Scheme = SchemeRef & SchemeData
 
@@ -67,15 +68,16 @@ export type Profile = MetaTypeCreator<{
 }, 'profiles', string>
 
 export type Player = MetaTypeCreator<{
-  userId: string
-  gameId: string
-  hand: SchemeRef[]
   deck: SchemeRef[]
   discard: SchemeRef[]
-  history: HistoryEvent[]
   displayName: string
-  trashId: string | DeleteField
+  gameId: string
+  gold: number
+  hand: SchemeRef[]
+  history: HistoryEvent[]
   playId: string | DeleteField
+  trashId: string | DeleteField
+  userId: string
 }, 'players', string>
 
 export interface CurrentGameGuard {
@@ -153,23 +155,25 @@ export interface PassTime {
 }
 
 export interface SchemeEffectProps {
-  allPlayers: Array<Player['read']>
-  playerResult: Result<Player>
-  gameData: Game['read']
-  hand: SchemeRef[]
+  appointments: SchemeRef[]
+  choices: Choice[]
+  deck: SchemeRef[]
+  discard: SchemeRef[]
+  dungeon: SchemeRef[]
+  gold: number
   passedTimeline: SchemeRef[]
+  hand: SchemeRef[]
+  playerId: string
+  playSchemes: SchemeRef[]
 }
 
-type PartialPlayerWrite = Partial<Player['write']>
-
-type SchemePlayerResult = Omit<PartialPlayerWrite, 'hand' | 'history'>
-
 export interface SchemeResult {
-  appointments?: SchemeRef[]
-  choices?: Choice[]
+  appointments: SchemeRef[]
+  choices: Choice[]
+  deck: SchemeRef[]
+  discard: SchemeRef[]
+  gold: number
   hand: SchemeRef[]
-  playerChanges?: SchemePlayerResult
-  profileChanges?: Partial<Profile['write']>
   playerEvents: HistoryEvent[]
 }
 

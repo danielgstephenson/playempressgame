@@ -10,5 +10,5 @@ export default function CardGroupContentView ({
     return <Text>Empty</Text>
   }
   const group = cardGroup?.map(scheme => <Text key={scheme.id}>{scheme.rank}</Text>)
-  return <HStack>{group}</HStack>
+  return <HStack flexWrap='wrap'>{group}</HStack>
 }

@@ -1,23 +1,28 @@
 import { createEvent } from '../create/event'
-import getLowestTime from '../get/lowestTime'
 import revive from '../revive'
 import { SchemeEffectProps, SchemeResult } from '../types'
 import draw from '../draw'
+import getLowestTime from '../get/lowestTime'
 
 export default function effectTwo ({
-  allPlayers,
-  playerResult,
-  gameData,
+  appointments,
+  choices,
+  deck,
+  discard,
+  dungeon,
+  gold,
+  passedTimeline,
   hand,
-  passedTimeline
+  playerId,
+  playSchemes
 }: SchemeEffectProps): SchemeResult {
-  const lowestTime = getLowestTime(allPlayers)
+  const lowestTime = getLowestTime(playSchemes)
   const {
     revivedDiscard,
     revivedHand,
     reviveEvents
   } = revive({
-    discard: playerResult.discard,
+    discard,
     hand,
     depth: lowestTime
   })
@@ -25,22 +30,22 @@ export default function effectTwo ({
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent('First, you revive the lowest time in play', firstChildren)
   const { drawnDeck, drawnHand, drawnDiscard, drawEvents } = draw({
-    deck: playerResult.deck,
+    deck,
     discard: revivedDiscard,
     hand: revivedHand,
-    depth: gameData.dungeon.length
+    depth: dungeon.length
   })
-  const dungeonEvent = createEvent(`The are ${gameData.dungeon.length} schemes in the dungeon.`)
+  const dungeonEvent = createEvent(`There are ${dungeon.length} schemes in the dungeon.`)
   const secondChildren = [dungeonEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon', secondChildren)
-  const playerChanges = {
-    deck: drawnDeck,
-    discard: drawnDiscard
-  }
 
   return {
+    appointments,
+    choices,
+    deck: drawnDeck,
+    discard: drawnDiscard,
+    gold,
     hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent],
-    playerChanges
+    playerEvents: [firstEvent, secondEvent]
   }
 }

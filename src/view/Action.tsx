@@ -2,13 +2,15 @@ import ChakraWriter from '../lib/firewrite/chakra/Writer'
 import functionsContext from '../context/functions'
 import { useContext } from 'react'
 import { ConsumerWriterProps } from '../lib/firewrite/types'
+import { ButtonProps } from '@chakra-ui/react'
 
 export default function Action <Props extends {}> ({
   fn,
   label,
   onCall,
-  props
-}: ConsumerWriterProps<Props>): JSX.Element {
+  props,
+  ...buttonProps
+}: ConsumerWriterProps<Props> & ButtonProps): JSX.Element {
   const functionsState = useContext(functionsContext)
   return (
     <ChakraWriter
@@ -17,6 +19,7 @@ export default function Action <Props extends {}> ({
       label={label}
       onCall={onCall}
       props={props}
+      {...buttonProps}
     />
   )
 }

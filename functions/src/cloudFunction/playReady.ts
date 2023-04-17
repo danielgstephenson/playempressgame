@@ -3,7 +3,7 @@ import guardCurrentPlayer from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import { createEvent } from '../create/event'
-import { Choice, Game, PlayReadyProps, Player, Result, SchemeRef } from '../types'
+import { Choice, Game, PlayReadyProps, Player, Profile, Result, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -69,6 +69,12 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
   const otherPlayers = await getQuery({ query: otherPlayersQuery, transaction })
   const allPlayers = [...otherPlayers, currentPlayer]
+  const playSchemes = allPlayers.map(player => {
+    const playScheme = guardHandScheme({
+      hand: player.hand, schemeId: player.playId, label: 'Play scheme'
+    })
+    return playScheme
+  })
   const publicEvents = allPlayers.map(player => {
     const playScheme = guardHandScheme({
       hand: player.hand, schemeId: player.playId, label: 'Play scheme'
@@ -103,21 +109,43 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const {
       appointments,
       choices,
-      playerChanges,
-      profileChanges,
+      deck,
+      discard,
+      gold,
+      hand,
       playerEvents
     } = effect({
-      allPlayers,
-      playerResult: result,
-      gameData: currentGameData,
+      appointments: [],
+      choices: [],
+      deck: result.deck,
+      discard: result.discard,
+      dungeon: currentGameData.dungeon,
+      gold: result.gold,
+      passedTimeline,
       hand: playedHand,
-      passedTimeline
+      playerId: result.id,
+      playSchemes
     })
-    if (appointments != null) {
-      gameAppointments.push(...appointments)
+    gameAppointments.push(...appointments)
+    gameChoices.push(...choices)
+    const playerChanges: Partial<Player['write']> = { hand }
+    const profileChanges: Partial<Profile['writeFlatten']> = {}
+    const deckedChanged = deck.length !== result.deck.length || deck.some((scheme, index) => scheme.id !== result.deck[index]?.id)
+    if (deckedChanged) {
+      playerChanges.deck = deck
     }
-    if (choices != null) {
-      gameChoices.push(...choices)
+    const discardChanged = discard.length !== result.discard.length || discard.some((scheme, index) => scheme.id !== result.discard[index]?.id)
+    if (discardChanged) {
+      playerChanges.discard = discard
+    }
+    const topdiscardChanged = discard[discard.length - 1]?.id !== result.discard[result.discard.length - 1]?.id
+    if (topdiscardChanged) {
+      profileChanges.topDiscardScheme = discard[discard.length - 1] ?? deleteField()
+    }
+    const goldChanged = gold !== result.gold
+    if (goldChanged) {
+      playerChanges.gold = gold
+      profileChanges.gold = gold
     }
     const time = guardTime(playScheme.rank)
     transaction.update(playerRef, {

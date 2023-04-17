@@ -1,7 +1,9 @@
-import { Player } from '../types'
-import getAllTimes from './allTimes'
+import guardDefined from '../guard/defined'
+import { SchemeRef } from '../types'
+import getHighestTimeScheme from './highestTimeScheme'
 
-export default function getHighestTime (allPlayers: Array<Player['read']>): number {
-  const allTimes = getAllTimes(allPlayers)
-  return Math.max(...allTimes)
+export default function getHighestTime (schemes: SchemeRef[]): number {
+  const scheme = getHighestTimeScheme(schemes)
+  const time = guardDefined(scheme, 'Highest time scheme').time
+  return time
 }

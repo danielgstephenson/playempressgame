@@ -1,30 +1,35 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
 import { createEvent } from '../create/event'
-import getHighestTime from '../get/highestTime'
 import revive from '../revive'
 import draw from '../draw'
+import getHighestTime from '../get/highestTime'
 
 export default function effectSix ({
-  allPlayers,
-  playerResult,
-  gameData,
+  appointments,
+  choices,
+  deck,
+  discard,
+  dungeon,
+  gold,
+  passedTimeline,
   hand,
-  passedTimeline
+  playerId,
+  playSchemes
 }: SchemeEffectProps): SchemeResult {
-  const highestTime = getHighestTime(allPlayers)
+  const highestTime = getHighestTime(playSchemes)
   const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
   const { revivedDiscard, revivedHand, reviveEvents } = revive({
-    discard: playerResult.discard,
+    discard,
     hand,
     depth: highestTime
   })
   const firstChildren = [timeEvent, ...reviveEvents]
   const firstEvent = createEvent('First, you revive the highest time in play', firstChildren)
-  const dungeonRanks = gameData.dungeon.map(scheme => scheme.rank)
+  const dungeonRanks = dungeon.map(scheme => scheme.rank)
   const lowestDungeon = Math.min(...dungeonRanks)
   const dungeonEvent = createEvent(`The lowest rank in the dungeon is ${lowestDungeon}.`)
   const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
-    deck: playerResult.deck,
+    deck,
     discard: revivedDiscard,
     hand: revivedHand,
     depth: lowestDungeon
@@ -32,11 +37,12 @@ export default function effectSix ({
   const secondChildren = [dungeonEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon', secondChildren)
   return {
+    appointments,
+    choices,
+    deck: drawnDeck,
+    discard: drawnDiscard,
+    gold,
     hand: drawnHand,
-    playerChanges: {
-      deck: drawnDeck,
-      discard: drawnDiscard
-    },
     playerEvents: [firstEvent, secondEvent]
   }
 }

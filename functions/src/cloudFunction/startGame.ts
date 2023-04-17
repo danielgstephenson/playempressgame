@@ -88,6 +88,7 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
     const playerData = {
       userId: user.id,
       gameId: props.gameId,
+      gold: 40,
       hand: handSchemes,
       deck,
       discard,
