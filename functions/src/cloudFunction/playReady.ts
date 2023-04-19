@@ -9,7 +9,7 @@ import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
-import getQuery from '../getQuery'
+import getQuery from '../get/query'
 import passTime from '../passTime'
 import guardTime from '../guard/time'
 import guardEffect from '../guard/effect'
@@ -94,9 +94,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     timeEvent
   } = passTime({
     allPlayers,
-    gameRef: currentGameRef,
-    timeline: currentGameData.timeline,
-    transaction
+    timeline: currentGameData.timeline
   })
   const gameAppointments: SchemeRef[] = []
   const gameChoices: Choice[] = []

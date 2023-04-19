@@ -1,5 +1,5 @@
 import { MetaType, Query, Transaction } from 'firelord'
-import { Result } from './types'
+import { Result } from '../types'
 
 export default async function getQuery <Collection extends MetaType> ({ query, transaction }: {
   query: Query<Collection>
