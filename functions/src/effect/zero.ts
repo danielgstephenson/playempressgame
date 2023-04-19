@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createPrivelege from '../create/privelege'
 import createEvent from '../create/event'
 
@@ -13,7 +13,7 @@ export default function effectZero ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you take 8 Privilege into your hand')
   const drawSchemes = createPrivelege(8)
   const drawnHand = [...hand, ...drawSchemes]

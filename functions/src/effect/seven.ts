@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import guardSchemeData from '../guard/schemeData'
 import guardDefined from '../guard/defined'
@@ -16,7 +16,7 @@ export default function effectSeven ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   let effectGold = gold
   const firstChildren = []
   function isSame (): boolean {
@@ -37,7 +37,7 @@ export default function effectSeven ({
   const firstEvent = createEvent('First, if the left two timeline schemes are the same color, you earn the higher rank', firstChildren)
   const lowest = getLowestRankScheme(playSchemes)
   const lowestRank = String(lowest?.rank)
-  const lowestMessage = `The lowest rank scheme in play is ${lowestRank}`
+  const lowestMessage = `The lowest rank scheme in play is ${lowestRank}.`
   const secondChildren = [createEvent(lowestMessage)]
   const green = isGreen(lowest)
   if (green) {

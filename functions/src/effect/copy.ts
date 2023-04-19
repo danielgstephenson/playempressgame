@@ -1,6 +1,6 @@
 import createEvent from '../create/event'
 import guardEffect from '../guard/effect'
-import { SchemeEffectProps, SchemeData, SchemeResult, HistoryEvent, SchemeRef } from '../types'
+import { SchemeEffectProps, SchemeData, EffectResult, HistoryEvent, SchemeRef } from '../types'
 
 export default function copyEffect ({
   appointments,
@@ -24,7 +24,7 @@ export default function copyEffect ({
   message: string
   nonMessage: string
   event: HistoryEvent
-}): SchemeResult {
+}): EffectResult {
   if (scheme == null || !condition) {
     event.children.push(createEvent(nonMessage))
     return {

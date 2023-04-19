@@ -1,6 +1,6 @@
 import createEvent from '../create/event'
 import revive from '../revive'
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
 
@@ -15,7 +15,7 @@ export default function effectTwo ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const lowestTime = getLowestTime(playSchemes)
   const {
     revivedDiscard,

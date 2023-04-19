@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import createEvent from '../create/event'
 
@@ -13,7 +13,7 @@ export default function effectOne ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const {
     drawnDeck,
     drawnDiscard,

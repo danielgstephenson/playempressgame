@@ -1,7 +1,7 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import copyEffect from './copy'
-import getTop from '../get/top'
+import getTopData from '../get/topData'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
 
@@ -16,9 +16,9 @@ export default function effectEleven ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if your top discard scheme is green or yellow, copy it.')
-  const top = getTop(discard)
+  const top = getTopData(discard)
   const topRank = String(top?.rank)
   const topColor = String(top?.color)
   const topMessage = `Your top discard scheme is ${topRank}, which is ${topColor}.`

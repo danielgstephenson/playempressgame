@@ -1,5 +1,5 @@
 import createPrivelege from '../create/privelege'
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import createEvent from '../create/event'
 import getHighestTime from '../get/highestTime'
@@ -15,7 +15,7 @@ export default function effectThree ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const discardPrivelege = createPrivelege(3)
   const bankDiscard = [...discard, ...discardPrivelege]
   const firstEvent = createEvent('First, you put 3 privelege on your discard.')

@@ -1,10 +1,10 @@
-import { HistoryEvent, SchemeEffectProps, SchemeResult } from '../types'
+import { HistoryEvent, SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import revive from '../revive'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
 import guardSchemeData from '../guard/schemeData'
-import getTop from '../get/top'
+import getTopData from '../get/topData'
 
 export default function effectFive ({
   appointments,
@@ -17,9 +17,9 @@ export default function effectFive ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   function getTopDiscardSchemeTime (): { time: number, timeEvent: HistoryEvent } {
-    const top = getTop(discard)
+    const top = getTopData(discard)
     if (top == null) {
       return {
         time: 0,

@@ -170,7 +170,7 @@ export interface SchemeEffectProps {
   playSchemes: Scheme[]
 }
 
-export interface SchemeResult {
+export interface EffectResult {
   effectAppointments: Scheme[]
   effectChoices: Choice[]
   effectDeck: Scheme[]
@@ -180,7 +180,17 @@ export interface SchemeResult {
   effectPlayerEvents: HistoryEvent[]
 }
 
-export type SchemeEffect = (props: SchemeEffectProps) => SchemeResult
+export interface SerializedEffect {
+  effectAppointments: SchemeRef[]
+  effectChoices: Choice[]
+  effectDeck: SchemeRef[]
+  effectDiscard: SchemeRef[]
+  effectGold: number
+  effectHand: SchemeRef[]
+  effectPlayerEvents: HistoryEvent[]
+}
+
+export type SchemeEffect = (props: SchemeEffectProps) => EffectResult
 
 export interface DrawData {
   drawnHand: Scheme[]

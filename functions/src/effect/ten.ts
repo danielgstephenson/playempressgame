@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import createEvent from '../create/event'
@@ -15,7 +15,7 @@ export default function effectTen ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the leftmost yellow timeline scheme.')
   const yellowSchemes = passedTimeline.filter(scheme => scheme.color === 'Yellow')
   const yellowScheme = yellowSchemes[0]

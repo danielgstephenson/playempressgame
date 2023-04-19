@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import revive from '../revive'
 import draw from '../draw'
@@ -15,7 +15,7 @@ export default function effectSix ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const highestTime = getHighestTime(playSchemes)
   const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
   const { revivedDiscard, revivedHand, reviveEvents } = revive({

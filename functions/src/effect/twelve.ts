@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import copyEffect from './copy'
 import isGreen from '../is/green'
@@ -15,7 +15,7 @@ export default function effectTwelve ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if the leftmost timeline scheme is green or yellow, copy it.')
   const left = passedTimeline[0]
   const leftColor = String(left?.color)

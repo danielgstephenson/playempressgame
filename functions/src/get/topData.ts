@@ -2,7 +2,7 @@ import guardDefined from '../guard/defined'
 import guardSchemeData from '../guard/schemeData'
 import { SchemeData, SchemeRef } from '../types'
 
-export default function getTop (schemes: SchemeRef[] | SchemeData[]): SchemeData | undefined {
+export default function getTopData (schemes: SchemeRef[] | SchemeData[]): SchemeData | undefined {
   if (schemes.length === 0) {
     return undefined
   }

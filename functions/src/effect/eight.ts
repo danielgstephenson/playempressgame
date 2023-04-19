@@ -1,4 +1,4 @@
-import { SchemeEffectProps, SchemeResult } from '../types'
+import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import guardSchemeData from '../guard/schemeData'
 import getLowestRankScheme from '../get/lowestRankScheme'
@@ -16,7 +16,7 @@ export default function effectEight ({
   hand,
   playerId,
   playSchemes
-}: SchemeEffectProps): SchemeResult {
+}: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the lowest rank yellow scheme in play.')
   const yellowSchemes = playSchemes.filter(scheme => guardSchemeData(scheme.rank).color === 'Yellow')
   const yellowScheme = getLowestRankScheme(yellowSchemes)
