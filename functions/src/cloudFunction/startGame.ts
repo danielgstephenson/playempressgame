@@ -1,16 +1,19 @@
 import { https } from 'firebase-functions/v1'
 import guardJoinPhase from '../guard/joinPhase'
-import { createCloudFunction } from '../create/cloudFunction'
-import { createRange } from '../create/range'
+import createCloudFunction from '../create/cloudFunction'
+import createRange from '../create/range'
 import { playersRef, profilesRef, usersRef } from '../db'
-import { createSchemeRef } from '../create/schemeRef'
-import { createEvent } from '../create/event'
+import createSchemeRef from '../create/schemeRef'
+import createEvent from '../create/event'
 import guardCurrentGame from '../guard/current/game'
 import { arrayUnion, documentId, query, where } from 'firelord'
 import guardDefined from '../guard/defined'
 import { StartGameProps } from '../types'
 import getQuery from '../getQuery'
 import guardSchemeData from '../guard/schemeData'
+import isGreen from '../is/green'
+import isRed from '../is/red'
+import isYellow from '../is/yellow'
 
 const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
   console.info(`Starting game ${props.gameId}...`)
@@ -48,9 +51,9 @@ const startGame = createCloudFunction<StartGameProps>(async (props, context, tra
   const court = guardDefined(sorted[0], 'Court')
   const dungeon = guardDefined(sorted[1], 'Dungeon')
   const palaceSlice = sorted.slice(2)
-  const empressGreen = palaceSlice.filter(rank => guardSchemeData(rank).color === 'green')
-  const empressRed = palaceSlice.filter(rank => guardSchemeData(rank).color === 'red')
-  const empressYellow = palaceSlice.filter(rank => guardSchemeData(rank).color === 'yellow')
+  const empressGreen = palaceSlice.filter(rank => isGreen(guardSchemeData(rank)))
+  const empressRed = palaceSlice.filter(rank => isRed(guardSchemeData(rank)))
+  const empressYellow = palaceSlice.filter(rank => isYellow(guardSchemeData(rank)))
   const lowestYellow = guardDefined(empressYellow[0], 'Empress yellow')
   const lowGreen = empressGreen.slice(0, 2)
   const lowRed = empressRed.slice(0, 2)

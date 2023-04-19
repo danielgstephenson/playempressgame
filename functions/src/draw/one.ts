@@ -1,5 +1,5 @@
-import { createSchemeRef } from '../create/schemeRef'
-import { DrawRefs, SchemeRef } from '../types'
+import guardScheme from '../guard/scheme'
+import { DrawData, Scheme } from '../types'
 
 export default function drawOne ({
   deck,
@@ -10,17 +10,17 @@ export default function drawOne ({
   discardDrawn = [],
   privelegeTaken = []
 }: {
-  deck: SchemeRef[]
-  discard: SchemeRef[]
+  deck: Scheme[]
+  discard: Scheme[]
   flipped?: boolean
-  hand: SchemeRef[]
-  deckDrawn?: SchemeRef[]
-  discardDrawn?: SchemeRef[]
-  privelegeTaken?: SchemeRef[]
-}): DrawRefs {
+  hand: Scheme[]
+  deckDrawn?: Scheme[]
+  discardDrawn?: Scheme[]
+  privelegeTaken?: Scheme[]
+}): DrawData {
   if (deck.length === 0) {
     if (discard.length === 0) {
-      const privelege = createSchemeRef(1)
+      const privelege = guardScheme({ rank: 1 })
       return {
         deckDrawn,
         discardDrawn,

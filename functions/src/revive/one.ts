@@ -1,10 +1,10 @@
-import { ReviveRefs, SchemeRef } from '../types'
+import { ReviveData, SchemeRef } from '../types'
 
 export default function reviveOne ({ discard, hand, list = [] }: {
   discard: SchemeRef[]
   hand: SchemeRef[]
   list?: SchemeRef[]
-}): ReviveRefs {
+}): ReviveData {
   if (discard.length === 0) {
     return {
       revivedDiscard: [],

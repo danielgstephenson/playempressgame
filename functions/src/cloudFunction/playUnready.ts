@@ -1,6 +1,6 @@
-import { createCloudFunction } from '../create/cloudFunction'
+import createCloudFunction from '../create/cloudFunction'
 import guardCurrentPlayer from '../guard/current/player'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import { PlayUnreadyProps } from '../types'
 import { arrayUnion, increment } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'

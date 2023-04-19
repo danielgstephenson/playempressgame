@@ -1,6 +1,6 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
 import draw from '../draw'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 
 export default function effectOne ({
   appointments,
@@ -27,7 +27,7 @@ export default function effectOne ({
   return {
     appointments,
     choices: trashedChoices,
-    deck: drawnDeck,
+    effectDeck: drawnDeck,
     discard: drawnDiscard,
     gold,
     hand: drawnHand,

@@ -1,7 +1,7 @@
 import createPrivelege from '../create/privelege'
 import { SchemeEffectProps, SchemeResult } from '../types'
 import draw from '../draw'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import getHighestTime from '../get/highestTime'
 
 export default function effectThree ({

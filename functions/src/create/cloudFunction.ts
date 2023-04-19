@@ -1,7 +1,7 @@
 import { HttpsFunction, https, runWith } from 'firebase-functions'
 import { Transaction, runTransaction } from 'firelord'
 
-export function createCloudFunction <T> (
+export default function createCloudFunction <T> (
   callback: (
     props: T,
     context: https.CallableContext,

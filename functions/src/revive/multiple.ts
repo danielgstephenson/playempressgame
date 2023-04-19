@@ -1,4 +1,4 @@
-import { ReviveRefs, SchemeRef } from '../types'
+import { ReviveData, SchemeRef } from '../types'
 import reviveOne from './one'
 
 export default function reviveMultiple ({
@@ -11,7 +11,7 @@ export default function reviveMultiple ({
   hand: SchemeRef[]
   discard: SchemeRef[]
   list?: SchemeRef[]
-}): ReviveRefs {
+}): ReviveData {
   if (depth === 0) {
     return {
       revivedHand: hand,

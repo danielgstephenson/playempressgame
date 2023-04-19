@@ -1,5 +1,5 @@
 import yeast from 'yeast'
 
-export function createId (): string {
+export default function createId (): string {
   return yeast().split('').reverse().join('')
 }

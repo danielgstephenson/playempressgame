@@ -1,6 +1,6 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
 import createPrivelege from '../create/privelege'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 
 export default function effectZero ({
   appointments,

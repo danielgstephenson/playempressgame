@@ -1,9 +1,9 @@
-import { createSchemeRef } from './schemeRef'
-import { SchemeRef } from '../types'
+import guardScheme from '../guard/scheme'
+import { Scheme } from '../types'
 
-export default function takePrivelege (count: number): SchemeRef[] {
+export default function createPrivelege (count: number): Scheme[] {
   const schemes = new Array(count).fill(0).map((_, i) => {
-    return createSchemeRef(1)
+    return guardScheme({ rank: 1 })
   })
   return schemes
 }

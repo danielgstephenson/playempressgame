@@ -11,9 +11,10 @@ export interface SchemeRef {
   id: string
   rank: number
 }
+export type SchemeColor = 'Green' | 'Yellow' | 'Red'
 export interface SchemeData {
   rank: number
-  color: string
+  color: SchemeColor
   title: string
   time: number
   beginning: string
@@ -32,9 +33,11 @@ export interface GameUser {
   displayName: string
 }
 
+export type ChoiceType = 'trash' | 'deck'
+
 export interface Choice {
   playerId: string
-  type: 'trash'
+  type: ChoiceType
 }
 
 export type Game = MetaTypeCreator<{
@@ -139,7 +142,7 @@ export interface HistoryUpdate {
 }
 
 export interface CurrentHandGuard extends CurrentPlayerGuard {
-  scheme: SchemeRef
+  scheme: Scheme
 }
 
 export interface CurrentUserGuard {
@@ -150,55 +153,55 @@ export interface CurrentUserGuard {
 }
 
 export interface PassTime {
-  passedTimeline: SchemeRef[]
+  passedTimeline: Scheme[]
   timeEvent: HistoryEvent
 }
 
 export interface SchemeEffectProps {
-  appointments: SchemeRef[]
+  appointments: Scheme[]
   choices: Choice[]
-  deck: SchemeRef[]
-  discard: SchemeRef[]
-  dungeon: SchemeRef[]
+  deck: Scheme[]
+  discard: Scheme[]
+  dungeon: Scheme[]
   gold: number
-  passedTimeline: SchemeRef[]
-  hand: SchemeRef[]
+  passedTimeline: Scheme[]
+  hand: Scheme[]
   playerId: string
-  playSchemes: SchemeRef[]
+  playSchemes: Scheme[]
 }
 
 export interface SchemeResult {
-  appointments: SchemeRef[]
+  appointments: Scheme[]
   choices: Choice[]
-  deck: SchemeRef[]
-  discard: SchemeRef[]
-  gold: number
-  hand: SchemeRef[]
+  effectDeck: Scheme[]
+  effectDiscard: Scheme[]
+  effectGold: number
+  effectHand: Scheme[]
   playerEvents: HistoryEvent[]
 }
 
 export type SchemeEffect = (props: SchemeEffectProps) => SchemeResult
 
-export interface DrawRefs {
-  drawnHand: SchemeRef[]
-  drawnDeck: SchemeRef[]
-  drawnDiscard: SchemeRef[]
-  deckDrawn: SchemeRef[]
-  discardDrawn: SchemeRef[]
+export interface DrawData {
+  drawnHand: Scheme[]
+  drawnDeck: Scheme[]
+  drawnDiscard: Scheme[]
+  deckDrawn: Scheme[]
+  discardDrawn: Scheme[]
   flipped: boolean
-  privelegeTaken: SchemeRef[]
+  privelegeTaken: Scheme[]
 }
-export interface DrawResult extends DrawRefs {
+export interface DrawResult extends DrawData {
   drawEvents: HistoryEvent[]
 }
 
-export interface ReviveRefs {
-  revivedDiscard: SchemeRef[]
-  revivedHand: SchemeRef[]
-  revivedList: SchemeRef[]
+export interface ReviveData {
+  revivedDiscard: Scheme[]
+  revivedHand: Scheme[]
+  revivedList: Scheme[]
 }
 
-export interface ReviveResult extends ReviveRefs {
+export interface ReviveResult extends ReviveData {
   reviveEvents: HistoryEvent[]
 }
 

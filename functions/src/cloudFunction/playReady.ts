@@ -1,8 +1,8 @@
-import { createCloudFunction } from '../create/cloudFunction'
+import createCloudFunction from '../create/cloudFunction'
 import guardCurrentPlayer from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import { Choice, Game, PlayReadyProps, Player, Profile, Result, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
@@ -13,6 +13,8 @@ import getQuery from '../getQuery'
 import passTime from '../passTime'
 import guardTime from '../guard/time'
 import guardEffect from '../guard/effect'
+import guardScheme from '../guard/scheme'
+import guardSchemes from '../guard/schemes'
 
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
   const {
@@ -106,23 +108,27 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const playedHand = result.hand.filter((scheme) => scheme.id !== trashScheme.id && scheme.id !== playScheme.id)
     const profileRef = profilesRef.doc(result.id)
     const effect = guardEffect(playScheme.rank)
+    const deck = guardSchemes({ refs: result.deck })
+    const discard = guardSchemes({ refs: result.discard })
+    const hand = guardSchemes({ refs: playedHand })
+    const dungeon = guardSchemes({ refs: currentGameData.dungeon })
     const {
       appointments,
       choices,
-      deck,
-      discard,
+      deck: effectDeck,
+      discard: effectDiscard,
       gold,
-      hand,
+      hand: effectHand,
       playerEvents
     } = effect({
       appointments: [],
       choices: [],
-      deck: result.deck,
-      discard: result.discard,
-      dungeon: currentGameData.dungeon,
+      deck,
+      discard,
+      dungeon,
       gold: result.gold,
       passedTimeline,
-      hand: playedHand,
+      hand,
       playerId: result.id,
       playSchemes
     })
@@ -130,9 +136,9 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     gameChoices.push(...choices)
     const playerChanges: Partial<Player['write']> = { hand }
     const profileChanges: Partial<Profile['writeFlatten']> = {}
-    const deckedChanged = deck.length !== result.deck.length || deck.some((scheme, index) => scheme.id !== result.deck[index]?.id)
+    const deckedChanged = effectDeck.length !== result.deck.length || effectDeck.some((scheme, index) => scheme.id !== result.deck[index]?.id)
     if (deckedChanged) {
-      playerChanges.deck = deck
+      playerChanges.deck = effectDeck
     }
     const discardChanged = discard.length !== result.discard.length || discard.some((scheme, index) => scheme.id !== result.discard[index]?.id)
     if (discardChanged) {

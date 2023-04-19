@@ -1,8 +1,9 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import guardSchemeData from '../guard/schemeData'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import copyScheme from '../copyScheme'
+import isGreenOrYellow from '../is/greenOrYellow'
 
 export default function effectEight ({
   appointments,
@@ -17,8 +18,9 @@ export default function effectEight ({
   playSchemes
 }: SchemeEffectProps): SchemeResult {
   const firstEvent = createEvent('First, you copy the lowest rank yellow scheme in play.')
-  const yellowSchemes = playSchemes.filter(scheme => guardSchemeData(scheme.rank).color === 'yellow')
+  const yellowSchemes = playSchemes.filter(scheme => guardSchemeData(scheme.rank).color === 'Yellow')
   const yellowScheme = getLowestRankScheme(yellowSchemes)
+  const yellowRank = String(yellowScheme?.rank)
   const {
     appointments: playAppointments,
     choices: playChoices,
@@ -38,16 +40,14 @@ export default function effectEight ({
     playerId,
     playSchemes,
     scheme: yellowScheme,
-    message: 'The lowest rank yellow scheme in play is',
+    message: `The lowest rank yellow scheme in play is ${yellowRank}`,
     nonMessage: 'There are no yellow schemes in play.',
     event: firstEvent
   })
   const secondEvent = createEvent('Second, you copy the lowest rank green or yellow dungeon scheme.')
-  const dungeonSchemes = dungeon.filter(scheme => {
-    const schemeData = guardSchemeData(scheme.rank)
-    return schemeData.color === 'green' || schemeData.color === 'yellow'
-  })
+  const dungeonSchemes = dungeon.filter(scheme => isGreenOrYellow(scheme))
   const dungeonScheme = getLowestRankScheme(dungeonSchemes)
+  const dungeonRank = String(dungeonScheme?.rank)
   const {
     appointments: dungeonAppointments,
     choices: dungeonChoices,
@@ -67,7 +67,7 @@ export default function effectEight ({
     playerId,
     playSchemes,
     scheme: dungeonScheme,
-    message: 'The lowest rank green or yellow dungeon scheme is',
+    message: `The lowest rank green or yellow dungeon scheme is ${dungeonRank}`,
     nonMessage: 'There are no green or yellow dungeon schemes.',
     event: secondEvent
   })

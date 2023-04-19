@@ -1,9 +1,10 @@
-import { createEvent } from './create/event'
+import createEvent from './create/event'
 import guardEffect from './guard/effect'
 import { SchemeEffectProps, SchemeData, SchemeResult, HistoryEvent, SchemeRef } from './types'
 
 export default function copyScheme ({
   appointments,
+  condition = true,
   choices,
   deck,
   discard,
@@ -18,12 +19,13 @@ export default function copyScheme ({
   scheme,
   event
 }: SchemeEffectProps & {
+  condition?: boolean
   scheme: SchemeData | SchemeRef | undefined
   message: string
   nonMessage: string
   event: HistoryEvent
 }): SchemeResult {
-  if (scheme == null) {
+  if (scheme == null || !condition) {
     event.children.push(createEvent(nonMessage))
     return {
       appointments,
@@ -36,8 +38,7 @@ export default function copyScheme ({
     }
   }
   const effect = guardEffect(scheme.rank)
-  const copyMessage = `${message} ${scheme.rank}.`
-  event.children.push(createEvent(copyMessage))
+  event.children.push(createEvent(message))
   const {
     appointments: copyAppointments,
     choices: copyChoices,

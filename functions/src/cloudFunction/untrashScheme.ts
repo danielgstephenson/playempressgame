@@ -1,5 +1,5 @@
-import { createCloudFunction } from '../create/cloudFunction'
-import { createEvent } from '../create/event'
+import createCloudFunction from '../create/cloudFunction'
+import createEvent from '../create/event'
 import { UntrashSchemeProps } from '../types'
 import { arrayUnion, deleteField } from 'firelord'
 import guardCurrentHand from '../guard/current/hand'

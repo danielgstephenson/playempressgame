@@ -1,5 +1,5 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import revive from '../revive'
 import draw from '../draw'
 import getHighestTime from '../get/highestTime'

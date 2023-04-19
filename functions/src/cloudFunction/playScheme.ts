@@ -1,6 +1,6 @@
-import { createCloudFunction } from '../create/cloudFunction'
+import createCloudFunction from '../create/cloudFunction'
 import guardCurrentHand from '../guard/current/hand'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import { PlaySchemeProps } from '../types'
 import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'

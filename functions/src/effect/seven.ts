@@ -1,8 +1,9 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import guardSchemeData from '../guard/schemeData'
 import guardDefined from '../guard/defined'
 import getLowestRankScheme from '../get/lowestRankScheme'
+import isGreen from '../is/green'
 
 export default function effectSeven ({
   appointments,
@@ -38,7 +39,8 @@ export default function effectSeven ({
   const lowestRank = String(lowest?.rank)
   const lowestMessage = `The lowest rank scheme in play is ${lowestRank}.`
   const secondChildren = [createEvent(lowestMessage)]
-  if (lowest?.color === 'green') {
+  const green = isGreen(lowest)
+  if (green) {
     const goldEvent = createEvent(`${lowestMessage}, which is green, so you earn 10 gold.`)
     secondChildren.push(goldEvent)
     effectGold += 10

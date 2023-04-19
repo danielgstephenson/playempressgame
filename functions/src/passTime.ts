@@ -1,8 +1,9 @@
 import { DocumentReference, Transaction } from 'firelord'
-import { createEvent } from './create/event'
+import createEvent from './create/event'
 import guardHandScheme from './guard/handScheme'
 import guardTime from './guard/time'
 import { Game, PassTime, Player, SchemeRef } from './types'
+import guardScheme from './guard/scheme'
 
 export default function passTime ({ allPlayers, gameRef, timeline, transaction }: {
   allPlayers: Array<Player['read']>
@@ -24,15 +25,17 @@ export default function passTime ({ allPlayers, gameRef, timeline, transaction }
     const passedRank = String(passed?.rank)
     const timeResult = `more than the ${allPlayers.length} players, so ${passedRank} is removed from the timeline.`
     const timeEvent = createEvent(`${totalMessage}, ${timeResult}`)
+    const passedTimeline = remaining.map(ref => guardScheme({ ref }))
     return {
-      passedTimeline: remaining,
+      passedTimeline,
       timeEvent
     }
   }
   const timeResult = `not more than the ${allPlayers.length} players, so time does not pass.`
   const timeEvent = createEvent(`The total time is ${totalTime}, ${timeResult}`)
+  const passedTimeline = timeline.map(ref => guardScheme({ ref }))
   return {
-    passedTimeline: timeline,
+    passedTimeline,
     timeEvent
   }
 }

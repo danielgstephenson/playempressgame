@@ -16,6 +16,7 @@ import effectSeven from './effect/seven'
 import effectEight from './effect/eight'
 import effectNine from './effect/nine'
 import effectTen from './effect/ten'
+import guardColor from './guard/color'
 
 admin.initializeApp(firebaseConfig)
 export const adminAuth = getAuth()
@@ -59,8 +60,11 @@ export const effects: SchemeEffect[] = [
 ]
 export const schemeData: SchemeData[] = schemesJson.map((scheme) => {
   const effect = guardEffect(scheme.rank)
-  return {
+  const color = guardColor(scheme.color)
+  const combined = {
     ...scheme,
+    color,
     effect
   }
+  return combined
 })

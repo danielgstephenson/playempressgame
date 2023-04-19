@@ -1,6 +1,6 @@
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import getGrammar from '../get/grammar'
-import { DrawResult, HistoryEvent, SchemeRef } from '../types'
+import { DrawResult, HistoryEvent, Scheme } from '../types'
 import drawMultiple from './multiple'
 
 export default function draw ({
@@ -10,9 +10,9 @@ export default function draw ({
   deck
 }: {
   depth: number
-  discard: SchemeRef[]
-  hand: SchemeRef[]
-  deck: SchemeRef[]
+  discard: Scheme[]
+  hand: Scheme[]
+  deck: Scheme[]
 }): DrawResult {
   const drawEvents: HistoryEvent[] = []
   const {

@@ -1,8 +1,8 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import { createEvent } from '../create/event'
-import guardSchemeData from '../guard/schemeData'
 import copyScheme from '../copyScheme'
 import getHighestRankScheme from '../get/highestRankScheme'
+import createEvent from '../create/event'
+import isGreen from '../is/green'
 
 export default function effectTen ({
   appointments,
@@ -17,8 +17,9 @@ export default function effectTen ({
   playSchemes
 }: SchemeEffectProps): SchemeResult {
   const firstEvent = createEvent('First, you copy the leftmost yellow timeline scheme.')
-  const yellowSchemes = passedTimeline.filter(scheme => guardSchemeData(scheme.rank).color === 'yellow')
+  const yellowSchemes = passedTimeline.filter(scheme => scheme.color === 'Yellow')
   const yellowScheme = yellowSchemes[0]
+  const yellowRank = String(yellowScheme?.rank)
   const {
     appointments: playAppointments,
     choices: playChoices,
@@ -38,16 +39,14 @@ export default function effectTen ({
     playerId,
     playSchemes,
     scheme: yellowScheme,
-    message: 'The leftmost yellow timeline scheme is',
+    message: `The leftmost yellow timeline scheme is ${yellowRank}.`,
     nonMessage: 'There are no yellow timeline schemes.',
     event: firstEvent
   })
   const secondEvent = createEvent('Second, you copy the highest rank green dungeon scheme.')
-  const dungeonSchemes = dungeon.filter(scheme => {
-    const schemeData = guardSchemeData(scheme.rank)
-    return schemeData.color === 'green'
-  })
+  const dungeonSchemes = dungeon.filter(scheme => isGreen(scheme))
   const dungeonScheme = getHighestRankScheme(dungeonSchemes)
+  const dungeonRank = String(dungeonScheme?.rank)
   const {
     appointments: dungeonAppointments,
     choices: dungeonChoices,
@@ -67,7 +66,7 @@ export default function effectTen ({
     playerId,
     playSchemes,
     scheme: dungeonScheme,
-    message: 'The highest rank green dungeon scheme is',
+    message: `The highest rank green dungeon scheme is ${dungeonRank}.`,
     nonMessage: 'There are no green or yellow dungeon schemes.',
     event: secondEvent
   })

@@ -1,4 +1,4 @@
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import revive from '../revive'
 import { SchemeEffectProps, SchemeResult } from '../types'
 import draw from '../draw'

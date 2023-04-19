@@ -1,4 +1,4 @@
-import { DrawRefs, SchemeRef } from '../types'
+import { DrawData, Scheme } from '../types'
 import drawOne from './one'
 
 export default function drawMultiple ({
@@ -11,15 +11,15 @@ export default function drawMultiple ({
   hand,
   privelegeTaken = []
 }: {
-  deck: SchemeRef[]
-  deckDrawn?: SchemeRef[]
+  deck: Scheme[]
+  deckDrawn?: Scheme[]
   depth: number
-  discard: SchemeRef[]
+  discard: Scheme[]
   flipped?: boolean
-  discardDrawn?: SchemeRef[]
-  hand: SchemeRef[]
-  privelegeTaken?: SchemeRef[]
-}): DrawRefs {
+  discardDrawn?: Scheme[]
+  hand: Scheme[]
+  privelegeTaken?: Scheme[]
+}): DrawData {
   if (depth === 0) {
     return {
       deckDrawn,

@@ -1,8 +1,8 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import { createSchemeRef } from '../create/schemeRef'
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
+import guardScheme from '../guard/scheme'
 
 export default function effectFour ({
   appointments,
@@ -17,7 +17,7 @@ export default function effectFour ({
   playSchemes
 }: SchemeEffectProps): SchemeResult {
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
-  const privelege = createSchemeRef(1)
+  const privelege = guardScheme({ rank: 1 })
   const bankHand = [...hand, privelege]
   const lowestTime = getLowestTime(playSchemes)
   const timeEvent = createEvent(`The lowest time in play is ${lowestTime}.`)

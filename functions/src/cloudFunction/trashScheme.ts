@@ -1,5 +1,5 @@
-import { createCloudFunction } from '../create/cloudFunction'
-import { createEvent } from '../create/event'
+import createCloudFunction from '../create/cloudFunction'
+import createEvent from '../create/event'
 import { TrashSchemeProps } from '../types'
 import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
