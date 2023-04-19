@@ -22,12 +22,12 @@ export default function effectZero ({
   const deckSchemes = createPrivelege(2)
   const drawnDeck = [...deck, ...deckSchemes]
   return {
-    appointments,
-    choices,
-    deck: drawnDeck,
-    discard,
-    gold,
-    hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: appointments,
+    effectChoices: choices,
+    effectDeck: drawnDeck,
+    effectDiscard: discard,
+    effectGold: gold,
+    effectHand: drawnHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

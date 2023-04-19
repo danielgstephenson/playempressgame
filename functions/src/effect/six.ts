@@ -37,12 +37,12 @@ export default function effectSix ({
   const secondChildren = [dungeonEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon', secondChildren)
   return {
-    appointments,
-    choices,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    gold,
-    hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: appointments,
+    effectChoices: choices,
+    effectDeck: drawnDeck,
+    effectDiscard: drawnDiscard,
+    effectGold: gold,
+    effectHand: drawnHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

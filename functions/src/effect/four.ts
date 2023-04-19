@@ -35,12 +35,12 @@ export default function effectFour ({
   const secondChildren = [timeEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw the lowest time in play.', secondChildren)
   return {
-    appointments,
-    choices,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    gold,
-    hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: appointments,
+    effectChoices: choices,
+    effectDeck: drawnDeck,
+    effectDiscard: drawnDiscard,
+    effectGold: gold,
+    effectHand: drawnHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

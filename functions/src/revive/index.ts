@@ -1,12 +1,12 @@
-import { createEvent } from '../create/event'
+import createEvent from '../create/event'
 import getGrammar from '../get/grammar'
-import { HistoryEvent, ReviveResult, SchemeRef } from '../types'
+import { HistoryEvent, ReviveResult, Scheme } from '../types'
 import reviveMultiple from './multiple'
 
 export default function revive ({ depth, discard, hand }: {
   depth: number
-  discard: SchemeRef[]
-  hand: SchemeRef[]
+  discard: Scheme[]
+  hand: Scheme[]
 }): ReviveResult {
   const reviveEvents: HistoryEvent[] = []
   if (depth === 0) {

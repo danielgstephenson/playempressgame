@@ -1,10 +1,9 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
 import createEvent from '../create/event'
-import copyScheme from '../copyScheme'
+import copyEffect from './copy'
 import getTop from '../get/top'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
-import isGreen from '../is/green'
 
 export default function effectEleven ({
   appointments,
@@ -26,13 +25,13 @@ export default function effectEleven ({
   const nonMessage = top == null ? 'Your discard is empty' : `Your top discard scheme is ${topRank}, which is red.`
   const greenOrYellow = isGreenOrYellow(top)
   const {
-    appointments: playAppointments,
-    choices: playChoices,
-    deck: playDeck,
-    discard: playDiscard,
-    gold: playGold,
-    hand: playHand
-  } = copyScheme({
+    effectAppointments: playAppointments,
+    effectChoices: playChoices,
+    effectDeck: playDeck,
+    effectDiscard: playDiscard,
+    effectGold: playGold,
+    effectHand: playHand
+  } = copyEffect({
     appointments,
     choices,
     condition: greenOrYellow,
@@ -55,13 +54,13 @@ export default function effectEleven ({
   const colorRank = String(colorScheme?.rank)
   const colorMessage = `The lowest rank green or yellow scheme in play is ${colorRank}`
   const {
-    appointments: colorAppointments,
-    choices: colorChoices,
-    deck: colorDeck,
-    discard: colorDiscard,
-    gold: colorGold,
-    hand: colorHand
-  } = copyScheme({
+    effectAppointments: colorAppointments,
+    effectChoices: colorChoices,
+    effectDeck: colorDeck,
+    effectDiscard: colorDiscard,
+    effectGold: colorGold,
+    effectHand: colorHand
+  } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
     deck: playDeck,
@@ -78,12 +77,12 @@ export default function effectEleven ({
     event: secondEvent
   })
   return {
-    appointments: colorAppointments,
-    choices: colorChoices,
-    deck: colorDeck,
-    discard: colorDiscard,
-    gold: colorGold,
-    hand: colorHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: colorAppointments,
+    effectChoices: colorChoices,
+    effectDeck: colorDeck,
+    effectDiscard: colorDiscard,
+    effectGold: colorGold,
+    effectHand: colorHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

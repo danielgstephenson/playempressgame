@@ -171,13 +171,13 @@ export interface SchemeEffectProps {
 }
 
 export interface SchemeResult {
-  appointments: Scheme[]
-  choices: Choice[]
+  effectAppointments: Scheme[]
+  effectChoices: Choice[]
   effectDeck: Scheme[]
   effectDiscard: Scheme[]
   effectGold: number
   effectHand: Scheme[]
-  playerEvents: HistoryEvent[]
+  effectPlayerEvents: HistoryEvent[]
 }
 
 export type SchemeEffect = (props: SchemeEffectProps) => SchemeResult

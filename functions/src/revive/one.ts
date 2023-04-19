@@ -1,9 +1,9 @@
-import { ReviveData, SchemeRef } from '../types'
+import { ReviveData, Scheme } from '../types'
 
 export default function reviveOne ({ discard, hand, list = [] }: {
-  discard: SchemeRef[]
-  hand: SchemeRef[]
-  list?: SchemeRef[]
+  discard: Scheme[]
+  hand: Scheme[]
+  list?: Scheme[]
 }): ReviveData {
   if (discard.length === 0) {
     return {

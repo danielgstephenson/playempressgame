@@ -57,12 +57,12 @@ export default function effectFive ({
   const secondChildren = [colorsEvent, ...drawEvents]
   const secondEvent = createEvent('Second, you draw twice the number of colors in play.', secondChildren)
   return {
-    appointments,
-    choices,
-    deck: drawnDeck,
-    discard: drawnDiscard,
-    gold,
-    hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: appointments,
+    effectChoices: choices,
+    effectDeck: drawnDeck,
+    effectDiscard: drawnDiscard,
+    effectGold: gold,
+    effectHand: drawnHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

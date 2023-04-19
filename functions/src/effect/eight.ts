@@ -2,7 +2,7 @@ import { SchemeEffectProps, SchemeResult } from '../types'
 import createEvent from '../create/event'
 import guardSchemeData from '../guard/schemeData'
 import getLowestRankScheme from '../get/lowestRankScheme'
-import copyScheme from '../copyScheme'
+import copyEffect from './copy'
 import isGreenOrYellow from '../is/greenOrYellow'
 
 export default function effectEight ({
@@ -22,13 +22,13 @@ export default function effectEight ({
   const yellowScheme = getLowestRankScheme(yellowSchemes)
   const yellowRank = String(yellowScheme?.rank)
   const {
-    appointments: playAppointments,
-    choices: playChoices,
-    deck: playDeck,
-    discard: playDiscard,
-    gold: playGold,
-    hand: playHand
-  } = copyScheme({
+    effectAppointments: playAppointments,
+    effectChoices: playChoices,
+    effectDeck: playDeck,
+    effectDiscard: playDiscard,
+    effectGold: playGold,
+    effectHand: playHand
+  } = copyEffect({
     appointments,
     choices,
     deck,
@@ -49,13 +49,13 @@ export default function effectEight ({
   const dungeonScheme = getLowestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    appointments: dungeonAppointments,
-    choices: dungeonChoices,
-    deck: dungeonDeck,
-    discard: dungeonDiscard,
-    gold: dungeonGold,
-    hand: dungeonHand
-  } = copyScheme({
+    effectAppointments: dungeonAppointments,
+    effectChoices: dungeonChoices,
+    effectDeck: dungeonDeck,
+    effectDiscard: dungeonDiscard,
+    effectGold: dungeonGold,
+    effectHand: dungeonHand
+  } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
     deck: playDeck,
@@ -72,12 +72,12 @@ export default function effectEight ({
     event: secondEvent
   })
   return {
-    appointments: dungeonAppointments,
-    choices: dungeonChoices,
-    deck: dungeonDeck,
-    discard: dungeonDiscard,
-    gold: dungeonGold,
-    hand: dungeonHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: dungeonAppointments,
+    effectChoices: dungeonChoices,
+    effectDeck: dungeonDeck,
+    effectDiscard: dungeonDiscard,
+    effectGold: dungeonGold,
+    effectHand: dungeonHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

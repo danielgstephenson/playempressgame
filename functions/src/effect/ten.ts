@@ -1,5 +1,5 @@
 import { SchemeEffectProps, SchemeResult } from '../types'
-import copyScheme from '../copyScheme'
+import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import createEvent from '../create/event'
 import isGreen from '../is/green'
@@ -21,13 +21,13 @@ export default function effectTen ({
   const yellowScheme = yellowSchemes[0]
   const yellowRank = String(yellowScheme?.rank)
   const {
-    appointments: playAppointments,
-    choices: playChoices,
-    deck: playDeck,
-    discard: playDiscard,
-    gold: playGold,
-    hand: playHand
-  } = copyScheme({
+    effectAppointments: playAppointments,
+    effectChoices: playChoices,
+    effectDeck: playDeck,
+    effectDiscard: playDiscard,
+    effectGold: playGold,
+    effectHand: playHand
+  } = copyEffect({
     appointments,
     choices,
     deck,
@@ -48,13 +48,13 @@ export default function effectTen ({
   const dungeonScheme = getHighestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    appointments: dungeonAppointments,
-    choices: dungeonChoices,
-    deck: dungeonDeck,
-    discard: dungeonDiscard,
-    gold: dungeonGold,
-    hand: dungeonHand
-  } = copyScheme({
+    effectAppointments: dungeonAppointments,
+    effectChoices: dungeonChoices,
+    effectDeck: dungeonDeck,
+    effectDiscard: dungeonDiscard,
+    effectGold: dungeonGold,
+    effectHand: dungeonHand
+  } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
     deck: playDeck,
@@ -71,12 +71,12 @@ export default function effectTen ({
     event: secondEvent
   })
   return {
-    appointments: dungeonAppointments,
-    choices: dungeonChoices,
-    deck: dungeonDeck,
-    discard: dungeonDiscard,
-    gold: dungeonGold,
-    hand: dungeonHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectAppointments: dungeonAppointments,
+    effectChoices: dungeonChoices,
+    effectDeck: dungeonDeck,
+    effectDiscard: dungeonDiscard,
+    effectGold: dungeonGold,
+    effectHand: dungeonHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }

@@ -4,7 +4,7 @@ import copyEffect from './copy'
 import isGreen from '../is/green'
 import getHighestRankScheme from '../get/highestRankScheme'
 
-export default function effectTwelve ({
+export default function effectThirteen ({
   appointments,
   choices,
   deck,
@@ -16,7 +16,7 @@ export default function effectTwelve ({
   playerId,
   playSchemes
 }: SchemeEffectProps): SchemeResult {
-  const firstEvent = createEvent('First, if the leftmost timeline scheme is green or yellow, copy it.')
+  const firstEvent = createEvent('First, if there are no red timeline schemes, copy the leftmost timeline scheme.')
   const left = passedTimeline[0]
   const leftColor = String(left?.color)
   const isYellow = leftColor === 'Yellow'

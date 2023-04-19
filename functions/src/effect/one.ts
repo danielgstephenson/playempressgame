@@ -25,12 +25,12 @@ export default function effectOne ({
   const trashChoice = { playerId, type: 'trash' } as const
   const trashedChoices = [...choices, trashChoice]
   return {
-    appointments,
-    choices: trashedChoices,
+    effectAppointments: appointments,
+    effectChoices: trashedChoices,
     effectDeck: drawnDeck,
-    discard: drawnDiscard,
-    gold,
-    hand: drawnHand,
-    playerEvents: [firstEvent, secondEvent]
+    effectDiscard: drawnDiscard,
+    effectGold: gold,
+    effectHand: drawnHand,
+    effectPlayerEvents: [firstEvent, secondEvent]
   }
 }
