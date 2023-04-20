@@ -5,6 +5,8 @@ import getHighestRankScheme from '../get/highestRankScheme'
 import getRanks from '../get/ranks'
 import getGrammar from '../get/grammar'
 import isGreenOrYellow from '../is/greenOrYellow'
+import isRed from '../is/red'
+import addEvent from '../addEvent'
 
 export default function effectThirteen ({
   appointments,
@@ -16,18 +18,22 @@ export default function effectThirteen ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if there are no red timeline schemes, copy the leftmost timeline scheme.')
-  const redSchemes = passedTimeline.filter(scheme => scheme.color === 'Red')
+  const redSchemes = passedTimeline.filter(isRed)
+  if (redSchemes.length === 0) {
+    addEvent(firstEvent, 'There are no red timeline schemes.')
+  }
   const redRanks = getRanks(redSchemes)
   const left = passedTimeline[0]
   const leftRank = String(left?.rank)
   const leftMessage = `The leftmost timeline scheme is ${leftRank}.`
-  const { verb, object } = getGrammar(redSchemes.length, 'scheme', 'schemes')
+  const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
   const noRed = redSchemes.length === 0
   const leftNonMessage = noRed
-    ? `There ${verb} ${redSchemes.length} red timeline ${object}: ${redRanks}.`
+    ? `The red timeline ${noun} ${verb} ${redRanks}.`
     : 'The timeline is empty.'
   const {
     effectAppointments: leftAppointements,
@@ -35,7 +41,8 @@ export default function effectThirteen ({
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
     effectGold: leftGold,
-    effectHand: lefthand
+    effectHand: lefthand,
+    effectSilver: leftSilver
   } = copyEffect({
     appointments,
     choices,
@@ -51,20 +58,22 @@ export default function effectThirteen ({
     scheme: left,
     message: leftMessage,
     nonMessage: leftNonMessage,
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Second, you copy the highest rank green or yellow scheme in play.')
   const colorSchemes = playSchemes.filter(scheme => isGreenOrYellow(scheme))
   const colorScheme = getHighestRankScheme(colorSchemes)
   const colorRank = String(colorScheme?.rank)
-  const colorMessage = `The lowest rank green scheme in play is ${colorRank}.`
+  const colorMessage = `The highest rank green or yellow scheme in play is ${colorRank}.`
   const {
     effectAppointments: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
     effectGold: colorGold,
-    effectHand: colorHand
+    effectHand: colorHand,
+    effectSilver: colorSilver
   } = copyEffect({
     appointments: leftAppointements,
     choices: leftChoices,
@@ -79,7 +88,8 @@ export default function effectThirteen ({
     scheme: colorScheme,
     message: colorMessage,
     nonMessage: 'There are no green or yellow schemes in play.',
-    event: secondEvent
+    event: secondEvent,
+    silver: leftSilver
   })
   return {
     effectAppointments: colorAppointments,
@@ -88,6 +98,7 @@ export default function effectThirteen ({
     effectDiscard: colorDiscard,
     effectGold: colorGold,
     effectHand: colorHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: colorSilver
   }
 }

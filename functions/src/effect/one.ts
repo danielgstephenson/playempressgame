@@ -12,16 +12,22 @@ export default function effectOne ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
+  const firstEvent = createEvent('First, you draw two cards.')
   const {
     drawnDeck,
     drawnDiscard,
-    drawEvents,
     drawnHand
-  } = draw({ deck, discard, hand, depth: 2 })
-  const firstEvent = createEvent('First, you draw two cards.', drawEvents)
-  const secondEvent = createEvent('Second, you must select a scheme from your hand to trash.')
+  } = draw({
+    deck,
+    discard,
+    event: firstEvent,
+    hand,
+    depth: 2
+  })
+  const secondEvent = createEvent('Second, you trash a scheme from your hand.')
   const trashChoice = { playerId, type: 'trash' } as const
   const trashedChoices = [...choices, trashChoice]
   return {
@@ -31,6 +37,7 @@ export default function effectOne ({
     effectDiscard: drawnDiscard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }

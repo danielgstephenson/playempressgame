@@ -1,43 +1,62 @@
-import createEvent from '../create/event'
+import addEvent from '../addEvent'
 import getGrammar from '../get/grammar'
+import getRanks from '../get/ranks'
 import { HistoryEvent, ReviveResult, Scheme } from '../types'
 import reviveMultiple from './multiple'
 
-export default function revive ({ depth, discard, hand }: {
+export default function revive ({
+  condition = true,
+  depth,
+  discard,
+  event,
+  hand,
+  message,
+  nonMessage
+}: {
+  condition?: boolean
   depth: number
   discard: Scheme[]
+  event: HistoryEvent
   hand: Scheme[]
+  message?: string
+  nonMessage?: string
 }): ReviveResult {
-  const reviveEvents: HistoryEvent[] = []
-  if (depth === 0) {
-    return {
-      revivedDiscard: discard,
-      revivedHand: hand,
-      revivedList: [],
-      reviveEvents
-    }
+  const nonResult = {
+    revivedDiscard: discard,
+    revivedHand: hand
   }
-  const { revivedDiscard, revivedHand, revivedList } = reviveMultiple({
+  if (!condition) {
+    if (nonMessage != null) {
+      addEvent(event, nonMessage)
+    }
+    return nonResult
+  }
+  if (depth === 0) {
+    return nonResult
+  }
+  if (message != null) {
+    addEvent(event, message)
+  }
+  const {
+    revivedDiscard,
+    revivedHand,
+    revivedList
+  } = reviveMultiple({
     discard,
     hand,
     depth
   })
-  const listRanks = revivedList.map(scheme => scheme.rank).join(', ')
+  const listRanks = getRanks(revivedList)
   if (discard.length === 0) {
-    const emptyEvent = createEvent('Your discard is empty.')
-    reviveEvents.push(emptyEvent)
+    addEvent(event, 'Your discard is empty.')
   } else if (discard.length < depth) {
-    const { count, object } = getGrammar(discard.length, 'scheme', 'schemes')
-    const discardEvent = createEvent(`Your discard only has ${count}, so you revive ${object}: ${listRanks}.`)
-    reviveEvents.push(discardEvent)
+    const { count, all } = getGrammar(discard.length, 'scheme', 'schemes')
+    addEvent(event, `Your discard only has ${count}, ${listRanks}, so you revive ${all}.`)
   } else {
-    const listEvent = createEvent(`You revive ${listRanks}.`)
-    reviveEvents.push(listEvent)
+    addEvent(event, `You revive ${listRanks}.`)
   }
   return {
     revivedDiscard,
-    revivedHand,
-    revivedList,
-    reviveEvents
+    revivedHand
   }
 }

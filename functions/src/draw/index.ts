@@ -1,20 +1,45 @@
-import createEvent from '../create/event'
+import addEvent from '../addEvent'
 import getGrammar from '../get/grammar'
+import getRanks from '../get/ranks'
 import { DrawResult, HistoryEvent, Scheme } from '../types'
 import drawMultiple from './multiple'
 
 export default function draw ({
+  condition = true,
+  deck,
   depth,
   discard,
+  event,
   hand,
-  deck
+  message,
+  nonMessage
 }: {
-  depth: number
-  discard: Scheme[]
-  hand: Scheme[]
+  condition?: boolean
   deck: Scheme[]
+  depth?: number | undefined
+  discard: Scheme[]
+  event: HistoryEvent
+  hand: Scheme[]
+  message?: string
+  nonMessage?: string
 }): DrawResult {
-  const drawEvents: HistoryEvent[] = []
+  const nonResult = {
+    drawnDeck: deck,
+    drawnDiscard: discard,
+    drawnHand: hand
+  }
+  if (!condition) {
+    if (nonMessage != null) {
+      addEvent(event, nonMessage)
+    }
+    return nonResult
+  }
+  if (depth == null || depth === 0) {
+    return nonResult
+  }
+  if (message != null) {
+    addEvent(event, message)
+  }
   const {
     drawnHand,
     drawnDeck,
@@ -29,45 +54,35 @@ export default function draw ({
     discard,
     hand
   })
+  const deckDrawnRanks = getRanks(deckDrawn)
   if (deck.length === 0) {
-    const deckEvent = createEvent('Your deck is empty.')
-    drawEvents.push(deckEvent)
+    addEvent(event, 'Your deck is empty.')
   } else if (deck.length < depth) {
-    const deckDrawnRanks = deckDrawn.map((scheme) => scheme.rank).join(', ')
-    const { count, object } = getGrammar(deck.length, 'scheme', 'schemes')
-    const deckEvent = createEvent(`Your deck only has ${count}, so you draw ${object}: ${deckDrawnRanks}.`)
-    drawEvents.push(deckEvent)
+    const { count, all } = getGrammar(deck.length, 'scheme', 'schemes')
+    addEvent(event, `Your deck only has ${count}, ${deckDrawnRanks}, so you draw ${all}.`)
   } else {
-    const deckDrawnRanks = deckDrawn.map((scheme) => scheme.rank).join(', ')
-    const deckEvent = createEvent(`You draw ${deckDrawn.length} from your deck: ${deckDrawnRanks}.`)
-    drawEvents.push(deckEvent)
+    addEvent(event, `You draw ${deckDrawnRanks} from your deck.`)
   }
-  if (discardDrawn.length > 0) {
+  if (flipped) {
     const flipMessage = 'You flip your discard pile to refresh your deck'
-    const flipEvent = createEvent(flipMessage)
-    drawEvents.push(flipEvent)
-    const discardDrawnRanks = discardDrawn.map((scheme) => scheme.rank).join(', ')
-    if (privelegeTaken.length > 0) {
-      const flippedDeckEvent = createEvent(`Your refreshed deck now has only ${privelegeTaken.length} schemes, so you drawn them all: ${discardDrawnRanks}.`)
-      drawEvents.push(flippedDeckEvent)
+    addEvent(event, flipMessage)
+    const discardDrawnRanks = getRanks(discardDrawn)
+    if (discardDrawn.length === discard.length) {
+      const { count, all } = getGrammar(discardDrawn.length, 'scheme', 'schemes')
+      const message = `Your refreshed deck has only ${count}, ${discardDrawnRanks}, so you draw ${all}.`
+      addEvent(event, message)
     } else {
-      const flippedDeckEvent = createEvent(`You draw ${discardDrawn.length} from your refreshed deck: ${discardDrawnRanks}.`)
-      drawEvents.push(flippedDeckEvent)
+      const message = `You draw ${discardDrawnRanks} from your refreshed deck.`
+      addEvent(event, message)
     }
   }
   if (privelegeTaken.length > 0) {
-    const message = `Your deck and disard are empty, so you take ${privelegeTaken.length} privelege.`
-    const event = createEvent(message)
-    drawEvents.push(event)
+    const message = `Your deck and discard are empty, so you take ${privelegeTaken.length} privelege.`
+    addEvent(event, message)
   }
   return {
-    deckDrawn,
-    discardDrawn,
     drawnDeck,
     drawnDiscard,
-    drawnHand,
-    flipped,
-    drawEvents,
-    privelegeTaken
+    drawnHand
   }
 }

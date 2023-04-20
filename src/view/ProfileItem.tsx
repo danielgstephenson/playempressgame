@@ -23,6 +23,7 @@ export default function ProfileItemView (): JSX.Element {
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>
           <Status label='Gold' value={profileState.gold} />
+          <Status label='Silver' value={profileState.silver} />
           <Status label='Top Discard' value={profileState.topDiscard?.rank} />
           <Status label='Deck Empty' value={deckEmpty} />
           <Status label='Play Area Empty' value={profileState.playEmpty} />

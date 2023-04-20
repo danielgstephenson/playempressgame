@@ -11,7 +11,7 @@ export interface SchemeRef {
   id: string
   rank: number
 }
-export type SchemeColor = 'Green' | 'Yellow' | 'Red'
+export type SchemeColor = 'green' | 'yellow' | 'red'
 export interface SchemeData {
   rank: number
   color: SchemeColor
@@ -64,7 +64,8 @@ export type Profile = MetaTypeCreator<{
   deckEmpty: boolean | PossiblyReadAsUndefined
   displayName: string
   topDiscardScheme: SchemeRef | DeleteField
-  gold: number | PossiblyReadAsUndefined
+  gold: number
+  silver: number
   trashEmpty: boolean | DeleteField
   playEmpty: boolean | DeleteField
   ready: boolean | DeleteField
@@ -76,6 +77,7 @@ export type Player = MetaTypeCreator<{
   displayName: string
   gameId: string
   gold: number
+  silver: number
   hand: SchemeRef[]
   history: HistoryEvent[]
   playId: string | DeleteField
@@ -164,6 +166,7 @@ export interface SchemeEffectProps {
   discard: Scheme[]
   dungeon: Scheme[]
   gold: number
+  silver: number
   passedTimeline: Scheme[]
   hand: Scheme[]
   playerId: string
@@ -176,6 +179,7 @@ export interface EffectResult {
   effectDeck: Scheme[]
   effectDiscard: Scheme[]
   effectGold: number
+  effectSilver: number
   effectHand: Scheme[]
   effectPlayerEvents: HistoryEvent[]
 }
@@ -186,33 +190,33 @@ export interface SerializedEffect {
   effectDeck: SchemeRef[]
   effectDiscard: SchemeRef[]
   effectGold: number
+  effectSilver: number
   effectHand: SchemeRef[]
   effectPlayerEvents: HistoryEvent[]
 }
 
 export type SchemeEffect = (props: SchemeEffectProps) => EffectResult
 
-export interface DrawData {
+export interface DrawResult {
   drawnHand: Scheme[]
   drawnDeck: Scheme[]
   drawnDiscard: Scheme[]
+}
+
+export interface DrawData extends DrawResult {
   deckDrawn: Scheme[]
   discardDrawn: Scheme[]
   flipped: boolean
   privelegeTaken: Scheme[]
 }
-export interface DrawResult extends DrawData {
-  drawEvents: HistoryEvent[]
-}
 
-export interface ReviveData {
+export interface ReviveResult {
   revivedDiscard: Scheme[]
   revivedHand: Scheme[]
-  revivedList: Scheme[]
 }
 
-export interface ReviveResult extends ReviveData {
-  reviveEvents: HistoryEvent[]
+export interface ReviveData extends ReviveResult {
+  revivedList: Scheme[]
 }
 
 export interface Grammar {
@@ -221,4 +225,10 @@ export interface Grammar {
   noun: string
   phrase: string
   object: string
+  all: string
+}
+
+export interface Earning {
+  gold: number
+  silver: number
 }

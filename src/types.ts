@@ -46,27 +46,30 @@ export interface Game extends Doc {
 }
 
 export interface Profile extends Doc {
+  deckEmpty?: boolean
   gameId: string
   userId: string
   displayName: string
-  gold?: number
+  gold: number
   topDiscard?: Scheme
-  deckEmpty?: boolean
   trashEmpty?: boolean
   playEmpty?: boolean
   ready?: boolean
+  silver: number
 }
 
 export interface Player extends Doc {
   deck: Scheme[]
   discard: Scheme[]
   gameId: string
+  gold: number
   hand: Scheme[]
   userId: string
   trashId?: string
   playId?: string
   history: HistoryEvent[]
   displayName: string
+  silver: number
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>

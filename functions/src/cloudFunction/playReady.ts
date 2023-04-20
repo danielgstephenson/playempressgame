@@ -122,7 +122,8 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       passedTimeline,
       hand,
       playerId: result.id,
-      playSchemes
+      playSchemes,
+      silver: result.silver
     })
     const {
       effectAppointments,
@@ -130,6 +131,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       effectDeck,
       effectDiscard,
       effectGold,
+      effectSilver,
       effectHand,
       effectPlayerEvents
     } = serializeEffect(effectResult)
@@ -157,6 +159,11 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     if (goldChanged) {
       playerChanges.gold = effectGold
       profileChanges.gold = effectGold
+    }
+    const silverChanged = effectSilver !== result.silver
+    if (silverChanged) {
+      playerChanges.silver = effectSilver
+      profileChanges.silver = effectSilver
     }
     const time = guardTime(playScheme.rank)
     const playerUpdate = {

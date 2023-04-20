@@ -3,6 +3,7 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import createEvent from '../create/event'
 import getHighestTime from '../get/highestTime'
+import addEvent from '../addEvent'
 
 export default function effectThree ({
   appointments,
@@ -14,26 +15,26 @@ export default function effectThree ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
+  const firstEvent = createEvent('First, you put 3 privelege on your discard.')
   const discardPrivelege = createPrivelege(3)
   const bankDiscard = [...discard, ...discardPrivelege]
-  const firstEvent = createEvent('First, you put 3 privelege on your discard.')
+  const secondEvent = createEvent('Second, you draw the highest time in play')
   const highestTime = getHighestTime(playSchemes)
-  const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
+  addEvent(secondEvent, `The highest time in play is ${highestTime}.`)
   const {
     drawnDeck,
     drawnDiscard,
-    drawEvents,
     drawnHand
   } = draw({
     deck,
     discard: bankDiscard,
+    event: secondEvent,
     hand,
     depth: highestTime
   })
-  const secondChildren = [timeEvent, ...drawEvents]
-  const secondEvent = createEvent('Second, you draw the highest time in play', secondChildren)
   return {
     effectAppointments: appointments,
     effectChoices: choices,
@@ -41,6 +42,7 @@ export default function effectThree ({
     effectDiscard: drawnDiscard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }

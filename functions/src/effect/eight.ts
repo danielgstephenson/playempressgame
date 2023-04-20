@@ -1,9 +1,9 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
-import guardSchemeData from '../guard/schemeData'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import copyEffect from './copy'
 import isGreenOrYellow from '../is/greenOrYellow'
+import isYellow from '../is/yellow'
 
 export default function effectEight ({
   appointments,
@@ -15,10 +15,11 @@ export default function effectEight ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the lowest rank yellow scheme in play.')
-  const yellowSchemes = playSchemes.filter(scheme => guardSchemeData(scheme.rank).color === 'Yellow')
+  const yellowSchemes = playSchemes.filter(isYellow)
   const yellowScheme = getLowestRankScheme(yellowSchemes)
   const yellowRank = String(yellowScheme?.rank)
   const {
@@ -27,7 +28,8 @@ export default function effectEight ({
     effectDeck: playDeck,
     effectDiscard: playDiscard,
     effectGold: playGold,
-    effectHand: playHand
+    effectHand: playHand,
+    effectSilver: playSilver
   } = copyEffect({
     appointments,
     choices,
@@ -42,7 +44,8 @@ export default function effectEight ({
     scheme: yellowScheme,
     message: `The lowest rank yellow scheme in play is ${yellowRank}`,
     nonMessage: 'There are no yellow schemes in play.',
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Second, you copy the lowest rank green or yellow dungeon scheme.')
   const dungeonSchemes = dungeon.filter(scheme => isGreenOrYellow(scheme))
@@ -54,7 +57,8 @@ export default function effectEight ({
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
     effectGold: dungeonGold,
-    effectHand: dungeonHand
+    effectHand: dungeonHand,
+    effectSilver: dungeonSilver
   } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
@@ -69,7 +73,8 @@ export default function effectEight ({
     scheme: dungeonScheme,
     message: `The lowest rank green or yellow dungeon scheme is ${dungeonRank}`,
     nonMessage: 'There are no green or yellow dungeon schemes.',
-    event: secondEvent
+    event: secondEvent,
+    silver: playSilver
   })
   return {
     effectAppointments: dungeonAppointments,
@@ -78,6 +83,7 @@ export default function effectEight ({
     effectDiscard: dungeonDiscard,
     effectGold: dungeonGold,
     effectHand: dungeonHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: dungeonSilver
   }
 }

@@ -2,7 +2,7 @@
   {
     "rank": 0,
     "title": "Inherit a title",
-    "color": "Green",
+    "color": "green",
     "time": 3,
     "beginning": "Take 8 Privilege from the bank into your hand",
     "end": "Put 2 Privilege from the bank face down on your deck",
@@ -13,7 +13,7 @@
   {
     "rank": 1,
     "title": "Privilege",
-    "color": "Green",
+    "color": "green",
     "time": 3,
     "beginning": "Draw 2",
     "end": "Trash 1 from your hand",
@@ -24,7 +24,7 @@
   {
     "rank": 2,
     "title": "Fight for Freedom",
-    "color": "Green",
+    "color": "green",
     "time": 3,
     "beginning": "Revive the lowest time in play",
     "end": "Draw 1 for each dungeon scheme",
@@ -35,7 +35,7 @@
   {
     "rank": 3,
     "title": "Serve as Sheriff",
-    "color": "Green",
+    "color": "green",
     "time": 1,
     "beginning": "Put 3 Privilege from the bank face up on your discard",
     "end": "Draw the highest time in play",
@@ -46,7 +46,7 @@
   {
     "rank": 4,
     "title": "Declare independence",
-    "color": "Green",
+    "color": "green",
     "time": 3,
     "beginning": "Take 1 Privilege from the bank into your hand",
     "end": "Draw the lowest time in play",
@@ -57,7 +57,7 @@
   {
     "rank": 5,
     "title": "Found a secret order",
-    "color": "Green",
+    "color": "green",
     "time": 0,
     "beginning": "Revive your top discard scheme's time",
     "end": "Draw twice the number of colors in play",
@@ -68,7 +68,7 @@
   {
     "rank": 6,
     "title": "Frame the hostage",
-    "color": "Green",
+    "color": "green",
     "time": 0,
     "beginning": "Revive the highest time in play",
     "end": "Draw the lowest rank in the dungeon",
@@ -79,7 +79,7 @@
   {
     "rank": 7,
     "title": "Host a wedding",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 1,
     "beginning": "If the left 2 timeline schemes are the same color, earn the higher rank",
     "end": "If the lowest rank scheme in play is green, earn 10 gold",
@@ -90,7 +90,7 @@
   {
     "rank": 8,
     "title": "Buccaneer a treasure ship",
-    "color": "Red",
+    "color": "red",
     "time": 0,
     "beginning": "Copy the lowest rank yellow scheme in play",
     "end": "Copy the lowest rank green or yellow dungeon scheme",
@@ -101,7 +101,7 @@
   {
     "rank": 9,
     "title": "Start a bloodfeud",
-    "color": "Red",
+    "color": "red",
     "time": 3,
     "beginning": "Copy the leftmost yellow timeline scheme",
     "end": "Copy the highest rank green dungeon scheme",
@@ -112,7 +112,7 @@
   {
     "rank": 10,
     "title": "Call in allies",
-    "color": "Red",
+    "color": "red",
     "time": 3,
     "beginning": "If your top discard scheme is yellow, copy it",
     "end": "Copy the highest rank yellow scheme in play",
@@ -123,7 +123,7 @@
   {
     "rank": 11,
     "title": "Challenge to a duel",
-    "color": "Red",
+    "color": "red",
     "time": 0,
     "beginning": "If your top discard scheme is green or yellow, copy it",
     "end": "Copy the lowest rank green or yellow scheme in play",
@@ -134,7 +134,7 @@
   {
     "rank": 12,
     "title": "Storm the palace",
-    "color": "Red",
+    "color": "red",
     "time": 2,
     "beginning": "If the leftmost timeline scheme is green or yellow, copy it",
     "end": "Copy the highest rank green scheme in play",
@@ -145,7 +145,7 @@
   {
     "rank": 13,
     "title": "Spread the rebellion",
-    "color": "Red",
+    "color": "red",
     "time": 2,
     "beginning": "If there are no red timeline schemes, copy the leftmost timeline scheme",
     "end": "Copy the highest rank green or yellow scheme in play",
@@ -156,7 +156,7 @@
   {
     "rank": 14,
     "title": "Plunder the enemy",
-    "color": "Red",
+    "color": "red",
     "time": 0,
     "beginning": "If there is a lower rank scheme in play, copy the rightmost yellow timeline scheme",
     "end": "Copy the highest rank green or yellow dungeon scheme",
@@ -167,7 +167,7 @@
   {
     "rank": 15,
     "title": "Defeat the church",
-    "color": "Red",
+    "color": "red",
     "time": 0,
     "beginning": "If your top discard scheme is red, copy the leftmost green timeline scheme",
     "end": "Otherwise, copy your top discard scheme",
@@ -178,7 +178,7 @@
   {
     "rank": 16,
     "title": "Evict the tenants",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 1,
     "beginning": "If you have 5 or less schemes in hand, take 25 gold",
     "end": "If you took gold, put 1 scheme from your hand face down on your deck",
@@ -189,7 +189,7 @@
   {
     "rank": 17,
     "title": "Smuggle contraband",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 1,
     "beginning": "If your top discard scheme is yellow, earn twice its rank",
     "end": "Put your top discard scheme face down on your deck",
@@ -200,7 +200,7 @@
   {
     "rank": 18,
     "title": "Choose the next Pope",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 0,
     "beginning": "If your deck or discard is empty, earn 30 gold",
     "end": "Appoint 1 privilege from the bank to the court",
@@ -211,7 +211,7 @@
   {
     "rank": 19,
     "title": "Blackmail her Majesty",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 0,
     "beginning": "Earn the leftmost timeline scheme's rank",
     "end": "Earn the highest yellow rank in play",
@@ -222,7 +222,7 @@
   {
     "rank": 20,
     "title": "Learn ancient alchemy",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 0,
     "beginning": "Earn twice your top discard scheme's rank",
     "end": "If it is not yellow, appoint it to the court",
@@ -233,7 +233,7 @@
   {
     "rank": 21,
     "title": "Marry the Duchess",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 0,
     "beginning": "Pay five times the left timeline scheme's time in gold",
     "end": "Earn twice its rank",
@@ -244,7 +244,7 @@
   {
     "rank": 22,
     "title": "Collect alms",
-    "color": "Yellow",
+    "color": "yellow",
     "time": 0,
     "beginning": "Earn the rightmost timeline scheme's rank",
     "end": "Earn 5 gold for each dungeon scheme",
@@ -255,7 +255,7 @@
   {
     "rank": 23,
     "title": "Rule alongside your mother",
-    "color": "Green",
+    "color": "green",
     "time": 0,
     "beginning": "If your top discard scheme is green, revive 5",
     "end": "If the highest or lowest rank scheme in play is green, draw 5",
@@ -266,7 +266,7 @@
   {
     "rank": 24,
     "title": "Enclose peasant land",
-    "color": "Green",
+    "color": "green",
     "time": 1,
     "beginning": "Earn the lowest green rank in play",
     "end": "Revive your entire discard",
@@ -277,7 +277,7 @@
   {
     "rank": 25,
     "title": "Become a Saint",
-    "color": "Green",
+    "color": "green",
     "time": 2,
     "beginning": "If you have 50 or less gold, revive 5",
     "end": "If your discard is empty, draw 5",

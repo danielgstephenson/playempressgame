@@ -3,6 +3,7 @@ import createEvent from '../create/event'
 import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import isGreen from '../is/green'
+import isYellow from '../is/yellow'
 
 export default function effectNine ({
   appointments,
@@ -14,10 +15,11 @@ export default function effectNine ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the leftmost yellow timeline scheme.')
-  const yellowSchemes = passedTimeline.filter(scheme => scheme.color === 'Yellow')
+  const yellowSchemes = passedTimeline.filter(isYellow)
   const yellowScheme = yellowSchemes[0]
   const yellowRank = String(yellowScheme?.rank)
   const {
@@ -26,7 +28,8 @@ export default function effectNine ({
     effectDeck: playDeck,
     effectDiscard: playDiscard,
     effectGold: playGold,
-    effectHand: playHand
+    effectHand: playHand,
+    effectSilver: playSilver
   } = copyEffect({
     appointments,
     choices,
@@ -41,7 +44,8 @@ export default function effectNine ({
     scheme: yellowScheme,
     message: `The leftmost yellow timeline scheme is ${yellowRank}`,
     nonMessage: 'There are no yellow timeline schemes.',
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Second, you copy the highest rank green dungeon scheme.')
   const dungeonSchemes = dungeon.filter(scheme => isGreen(scheme))
@@ -53,7 +57,8 @@ export default function effectNine ({
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
     effectGold: dungeonGold,
-    effectHand: dungeonHand
+    effectHand: dungeonHand,
+    effectSilver: dungeonSilver
   } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
@@ -68,7 +73,8 @@ export default function effectNine ({
     scheme: dungeonScheme,
     message: `The highest rank green dungeon scheme is ${dungeonRank}`,
     nonMessage: 'There are no green dungeon schemes.',
-    event: secondEvent
+    event: secondEvent,
+    silver: playSilver
   })
   return {
     effectAppointments: dungeonAppointments,
@@ -77,6 +83,7 @@ export default function effectNine ({
     effectDiscard: dungeonDiscard,
     effectGold: dungeonGold,
     effectHand: dungeonHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: dungeonSilver
   }
 }

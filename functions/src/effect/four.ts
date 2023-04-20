@@ -3,6 +3,7 @@ import createEvent from '../create/event'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
 import guardScheme from '../guard/scheme'
+import addEvent from '../addEvent'
 
 export default function effectFour ({
   appointments,
@@ -14,26 +15,26 @@ export default function effectFour ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
   const privelege = guardScheme({ rank: 1 })
   const bankHand = [...hand, privelege]
+  const secondEvent = createEvent('Second, you draw the lowest time in play.')
   const lowestTime = getLowestTime(playSchemes)
-  const timeEvent = createEvent(`The lowest time in play is ${lowestTime}.`)
+  addEvent(secondEvent, `The lowest time in play is ${lowestTime}.`)
   const {
     drawnDeck,
     drawnDiscard,
-    drawnHand,
-    drawEvents
+    drawnHand
   } = draw({
     deck,
     discard,
+    event: secondEvent,
     hand: bankHand,
     depth: lowestTime
   })
-  const secondChildren = [timeEvent, ...drawEvents]
-  const secondEvent = createEvent('Second, you draw the lowest time in play.', secondChildren)
   return {
     effectAppointments: appointments,
     effectChoices: choices,
@@ -41,6 +42,7 @@ export default function effectFour ({
     effectDiscard: drawnDiscard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }

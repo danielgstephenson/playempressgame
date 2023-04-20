@@ -1,7 +1,7 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import copyEffect from './copy'
-import getTopData from '../get/topData'
+import getTopScheme from '../get/topScheme'
 import isRed from '../is/red'
 import isGreen from '../is/green'
 
@@ -15,12 +15,13 @@ export default function effectFifteen ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if your top discard scheme is red, copy the leftmost green timeline scheme.')
-  const topData = getTopData(discard)
-  const topRank = String(topData?.rank)
-  const discardRed = isRed(topData)
+  const topScheme = getTopScheme(discard)
+  const topRank = String(topScheme?.rank)
+  const discardRed = isRed(topScheme)
   const green = passedTimeline.filter(isGreen)
   const left = green[0]
   const leftRank = String(left?.rank)
@@ -29,14 +30,15 @@ export default function effectFifteen ({
     ? 'There are no green timeline schemes.'
     : discard.length === 0
       ? 'Your discard is empty.'
-      : `Your top discard scheme is ${topRank}, which is not red.`
+      : `Your top discard scheme, ${topRank}, is not red.`
   const {
     effectAppointments: leftAppointments,
     effectChoices: leftChoices,
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
     effectGold: leftGold,
-    effectHand: leftHand
+    effectHand: leftHand,
+    effectSilver: leftSilver
   } = copyEffect({
     appointments,
     choices,
@@ -52,12 +54,13 @@ export default function effectFifteen ({
     scheme: left,
     message: leftMessage,
     nonMessage: leftNonMessage,
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Otherwise, copy your top discard scheme.')
   const topMessage = `Your top discard scheme is ${topRank}.`
   const topNonMessage = discardRed
-    ? `Your top discard scheme is ${topRank}, which is red.`
+    ? `Your top discard scheme, ${topRank}, is red.`
     : 'Your discard is empty.'
   const {
     effectAppointments: colorAppointments,
@@ -65,7 +68,8 @@ export default function effectFifteen ({
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
     effectGold: colorGold,
-    effectHand: colorHand
+    effectHand: colorHand,
+    effectSilver: colorSilver
   } = copyEffect({
     appointments: leftAppointments,
     choices: leftChoices,
@@ -78,10 +82,11 @@ export default function effectFifteen ({
     hand: leftHand,
     playerId,
     playSchemes,
-    scheme: topData,
+    scheme: topScheme,
     message: topMessage,
     nonMessage: topNonMessage,
-    event: secondEvent
+    event: secondEvent,
+    silver: leftSilver
   })
   return {
     effectAppointments: colorAppointments,
@@ -90,6 +95,7 @@ export default function effectFifteen ({
     effectDiscard: colorDiscard,
     effectGold: colorGold,
     effectHand: colorHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: colorSilver
   }
 }

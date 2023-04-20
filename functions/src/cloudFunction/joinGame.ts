@@ -27,9 +27,11 @@ const joinGame = createCloudFunction<JoinGameProps>(async (props, context, trans
   const profileId = `${currentUid}_${props.gameId}`
   const profileRef = profilesRef.doc(profileId)
   transaction.set(profileRef, {
-    userId: currentUid,
+    displayName: currentUser.displayName,
     gameId: props.gameId,
-    displayName: currentUser.displayName
+    gold: 0,
+    silver: 0,
+    userId: currentUid
   }, { merge: true })
   const gameUser = {
     id: currentUid,

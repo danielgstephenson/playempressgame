@@ -4,6 +4,8 @@ import guardSchemeData from '../guard/schemeData'
 import guardDefined from '../guard/defined'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreen from '../is/green'
+import earn from '../earn'
+import addEvent from '../addEvent'
 
 export default function effectSeven ({
   appointments,
@@ -15,47 +17,71 @@ export default function effectSeven ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
-  let effectGold = gold
-  const firstChildren = []
+  const firstEvent = createEvent('First, if the left two timeline schemes are the same color, you earn the higher rank')
+  const leftTwo = passedTimeline.slice(0, 2)
   function isSame (): boolean {
-    const leftTwo = passedTimeline.slice(0, 2)
-    if (leftTwo.length < 2) return false
+    if (leftTwo.length === 0) {
+      addEvent(firstEvent, 'The timeline is empty.')
+      return false
+    }
+    if (leftTwo.length === 1) {
+      addEvent(firstEvent, 'The timeline has only one scheme.')
+      return false
+    }
     const colors = leftTwo.map(scheme => guardSchemeData(scheme.rank).color)
-    return colors.every(color => color === colors[0])
+    const same = colors.every(color => color === colors[0])
+    const first = guardDefined(leftTwo[0], 'First timeline')
+    const second = guardDefined(leftTwo[1], 'Second timeline')
+    const twoMessage = same
+      ? `The left two timeline schemes are ${first.color}.`
+      : 'The left two timeline schemes are different colors.'
+    const twoEvent = createEvent(twoMessage)
+    firstEvent.children.push(twoEvent)
+    if (!same) {
+      const firstMessage = `The first timeline scheme, ${first.rank}, is ${first.color}.`
+      addEvent(twoEvent, firstMessage)
+      const secondMessage = `The second timeline scheme, ${second.rank}, is ${second.color}.`
+      addEvent(twoEvent, secondMessage)
+    } else {
+      const higherMessage = `The higher rank scheme is ${second.rank}.`
+      addEvent(firstEvent, higherMessage)
+    }
+    return same
   }
   const same = isSame()
-  if (same) {
-    firstChildren.push(createEvent('The left two timeline schemes are the same color.'))
-    const leftRank = guardDefined(passedTimeline[0], 'Left timeline').rank
-    firstChildren.push(createEvent(`The left timeline scheme is ${leftRank}, so you earn ${leftRank} gold.`))
-    effectGold += leftRank
-  } else {
-    firstChildren.push(createEvent('The left two timeline schemes are not the same color.'))
-  }
-  const firstEvent = createEvent('First, if the left two timeline schemes are the same color, you earn the higher rank', firstChildren)
+  const leftBonus = same ? leftTwo[1]?.rank : 0
+  const { gold: leftGold, silver: leftSilver } = earn({
+    baseGold: gold,
+    baseSilver: silver,
+    condition: same,
+    bonus: leftBonus,
+    event: firstEvent
+  })
+  const secondEvent = createEvent('Second, if the lowest rank scheme in play is green, earn 10 gold')
   const lowest = getLowestRankScheme(playSchemes)
   const lowestRank = String(lowest?.rank)
-  const lowestMessage = `The lowest rank scheme in play is ${lowestRank}.`
-  const secondChildren = [createEvent(lowestMessage)]
+  const rankMessage = `The lowest rank scheme in play, ${lowestRank},`
   const green = isGreen(lowest)
-  if (green) {
-    const goldEvent = createEvent(`${lowestRank} is green, so you earn 10 gold.`)
-    secondChildren.push(goldEvent)
-    effectGold += 10
-  } else {
-    const goldEvent = createEvent(`${lowestRank} is not green.`)
-    secondChildren.push(goldEvent)
-  }
-  const secondEvent = createEvent('Second, if the lowest rank scheme in play is green, earn 10 gold', secondChildren)
+  const { gold: greenGold, silver: greenSilver } = earn({
+    baseGold: leftGold,
+    baseSilver: leftSilver,
+    condition: green,
+    bonus: 10,
+    event: secondEvent,
+    message: `${rankMessage} is green.`,
+    nonMessage: `${rankMessage} is not green.`
+  })
   return {
     effectAppointments: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,
     effectHand: hand,
-    effectGold,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectGold: greenGold,
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: greenSilver
   }
 }

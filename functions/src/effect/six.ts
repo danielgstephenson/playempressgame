@@ -3,6 +3,8 @@ import createEvent from '../create/event'
 import revive from '../revive'
 import draw from '../draw'
 import getHighestTime from '../get/highestTime'
+import addEvent from '../addEvent'
+import getLowestRankScheme from '../get/lowestRankScheme'
 
 export default function effectSix ({
   appointments,
@@ -14,28 +16,33 @@ export default function effectSix ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
+  const firstEvent = createEvent('First, you revive the highest time in play')
   const highestTime = getHighestTime(playSchemes)
-  const timeEvent = createEvent(`The highest time in play is ${highestTime}.`)
-  const { revivedDiscard, revivedHand, reviveEvents } = revive({
+  addEvent(firstEvent, `The highest time in play is ${highestTime}.`)
+  const { revivedDiscard, revivedHand } = revive({
     discard,
+    event: firstEvent,
     hand,
     depth: highestTime
   })
-  const firstChildren = [timeEvent, ...reviveEvents]
-  const firstEvent = createEvent('First, you revive the highest time in play', firstChildren)
-  const dungeonRanks = dungeon.map(scheme => scheme.rank)
-  const lowestDungeon = Math.min(...dungeonRanks)
-  const dungeonEvent = createEvent(`The lowest rank in the dungeon is ${lowestDungeon}.`)
-  const { drawnDeck, drawnDiscard, drawnHand, drawEvents } = draw({
+  const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon')
+  const lowestDungeon = getLowestRankScheme(dungeon)
+  if (dungeon.length === 0) {
+    addEvent(secondEvent, 'The dungeon is empty.')
+  } else {
+    const lowestRank = String(lowestDungeon?.rank)
+    addEvent(secondEvent, `The lowest rank in the dungeon is ${lowestRank}.`)
+  }
+  const { drawnDeck, drawnDiscard, drawnHand } = draw({
     deck,
     discard: revivedDiscard,
+    event: secondEvent,
     hand: revivedHand,
-    depth: lowestDungeon
+    depth: lowestDungeon?.rank
   })
-  const secondChildren = [dungeonEvent, ...drawEvents]
-  const secondEvent = createEvent('Second, you draw the lowest rank in the dungeon', secondChildren)
   return {
     effectAppointments: appointments,
     effectChoices: choices,
@@ -43,6 +50,7 @@ export default function effectSix ({
     effectDiscard: drawnDiscard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }

@@ -10,6 +10,7 @@ export default function copyEffect ({
   discard,
   dungeon,
   gold,
+  silver,
   passedTimeline,
   hand,
   message,
@@ -33,6 +34,7 @@ export default function copyEffect ({
       effectDeck: deck,
       effectDiscard: discard,
       effectGold: gold,
+      effectSilver: silver,
       effectHand: hand,
       effectPlayerEvents: []
     }
@@ -45,6 +47,7 @@ export default function copyEffect ({
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,
     effectGold: copyGold,
+    effectSilver: copySilver,
     effectHand: copyHand,
     effectPlayerEvents: copyEvents
   } = effect({
@@ -54,6 +57,7 @@ export default function copyEffect ({
     discard,
     dungeon,
     gold,
+    silver,
     passedTimeline,
     hand,
     playerId,
@@ -66,6 +70,7 @@ export default function copyEffect ({
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,
     effectGold: copyGold,
+    effectSilver: copySilver,
     effectHand: copyHand,
     effectPlayerEvents: copyEvents
   }

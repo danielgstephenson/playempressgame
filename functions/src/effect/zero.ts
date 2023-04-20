@@ -12,7 +12,8 @@ export default function effectZero ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you take 8 Privilege into your hand')
   const drawSchemes = createPrivelege(8)
@@ -28,6 +29,7 @@ export default function effectZero ({
     effectDiscard: discard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }

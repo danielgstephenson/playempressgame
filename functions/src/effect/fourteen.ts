@@ -15,7 +15,8 @@ export default function effectFourteen ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if there is a lower rank scheme in play, copy the rightmost yellow timeline scheme.')
   const lowerSchemes = playSchemes.filter(scheme => scheme.rank < 14)
@@ -33,7 +34,8 @@ export default function effectFourteen ({
     effectDeck: rightDeck,
     effectDiscard: rightDiscard,
     effectGold: rightGold,
-    effectHand: rightHand
+    effectHand: rightHand,
+    effectSilver: rightSilver
   } = copyEffect({
     appointments,
     choices,
@@ -49,7 +51,8 @@ export default function effectFourteen ({
     scheme: right,
     message: rightMessage,
     nonMessage: rightNonMessage,
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Second, you copy the highest rank green or yellow dungeon scheme.')
   const colorSchemes = dungeon.filter(scheme => isGreenOrYellow(scheme))
@@ -62,7 +65,8 @@ export default function effectFourteen ({
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
     effectGold: colorGold,
-    effectHand: colorHand
+    effectHand: colorHand,
+    effectSilver: colorSilver
   } = copyEffect({
     appointments: rightAppointments,
     choices: rightChoices,
@@ -77,7 +81,8 @@ export default function effectFourteen ({
     scheme: colorScheme,
     message: colorMessage,
     nonMessage: 'There are no green or yellow dungeon schemes.',
-    event: secondEvent
+    event: secondEvent,
+    silver: rightSilver
   })
   return {
     effectAppointments: colorAppointments,
@@ -86,6 +91,7 @@ export default function effectFourteen ({
     effectDiscard: colorDiscard,
     effectGold: colorGold,
     effectHand: colorHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: colorSilver
   }
 }

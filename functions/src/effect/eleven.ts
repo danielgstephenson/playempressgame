@@ -1,7 +1,7 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import copyEffect from './copy'
-import getTopData from '../get/topData'
+import getTopScheme from '../get/topScheme'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
 
@@ -15,14 +15,15 @@ export default function effectEleven ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if your top discard scheme is green or yellow, copy it.')
-  const top = getTopData(discard)
+  const top = getTopScheme(discard)
   const topRank = String(top?.rank)
   const topColor = String(top?.color)
-  const topMessage = `Your top discard scheme is ${topRank}, which is ${topColor}.`
-  const nonMessage = top == null ? 'Your discard is empty' : `Your top discard scheme is ${topRank}, which is red.`
+  const topMessage = `Your top discard scheme, ${topRank}, is ${topColor}.`
+  const nonMessage = top == null ? 'Your discard is empty' : `Your top discard scheme, ${topRank}, is red.`
   const greenOrYellow = isGreenOrYellow(top)
   const {
     effectAppointments: playAppointments,
@@ -30,7 +31,8 @@ export default function effectEleven ({
     effectDeck: playDeck,
     effectDiscard: playDiscard,
     effectGold: playGold,
-    effectHand: playHand
+    effectHand: playHand,
+    effectSilver: playSilver
   } = copyEffect({
     appointments,
     choices,
@@ -46,7 +48,8 @@ export default function effectEleven ({
     scheme: top,
     message: topMessage,
     nonMessage,
-    event: firstEvent
+    event: firstEvent,
+    silver
   })
   const secondEvent = createEvent('Second, you copy the lowest rank green or yellow scheme in play.')
   const colorSchemes = playSchemes.filter(scheme => isGreenOrYellow(scheme))
@@ -59,7 +62,8 @@ export default function effectEleven ({
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
     effectGold: colorGold,
-    effectHand: colorHand
+    effectHand: colorHand,
+    effectSilver: colorSilver
   } = copyEffect({
     appointments: playAppointments,
     choices: playChoices,
@@ -74,7 +78,8 @@ export default function effectEleven ({
     scheme: colorScheme,
     message: colorMessage,
     nonMessage: 'There are no green or yellow schemes in play.',
-    event: secondEvent
+    event: secondEvent,
+    silver: playSilver
   })
   return {
     effectAppointments: colorAppointments,
@@ -83,6 +88,7 @@ export default function effectEleven ({
     effectDiscard: colorDiscard,
     effectGold: colorGold,
     effectHand: colorHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: colorSilver
   }
 }

@@ -9,7 +9,8 @@ export default function serializeEffect (effect: EffectResult): SerializedEffect
     effectDiscard,
     effectGold,
     effectHand,
-    effectPlayerEvents
+    effectPlayerEvents,
+    effectSilver
   } = effect
 
   return {
@@ -19,6 +20,7 @@ export default function serializeEffect (effect: EffectResult): SerializedEffect
     effectDiscard: serializeSchemes(effectDiscard),
     effectGold,
     effectHand: serializeSchemes(effectHand),
-    effectPlayerEvents
+    effectPlayerEvents,
+    effectSilver
   }
 }

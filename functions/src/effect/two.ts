@@ -3,6 +3,7 @@ import revive from '../revive'
 import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
+import addEvent from '../addEvent'
 
 export default function effectTwo ({
   appointments,
@@ -14,31 +15,34 @@ export default function effectTwo ({
   passedTimeline,
   hand,
   playerId,
-  playSchemes
+  playSchemes,
+  silver
 }: SchemeEffectProps): EffectResult {
+  const firstEvent = createEvent('First, you revive the lowest time in play')
   const lowestTime = getLowestTime(playSchemes)
+  addEvent(firstEvent, `The lowest time in play is ${lowestTime}.`)
   const {
     revivedDiscard,
-    revivedHand,
-    reviveEvents
+    revivedHand
   } = revive({
     discard,
+    event: firstEvent,
     hand,
     depth: lowestTime
   })
-  const timeEvent = createEvent(`The lowest time in play is ${lowestTime}.`)
-  const firstChildren = [timeEvent, ...reviveEvents]
-  const firstEvent = createEvent('First, you revive the lowest time in play', firstChildren)
-  const { drawnDeck, drawnHand, drawnDiscard, drawEvents } = draw({
+  const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon')
+  addEvent(secondEvent, `There are ${dungeon.length} schemes in the dungeon.`)
+  const {
+    drawnDeck,
+    drawnHand,
+    drawnDiscard
+  } = draw({
     deck,
     discard: revivedDiscard,
+    event: secondEvent,
     hand: revivedHand,
     depth: dungeon.length
   })
-  const dungeonEvent = createEvent(`There are ${dungeon.length} schemes in the dungeon.`)
-  const secondChildren = [dungeonEvent, ...drawEvents]
-  const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon', secondChildren)
-
   return {
     effectAppointments: appointments,
     effectChoices: choices,
@@ -46,6 +50,7 @@ export default function effectTwo ({
     effectDiscard: drawnDiscard,
     effectGold: gold,
     effectHand: drawnHand,
-    effectPlayerEvents: [firstEvent, secondEvent]
+    effectPlayerEvents: [firstEvent, secondEvent],
+    effectSilver: silver
   }
 }
