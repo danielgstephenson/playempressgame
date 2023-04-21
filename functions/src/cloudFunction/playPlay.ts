@@ -1,11 +1,11 @@
 import createCloudFunction from '../create/cloudFunction'
 import guardCurrentHand from '../guard/current/hand'
 import createEvent from '../create/event'
-import { PlaySchemeProps } from '../types'
 import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
+import { SchemeProps } from '../types'
 
-const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, transaction) => {
+const playPlay = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Playing scheme ${props.schemeId}...`)
   const {
     currentGameData,
@@ -40,4 +40,4 @@ const playScheme = createCloudFunction<PlaySchemeProps>(async (props, context, t
   })
   console.info(`Played scheme ${props.schemeId}!`)
 })
-export default playScheme
+export default playPlay

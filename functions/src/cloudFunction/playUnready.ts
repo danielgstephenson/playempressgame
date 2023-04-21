@@ -1,12 +1,12 @@
 import createCloudFunction from '../create/cloudFunction'
 import guardCurrentPlayer from '../guard/current/player'
 import createEvent from '../create/event'
-import { PlayUnreadyProps } from '../types'
 import { arrayUnion, increment } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'
 import updateOtherPlayers from '../update/otherPlayers'
+import { SchemeProps } from '../types'
 
-const playUnready = createCloudFunction<PlayUnreadyProps>(async (props, context, transaction) => {
+const playUnready = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
     currentUid,
     currentGameData,

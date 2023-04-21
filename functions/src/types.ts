@@ -103,40 +103,12 @@ export interface CurrentPlayerGuard {
   currentProfileRef: DocumentReference<Profile>
 }
 
-export interface JoinGameProps {
+export interface GameProps {
   gameId: string
 }
 
-export interface StartGameProps {
-  gameId: string
-}
-
-export interface TrashSchemeProps {
-  gameId: string
+export interface SchemeProps extends GameProps {
   schemeId: string
-}
-
-export interface PlaySchemeProps {
-  gameId: string
-  schemeId: string
-}
-
-export interface UnplaySchemeProps {
-  gameId: string
-  schemeId: string
-}
-
-export interface UntrashSchemeProps {
-  gameId: string
-  schemeId: string
-}
-
-export interface PlayReadyProps {
-  gameId: string
-}
-
-export interface PlayUnreadyProps {
-  gameId: string
 }
 
 export interface HistoryUpdate {

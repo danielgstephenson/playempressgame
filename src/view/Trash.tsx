@@ -5,6 +5,6 @@ import PlayAreaView from './PlayArea'
 export default function TrashView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
-    <PlayAreaView fn='untrashScheme' label='Trash' id={playerState.trashId} />
+    <PlayAreaView fn='playUntrash' label='Trash' id={playerState.trashId} />
   )
 }

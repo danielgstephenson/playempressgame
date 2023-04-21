@@ -3,7 +3,7 @@ import guardCurrentPlayer from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
-import { Choice, Game, PlayReadyProps, Player, Profile, Result, SchemeRef } from '../types'
+import { Choice, Game, Player, Profile, Result, SchemeProps, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -18,7 +18,7 @@ import isChanged from '../is/changed'
 import serializeSchemes from '../serialize/schemes'
 import serializeEffect from '../serialize/effect'
 
-const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
+const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
     currentGameRef,
     currentGameData,

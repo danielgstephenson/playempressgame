@@ -8,14 +8,14 @@ import createEvent from '../create/event'
 import guardCurrentGame from '../guard/current/game'
 import { arrayUnion, documentId, query, where } from 'firelord'
 import guardDefined from '../guard/defined'
-import { StartGameProps } from '../types'
 import getQuery from '../get/query'
 import guardSchemeData from '../guard/schemeData'
 import isGreen from '../is/green'
 import isRed from '../is/red'
 import isYellow from '../is/yellow'
+import { GameProps } from '../types'
 
-const startGame = createCloudFunction<StartGameProps>(async (props, context, transaction) => {
+const startGame = createCloudFunction<GameProps>(async (props, context, transaction) => {
   console.info(`Starting game ${props.gameId}...`)
   const { currentGameData, currentGameRef } = await guardCurrentGame({
     context,

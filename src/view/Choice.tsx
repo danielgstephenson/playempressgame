@@ -1,3 +1,4 @@
+import { Heading } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
@@ -9,9 +10,12 @@ export default function ChoiceView (): JSX.Element {
   if (choice == null) {
     return <></>
   }
+  const labels = {
+    deck: 'Put one scheme from your hand face down on your deck',
+    trash: 'Trash one scheme from your hand'
+  }
+  const label = labels[choice.type]
   return (
-    <>
-      Choice
-    </>
+    <Heading size='md'>{label}</Heading>
   )
 }

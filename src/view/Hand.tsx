@@ -3,10 +3,16 @@ import { Fragment, useContext } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import Action from './Action'
+import Curtain from './Curtain'
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
+  const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
+  const deckChoice = choice?.type === 'deck'
+  const noChoice = gameState.choices == null || gameState.choices.length === 0
+  const playTrash = noChoice && gameState.phase === 'play'
+  const playPlay = noChoice && gameState.phase === 'play'
   const schemeViews = playerState.hand?.map(scheme => {
     if (scheme.id === playerState.trashId || scheme.id === playerState.playId) {
       return <Fragment key={scheme.id} />
@@ -14,18 +20,28 @@ export default function HandView (): JSX.Element {
     return (
       <VStack key={scheme.id} spacing='0'>
         <Text>{scheme.rank}</Text>
-        <Action
-          fn='trashScheme'
-          label='Trash'
-          props={{ schemeId: scheme.id, gameId: gameState.id }}
-          m='0px'
-        />
-        <Action
-          fn='playScheme'
-          label='Play'
-          props={{ schemeId: scheme.id, gameId: gameState.id }}
-          m='0'
-        />
+        <Curtain open={playTrash}>
+          <Action
+            fn='playTrash'
+            label='Trash'
+            props={{ schemeId: scheme.id, gameId: gameState.id }}
+            m='0px'
+          />
+        </Curtain>
+        <Curtain open={playPlay}>
+          <Action
+            fn='playPlay'
+            label='Play'
+            props={{ schemeId: scheme.id, gameId: gameState.id }}
+          />
+        </Curtain>
+        <Curtain open={deckChoice}>
+          <Action
+            fn='deckChoose'
+            label='Put on deck'
+            props={{ schemeId: scheme.id, gameId: gameState.id }}
+          />
+        </Curtain>
       </VStack>
     )
   })

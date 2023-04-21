@@ -4,12 +4,13 @@ import joinGame from './cloudFunction/joinGame'
 import startGame from './cloudFunction/startGame'
 import onCreateUser from './cloudFunction/onCreateUser'
 import onDeleteUser from './cloudFunction/onDeleteUser'
-import trashScheme from './cloudFunction/trashScheme'
-import playScheme from './cloudFunction/playScheme'
-import untrashScheme from './cloudFunction/untrashScheme'
-import unplayScheme from './cloudFunction/unplayScheme'
+import playTrash from './cloudFunction/playTrash'
+import playPlay from './cloudFunction/playPlay'
+import playUntrash from './cloudFunction/playUntrash'
+import playUnplay from './cloudFunction/playUnplay'
 import playReady from './cloudFunction/playReady'
 import playUnready from './cloudFunction/playUnready'
+import deckChoose from './cloudFunction/deckChoose'
 
 // process.env['FIRESTORE_EMULATOR_HOST'] = 'localhost:8080'
 exports.addGame = addGame
@@ -17,9 +18,10 @@ exports.joinGame = joinGame
 exports.startGame = startGame
 exports.onCreateUser = onCreateUser
 exports.onDeleteUser = onDeleteUser
-exports.trashScheme = trashScheme
-exports.playScheme = playScheme
-exports.untrashScheme = untrashScheme
-exports.unplayScheme = unplayScheme
+exports.playTrash = playTrash
+exports.playPLay = playPlay
+exports.playUntrash = playUntrash
+exports.playUnplay = playUnplay
 exports.playReady = playReady
 exports.playUnready = playUnready
+exports.deckChoose = deckChoose

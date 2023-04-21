@@ -1,11 +1,11 @@
 import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
-import { TrashSchemeProps } from '../types'
 import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
 import guardCurrentHand from '../guard/current/hand'
+import { SchemeProps } from '../types'
 
-const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context, transaction) => {
+const playTrash = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Trashing scheme ${props.schemeId}...`)
   const {
     currentGameData,
@@ -40,4 +40,4 @@ const trashScheme = createCloudFunction<TrashSchemeProps>(async (props, context,
   })
   console.info(`Trashed scheme with id ${props.schemeId}!`)
 })
-export default trashScheme
+export default playTrash

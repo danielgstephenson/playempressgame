@@ -4,11 +4,11 @@ import guardJoinPhase from '../guard/joinPhase'
 import createCloudFunction from '../create/cloudFunction'
 import { gamesRef, profilesRef } from '../db'
 import createEvent from '../create/event'
-import { JoinGameProps } from '../types'
+import { GameProps } from '../types'
 import { arrayUnion } from 'firelord'
 import guardCurrentUser from '../guard/current/user'
 
-const joinGame = createCloudFunction<JoinGameProps>(async (props, context, transaction) => {
+const joinGame = createCloudFunction<GameProps>(async (props, context, transaction) => {
   console.info(`Joining game ${props.gameId}...`)
   const { currentUser, currentUid } = await guardCurrentUser({ context, transaction })
   const gameRef = gamesRef.doc(props.gameId)
