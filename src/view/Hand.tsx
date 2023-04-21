@@ -12,7 +12,7 @@ export default function HandView (): JSX.Element {
       return <Fragment key={scheme.id} />
     }
     return (
-      <VStack key={scheme.id}>
+      <VStack key={scheme.id} spacing='0'>
         <Text>{scheme.rank}</Text>
         <Action
           fn='trashScheme'

@@ -12,8 +12,6 @@ export default function CardGroupView ({
   children?: ReactNode
   cardGroup?: Scheme[]
 }): JSX.Element {
-  console.log('label', label)
-  console.log('cardGroup', cardGroup)
   return (
     <>
       <Heading size='sm'>{label}: {children}</Heading>

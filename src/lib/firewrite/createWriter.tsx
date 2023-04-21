@@ -12,7 +12,8 @@ export default function createWriter ({
     functions,
     label,
     onCall,
-    props
+    props,
+    ...viewProps
   }: CreatedWriterProps<Props>): JSX.Element {
     return (
       <Writer
@@ -22,6 +23,7 @@ export default function createWriter ({
         onCall={onCall}
         functions={functions}
         props={props}
+        {...viewProps}
       />
     )
   }

@@ -179,7 +179,6 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       ),
       ...playerChanges
     }
-    console.log('playerUpdate test:', playerUpdate)
     transaction.update(playerRef, playerUpdate)
 
     const profileUpdate = {

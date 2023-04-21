@@ -8,7 +8,8 @@ export default function WriteProvider <Props extends {}> ({
   label,
   onCall,
   functions,
-  props
+  props,
+  ...viewProps
 }: WriteProviderProps<Props>): JSX.Element {
   const [cloudFunction, loading, error] = useHttpsCallable(functions, fn)
   async function write (): Promise<void> {
@@ -28,7 +29,7 @@ export default function WriteProvider <Props extends {}> ({
   }
   return (
     <writeContext.Provider value={writeState}>
-      <WriteConsumer />
+      <WriteConsumer {...viewProps} />
     </writeContext.Provider>
   )
 }
