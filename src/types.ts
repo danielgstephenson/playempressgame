@@ -30,19 +30,27 @@ export interface GameUser {
   displayName: string
 }
 
+export type ChoiceType = 'trash' | 'deck'
+
+export interface Choice {
+  playerId: string
+  type: ChoiceType
+}
+
 export interface Game extends Doc {
-  name: string
-  phase: string
-  timeline: Scheme[]
-  court: Scheme[]
-  dungeon: Scheme[]
-  users: GameUser[]
-  readyCount: number
-  history: HistoryEvent[]
+  choices: Choice[]
   createdAt: {
     seconds: number
     nanoseconds: number
   }
+  court: Scheme[]
+  dungeon: Scheme[]
+  history: HistoryEvent[]
+  name: string
+  phase: string
+  readyCount: number
+  timeline: Scheme[]
+  users: GameUser[]
 }
 
 export interface Profile extends Doc {

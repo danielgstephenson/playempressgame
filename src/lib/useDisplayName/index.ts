@@ -1,5 +1,6 @@
 import { Auth } from 'firebase/auth'
 import { useState, useEffect } from 'react'
+import wait from './wait'
 
 export default function useDisplayName (auth?: Auth): string | undefined {
   const [displayName, setDisplayName] = useState<string>()
@@ -17,8 +18,9 @@ export default function useDisplayName (auth?: Auth): string | undefined {
         console.info('Reloading user without display name...')
         await authUser?.reload()
         if (authUser?.displayName == null) {
-          await authUser?.reload()
           console.warn('Reloading user without display name...')
+          await wait(5000)
+          await authUser?.reload()
           if (authUser?.displayName == null) {
             throw new Error('This user has no display name.')
           } else {
