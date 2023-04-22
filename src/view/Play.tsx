@@ -5,6 +5,6 @@ import PlayAreaView from './PlayArea'
 export default function PlayView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
-    <PlayAreaView fn='playUnplay' label='Play' id={playerState.playId} />
+    <PlayAreaView fn='playUnplay' label='Play' id={playerState.playScheme?.id} />
   )
 }

@@ -2,8 +2,8 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import createEvent from '../create/event'
-import isGreen from '../is/green'
 import isYellow from '../is/yellow'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectTen ({
   appointments,
@@ -18,21 +18,26 @@ export default function effectTen ({
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
-  const firstEvent = createEvent('First, you copy the leftmost yellow timeline scheme.')
-  const yellowSchemes = passedTimeline.filter(isYellow)
-  const yellowScheme = yellowSchemes[0]
-  const yellowRank = String(yellowScheme?.rank)
+  const firstEvent = createEvent('First, if your top discard scheme is yellow, copy it.')
+  const topDiscard = discard[0]
+  const topDiscardRank = String(topDiscard?.rank)
+  const topDiscardColor = String(topDiscard?.color)
+  const topYellow = isYellow(topDiscard)
+  const nonMessage = topDiscard == null
+    ? 'Your discard is empty'
+    : `Your top discard scheme, ${topDiscardRank}, is ${topDiscardColor}.`
   const {
-    effectAppointments: playAppointments,
-    effectChoices: playChoices,
-    effectDeck: playDeck,
-    effectDiscard: playDiscard,
-    effectGold: playGold,
-    effectHand: playHand,
-    effectSilver: playSilver
+    effectAppointments: discardAppointments,
+    effectChoices: discardChoices,
+    effectDeck: discardDeck,
+    effectDiscard: discardDiscard,
+    effectGold: discardGold,
+    effectHand: discardHand,
+    effectSilver: discardSilver
   } = copyEffect({
     appointments,
     choices,
+    condition: topYellow,
     deck,
     discard,
     dungeon,
@@ -41,49 +46,53 @@ export default function effectTen ({
     hand,
     playerId,
     playSchemes,
-    scheme: yellowScheme,
-    message: `The leftmost yellow timeline scheme is ${yellowRank}.`,
-    nonMessage: 'There are no yellow timeline schemes.',
+    scheme: topDiscard,
+    message: `Your top discard scheme, ${topDiscardRank}, is yellow.`,
+    nonMessage,
     event: firstEvent,
     silver
   })
-  const secondEvent = createEvent('Second, you copy the highest rank green dungeon scheme.')
-  const dungeonSchemes = dungeon.filter(scheme => isGreen(scheme))
-  const dungeonScheme = getHighestRankScheme(dungeonSchemes)
-  const dungeonRank = String(dungeonScheme?.rank)
+  const secondEvent = createEvent('Second, you copy the highest rank yellow scheme in play.')
+  const yellowSchemes = playSchemes.filter(scheme => isYellow(scheme))
+  const playScheme = getHighestRankScheme(yellowSchemes)
+  const playRank = String(playScheme?.rank)
+  const playNonEvent = createColorsEvent({
+    message: 'There are no yellow schemes in play.',
+    schemes: playSchemes
+  })
   const {
-    effectAppointments: dungeonAppointments,
-    effectChoices: dungeonChoices,
-    effectDeck: dungeonDeck,
-    effectDiscard: dungeonDiscard,
-    effectGold: dungeonGold,
-    effectHand: dungeonHand,
-    effectSilver: dungeonSilver
+    effectAppointments: playAppointments,
+    effectChoices: playChoices,
+    effectDeck: playDeck,
+    effectDiscard: playDiscard,
+    effectGold: playGol,
+    effectHand: playHand,
+    effectSilver: playSilver
   } = copyEffect({
-    appointments: playAppointments,
-    choices: playChoices,
-    deck: playDeck,
-    discard: playDiscard,
+    appointments: discardAppointments,
+    choices: discardChoices,
+    deck: discardDeck,
+    discard: discardDiscard,
     dungeon,
-    gold: playGold,
+    gold: discardGold,
     passedTimeline,
-    hand: playHand,
+    hand: discardHand,
     playerId,
     playSchemes,
-    scheme: dungeonScheme,
-    message: `The highest rank green dungeon scheme is ${dungeonRank}.`,
-    nonMessage: 'There are no green or yellow dungeon schemes.',
+    scheme: playScheme,
+    message: `The highest rank yellow scheme in play is ${playRank}.`,
+    nonEvent: playNonEvent,
     event: secondEvent,
-    silver: playSilver
+    silver: discardSilver
   })
   return {
-    effectAppointments: dungeonAppointments,
-    effectChoices: dungeonChoices,
-    effectDeck: dungeonDeck,
-    effectDiscard: dungeonDiscard,
-    effectGold: dungeonGold,
-    effectHand: dungeonHand,
+    effectAppointments: playAppointments,
+    effectChoices: playChoices,
+    effectDeck: playDeck,
+    effectDiscard: playDiscard,
+    effectGold: playGol,
+    effectHand: playHand,
     effectPlayerEvents: [firstEvent, secondEvent],
-    effectSilver: dungeonSilver
+    effectSilver: playSilver
   }
 }

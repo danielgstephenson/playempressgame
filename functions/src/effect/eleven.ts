@@ -4,6 +4,7 @@ import copyEffect from './copy'
 import getTopScheme from '../get/topScheme'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectEleven ({
   appointments,
@@ -56,6 +57,10 @@ export default function effectEleven ({
   const colorScheme = getLowestRankScheme(colorSchemes)
   const colorRank = String(colorScheme?.rank)
   const colorMessage = `The lowest rank green or yellow scheme in play is ${colorRank}`
+  const nonEvent = createColorsEvent({
+    message: 'There are no green or yellow schemes in play.',
+    schemes: playSchemes
+  })
   const {
     effectAppointments: colorAppointments,
     effectChoices: colorChoices,
@@ -77,7 +82,7 @@ export default function effectEleven ({
     playSchemes,
     scheme: colorScheme,
     message: colorMessage,
-    nonMessage: 'There are no green or yellow schemes in play.',
+    nonEvent,
     event: secondEvent,
     silver: playSilver
   })

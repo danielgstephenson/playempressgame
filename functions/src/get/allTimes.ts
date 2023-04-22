@@ -4,7 +4,11 @@ import { Player } from '../types'
 
 export default function getAllTimes (allPlayers: Array<Player['read']>): number[] {
   return allPlayers.map(player => {
-    const playScheme = guardHandScheme({ hand: player.hand, schemeId: player.playId, label: 'Play scheme' })
+    const playScheme = guardHandScheme({
+      hand: player.hand,
+      schemeId: player.playScheme?.id,
+      label: 'Play scheme'
+    })
     const time = guardTime(playScheme.rank)
     return time
   })

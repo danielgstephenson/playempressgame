@@ -1,5 +1,5 @@
 import createCloudFunction from '../create/cloudFunction'
-import guardCurrentPlayer from '../guard/current/player'
+import guardCurrentPlaying from '../guard/current/player'
 import createEvent from '../create/event'
 import { arrayUnion, increment } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'
@@ -9,13 +9,13 @@ import { SchemeProps } from '../types'
 const playUnready = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
     currentUid,
-    currentGameData,
+    currentGame,
     currentGameRef,
     currentPlayerId,
     currentProfileRef,
     currentPlayerRef,
-    currentPlayerData
-  } = await guardCurrentPlayer({
+    currentPlayer
+  } = await guardCurrentPlaying({
     gameId: props.gameId,
     transaction,
     context
@@ -24,7 +24,7 @@ const playUnready = createCloudFunction<SchemeProps>(async (props, context, tran
   transaction.update(currentProfileRef, {
     ready: false
   })
-  const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is not ready`)
+  const displayNameUpdate = createEventUpdate(`${currentPlayer.displayName} is not ready`)
   transaction.update(currentGameRef, {
     readyCount: increment(-1),
     ...displayNameUpdate
@@ -33,7 +33,7 @@ const playUnready = createCloudFunction<SchemeProps>(async (props, context, tran
     currentUid,
     gameId: props.gameId,
     transaction,
-    users: currentGameData.users,
+    users: currentGame.users,
     update: displayNameUpdate
   })
   transaction.update(currentPlayerRef, {

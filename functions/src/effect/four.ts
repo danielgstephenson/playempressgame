@@ -19,8 +19,8 @@ export default function effectFour ({
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you take 1 Privilege into your hand.')
-  const privelege = guardScheme({ rank: 1 })
-  const bankHand = [...hand, privelege]
+  const privilege = guardScheme({ rank: 1 })
+  const bankHand = [...hand, privilege]
   const secondEvent = createEvent('Second, you draw the lowest time in play.')
   const lowestTime = getLowestTime(playSchemes)
   addEvent(secondEvent, `The lowest time in play is ${lowestTime}.`)

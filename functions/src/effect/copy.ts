@@ -14,6 +14,7 @@ export default function copyEffect ({
   passedTimeline,
   hand,
   message,
+  nonEvent,
   nonMessage,
   playerId,
   playSchemes,
@@ -23,11 +24,17 @@ export default function copyEffect ({
   condition?: boolean
   scheme: SchemeData | SchemeRef | undefined
   message: string
-  nonMessage: string
   event: HistoryEvent
-}): EffectResult {
+} & ({
+  nonEvent: HistoryEvent
+  nonMessage?: undefined
+} | {
+  nonMessage: string
+  nonEvent?: undefined
+})): EffectResult {
   if (scheme == null || !condition) {
-    event.children.push(createEvent(nonMessage))
+    const non = nonEvent ?? createEvent(nonMessage)
+    event.children.push(non)
     return {
       effectAppointments: appointments,
       effectChoices: choices,

@@ -73,8 +73,8 @@ export interface Player extends Doc {
   gold: number
   hand: Scheme[]
   userId: string
-  trashId?: string
-  playId?: string
+  trashScheme?: Scheme
+  playScheme?: Scheme
   history: HistoryEvent[]
   displayName: string
   silver: number

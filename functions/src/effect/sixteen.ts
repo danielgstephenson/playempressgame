@@ -26,6 +26,11 @@ export default function effectSixteen ({
     event: firstEvent
   })
   const secondEvent = createEvent('If you took gold, put 1 scheme from your hand face down on your deck.')
+  if (less) {
+    secondEvent.children.push(createEvent('You took 25 gold.'))
+  } else {
+    secondEvent.children.push(createEvent('You did not take gold.'))
+  }
   const lessChoice = { playerId, type: 'deck' } as const
   const lessChoices = less ? [...choices, lessChoice] : choices
   return {

@@ -8,7 +8,7 @@ export default function drawOne ({
   hand,
   deckDrawn = [],
   discardDrawn = [],
-  privelegeTaken = []
+  privilegeTaken = []
 }: {
   deck: Scheme[]
   discard: Scheme[]
@@ -16,19 +16,19 @@ export default function drawOne ({
   hand: Scheme[]
   deckDrawn?: Scheme[]
   discardDrawn?: Scheme[]
-  privelegeTaken?: Scheme[]
+  privilegeTaken?: Scheme[]
 }): DrawData {
   if (deck.length === 0) {
     if (discard.length === 0) {
-      const privelege = guardScheme({ rank: 1 })
+      const privilege = guardScheme({ rank: 1 })
       return {
         deckDrawn,
         discardDrawn,
         flipped,
-        privelegeTaken: [...privelegeTaken, privelege],
+        privilegeTaken: [...privilegeTaken, privilege],
         drawnDeck: [],
         drawnDiscard: [],
-        drawnHand: [...hand, privelege]
+        drawnHand: [...hand, privilege]
       }
     }
     const copy = [...discard]
@@ -40,7 +40,7 @@ export default function drawOne ({
       discardDrawn,
       flipped: true,
       hand,
-      privelegeTaken
+      privilegeTaken
     })
     return drawResult
   }
@@ -52,7 +52,7 @@ export default function drawOne ({
     drawnDiscard: discard,
     drawnHand,
     flipped,
-    privelegeTaken
+    privilegeTaken
   }
   if (flipped) {
     return {

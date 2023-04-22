@@ -2,7 +2,7 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import revive from '../revive'
 import addEvent from '../addEvent'
-import getRanks from '../get/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 import draw from '../draw'
 
 export default function effectTwentyFive ({
@@ -29,7 +29,7 @@ export default function effectTwentyFive ({
     depth
   })
   const secondEvent = createEvent('Second, if your discard is empty, draw 5.')
-  const discardRanks = getRanks(revivedDiscard)
+  const discardRanks = getJoinedRanks(revivedDiscard)
   const empty = discard.length === 0
   const { drawnHand, drawnDeck, drawnDiscard } = draw({
     condition: empty,

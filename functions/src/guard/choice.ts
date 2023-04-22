@@ -19,8 +19,10 @@ export default async function guardChoice ({ context, gameId, label, schemeId, t
     label
   })
   const schemeRef = serializeScheme(handGuard.scheme)
+  console.log('choices:', handGuard.currentGame.choices)
+  console.log('currentplayerId:', handGuard.currentPlayerId)
   const choice = handGuard
-    .currentGameData
+    .currentGame
     .choices
     .find(choice => choice.playerId === handGuard.currentPlayerId)
   if (choice == null) {

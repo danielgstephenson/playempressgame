@@ -1,6 +1,6 @@
 import addEvent from '../addEvent'
 import getGrammar from '../get/grammar'
-import getRanks from '../get/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 import { DrawResult, HistoryEvent, Scheme } from '../types'
 import drawMultiple from './multiple'
 
@@ -47,37 +47,37 @@ export default function draw ({
     deckDrawn,
     discardDrawn,
     flipped,
-    privelegeTaken
+    privilegeTaken
   } = drawMultiple({
     deck,
     depth,
     discard,
     hand
   })
-  const deckDrawnRanks = getRanks(deckDrawn)
+  const deckDrawnRanks = getJoinedRanks(deckDrawn)
+  const { count, all } = getGrammar(deck.length, 'scheme', 'schemes')
   if (deck.length === 0) {
     addEvent(event, 'Your deck is empty.')
   } else if (deck.length < depth) {
-    const { count, all } = getGrammar(deck.length, 'scheme', 'schemes')
     addEvent(event, `Your deck only has ${count}, ${deckDrawnRanks}, so you draw ${all}.`)
   } else {
-    addEvent(event, `You draw ${deckDrawnRanks} from your deck.`)
+    addEvent(event, `You draw ${count} from your deck, ${deckDrawnRanks}.`)
   }
   if (flipped) {
     const flipMessage = 'You flip your discard pile to refresh your deck'
     addEvent(event, flipMessage)
-    const discardDrawnRanks = getRanks(discardDrawn)
+    const { count, all } = getGrammar(discardDrawn.length, 'scheme', 'schemes')
+    const discardDrawnRanks = getJoinedRanks(discardDrawn)
     if (discardDrawn.length === discard.length) {
-      const { count, all } = getGrammar(discardDrawn.length, 'scheme', 'schemes')
       const message = `Your refreshed deck has only ${count}, ${discardDrawnRanks}, so you draw ${all}.`
       addEvent(event, message)
     } else {
-      const message = `You draw ${discardDrawnRanks} from your refreshed deck.`
+      const message = `You draw ${count} from your refreshed deck, ${discardDrawnRanks}.`
       addEvent(event, message)
     }
   }
-  if (privelegeTaken.length > 0) {
-    const message = `Your deck and discard are empty, so you take ${privelegeTaken.length} privelege.`
+  if (privilegeTaken.length > 0) {
+    const message = `Your deck and discard are empty, so you take ${privilegeTaken.length} Privilege into your hand.`
     addEvent(event, message)
   }
   return {

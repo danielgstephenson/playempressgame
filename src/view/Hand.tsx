@@ -14,7 +14,7 @@ export default function HandView (): JSX.Element {
   const playTrash = noChoice && gameState.phase === 'play'
   const playPlay = noChoice && gameState.phase === 'play'
   const schemeViews = playerState.hand?.map(scheme => {
-    if (scheme.id === playerState.trashId || scheme.id === playerState.playId) {
+    if (scheme.id === playerState.trashScheme?.id || scheme.id === playerState.playScheme?.id) {
       return <Fragment key={scheme.id} />
     }
     return (

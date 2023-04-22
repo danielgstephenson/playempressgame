@@ -4,6 +4,7 @@ import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import isGreen from '../is/green'
 import isYellow from '../is/yellow'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectNine ({
   appointments,
@@ -22,6 +23,10 @@ export default function effectNine ({
   const yellowSchemes = passedTimeline.filter(isYellow)
   const yellowScheme = yellowSchemes[0]
   const yellowRank = String(yellowScheme?.rank)
+  const nonEvent = createColorsEvent({
+    message: 'There are no yellow timeline schemes.',
+    schemes: passedTimeline
+  })
   const {
     effectAppointments: playAppointments,
     effectChoices: playChoices,
@@ -43,7 +48,7 @@ export default function effectNine ({
     playSchemes,
     scheme: yellowScheme,
     message: `The leftmost yellow timeline scheme is ${yellowRank}`,
-    nonMessage: 'There are no yellow timeline schemes.',
+    nonEvent,
     event: firstEvent,
     silver
   })

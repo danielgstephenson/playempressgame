@@ -9,10 +9,10 @@ const playUnplay = createCloudFunction<SchemeProps>(async (props, context, trans
   console.info(`Unplaying scheme... ${props.schemeId}`)
   const {
     currentUid,
-    currentGameData,
+    currentGame,
     currentPlayerRef,
     currentProfileRef,
-    currentPlayerData,
+    currentPlayer,
     scheme: unplayScheme
   } = await guardCurrentHand({
     gameId: props.gameId,
@@ -22,7 +22,7 @@ const playUnplay = createCloudFunction<SchemeProps>(async (props, context, trans
     label: 'Play scheme'
   })
   transaction.update(currentPlayerRef, {
-    playId: deleteField(),
+    playScheme: deleteField(),
     history: arrayUnion(
       createEvent(`You returned scheme ${unplayScheme.rank} from play.`)
     )
@@ -35,8 +35,8 @@ const playUnplay = createCloudFunction<SchemeProps>(async (props, context, trans
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGameData,
-    message: `${currentPlayerData.displayName} returned the their play scheme.`
+    gameData: currentGame,
+    message: `${currentPlayer.displayName} returned the their play scheme.`
   })
   console.info(`Unplayed scheme ${props.schemeId}!`)
 })

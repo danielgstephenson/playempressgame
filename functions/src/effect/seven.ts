@@ -20,7 +20,7 @@ export default function effectSeven ({
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
-  const firstEvent = createEvent('First, if the left two timeline schemes are the same color, you earn the higher rank')
+  const firstEvent = createEvent('First, if the left two timeline schemes are the same color, you earn the higher rank.')
   const leftTwo = passedTimeline.slice(0, 2)
   function isSame (): boolean {
     if (leftTwo.length === 0) {
@@ -60,7 +60,7 @@ export default function effectSeven ({
     bonus: leftBonus,
     event: firstEvent
   })
-  const secondEvent = createEvent('Second, if the lowest rank scheme in play is green, earn 10 gold')
+  const secondEvent = createEvent('Second, if the lowest rank scheme in play is green, you earn 10 gold.')
   const lowest = getLowestRankScheme(playSchemes)
   const lowestRank = String(lowest?.rank)
   const rankMessage = `The lowest rank scheme in play, ${lowestRank},`

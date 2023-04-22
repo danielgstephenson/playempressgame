@@ -4,6 +4,7 @@ import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
 import isYellow from '../is/yellow'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectFourteen ({
   appointments,
@@ -59,6 +60,10 @@ export default function effectFourteen ({
   const colorScheme = getHighestRankScheme(colorSchemes)
   const colorRank = String(colorScheme?.rank)
   const colorMessage = `The highest rank green or yellow dungeon scheme is ${colorRank}.`
+  const nonEvent = createColorsEvent({
+    message: 'There are no yellow schemes in play.',
+    schemes: playSchemes
+  })
   const {
     effectAppointments: colorAppointments,
     effectChoices: colorChoices,
@@ -80,7 +85,7 @@ export default function effectFourteen ({
     playSchemes,
     scheme: colorScheme,
     message: colorMessage,
-    nonMessage: 'There are no green or yellow dungeon schemes.',
+    nonEvent,
     event: secondEvent,
     silver: rightSilver
   })

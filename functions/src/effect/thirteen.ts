@@ -2,11 +2,12 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import copyEffect from './copy'
 import getHighestRankScheme from '../get/highestRankScheme'
-import getRanks from '../get/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 import getGrammar from '../get/grammar'
 import isGreenOrYellow from '../is/greenOrYellow'
 import isRed from '../is/red'
 import addEvent from '../addEvent'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectThirteen ({
   appointments,
@@ -21,12 +22,14 @@ export default function effectThirteen ({
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
-  const firstEvent = createEvent('First, if there are no red timeline schemes, copy the leftmost timeline scheme.')
+  const firstEvent = createEvent('First, if there are no red timeline schemes, you copy the leftmost timeline scheme.')
   const redSchemes = passedTimeline.filter(isRed)
-  if (redSchemes.length === 0) {
-    addEvent(firstEvent, 'There are no red timeline schemes.')
+  if (redSchemes.length !== 0) {
+    const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
+    const redRanks = getJoinedRanks(redSchemes)
+    addEvent(firstEvent, `There ${verb} red timeline ${noun}, ${redRanks}.`)
   }
-  const redRanks = getRanks(redSchemes)
+  const redRanks = getJoinedRanks(redSchemes)
   const left = passedTimeline[0]
   const leftRank = String(left?.rank)
   const leftMessage = `The leftmost timeline scheme is ${leftRank}.`
@@ -66,6 +69,10 @@ export default function effectThirteen ({
   const colorScheme = getHighestRankScheme(colorSchemes)
   const colorRank = String(colorScheme?.rank)
   const colorMessage = `The highest rank green or yellow scheme in play is ${colorRank}.`
+  const nonEvent = createColorsEvent({
+    message: 'There are no green or yellow schemes in play.',
+    schemes: playSchemes
+  })
   const {
     effectAppointments: colorAppointments,
     effectChoices: colorChoices,
@@ -87,7 +94,7 @@ export default function effectThirteen ({
     playSchemes,
     scheme: colorScheme,
     message: colorMessage,
-    nonMessage: 'There are no green or yellow schemes in play.',
+    nonEvent,
     event: secondEvent,
     silver: leftSilver
   })

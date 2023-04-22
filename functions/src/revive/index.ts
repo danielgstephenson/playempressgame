@@ -1,6 +1,6 @@
 import addEvent from '../addEvent'
 import getGrammar from '../get/grammar'
-import getRanks from '../get/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 import { HistoryEvent, ReviveResult, Scheme } from '../types'
 import reviveMultiple from './multiple'
 
@@ -46,7 +46,7 @@ export default function revive ({
     hand,
     depth
   })
-  const listRanks = getRanks(revivedList)
+  const listRanks = getJoinedRanks(revivedList)
   if (discard.length === 0) {
     addEvent(event, 'Your discard is empty.')
   } else if (discard.length < depth) {

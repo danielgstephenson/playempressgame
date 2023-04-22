@@ -9,7 +9,7 @@ export default function drawMultiple ({
   discardDrawn = [],
   flipped = false,
   hand,
-  privelegeTaken = []
+  privilegeTaken = []
 }: {
   deck: Scheme[]
   deckDrawn?: Scheme[]
@@ -18,7 +18,7 @@ export default function drawMultiple ({
   flipped?: boolean
   discardDrawn?: Scheme[]
   hand: Scheme[]
-  privelegeTaken?: Scheme[]
+  privilegeTaken?: Scheme[]
 }): DrawData {
   if (depth === 0) {
     return {
@@ -28,7 +28,7 @@ export default function drawMultiple ({
       drawnDeck: deck,
       drawnDiscard: discard,
       flipped,
-      privelegeTaken
+      privilegeTaken
     }
   }
   const {
@@ -38,7 +38,7 @@ export default function drawMultiple ({
     drawnDeck,
     drawnDiscard,
     flipped: drawnFlipped,
-    privelegeTaken: drawnPrivelegeTaken
+    privilegeTaken: drawnPrivilegeTaken
   } = drawOne({
     deck,
     deckDrawn,
@@ -46,7 +46,7 @@ export default function drawMultiple ({
     discardDrawn,
     flipped,
     hand,
-    privelegeTaken
+    privilegeTaken
   })
   return drawMultiple({
     deck: drawnDeck,
@@ -56,6 +56,6 @@ export default function drawMultiple ({
     discardDrawn: drawnDiscardDrawn,
     flipped: drawnFlipped,
     hand: drawnHand,
-    privelegeTaken: drawnPrivelegeTaken
+    privilegeTaken: drawnPrivilegeTaken
   })
 }

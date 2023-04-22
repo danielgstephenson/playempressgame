@@ -4,6 +4,7 @@ import copyEffect from './copy'
 import isGreen from '../is/green'
 import getHighestRankScheme from '../get/highestRankScheme'
 import isYellow from '../is/yellow'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectTwelve ({
   appointments,
@@ -56,6 +57,10 @@ export default function effectTwelve ({
   const greenScheme = getHighestRankScheme(greenSchemes)
   const greenRank = String(greenScheme?.rank)
   const greenMessage = `The lowest rank green scheme in play is ${greenRank}.`
+  const nonEvent = createColorsEvent({
+    message: 'There are no green schemes in play.',
+    schemes: playSchemes
+  })
   const {
     effectAppointments: colorAppointments,
     effectChoices: colorChoices,
@@ -77,7 +82,7 @@ export default function effectTwelve ({
     playSchemes,
     scheme: greenScheme,
     message: greenMessage,
-    nonMessage: 'There are no green schemes in play.',
+    nonEvent,
     event: secondEvent,
     silver: playSilver
   })

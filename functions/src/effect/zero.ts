@@ -1,5 +1,5 @@
 import { SchemeEffectProps, EffectResult } from '../types'
-import createPrivelege from '../create/privelege'
+import createPrivilege from '../create/privilege'
 import createEvent from '../create/event'
 
 export default function effectZero ({
@@ -16,11 +16,11 @@ export default function effectZero ({
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you take 8 Privilege into your hand')
-  const drawSchemes = createPrivelege(8)
+  const drawSchemes = createPrivilege(8)
   const drawnHand = [...hand, ...drawSchemes]
 
   const secondEvent = createEvent('Second, you put 2 Privilege on your deck')
-  const deckSchemes = createPrivelege(2)
+  const deckSchemes = createPrivilege(2)
   const drawnDeck = [...deck, ...deckSchemes]
   return {
     effectAppointments: appointments,

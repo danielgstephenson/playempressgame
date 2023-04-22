@@ -9,7 +9,7 @@ import addEvent from '../addEvent'
 import isGreen from '../is/green'
 import isYellow from '../is/yellow'
 import isRed from '../is/red'
-import getRanks from '../get/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 
 export default function effectFive ({
   appointments,
@@ -53,19 +53,19 @@ export default function effectFive ({
   secondEvent.children.push(colorsEvent)
   const greenSchemes = playSchemes.filter(isGreen)
   if (greenSchemes.length !== 0) {
-    const greenRanks = getRanks(greenSchemes)
+    const greenRanks = getJoinedRanks(greenSchemes)
     const { verb } = getGrammar(greenSchemes.length)
     addEvent(colorsEvent, `${greenRanks} ${verb} green.`)
   }
   const yellowSchemes = playSchemes.filter(isYellow)
   if (yellowSchemes.length !== 0) {
-    const yellowRanks = getRanks(yellowSchemes)
+    const yellowRanks = getJoinedRanks(yellowSchemes)
     const { verb } = getGrammar(yellowSchemes.length)
     addEvent(colorsEvent, `${yellowRanks} ${verb} yellow.`)
   }
   const redSchemes = playSchemes.filter(isRed)
   if (redSchemes.length !== 0) {
-    const redRanks = getRanks(redSchemes)
+    const redRanks = getJoinedRanks(redSchemes)
     const { verb } = getGrammar(redSchemes.length)
     addEvent(colorsEvent, `${redRanks} ${verb} red.`)
   }

@@ -3,6 +3,7 @@ import createEvent from '../create/event'
 import isYellow from '../is/yellow'
 import getHighestRankScheme from '../get/highestRankScheme'
 import earn from '../earn'
+import createColorsEvent from '../create/colorsEvent'
 
 export default function effectNineteen ({
   appointments,
@@ -32,13 +33,17 @@ export default function effectNineteen ({
   const yellowSchemes = playSchemes.filter(isYellow)
   const highestYellow = getHighestRankScheme(yellowSchemes)
   const highestRank = String(highestYellow?.rank)
+  const nonEvent = createColorsEvent({
+    message: 'There are no yellow schemes in play.',
+    schemes: playSchemes
+  })
   const { gold: highestGold, silver: highestSilver } = earn({
     baseGold: leftGold,
     baseSilver: leftSilver,
     bonus: highestYellow?.rank,
     event: secondEvent,
     message: `The highest rank yellow scheme in play is ${highestRank}.`,
-    nonMessage: 'There are no yellow schemes in play.'
+    nonEvent
   })
   return {
     effectAppointments: appointments,

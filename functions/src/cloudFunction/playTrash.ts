@@ -4,16 +4,18 @@ import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
 import guardCurrentHand from '../guard/current/hand'
 import { SchemeProps } from '../types'
+import { https } from 'firebase-functions/v1'
 
 const playTrash = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Trashing scheme ${props.schemeId}...`)
   const {
-    currentGameData,
+    currentGame,
     currentUid,
     currentPlayerRef,
-    currentPlayerData,
+    currentPlayer,
     currentProfileRef,
-    scheme: trashScheme
+    scheme: trashScheme,
+    schemeRef
   } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
@@ -21,8 +23,14 @@ const playTrash = createCloudFunction<SchemeProps>(async (props, context, transa
     schemeId: props.schemeId,
     label: 'Play scheme'
   })
+  if (currentPlayer.playScheme?.id === props.schemeId) {
+    throw new https.HttpsError(
+      'invalid-argument',
+      'You cannot trash a scheme that is in play.'
+    )
+  }
   transaction.update(currentPlayerRef, {
-    trashId: props.schemeId,
+    trashScheme: schemeRef,
     history: arrayUnion(
       createEvent(`You are trashing scheme ${trashScheme.rank}.`)
     )
@@ -35,8 +43,8 @@ const playTrash = createCloudFunction<SchemeProps>(async (props, context, transa
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGameData,
-    message: `${currentPlayerData.displayName} is trashing a scheme.`
+    gameData: currentGame,
+    message: `${currentPlayer.displayName} is trashing a scheme.`
   })
   console.info(`Trashed scheme with id ${props.schemeId}!`)
 })

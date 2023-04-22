@@ -4,6 +4,7 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import getLowestTime from '../get/lowestTime'
 import addEvent from '../addEvent'
+import getGrammar from '../get/grammar'
 
 export default function effectTwo ({
   appointments,
@@ -30,8 +31,9 @@ export default function effectTwo ({
     hand,
     depth: lowestTime
   })
+  const { noun } = getGrammar(dungeon.length)
   const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon')
-  addEvent(secondEvent, `There are ${dungeon.length} schemes in the dungeon.`)
+  addEvent(secondEvent, `There are ${dungeon.length} ${noun} in the dungeon.`)
   const {
     drawnDeck,
     drawnHand,

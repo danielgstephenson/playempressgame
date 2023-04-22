@@ -9,10 +9,10 @@ const playUntrash = createCloudFunction<SchemeProps>(async (props, context, tran
   console.info(`Untrashing scheme ${props.schemeId}...`)
   const {
     currentUid,
-    currentGameData,
+    currentGame,
     currentPlayerRef,
     currentProfileRef,
-    currentPlayerData,
+    currentPlayer,
     scheme: untrashScheme
   } = await guardCurrentHand({
     gameId: props.gameId,
@@ -22,7 +22,7 @@ const playUntrash = createCloudFunction<SchemeProps>(async (props, context, tran
     label: 'Untrash scheme'
   })
   transaction.update(currentPlayerRef, {
-    trashId: deleteField(),
+    trashScheme: deleteField(),
     history: arrayUnion(
       createEvent(`You returned scheme ${untrashScheme.rank} from your trash.`)
     )
@@ -35,8 +35,8 @@ const playUntrash = createCloudFunction<SchemeProps>(async (props, context, tran
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGameData,
-    message: `${currentPlayerData.displayName} returned the their trash scheme.`
+    gameData: currentGame,
+    message: `${currentPlayer.displayName} returned the their trash scheme.`
   })
   console.info(`Untrashed scheme with id ${props.schemeId}!`)
 })

@@ -1,8 +1,9 @@
 import { https } from 'firebase-functions'
 import { Transaction } from 'firelord'
 import guardHandScheme from '../handScheme'
-import guardCurrentPlayer from './player'
+import guardCurrentPlaying from './player'
 import { CurrentHandGuard } from '../../types'
+import serializeScheme from '../../serialize/scheme'
 
 export default async function guardCurrentHand ({ context, transaction, gameId, schemeId, label }: {
   context: https.CallableContext
@@ -11,12 +12,13 @@ export default async function guardCurrentHand ({ context, transaction, gameId, 
   transaction: Transaction
   label: string
 }): Promise<CurrentHandGuard> {
-  const currentPlayerGuard = await guardCurrentPlayer({
+  const currentPlayerGuard = await guardCurrentPlaying({
     gameId,
     transaction,
     context
   })
-  const scheme = guardHandScheme({ hand: currentPlayerGuard.currentPlayerData.hand, schemeId, label })
+  const scheme = guardHandScheme({ hand: currentPlayerGuard.currentPlayer.hand, schemeId, label })
+  const schemeRef = serializeScheme(scheme)
 
-  return { ...currentPlayerGuard, scheme }
+  return { ...currentPlayerGuard, scheme, schemeRef }
 }

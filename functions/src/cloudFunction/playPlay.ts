@@ -4,16 +4,18 @@ import createEvent from '../create/event'
 import { arrayUnion } from 'firelord'
 import updatePublicEvent from '../update/publicEvent'
 import { SchemeProps } from '../types'
+import { https } from 'firebase-functions/v1'
 
 const playPlay = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Playing scheme ${props.schemeId}...`)
   const {
-    currentGameData,
+    currentGame,
     currentUid,
+    currentPlayer,
     currentPlayerRef,
-    currentPlayerData,
     currentProfileRef,
-    scheme: playScheme
+    scheme: playScheme,
+    schemeRef
   } = await guardCurrentHand({
     gameId: props.gameId,
     transaction,
@@ -21,8 +23,14 @@ const playPlay = createCloudFunction<SchemeProps>(async (props, context, transac
     schemeId: props.schemeId,
     label: 'Play Scheme'
   })
+  if (currentPlayer.trashScheme?.id === props.schemeId) {
+    throw new https.HttpsError(
+      'invalid-argument',
+      'You cannot play a scheme in your trash.'
+    )
+  }
   transaction.update(currentPlayerRef, {
-    playId: props.schemeId,
+    playScheme: schemeRef,
     history: arrayUnion(
       createEvent(`You are playing scheme ${playScheme.rank}`)
     )
@@ -35,8 +43,8 @@ const playPlay = createCloudFunction<SchemeProps>(async (props, context, transac
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGameData,
-    message: `${currentPlayerData.displayName} is playing a scheme.`
+    gameData: currentGame,
+    message: `${currentPlayer.displayName} is playing a scheme.`
   })
   console.info(`Played scheme ${props.schemeId}!`)
 })

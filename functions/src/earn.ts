@@ -1,18 +1,34 @@
 import createEvent from './create/event'
 import { Earning, HistoryEvent } from './types'
 
-export default function earn ({ baseGold, baseSilver, bonus, condition = true, event, message, nonMessage }: {
+export default function earn ({
+  baseGold,
+  baseSilver,
+  bonus,
+  condition = true,
+  event,
+  message,
+  nonMessage,
+  nonEvent
+}: {
   baseGold: number
   baseSilver: number
   bonus?: number | undefined
   condition?: boolean
   event: HistoryEvent
   message?: string
+} & ({
+  nonEvent?: HistoryEvent
+  nonMessage?: undefined
+} | {
+  nonEvent?: undefined
   nonMessage?: string
-}): Earning {
+})): Earning {
   const base = { gold: baseGold, silver: baseSilver }
   if (!condition || bonus == null) {
-    if (nonMessage != null) {
+    if (nonEvent != null) {
+      event.children.push(nonEvent)
+    } else if (nonMessage != null) {
       event.children.push(createEvent(nonMessage))
     }
     return base

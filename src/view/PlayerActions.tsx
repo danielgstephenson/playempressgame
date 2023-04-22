@@ -10,7 +10,7 @@ export default function PlayerActionsView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
   const profileState = useContext(profileContext)
-  const showReady = playerState.trashId != null && playerState.playId != null && profileState.ready !== true
+  const showReady = playerState.trashScheme != null && playerState.playScheme != null && profileState.ready !== true
   const showUnready = profileState.ready === true
   return (
     <Box>

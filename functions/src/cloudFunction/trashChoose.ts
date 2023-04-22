@@ -11,10 +11,10 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
   const {
     choice,
     currentUid,
-    currentGameData,
+    currentGame,
     currentGameRef,
     currentPlayerRef,
-    currentPlayerData,
+    currentPlayer,
     schemeRef
   } = await guardChoice({
     gameId: props.gameId,
@@ -30,7 +30,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
       createEvent(`You put scheme ${schemeRef.rank} face down on your deck.`)
     )
   })
-  const update = createEventUpdate(`${currentPlayerData.displayName} put a scheme face down on their deck.`)
+  const update = createEventUpdate(`${currentPlayer.displayName} put a scheme face down on their deck.`)
   transaction.update(currentGameRef, {
     ...update,
     choices: arrayRemove(choice)
@@ -39,7 +39,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     currentUid,
     gameId: props.gameId,
     transaction,
-    users: currentGameData.users,
+    users: currentGame.users,
     update
   })
   console.info(`Chose scheme with id ${props.schemeId} to put on deck!`)

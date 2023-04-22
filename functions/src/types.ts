@@ -80,8 +80,8 @@ export type Player = MetaTypeCreator<{
   silver: number
   hand: SchemeRef[]
   history: HistoryEvent[]
-  playId: string | DeleteField
-  trashId: string | DeleteField
+  playScheme: SchemeRef | DeleteField
+  trashScheme: SchemeRef | DeleteField
   userId: string
 }, 'players', string>
 
@@ -92,12 +92,11 @@ export interface CurrentGameGuard {
   currentUserRef: DocumentReference<User>
 }
 
-export interface CurrentPlayerGuard {
+export interface CurrentPlayingGuard {
   currentUid: string
-  currentGameData: Game['read']
+  currentGame: Result<Game>
   currentGameRef: DocumentReference<Game>
   currentPlayer: Result<Player>
-  currentPlayerData: Player['read']
   currentPlayerId: string
   currentPlayerRef: DocumentReference<Player>
   currentProfileRef: DocumentReference<Profile>
@@ -115,8 +114,9 @@ export interface HistoryUpdate {
   history: ArrayUnionOrRemove<HistoryEvent>
 }
 
-export interface CurrentHandGuard extends CurrentPlayerGuard {
+export interface CurrentHandGuard extends CurrentPlayingGuard {
   scheme: Scheme
+  schemeRef: SchemeRef
 }
 
 export interface ChoiceGuard extends CurrentHandGuard {
@@ -184,7 +184,7 @@ export interface DrawData extends DrawResult {
   deckDrawn: Scheme[]
   discardDrawn: Scheme[]
   flipped: boolean
-  privelegeTaken: Scheme[]
+  privilegeTaken: Scheme[]
 }
 
 export interface ReviveResult {
