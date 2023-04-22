@@ -3,7 +3,7 @@ import guardCurrentPlayer from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
-import { Choice, Game, Player, Profile, Result, SchemeProps, SchemeRef } from '../types'
+import { Choice, Game, PlayResult, Player, Profile, Result, SchemeProps, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment, query, where } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -17,6 +17,8 @@ import guardSchemes from '../guard/schemes'
 import isChanged from '../is/changed'
 import serializeSchemes from '../serialize/schemes'
 import serializeEffect from '../serialize/effect'
+import getHighestRankScheme from '../get/highestRankScheme'
+import getJoined from '../get/joined'
 
 const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
@@ -51,6 +53,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
   const youEvent = createEvent('You are ready.')
   const youUpdate = createHistoryUpdate(youEvent)
   if (waiting) {
+    console.log('waiting')
     const displayNameUpdate = createEventUpdate(`${currentPlayerData.displayName} is ready.`)
     transaction.update(currentGameRef, {
       readyCount: increment(1),
@@ -68,6 +71,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     transaction.update(currentProfileRef, { ready: true })
     return
   }
+  console.log('not waiting')
   const whereGameId = where('gameId', '==', props.gameId)
   const whereUserId = where('userId', '!=', currentUid)
   const otherPlayersQuery = query(playersRef.collection(), whereGameId, whereUserId)
@@ -96,17 +100,15 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     allPlayers,
     timeline: currentGameData.timeline
   })
-  const gameAppointments: SchemeRef[] = []
+  const gameSummons: SchemeRef[] = []
   const gameChoices: Choice[] = []
-  function play (result: Result<Player>): void {
-    const playerRef = playersRef.doc(result.id)
+  function play (result: Result<Player>): PlayResult {
     const current = result.id === currentPlayerId
     const lastEvent = current ? youEvent : createEvent(`${currentPlayerData.displayName} is ready.`)
     const playEvents = publicEvents.filter(event => event.id !== result.id).map(event => event.event)
     const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashId, label: 'Trash scheme' })
     const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playId, label: 'Play scheme' })
     const playedHand = result.hand.filter((scheme) => scheme.id !== trashScheme.id && scheme.id !== playScheme.id)
-    const profileRef = profilesRef.doc(result.id)
     const effect = guardEffect(playScheme.rank)
     const deck = guardSchemes({ refs: result.deck })
     const discard = guardSchemes({ refs: result.discard })
@@ -135,7 +137,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
       effectHand,
       effectPlayerEvents
     } = serializeEffect(effectResult)
-    gameAppointments.push(...effectAppointments)
+    gameSummons.push(...effectAppointments)
     gameChoices.push(...effectChoices)
     const playerChanges: Partial<Player['write']> = {
       hand: effectHand
@@ -166,40 +168,126 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
       profileChanges.silver = effectSilver
     }
     const time = guardTime(playScheme.rank)
-    const playerUpdate = {
-      trashId: deleteField(),
-      history: arrayUnion(
-        lastEvent,
-        createEvent('Everyone is ready.'),
-        createEvent(`You trashed scheme ${trashScheme.rank}.`),
-        ...playEvents,
-        createEvent(`You played scheme ${playScheme.rank} with ${time} time.`),
-        timeEvent,
-        ...effectPlayerEvents
-      ),
-      ...playerChanges
-    }
-    transaction.update(playerRef, playerUpdate)
 
+    const playerEvents = [
+      lastEvent,
+      createEvent('Everyone is ready.'),
+      createEvent(`You trashed scheme ${trashScheme.rank}.`),
+      ...playEvents,
+      createEvent(`You played scheme ${playScheme.rank} with ${time} time.`),
+      timeEvent,
+      ...effectPlayerEvents
+    ]
+
+    return { playerResult: result, playerEvents, playerChanges, profileChanges }
+  }
+  const playResults = allPlayers.map(play)
+  const timelineRefs = serializeSchemes(passedTimeline)
+  const gameEvents = [createEvent('Everyone is ready.')]
+  const gameImprisons: SchemeRef[] = []
+  if (gameChoices.length === 0) {
+    const high = getHighestRankScheme(playSchemes)
+    if (high == null) {
+      throw new Error('No highest rank scheme.')
+    }
+    const highRank = String(high?.rank)
+    const highEvent = createEvent(`The highest rank scheme in play is ${highRank}.`)
+    const highs = playSchemes.filter(scheme => scheme.rank === high?.rank)
+    if (highs.length > 1) {
+      const imprisonedPlayResults = playResults.filter(result => {
+        const scheme = guardHandScheme({
+          hand: result.playerResult.hand,
+          schemeId: result.playerResult.playId,
+          label: 'Play scheme'
+        })
+        return scheme.rank === high?.rank
+      })
+      const displayNames = imprisonedPlayResults.map(player => player.playerResult.displayName)
+      const joined = getJoined(displayNames)
+      const publicEvent = createEvent(`The ${highRank} played by ${joined} are imprisoned in the dungeon.`)
+      gameEvents.push(publicEvent)
+      gameImprisons.push(...highs)
+      playResults.forEach(playResult => {
+        playResult.playerEvents.push(highEvent)
+        const imprisoned = imprisonedPlayResults
+          .some(imprisonedPlayResult => imprisonedPlayResult.playerResult.id === playResult.playerResult.id)
+        if (imprisoned) {
+          const otherImprisoned = imprisonedPlayResults.filter(imprisonedPlayResult => {
+            return imprisonedPlayResult.playerResult.id !== playResult.playerResult.id
+          })
+          const otherDisplayNames = otherImprisoned.map(player => player.playerResult.displayName)
+          const privateDisplayNames = ['You', ...otherDisplayNames]
+          const privateJoined = getJoined(privateDisplayNames)
+          const rank = otherDisplayNames.length === 1 ? highRank : `${highRank}s`
+          const privateEvent = createEvent(`${privateJoined} imprison your ${rank} in the dungeon.`)
+          playResult.playerEvents.push(privateEvent)
+          if (!Array.isArray(playResult.playerChanges.hand)) {
+            throw new Error('Hand is not an array.')
+          }
+          playResult.playerChanges.hand = playResult
+            .playerChanges
+            .hand
+            .filter(scheme => scheme.id !== high?.id)
+        } else {
+          playResult.playerEvents.push(publicEvent)
+        }
+      })
+    } else {
+      const summonee = playResults.find(result => result.playerResult.playId === high?.id)
+      const displayName = String(summonee?.playerResult.displayName)
+      const publicEvent = createEvent(`The ${highRank} played by ${displayName} is summoned to the court.`)
+      gameEvents.push(publicEvent)
+      gameSummons.push(high)
+      playResults.forEach(result => {
+        result.playerEvents.push(highEvent)
+        const summoned = result.playerResult.playId === high?.id
+        if (summoned) {
+          const privateEvent = createEvent(`Your ${highRank} is summoned to the court.`)
+          result.playerEvents.push(privateEvent)
+          if (!Array.isArray(result.playerChanges.hand)) {
+            throw new Error('Hand is not an array.')
+          }
+          result.playerChanges.hand = result.playerChanges.hand.filter(scheme => scheme.id !== high?.id)
+        } else {
+          result.playerEvents.push(publicEvent)
+        }
+      })
+    }
+  }
+  playResults.forEach(result => {
+    const { playerResult, playerEvents, playerChanges, profileChanges } = result
+    const playerRef = playersRef.doc(playerResult.id)
+    const profileRef = profilesRef.doc(playerResult.id)
+    const playerUpdate = {
+      ...playerChanges,
+      trashId: deleteField(),
+      history: arrayUnion(...playerEvents)
+    }
+    console.log('playerChanges', playerUpdate)
+    transaction.update(playerRef, playerUpdate)
     const profileUpdate = {
       ...profileChanges,
-      ready: true,
-      trashEmpty: false
+      ready: false,
+      trashEmpty: true
     }
+    console.log('profileChanges', profileUpdate)
     transaction.update(profileRef, profileUpdate)
-  }
-  allPlayers.forEach(play)
-  const passedRefs = serializeSchemes(passedTimeline)
+  })
   const gameChanges: Partial<Game['write']> = {
     history: arrayUnion(
-      createEvent('Everyone is ready.')
+      createEvent('Everyone is ready.'),
+      ...gameEvents
     ),
-    timeline: passedRefs,
+    timeline: timelineRefs,
     readyCount: 0
   }
-  if (gameAppointments.length > 0) {
-    const refs = gameAppointments
+  if (gameSummons.length > 0) {
+    const refs = serializeSchemes(gameSummons)
     gameChanges.court = arrayUnion(...refs)
+  }
+  if (gameImprisons.length > 0) {
+    const refs = serializeSchemes(gameImprisons)
+    gameChanges.dungeon = arrayUnion(...refs)
   }
   if (gameChoices.length > 0) {
     gameChanges.choices = arrayUnion(...gameChoices)

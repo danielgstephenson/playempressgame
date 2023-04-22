@@ -1,10 +1,10 @@
-import { SchemeData, SchemeRef } from '../types'
+import { Scheme, SchemeRef } from '../types'
 import reduceLowestTime from '../reduce/lowestTime'
-import getSchemeData from './schemeData'
+import getSchemes from './schemes'
 
-export default function getLowestTimeScheme (schemes: SchemeRef[]): SchemeData | undefined {
-  if (schemes.length === 0) return undefined
-  const schemeData = getSchemeData(schemes)
-  const lowestTimeScheme = reduceLowestTime(schemeData)
+export default function getLowestTimeScheme (refs: SchemeRef[]): Scheme | undefined {
+  if (refs.length === 0) return undefined
+  const schems = getSchemes(refs)
+  const lowestTimeScheme = reduceLowestTime(schems)
   return lowestTimeScheme
 }

@@ -1,6 +1,6 @@
-import { SchemeData } from '../types'
+import { Scheme } from '../types'
 
-export default function reduceLowestTime (schemes: SchemeData[]): SchemeData {
+export default function reduceLowestTime (schemes: Scheme[]): Scheme {
   const lowestTimeScheme = schemes.reduce((lowest, scheme) => {
     if (scheme.time < lowest.time) return scheme
     return lowest

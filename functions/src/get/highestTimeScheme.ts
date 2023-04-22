@@ -1,10 +1,10 @@
-import { SchemeData, SchemeRef } from '../types'
-import getSchemeData from './schemeData'
+import { Scheme, SchemeRef } from '../types'
+import getSchemes from './schemes'
 import reduceHighestTime from '../reduce/highestTime'
 
-export default function getHighestTimeScheme (schemes: SchemeRef[]): SchemeData | undefined {
-  if (schemes.length === 0) return undefined
-  const schemeData = getSchemeData(schemes)
-  const highestTimeScheme = reduceHighestTime(schemeData)
+export default function getHighestTimeScheme (refs: SchemeRef[]): Scheme | undefined {
+  if (refs.length === 0) return undefined
+  const schemes = getSchemes(refs)
+  const highestTimeScheme = reduceHighestTime(schemes)
   return highestTimeScheme
 }

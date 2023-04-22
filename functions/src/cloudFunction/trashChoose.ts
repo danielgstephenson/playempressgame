@@ -7,7 +7,7 @@ import updateOtherPlayers from '../update/otherPlayers'
 import guardChoice from '../guard/choice'
 
 const deckChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
-  console.info(`Choosing scheme ${props.schemeId} to put on deck...`)
+  console.info(`Choosing scheme ${props.schemeId} to trash...`)
   const {
     choice,
     currentUid,
@@ -21,7 +21,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     transaction,
     context,
     schemeId: props.schemeId,
-    label: 'Deck choice scheme'
+    label: 'Trash choice scheme'
   })
   transaction.update(currentPlayerRef, {
     hand: arrayRemove(schemeRef),

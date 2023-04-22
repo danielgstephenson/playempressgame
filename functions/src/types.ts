@@ -119,6 +119,11 @@ export interface CurrentHandGuard extends CurrentPlayerGuard {
   scheme: Scheme
 }
 
+export interface ChoiceGuard extends CurrentHandGuard {
+  choice: Choice
+  schemeRef: SchemeRef
+}
+
 export interface CurrentUserGuard {
   currentUserRef: DocumentReference<User>
   currentUserData: User['read']
@@ -203,4 +208,11 @@ export interface Grammar {
 export interface Earning {
   gold: number
   silver: number
+}
+
+export interface PlayResult {
+  playerEvents: HistoryEvent[]
+  playerChanges: Partial<Player['writeFlatten']>
+  playerResult: Result<Player>
+  profileChanges: Partial<Profile['writeFlatten']>
 }
