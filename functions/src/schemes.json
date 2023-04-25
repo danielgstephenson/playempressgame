@@ -180,7 +180,7 @@
     "title": "Evict the tenants",
     "color": "yellow",
     "time": 1,
-    "beginning": "If you have 5 or less schemes in hand, take 25 gold",
+    "beginning": "If you have 5 or less schemes in hand, earn 25 gold",
     "end": "If you took gold, put 1 scheme from your hand face down on your deck",
     "threat": "",
     "link1": "https://en.wikipedia.org/wiki/Star_Chamber",

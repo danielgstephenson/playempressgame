@@ -24,17 +24,22 @@ export default function effectThirteen ({
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if there are no red timeline schemes, you copy the leftmost timeline scheme.')
   const redSchemes = passedTimeline.filter(isRed)
-  if (redSchemes.length !== 0) {
+  const noRed = redSchemes.length === 0
+  if (noRed) {
     const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
     const redRanks = getJoinedRanks(redSchemes)
     addEvent(firstEvent, `There ${verb} red timeline ${noun}, ${redRanks}.`)
+  } else {
+    const colorsEvent = createColorsEvent({
+      message: 'There are no red timeline schemes',
+      schemes: passedTimeline
+    })
   }
   const redRanks = getJoinedRanks(redSchemes)
   const left = passedTimeline[0]
   const leftRank = String(left?.rank)
   const leftMessage = `The leftmost timeline scheme is ${leftRank}.`
   const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
-  const noRed = redSchemes.length === 0
   const leftNonMessage = noRed
     ? `The red timeline ${noun} ${verb} ${redRanks}.`
     : 'The timeline is empty.'

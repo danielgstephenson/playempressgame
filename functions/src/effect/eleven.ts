@@ -1,6 +1,6 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
-import copyEffect from './copy'
+import copyEffects from './copy'
 import getTopScheme from '../get/topScheme'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreenOrYellow from '../is/greenOrYellow'
@@ -25,19 +25,19 @@ export default function effectEleven ({
   const topColor = String(top?.color)
   const topMessage = `Your top discard scheme, ${topRank}, is ${topColor}.`
   const nonMessage = top == null ? 'Your discard is empty' : `Your top discard scheme, ${topRank}, is red.`
-  const greenOrYellow = isGreenOrYellow(top)
+  const discardGreenOrYellow = isGreenOrYellow(top)
   const {
-    effectAppointments: playAppointments,
-    effectChoices: playChoices,
-    effectDeck: playDeck,
-    effectDiscard: playDiscard,
-    effectGold: playGold,
-    effectHand: playHand,
-    effectSilver: playSilver
-  } = copyEffect({
+    effectAppointments: discardAppointments,
+    effectChoices: discardChoices,
+    effectDeck: discardDeck,
+    effectDiscard: discardDiscard,
+    effectGold: discardGold,
+    effectHand: discardHand,
+    effectSilver: discardSilver
+  } = copyEffects({
     appointments,
     choices,
-    condition: greenOrYellow,
+    condition: discardGreenOrYellow,
     deck,
     discard,
     dungeon,
@@ -53,47 +53,47 @@ export default function effectEleven ({
     silver
   })
   const secondEvent = createEvent('Second, you copy the lowest rank green or yellow scheme in play.')
-  const colorSchemes = playSchemes.filter(scheme => isGreenOrYellow(scheme))
-  const colorScheme = getLowestRankScheme(colorSchemes)
-  const colorRank = String(colorScheme?.rank)
-  const colorMessage = `The lowest rank green or yellow scheme in play is ${colorRank}`
+  const colorPlaySchemes = playSchemes.filter(scheme => isGreenOrYellow(scheme))
+  const colorPlayScheme = getLowestRankScheme(colorPlaySchemes)
+  const colorPlayRank = String(colorPlayScheme?.rank)
+  const colorPlayMessage = `The lowest rank green or yellow scheme in play is ${colorPlayRank}`
   const nonEvent = createColorsEvent({
     message: 'There are no green or yellow schemes in play.',
     schemes: playSchemes
   })
   const {
-    effectAppointments: colorAppointments,
-    effectChoices: colorChoices,
-    effectDeck: colorDeck,
-    effectDiscard: colorDiscard,
-    effectGold: colorGold,
-    effectHand: colorHand,
-    effectSilver: colorSilver
-  } = copyEffect({
-    appointments: playAppointments,
-    choices: playChoices,
-    deck: playDeck,
-    discard: playDiscard,
+    effectAppointments: colorPlayAppointments,
+    effectChoices: colorPlayChoices,
+    effectDeck: colorPlayDeck,
+    effectDiscard: colorPlayDiscard,
+    effectGold: colorPlayGold,
+    effectHand: colorPlayHand,
+    effectSilver: colorPlaySilver
+  } = copyEffects({
+    appointments: discardAppointments,
+    choices: discardChoices,
+    deck: discardDeck,
+    discard: discardDiscard,
     dungeon,
-    gold: playGold,
+    gold: discardGold,
     passedTimeline,
-    hand: playHand,
+    hand: discardHand,
     playerId,
     playSchemes,
-    scheme: colorScheme,
-    message: colorMessage,
+    scheme: colorPlayScheme,
+    message: colorPlayMessage,
     nonEvent,
     event: secondEvent,
-    silver: playSilver
+    silver: discardSilver
   })
   return {
-    effectAppointments: colorAppointments,
-    effectChoices: colorChoices,
-    effectDeck: colorDeck,
-    effectDiscard: colorDiscard,
-    effectGold: colorGold,
-    effectHand: colorHand,
+    effectAppointments: colorPlayAppointments,
+    effectChoices: colorPlayChoices,
+    effectDeck: colorPlayDeck,
+    effectDiscard: colorPlayDiscard,
+    effectGold: colorPlayGold,
+    effectHand: colorPlayHand,
     effectPlayerEvents: [firstEvent, secondEvent],
-    effectSilver: colorSilver
+    effectSilver: colorPlaySilver
   }
 }

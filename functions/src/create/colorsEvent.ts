@@ -7,8 +7,8 @@ export default function createColorsEvent ({ message, schemes }: {
 }): HistoryEvent {
   const event = createEvent(message)
   schemes.forEach(scheme => {
-    const event = createEvent(`${scheme.rank} is ${scheme.color}.`)
-    event.children.push(event)
+    const schemeEvent = createEvent(`${scheme.rank} is ${scheme.color}.`)
+    event.children.push(schemeEvent)
   })
   return event
 }

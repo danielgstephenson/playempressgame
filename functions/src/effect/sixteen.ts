@@ -15,7 +15,7 @@ export default function effectSixteen ({
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
-  const firstEvent = createEvent('First, if you have 5 or less schemes in hand, take 25 gold.')
+  const firstEvent = createEvent('First, if you have 5 or less schemes in hand, earn 25 gold.')
   firstEvent.children.push(createEvent(`You have ${hand.length} schemes in hand.`))
   const less = hand.length <= 5
   const { gold: handGold, silver: handSilver } = earn({
@@ -27,7 +27,7 @@ export default function effectSixteen ({
   })
   const secondEvent = createEvent('If you took gold, put 1 scheme from your hand face down on your deck.')
   if (less) {
-    secondEvent.children.push(createEvent('You took 25 gold.'))
+    secondEvent.children.push(createEvent('You just took 25 gold.'))
   } else {
     secondEvent.children.push(createEvent('You did not take gold.'))
   }

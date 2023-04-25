@@ -55,7 +55,7 @@ export default function draw ({
     hand
   })
   const deckDrawnRanks = getJoinedRanks(deckDrawn)
-  const { count, all } = getGrammar(deck.length, 'scheme', 'schemes')
+  const { count, all } = getGrammar(deckDrawn.length, 'scheme', 'schemes')
   if (deck.length === 0) {
     addEvent(event, 'Your deck is empty.')
   } else if (deck.length < depth) {
@@ -69,7 +69,7 @@ export default function draw ({
     const { count, all } = getGrammar(discardDrawn.length, 'scheme', 'schemes')
     const discardDrawnRanks = getJoinedRanks(discardDrawn)
     if (discardDrawn.length === discard.length) {
-      const message = `Your refreshed deck has only ${count}, ${discardDrawnRanks}, so you draw ${all}.`
+      const message = `Your refreshed deck only has ${count}, ${discardDrawnRanks}, so you draw ${all}.`
       addEvent(event, message)
     } else {
       const message = `You draw ${count} from your refreshed deck, ${discardDrawnRanks}.`

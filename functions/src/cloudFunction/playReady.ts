@@ -80,7 +80,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
   const playSchemes = guardPlayHandSchemes(allPlayers)
   const publicEvents = allPlayers.map(player => {
     const playScheme = guardHandScheme({
-      hand: player.hand, schemeId: player.playScheme?.id, label: 'Play scheme'
+      hand: player.hand, schemeId: player.playScheme?.id, label: 'Playing public play scheme'
     })
     const time = guardTime(playScheme.rank)
     return {
@@ -101,8 +101,8 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     const current = result.id === currentPlayerId
     const lastEvent = current ? youEvent : createEvent(`${currentPlayer.displayName} is ready.`)
     const playEvents = publicEvents.filter(event => event.id !== result.id).map(event => event.event)
-    const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashScheme?.id, label: 'Trash scheme' })
-    const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playScheme?.id, label: 'Play scheme' })
+    const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashScheme?.id, label: 'Playing trash scheme' })
+    const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playScheme?.id, label: 'Playing play scheme' })
     const playedHand = result.hand.filter((scheme) => scheme.id !== trashScheme.id && scheme.id !== playScheme.id)
     const effect = guardEffect(playScheme.rank)
     const deck = guardSchemes({ refs: result.deck })
@@ -193,7 +193,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
         const scheme = guardHandScheme({
           hand: result.playerResult.hand,
           schemeId: result.playerResult.playScheme?.id,
-          label: 'Play scheme'
+          label: 'Potential imprison play scheme'
         })
         return scheme.rank === high?.rank
       })
@@ -222,7 +222,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
           playResult.playerChanges.hand = playResult
             .playerChanges
             .hand
-            .filter(scheme => scheme.id !== high?.id)
+            .filter(scheme => scheme.rank !== high?.rank)
         } else {
           playResult.playerEvents.push(publicEvent)
         }
@@ -258,7 +258,6 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
       trashScheme: deleteField(),
       history: arrayUnion(...playerEvents)
     }
-    console.log('playerChanges', playerUpdate)
     transaction.update(playerRef, playerUpdate)
     const profileUpdate = {
       ...profileChanges,

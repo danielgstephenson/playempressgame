@@ -7,7 +7,7 @@ export default function getAllTimes (allPlayers: Array<Player['read']>): number[
     const playScheme = guardHandScheme({
       hand: player.hand,
       schemeId: player.playScheme?.id,
-      label: 'Play scheme'
+      label: 'All times play scheme'
     })
     const time = guardTime(playScheme.rank)
     return time

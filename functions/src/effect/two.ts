@@ -31,9 +31,9 @@ export default function effectTwo ({
     hand,
     depth: lowestTime
   })
-  const { noun } = getGrammar(dungeon.length)
+  const { phrase } = getGrammar(dungeon.length)
   const secondEvent = createEvent('Second, you draw the number of schemes in the dungeon')
-  addEvent(secondEvent, `There are ${dungeon.length} ${noun} in the dungeon.`)
+  addEvent(secondEvent, `There ${phrase} in the dungeon.`)
   const {
     drawnDeck,
     drawnHand,

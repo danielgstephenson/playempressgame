@@ -28,6 +28,7 @@ export default function effectEight ({
     message: 'There are no yellow schemes in play.',
     schemes: playSchemes
   })
+  console.log('nonEvent test:', nonEvent)
   const {
     effectAppointments: playAppointments,
     effectChoices: playChoices,

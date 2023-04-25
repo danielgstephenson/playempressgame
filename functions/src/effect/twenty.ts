@@ -3,6 +3,7 @@ import createEvent from '../create/event'
 import isYellow from '../is/yellow'
 import earn from '../earn'
 import getTopScheme from '../get/topScheme'
+import addEvent from '../addEvent'
 
 export default function effectTwenty ({
   appointments,
@@ -31,7 +32,17 @@ export default function effectTwenty ({
   })
   const secondEvent = createEvent('Second, if it is not yellow, appoint it to the court.')
   const discardFull = topScheme != null
+  if (!discardFull) {
+    addEvent(secondEvent, 'Your discard is empty')
+  }
   const topYellow = discardFull && isYellow(topScheme)
+  const topColor = String(topScheme?.color)
+  const topMessage = `Your top discard scheme, ${topRank}, is ${topColor},`
+  if (topYellow) {
+    addEvent(secondEvent, `${topMessage} so it is summoned to the court.`)
+  } else {
+    addEvent(secondEvent, `${topMessage} so it is not summoned to the court.`)
+  }
   const topAppointments = topYellow ? [...appointments, topScheme] : appointments
   const topDiscard = discardFull ? discard.slice(0, -1) : discard
   return {

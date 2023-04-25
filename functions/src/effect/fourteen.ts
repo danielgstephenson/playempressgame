@@ -25,10 +25,10 @@ export default function effectFourteen ({
   const right = yellowSchemes.length === 0 ? undefined : yellowSchemes[yellowSchemes.length - 1]
   const rightRank = String(right?.rank)
   const rightMessage = `The rightmost yellow timeline scheme is ${rightRank}.`
-  const noLower = lowerSchemes.length === 0
-  const rightNonMessage = noLower
-    ? 'There are no lower rank schemes in play.'
-    : 'There are no yellow timeline schemes.'
+  const lower = lowerSchemes.length !== 0
+  const rightNonMessage = lower
+    ? 'There are no yellow timeline schemes.'
+    : 'There are no lower rank schemes in play.'
   const {
     effectAppointments: rightAppointments,
     effectChoices: rightChoices,
@@ -40,7 +40,7 @@ export default function effectFourteen ({
   } = copyEffect({
     appointments,
     choices,
-    condition: noLower,
+    condition: lower,
     deck,
     discard,
     dungeon,

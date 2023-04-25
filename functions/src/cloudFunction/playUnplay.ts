@@ -19,7 +19,7 @@ const playUnplay = createCloudFunction<SchemeProps>(async (props, context, trans
     transaction,
     context,
     schemeId: props.schemeId,
-    label: 'Play scheme'
+    label: 'Unplay scheme'
   })
   transaction.update(currentPlayerRef, {
     playScheme: deleteField(),

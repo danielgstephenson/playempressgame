@@ -56,10 +56,12 @@ export default function effectTen ({
   const yellowSchemes = playSchemes.filter(scheme => isYellow(scheme))
   const playScheme = getHighestRankScheme(yellowSchemes)
   const playRank = String(playScheme?.rank)
+  console.log('playSchemes', playSchemes)
   const playNonEvent = createColorsEvent({
     message: 'There are no yellow schemes in play.',
     schemes: playSchemes
   })
+  console.log('playNonEvent', playNonEvent)
   const {
     effectAppointments: playAppointments,
     effectChoices: playChoices,

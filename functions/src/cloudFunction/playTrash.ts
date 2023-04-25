@@ -21,7 +21,7 @@ const playTrash = createCloudFunction<SchemeProps>(async (props, context, transa
     transaction,
     context,
     schemeId: props.schemeId,
-    label: 'Play scheme'
+    label: 'Trash scheme'
   })
   if (currentPlayer.playScheme?.id === props.schemeId) {
     throw new https.HttpsError(

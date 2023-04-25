@@ -11,7 +11,7 @@ export default function passTime ({ allPlayers, timeline }: {
 }): PassTime {
   const totalTime = allPlayers.reduce((total, player) => {
     const playScheme = guardHandScheme({
-      hand: player.hand, schemeId: player.playScheme?.id, label: 'Play scheme'
+      hand: player.hand, schemeId: player.playScheme?.id, label: 'Pass time play scheme'
     })
     const time = guardTime(playScheme.rank)
     return total + time
