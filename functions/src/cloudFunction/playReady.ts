@@ -3,7 +3,7 @@ import guardCurrentPlaying from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
-import { Choice, Game, PlayResult, Player, Profile, Result, SchemeProps, SchemeRef } from '../types'
+import { Choice, Game, PlayResult, Player, Result, SchemeProps, SchemeRef } from '../types'
 import { arrayUnion, deleteField, increment } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -13,13 +13,13 @@ import passTime from '../passTime'
 import guardTime from '../guard/time'
 import guardEffect from '../guard/effect'
 import guardSchemes from '../guard/schemes'
-import isChanged from '../is/changed'
 import serializeSchemes from '../serialize/schemes'
-import serializeEffect from '../serialize/effect'
 import getHighestRankScheme from '../get/highestRankScheme'
 import getJoined from '../get/joined'
 import getAllPlayers from '../get/allPlayers'
 import guardPlayHandSchemes from '../guard/playHandSchemes'
+import serializeScheme from '../serialize/scheme'
+import getPlayChanges from '../get/playChanges'
 
 const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
@@ -103,6 +103,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     const playEvents = publicEvents.filter(event => event.id !== result.id).map(event => event.event)
     const trashScheme = guardHandScheme({ hand: result.hand, schemeId: result.trashScheme?.id, label: 'Playing trash scheme' })
     const playScheme = guardHandScheme({ hand: result.hand, schemeId: result.playScheme?.id, label: 'Playing play scheme' })
+    const playSchemeRef = serializeScheme(playScheme)
     const playedHand = result.hand.filter((scheme) => scheme.id !== trashScheme.id && scheme.id !== playScheme.id)
     const effect = guardEffect(playScheme.rank)
     const deck = guardSchemes({ refs: result.deck })
@@ -115,53 +116,26 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
       deck,
       discard,
       dungeon,
+      first: true,
       gold: result.gold,
       passedTimeline,
       hand,
       playerId: result.id,
+      playSchemeRef,
       playSchemes,
       silver: result.silver
     })
-    const {
-      effectAppointments,
-      effectChoices,
-      effectDeck,
-      effectDiscard,
-      effectGold,
-      effectSilver,
-      effectHand,
-      effectPlayerEvents
-    } = serializeEffect(effectResult)
-    gameSummons.push(...effectAppointments)
-    gameChoices.push(...effectChoices)
-    const playerChanges: Partial<Player['write']> = {
-      hand: effectHand
-    }
-    const profileChanges: Partial<Profile['writeFlatten']> = {}
-    const deckedChanged = isChanged(deck, effectDeck)
-    if (deckedChanged) {
-      playerChanges.deck = effectDeck
-    }
-    const discardChanged = isChanged(discard, effectDiscard)
-    if (discardChanged) {
-      playerChanges.discard = effectDiscard
-    }
-    const effectTop = effectDiscard[effectDiscard.length - 1]
-    const resultTop = discard[discard.length - 1]
-    const topdiscardChanged = effectTop?.id !== resultTop?.id
-    if (topdiscardChanged) {
-      profileChanges.topDiscardScheme = effectTop ?? deleteField()
-    }
-    const goldChanged = effectGold !== result.gold
-    if (goldChanged) {
-      playerChanges.gold = effectGold
-      profileChanges.gold = effectGold
-    }
-    const silverChanged = effectSilver !== result.silver
-    if (silverChanged) {
-      playerChanges.silver = effectSilver
-      profileChanges.silver = effectSilver
-    }
+    const changes = getPlayChanges({
+      deck,
+      discard,
+      effectResult,
+      gold: result.gold,
+      hand,
+      silver: result.silver
+    })
+    gameSummons.push(...changes.effectSummons)
+    gameChoices.push(...changes.effectChoices)
+
     const time = guardTime(playScheme.rank)
 
     const playerEvents = [
@@ -171,10 +145,15 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
       ...playEvents,
       createEvent(`You played scheme ${playScheme.rank} with ${time} time.`),
       timeEvent,
-      ...effectPlayerEvents
+      ...changes.effectPlayerEvents
     ]
 
-    return { playerResult: result, playerEvents, playerChanges, profileChanges }
+    return {
+      playerResult: result,
+      playerEvents,
+      playerChanges: changes.playerChanges,
+      profileChanges: changes.profileChanges
+    }
   }
   const playResults = allPlayers.map(play)
   const timelineRefs = serializeSchemes(passedTimeline)
@@ -219,10 +198,8 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
           if (!Array.isArray(playResult.playerChanges.hand)) {
             throw new Error('Hand is not an array.')
           }
-          playResult.playerChanges.hand = playResult
-            .playerChanges
-            .hand
-            .filter(scheme => scheme.rank !== high?.rank)
+          const oldHand = playResult.playerChanges.hand
+          playResult.playerChanges.hand = oldHand.filter(scheme => scheme.rank !== high?.rank)
         } else {
           playResult.playerEvents.push(publicEvent)
         }

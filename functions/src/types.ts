@@ -36,8 +36,10 @@ export interface GameUser {
 export type ChoiceType = 'trash' | 'deck'
 
 export interface Choice {
+  id: string
   playerId: string
   type: ChoiceType
+  first?: SchemeRef
 }
 
 export type Game = MetaTypeCreator<{
@@ -142,16 +144,19 @@ export interface SchemeEffectProps {
   deck: Scheme[]
   discard: Scheme[]
   dungeon: Scheme[]
+  first?: boolean | undefined
   gold: number
   silver: number
   passedTimeline: Scheme[]
   hand: Scheme[]
   playerId: string
+  playSchemeRef: SchemeRef
   playSchemes: Scheme[]
+  resume?: boolean | undefined
 }
 
 export interface EffectResult {
-  effectAppointments: Scheme[]
+  effectSummons: Scheme[]
   effectChoices: Choice[]
   effectDeck: Scheme[]
   effectDiscard: Scheme[]
@@ -162,7 +167,7 @@ export interface EffectResult {
 }
 
 export interface SerializedEffect {
-  effectAppointments: SchemeRef[]
+  effectSummons: SchemeRef[]
   effectChoices: Choice[]
   effectDeck: SchemeRef[]
   effectDiscard: SchemeRef[]
@@ -216,3 +221,28 @@ export interface PlayResult {
   playerResult: Result<Player>
   profileChanges: Partial<Profile['writeFlatten']>
 }
+
+export interface PlayChanges extends SerializedEffect {
+  playerChanges: Partial<Player['writeFlatten']>
+  profileChanges: Partial<Profile['writeFlatten']>
+  profileChanged: boolean
+}
+
+export interface EffectResultGuard {
+  oldDeck: Scheme[]
+  oldDiscard: Scheme[]
+  oldDungeon: Scheme[]
+  oldHand: Scheme[]
+  oldPlayers: Array<Result<Player>>
+  passedTimeline: Scheme[]
+  effectResult: EffectResult
+}
+
+export interface HighsGuard {
+  high: Scheme
+  highEvent: HistoryEvent
+  highRank: string
+  highs: Scheme[]
+}
+
+export type Write <Collection extends MetaType> = Partial<Collection['writeFlatten']>

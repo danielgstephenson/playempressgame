@@ -38,7 +38,7 @@ export default function effectTwentyTwo ({
     nonMessage: 'The dungeon is empty.'
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

@@ -11,10 +11,12 @@ export default function effectTen ({
   deck,
   discard,
   dungeon,
+  // red effects are always first
   gold,
   passedTimeline,
   hand,
   playerId,
+  playSchemeRef,
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
@@ -27,7 +29,7 @@ export default function effectTen ({
     ? 'Your discard is empty'
     : `Your top discard scheme, ${topDiscardRank}, is ${topDiscardColor}.`
   const {
-    effectAppointments: discardAppointments,
+    effectSummons: discardAppointments,
     effectChoices: discardChoices,
     effectDeck: discardDeck,
     effectDiscard: discardDiscard,
@@ -41,10 +43,12 @@ export default function effectTen ({
     deck,
     discard,
     dungeon,
+    first: true,
     gold,
     passedTimeline,
     hand,
     playerId,
+    playSchemeRef,
     playSchemes,
     scheme: topDiscard,
     message: `Your top discard scheme, ${topDiscardRank}, is yellow.`,
@@ -63,7 +67,7 @@ export default function effectTen ({
   })
   console.log('playNonEvent', playNonEvent)
   const {
-    effectAppointments: playAppointments,
+    effectSummons: playAppointments,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -80,6 +84,7 @@ export default function effectTen ({
     passedTimeline,
     hand: discardHand,
     playerId,
+    playSchemeRef,
     playSchemes,
     scheme: playScheme,
     message: `The highest rank yellow scheme in play is ${playRank}.`,
@@ -88,7 +93,7 @@ export default function effectTen ({
     silver: discardSilver
   })
   return {
-    effectAppointments: playAppointments,
+    effectSummons: playAppointments,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,

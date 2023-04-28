@@ -27,7 +27,7 @@ export default function effectTwelve ({
   const leftMessage = `The leftmost timeline scheme, ${leftRank}, is ${leftColor}.`
   const leftNonMessage = left == null ? 'The timeline is empty' : `The leftmost timeline scheme is ${leftRank}, is red.`
   const {
-    effectAppointments: playAppointments,
+    effectSummons: playAppointments,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -62,7 +62,7 @@ export default function effectTwelve ({
     schemes: playSchemes
   })
   const {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -87,7 +87,7 @@ export default function effectTwelve ({
     silver: playSilver
   })
   return {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

@@ -3,7 +3,7 @@ import serializeSchemes from './schemes'
 
 export default function serializeEffect (effect: EffectResult): SerializedEffect {
   const {
-    effectAppointments,
+    effectSummons: effectAppointments,
     effectChoices,
     effectDeck,
     effectDiscard,
@@ -14,7 +14,7 @@ export default function serializeEffect (effect: EffectResult): SerializedEffect
   } = effect
 
   return {
-    effectAppointments: serializeSchemes(effectAppointments),
+    effectSummons: serializeSchemes(effectAppointments),
     effectChoices,
     effectDeck: serializeSchemes(effectDeck),
     effectDiscard: serializeSchemes(effectDiscard),

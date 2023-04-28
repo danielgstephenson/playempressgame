@@ -36,7 +36,7 @@ export default function effectThree ({
     depth: highestTime
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

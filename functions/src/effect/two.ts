@@ -46,7 +46,7 @@ export default function effectTwo ({
     depth: dungeon.length
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

@@ -1,6 +1,7 @@
-import { SchemeEffectProps, EffectResult } from '../types'
+import { SchemeEffectProps, EffectResult, Choice } from '../types'
 import draw from '../draw'
 import createEvent from '../create/event'
+import createId from '../create/id'
 
 export default function effectOne ({
   appointments,
@@ -8,10 +9,12 @@ export default function effectOne ({
   deck,
   discard,
   dungeon,
+  first,
   gold,
   passedTimeline,
   hand,
   playerId,
+  playSchemeRef,
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
@@ -28,10 +31,13 @@ export default function effectOne ({
     depth: 2
   })
   const secondEvent = createEvent('Second, you trash a scheme from your hand.')
-  const trashChoice = { playerId, type: 'trash' } as const
+  const trashChoice: Choice = { id: createId(), playerId, type: 'trash' } as const
+  if (first === true) {
+    trashChoice.first = playSchemeRef
+  }
   const trashedChoices = [...choices, trashChoice]
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: trashedChoices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

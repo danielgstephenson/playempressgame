@@ -77,7 +77,7 @@ export default function effectFive ({
     depth: uniqueColors.length * 2
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

@@ -1,6 +1,7 @@
-import { SchemeEffectProps, EffectResult } from '../types'
+import { SchemeEffectProps, EffectResult, Choice } from '../types'
 import createEvent from '../create/event'
 import earn from '../earn'
+import createId from '../create/id'
 
 export default function effectSixteen ({
   appointments,
@@ -8,10 +9,12 @@ export default function effectSixteen ({
   deck,
   discard,
   dungeon,
+  first,
   gold,
   passedTimeline,
   hand,
   playerId,
+  playSchemeRef,
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
@@ -31,10 +34,17 @@ export default function effectSixteen ({
   } else {
     secondEvent.children.push(createEvent('You did not take gold.'))
   }
-  const lessChoice = { playerId, type: 'deck' } as const
+  const lessChoice: Choice = {
+    id: createId(),
+    playerId,
+    type: 'deck'
+  } as const
+  if (first === true) {
+    lessChoice.first = playSchemeRef
+  }
   const lessChoices = less ? [...choices, lessChoice] : choices
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: lessChoices,
     effectDeck: deck,
     effectDiscard: discard,

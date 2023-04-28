@@ -12,10 +12,12 @@ export default function effectNine ({
   deck,
   discard,
   dungeon,
+  // red effects are always first
   gold,
   passedTimeline,
   hand,
   playerId,
+  playSchemeRef,
   playSchemes,
   silver
 }: SchemeEffectProps): EffectResult {
@@ -28,7 +30,7 @@ export default function effectNine ({
     schemes: passedTimeline
   })
   const {
-    effectAppointments: playAppointments,
+    effectSummons: playAppointments,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -41,10 +43,12 @@ export default function effectNine ({
     deck,
     discard,
     dungeon,
+    first: true,
     gold,
     passedTimeline,
     hand,
     playerId,
+    playSchemeRef,
     playSchemes,
     scheme: yellowScheme,
     message: `The leftmost yellow timeline scheme is ${yellowRank}`,
@@ -57,7 +61,7 @@ export default function effectNine ({
   const dungeonScheme = getHighestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    effectAppointments: dungeonAppointments,
+    effectSummons: dungeonAppointments,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
@@ -74,6 +78,7 @@ export default function effectNine ({
     passedTimeline,
     hand: playHand,
     playerId,
+    playSchemeRef,
     playSchemes,
     scheme: dungeonScheme,
     message: `The highest rank green dungeon scheme is ${dungeonRank}`,
@@ -82,7 +87,7 @@ export default function effectNine ({
     silver: playSilver
   })
   return {
-    effectAppointments: dungeonAppointments,
+    effectSummons: dungeonAppointments,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,

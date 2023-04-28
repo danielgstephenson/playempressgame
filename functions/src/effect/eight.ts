@@ -12,11 +12,14 @@ export default function effectEight ({
   deck,
   discard,
   dungeon,
+  // red effects are always first
   gold,
   passedTimeline,
   hand,
   playerId,
+  playSchemeRef,
   playSchemes,
+  resume,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the lowest rank yellow scheme in play.')
@@ -28,9 +31,8 @@ export default function effectEight ({
     message: 'There are no yellow schemes in play.',
     schemes: playSchemes
   })
-  console.log('nonEvent test:', nonEvent)
   const {
-    effectAppointments: playAppointments,
+    effectSummons: playAppointments,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -43,11 +45,14 @@ export default function effectEight ({
     deck,
     discard,
     dungeon,
+    first: true,
     gold,
     passedTimeline,
     hand,
     playerId,
+    playSchemeRef,
     playSchemes,
+    resume,
     scheme: yellowScheme,
     message: `The lowest rank yellow scheme in play is ${yellowRank}`,
     nonEvent,
@@ -59,7 +64,7 @@ export default function effectEight ({
   const dungeonScheme = getLowestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    effectAppointments: dungeonAppointments,
+    effectSummons: dungeonAppointments,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
@@ -76,6 +81,7 @@ export default function effectEight ({
     passedTimeline,
     hand: playHand,
     playerId,
+    playSchemeRef,
     playSchemes,
     scheme: dungeonScheme,
     message: `The lowest rank green or yellow dungeon scheme is ${dungeonRank}`,
@@ -83,14 +89,15 @@ export default function effectEight ({
     event: secondEvent,
     silver: playSilver
   })
+  const playerEvents = resume === true ? [secondEvent] : [firstEvent, secondEvent]
   return {
-    effectAppointments: dungeonAppointments,
+    effectSummons: dungeonAppointments,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
     effectGold: dungeonGold,
     effectHand: dungeonHand,
-    effectPlayerEvents: [firstEvent, secondEvent],
+    effectPlayerEvents: playerEvents,
     effectSilver: dungeonSilver
   }
 }

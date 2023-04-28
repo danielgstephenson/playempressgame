@@ -40,7 +40,7 @@ export default function effectEighteen ({
   const secondEvent = createEvent('Second, appoint 1 Privilege from the bank to the court.')
   const effectAppointments = [...appointments, ...createPrivilege(1)]
   return {
-    effectAppointments,
+    effectSummons: effectAppointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

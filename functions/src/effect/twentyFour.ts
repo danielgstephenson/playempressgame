@@ -41,7 +41,7 @@ export default function effectTwentyFour ({
     depth: discard.length
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: revivedDiscard,

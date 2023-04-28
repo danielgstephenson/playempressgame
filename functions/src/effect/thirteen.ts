@@ -44,7 +44,7 @@ export default function effectThirteen ({
     ? `The red timeline ${noun} ${verb} ${redRanks}.`
     : 'The timeline is empty.'
   const {
-    effectAppointments: leftAppointements,
+    effectSummons: leftAppointements,
     effectChoices: leftChoices,
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
@@ -79,7 +79,7 @@ export default function effectThirteen ({
     schemes: playSchemes
   })
   const {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -104,7 +104,7 @@ export default function effectThirteen ({
     silver: leftSilver
   })
   return {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

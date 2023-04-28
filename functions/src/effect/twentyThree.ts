@@ -57,7 +57,7 @@ export default function effectTwentyThree ({
     depth: playDepth
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

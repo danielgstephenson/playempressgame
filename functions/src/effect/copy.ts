@@ -9,6 +9,7 @@ export default function copyEffect ({
   deck,
   discard,
   dungeon,
+  first,
   gold,
   silver,
   passedTimeline,
@@ -17,7 +18,9 @@ export default function copyEffect ({
   nonEvent,
   nonMessage,
   playerId,
+  playSchemeRef,
   playSchemes,
+  resume,
   scheme,
   event
 }: SchemeEffectProps & {
@@ -32,24 +35,28 @@ export default function copyEffect ({
   nonMessage: string
   nonEvent?: undefined
 })): EffectResult {
+  const pass = {
+    effectAppointments: appointments,
+    effectChoices: choices,
+    effectDeck: deck,
+    effectDiscard: discard,
+    effectGold: gold,
+    effectSilver: silver,
+    effectHand: hand,
+    effectPlayerEvents: []
+  }
+  if (resume === true) {
+    return pass
+  }
   if (scheme == null || !condition) {
     const non = nonEvent ?? createEvent(nonMessage)
     event.children.push(non)
-    return {
-      effectAppointments: appointments,
-      effectChoices: choices,
-      effectDeck: deck,
-      effectDiscard: discard,
-      effectGold: gold,
-      effectSilver: silver,
-      effectHand: hand,
-      effectPlayerEvents: []
-    }
+    return pass
   }
   const effect = guardEffect(scheme.rank)
   event.children.push(createEvent(message))
   const {
-    effectAppointments: copyAppointments,
+    effectSummons: copyAppointments,
     effectChoices: copyChoices,
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,
@@ -63,16 +70,18 @@ export default function copyEffect ({
     deck,
     discard,
     dungeon,
+    first,
     gold,
     silver,
     passedTimeline,
     hand,
     playerId,
+    playSchemeRef,
     playSchemes
   })
   event.children.push(...copyEvents)
   return {
-    effectAppointments: copyAppointments,
+    effectSummons: copyAppointments,
     effectChoices: copyChoices,
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,

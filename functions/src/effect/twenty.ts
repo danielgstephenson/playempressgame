@@ -46,7 +46,7 @@ export default function effectTwenty ({
   const topAppointments = topYellow ? [...appointments, topScheme] : appointments
   const topDiscard = discardFull ? discard.slice(0, -1) : discard
   return {
-    effectAppointments: topAppointments,
+    effectSummons: topAppointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: topDiscard,

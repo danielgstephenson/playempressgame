@@ -30,7 +30,7 @@ export default function effectFourteen ({
     ? 'There are no yellow timeline schemes.'
     : 'There are no lower rank schemes in play.'
   const {
-    effectAppointments: rightAppointments,
+    effectSummons: rightAppointments,
     effectChoices: rightChoices,
     effectDeck: rightDeck,
     effectDiscard: rightDiscard,
@@ -65,7 +65,7 @@ export default function effectFourteen ({
     schemes: playSchemes
   })
   const {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -90,7 +90,7 @@ export default function effectFourteen ({
     silver: rightSilver
   })
   return {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

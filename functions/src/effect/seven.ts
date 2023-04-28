@@ -75,7 +75,7 @@ export default function effectSeven ({
     nonMessage: `${rankMessage} is not green.`
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

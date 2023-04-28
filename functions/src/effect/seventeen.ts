@@ -47,7 +47,7 @@ export default function effectSeventeen ({
   const discardDeck = discardFull ? [...deck, topScheme] : deck
   const discardDiscard = discardFull ? discard.slice(0, -1) : discard
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: discardDeck,
     effectDiscard: discardDiscard,

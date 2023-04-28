@@ -46,7 +46,7 @@ export default function effectNineteen ({
     nonEvent
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

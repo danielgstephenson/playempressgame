@@ -75,7 +75,7 @@ export default function effectTwentyOne ({
     nonMessage: 'The timeline is empty.'
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

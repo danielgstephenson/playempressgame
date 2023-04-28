@@ -42,7 +42,7 @@ export default function effectTwentyFive ({
     nonMessage: `Your discard has ${revivedDiscard.length} schemes: ${discardRanks}.`
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

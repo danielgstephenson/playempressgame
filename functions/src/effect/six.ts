@@ -44,7 +44,7 @@ export default function effectSix ({
     depth: lowestDungeon?.rank
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

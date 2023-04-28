@@ -32,7 +32,7 @@ export default function effectFifteen ({
       ? 'Your discard is empty.'
       : `Your top discard scheme, ${topRank}, is not red.`
   const {
-    effectAppointments: leftAppointments,
+    effectSummons: leftAppointments,
     effectChoices: leftChoices,
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
@@ -63,7 +63,7 @@ export default function effectFifteen ({
     ? `Your top discard scheme, ${topRank}, is red.`
     : 'Your discard is empty.'
   const {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -89,7 +89,7 @@ export default function effectFifteen ({
     silver: leftSilver
   })
   return {
-    effectAppointments: colorAppointments,
+    effectSummons: colorAppointments,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

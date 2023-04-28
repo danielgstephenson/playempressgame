@@ -36,7 +36,7 @@ export default function effectFour ({
     depth: lowestTime
   })
   return {
-    effectAppointments: appointments,
+    effectSummons: appointments,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,
