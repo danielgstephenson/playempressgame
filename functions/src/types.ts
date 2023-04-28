@@ -242,6 +242,8 @@ export interface HighsGuard {
   high: Scheme
   highEvent: HistoryEvent
   highRank: string
+  highRef: SchemeRef
+  highRefs: SchemeRef[]
   highs: Scheme[]
 }
 
