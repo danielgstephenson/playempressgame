@@ -29,9 +29,9 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     schemeId: props.schemeId,
     label: 'Deck choice scheme'
   })
-  const privateChoiceEvent = createEvent(`You put scheme ${schemeRef.rank} face down on your deck.`)
+  const privateChoiceEvent = createEvent(`You chose scheme ${schemeRef.rank} to put face down on your deck.`)
   const chosenPlayerEvents = [privateChoiceEvent]
-  const publicChoiceEvent = createEvent(`${currentPlayer.displayName} put a scheme face down on their deck.`)
+  const publicChoiceEvent = createEvent(`${currentPlayer.displayName} chose a scheme to put face down on their deck.`)
   const chosenGameEvents = [publicChoiceEvent]
   const chosenPlayer = {
     ...currentPlayer,

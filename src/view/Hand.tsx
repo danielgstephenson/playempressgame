@@ -10,6 +10,7 @@ export default function HandView (): JSX.Element {
   const gameState = useContext(gameContext)
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   const deckChoice = choice?.type === 'deck'
+  const trashChoice = choice?.type === 'trash'
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const playTrash = noChoice && gameState.phase === 'play'
   const playPlay = noChoice && gameState.phase === 'play'
@@ -39,6 +40,13 @@ export default function HandView (): JSX.Element {
           <Action
             fn='deckChoose'
             label='Put on deck'
+            props={{ schemeId: scheme.id, gameId: gameState.id }}
+          />
+        </Curtain>
+        <Curtain open={trashChoice}>
+          <Action
+            fn='trashChoose'
+            label='Trash'
             props={{ schemeId: scheme.id, gameId: gameState.id }}
           />
         </Curtain>
