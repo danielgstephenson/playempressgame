@@ -4,7 +4,7 @@ import earn from '../earn'
 import addEvent from '../addEvent'
 
 export default function effectTwentyOne ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -75,7 +75,7 @@ export default function effectTwentyOne ({
     nonMessage: 'The timeline is empty.'
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

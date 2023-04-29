@@ -6,7 +6,7 @@ import getHighestTime from '../get/highestTime'
 import addEvent from '../addEvent'
 
 export default function effectThree ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -36,7 +36,7 @@ export default function effectThree ({
     depth: highestTime
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

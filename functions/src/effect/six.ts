@@ -7,7 +7,7 @@ import addEvent from '../addEvent'
 import getLowestRankScheme from '../get/lowestRankScheme'
 
 export default function effectSix ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -44,7 +44,7 @@ export default function effectSix ({
     depth: lowestDungeon?.rank
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

@@ -5,7 +5,7 @@ import earn from '../earn'
 import getGrammar from '../get/grammar'
 
 export default function effectEighteen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -37,10 +37,10 @@ export default function effectEighteen ({
     message: 'Your deck and discard are empty.',
     nonMessage
   })
-  const secondEvent = createEvent('Second, appoint 1 Privilege from the bank to the court.')
-  const effectAppointments = [...appointments, ...createPrivilege(1)]
+  const secondEvent = createEvent('Second, summon 1 Privilege from the bank to the court.')
+  const effectSummons = [...summons, ...createPrivilege(1)]
   return {
-    effectSummons: effectAppointments,
+    effectSummons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

@@ -1,10 +1,9 @@
 import { Transaction, arrayUnion } from 'firelord'
 import { playersRef, profilesRef } from '../db'
-import { HistoryEvent, PlayChanges, Player, Result, Write } from '../types'
+import { HistoryEvent, EffectResultChanges, Player, Result, Write } from '../types'
 
 export default function choiceUpdatePlayer ({
   choiceChanges,
-  chosenPlayerHistory,
   current,
   events,
   playChanges,
@@ -14,18 +13,17 @@ export default function choiceUpdatePlayer ({
   choiceChanges: Write<Player>
   current: boolean
   events: HistoryEvent[]
-  chosenPlayerHistory: HistoryEvent[]
   player: Result<Player>
-  playChanges: PlayChanges
+  playChanges: EffectResultChanges
   transaction: Transaction
 }): void {
+  console.log('choiceUpdatePlayer', { choiceChanges, current, events, playChanges, player })
   const playerRef = playersRef.doc(player.id)
   if (current) {
-    chosenPlayerHistory.push(...events)
     const playerChanges = {
       ...playChanges.playerChanges,
       ...choiceChanges,
-      history: chosenPlayerHistory
+      history: arrayUnion(...events)
     }
     transaction.update(playerRef, playerChanges)
     const profileRef = profilesRef.doc(player.id)

@@ -4,18 +4,19 @@ import earn from '../earn'
 import createId from '../create/id'
 
 export default function effectSixteen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
   dungeon,
-  first,
+  copiedByFirstEffect,
   gold,
   passedTimeline,
   hand,
   playerId,
   playSchemeRef,
   playSchemes,
+  resume,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if you have 5 or less schemes in hand, earn 25 gold.')
@@ -39,12 +40,12 @@ export default function effectSixteen ({
     playerId,
     type: 'deck'
   } as const
-  if (first === true) {
+  if (copiedByFirstEffect === true) {
     lessChoice.first = playSchemeRef
   }
   const lessChoices = less ? [...choices, lessChoice] : choices
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: lessChoices,
     effectDeck: deck,
     effectDiscard: discard,

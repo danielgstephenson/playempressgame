@@ -7,7 +7,7 @@ import isYellow from '../is/yellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectFourteen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -17,6 +17,7 @@ export default function effectFourteen ({
   hand,
   playerId,
   playSchemes,
+  playSchemeRef,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if there is a lower rank scheme in play, copy the rightmost yellow timeline scheme.')
@@ -30,7 +31,7 @@ export default function effectFourteen ({
     ? 'There are no yellow timeline schemes.'
     : 'There are no lower rank schemes in play.'
   const {
-    effectSummons: rightAppointments,
+    effectSummons: rightSummons,
     effectChoices: rightChoices,
     effectDeck: rightDeck,
     effectDiscard: rightDiscard,
@@ -38,7 +39,7 @@ export default function effectFourteen ({
     effectHand: rightHand,
     effectSilver: rightSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     condition: lower,
     deck,
@@ -49,6 +50,7 @@ export default function effectFourteen ({
     hand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: right,
     message: rightMessage,
     nonMessage: rightNonMessage,
@@ -65,7 +67,7 @@ export default function effectFourteen ({
     schemes: playSchemes
   })
   const {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -73,7 +75,7 @@ export default function effectFourteen ({
     effectHand: colorHand,
     effectSilver: colorSilver
   } = copyEffect({
-    appointments: rightAppointments,
+    summons: rightSummons,
     choices: rightChoices,
     deck: rightDeck,
     discard: rightDiscard,
@@ -83,6 +85,7 @@ export default function effectFourteen ({
     hand: rightHand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: colorScheme,
     message: colorMessage,
     nonEvent,
@@ -90,7 +93,7 @@ export default function effectFourteen ({
     silver: rightSilver
   })
   return {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

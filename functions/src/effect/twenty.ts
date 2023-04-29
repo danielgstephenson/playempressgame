@@ -6,7 +6,7 @@ import getTopScheme from '../get/topScheme'
 import addEvent from '../addEvent'
 
 export default function effectTwenty ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -30,7 +30,7 @@ export default function effectTwenty ({
     message: `Your top discard scheme is ${topRank}.`,
     nonMessage: 'Your top discard is empty.'
   })
-  const secondEvent = createEvent('Second, if it is not yellow, appoint it to the court.')
+  const secondEvent = createEvent('Second, if it is not yellow, summon it to the court.')
   const discardFull = topScheme != null
   if (!discardFull) {
     addEvent(secondEvent, 'Your discard is empty')
@@ -43,10 +43,10 @@ export default function effectTwenty ({
   } else {
     addEvent(secondEvent, `${topMessage} so it is not summoned to the court.`)
   }
-  const topAppointments = topYellow ? [...appointments, topScheme] : appointments
+  const topSummons = topYellow ? [...summons, topScheme] : summons
   const topDiscard = discardFull ? discard.slice(0, -1) : discard
   return {
-    effectSummons: topAppointments,
+    effectSummons: topSummons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: topDiscard,

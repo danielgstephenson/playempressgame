@@ -6,7 +6,7 @@ import isRed from '../is/red'
 import isGreen from '../is/green'
 
 export default function effectFifteen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -16,6 +16,7 @@ export default function effectFifteen ({
   hand,
   playerId,
   playSchemes,
+  playSchemeRef,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if your top discard scheme is red, copy the leftmost green timeline scheme.')
@@ -32,7 +33,7 @@ export default function effectFifteen ({
       ? 'Your discard is empty.'
       : `Your top discard scheme, ${topRank}, is not red.`
   const {
-    effectSummons: leftAppointments,
+    effectSummons: leftSummons,
     effectChoices: leftChoices,
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
@@ -40,7 +41,7 @@ export default function effectFifteen ({
     effectHand: leftHand,
     effectSilver: leftSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     condition: discardRed,
     deck,
@@ -51,6 +52,7 @@ export default function effectFifteen ({
     hand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: left,
     message: leftMessage,
     nonMessage: leftNonMessage,
@@ -63,7 +65,7 @@ export default function effectFifteen ({
     ? `Your top discard scheme, ${topRank}, is red.`
     : 'Your discard is empty.'
   const {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -71,7 +73,7 @@ export default function effectFifteen ({
     effectHand: colorHand,
     effectSilver: colorSilver
   } = copyEffect({
-    appointments: leftAppointments,
+    summons: leftSummons,
     choices: leftChoices,
     condition: !discardRed,
     deck: leftDeck,
@@ -82,6 +84,7 @@ export default function effectFifteen ({
     hand: leftHand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: topScheme,
     message: topMessage,
     nonMessage: topNonMessage,
@@ -89,7 +92,7 @@ export default function effectFifteen ({
     silver: leftSilver
   })
   return {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

@@ -6,7 +6,7 @@ import guardScheme from '../guard/scheme'
 import addEvent from '../addEvent'
 
 export default function effectFour ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -36,7 +36,7 @@ export default function effectFour ({
     depth: lowestTime
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

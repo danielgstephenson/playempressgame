@@ -1,7 +1,7 @@
 import guardEffect from './effect'
-import guardPlayHandSchemes from './playHandSchemes'
 import guardSchemes from './schemes'
 import { EffectResultGuard, Game, Player, Result, SchemeRef } from '../types'
+import guardPlaySchemes from './playSchemes'
 
 export default function guardEffectResult ({
   allPlayers,
@@ -24,14 +24,14 @@ export default function guardEffectResult ({
   const hand = guardSchemes({ refs: currentPlayer.hand })
   const dungeon = guardSchemes({ refs: currentGame.dungeon })
   const passedTimeline = guardSchemes({ refs: currentGame.timeline })
-  const playSchemes = guardPlayHandSchemes(allPlayers)
+  const playSchemes = guardPlaySchemes(allPlayers)
   const effectResult = effect({
-    appointments: [],
+    summons: [],
     choices: [],
     deck,
     discard,
     dungeon,
-    first,
+    copiedByFirstEffect: first,
     gold: currentPlayer.gold,
     passedTimeline,
     hand,

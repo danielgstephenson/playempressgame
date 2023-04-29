@@ -3,13 +3,13 @@ import guardEffect from '../guard/effect'
 import { SchemeEffectProps, SchemeData, EffectResult, HistoryEvent, SchemeRef } from '../types'
 
 export default function copyEffect ({
-  appointments,
+  summons,
   condition = true,
   choices,
   deck,
   discard,
   dungeon,
-  first,
+  copiedByFirstEffect: first,
   gold,
   silver,
   passedTimeline,
@@ -36,16 +36,16 @@ export default function copyEffect ({
   nonEvent?: undefined
 })): EffectResult {
   const pass = {
-    effectAppointments: appointments,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,
     effectGold: gold,
     effectSilver: silver,
     effectHand: hand,
-    effectPlayerEvents: []
+    effectPlayerEvents: [],
+    effectSummons: []
   }
-  if (resume === true) {
+  if (first === true && resume === true) {
     return pass
   }
   if (scheme == null || !condition) {
@@ -56,7 +56,7 @@ export default function copyEffect ({
   const effect = guardEffect(scheme.rank)
   event.children.push(createEvent(message))
   const {
-    effectSummons: copyAppointments,
+    effectSummons: copySummons,
     effectChoices: copyChoices,
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,
@@ -65,12 +65,12 @@ export default function copyEffect ({
     effectHand: copyHand,
     effectPlayerEvents: copyEvents
   } = effect({
-    appointments,
+    summons,
     choices,
     deck,
     discard,
     dungeon,
-    first,
+    copiedByFirstEffect: first,
     gold,
     silver,
     passedTimeline,
@@ -81,7 +81,7 @@ export default function copyEffect ({
   })
   event.children.push(...copyEvents)
   return {
-    effectSummons: copyAppointments,
+    effectSummons: copySummons,
     effectChoices: copyChoices,
     effectDeck: copyDeck,
     effectDiscard: copyDiscard,

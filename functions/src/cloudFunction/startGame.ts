@@ -123,6 +123,9 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   startEvent.children.push(createEvent(`The top discard scheme is ${topDiscard}.`))
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
+  hand[2] = 1
+  hand[3] = 11
+  hand[4] = 16
   startEvent.children.push(createEvent(`The hand is ${getJoined(hand)}.`))
   transaction.update(currentGameRef, {
     phase: 'play',

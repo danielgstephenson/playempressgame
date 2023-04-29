@@ -59,7 +59,7 @@ export interface Profile extends Doc {
   userId: string
   displayName: string
   gold: number
-  topDiscard?: Scheme
+  topDiscardScheme?: Scheme
   trashEmpty?: boolean
   playEmpty?: boolean
   ready?: boolean

@@ -1,77 +1,64 @@
 import { deleteField } from 'firelord'
 import isChanged from '../is/changed'
-import { EffectResult, PlayChanges, Player, Profile, SchemeRef, Write } from '../types'
-import serializeEffect from '../serialize/effect'
+import { Write, Player, Profile, SchemeRef, PlayChanges } from '../types'
 
 export default function getPlayChanges ({
-  deck,
-  discard,
-  effectResult,
-  gold,
-  hand,
-  silver
+  oldDeck,
+  oldDiscard,
+  oldGold,
+  oldSilver,
+  newDeck,
+  newDiscard,
+  newGold,
+  newHand,
+  newSilver
 }: {
-  deck: SchemeRef[]
-  discard: SchemeRef[]
-  effectResult: EffectResult
-  gold: number
-  hand: SchemeRef[]
-  silver: number
+  oldDeck: SchemeRef[]
+  oldDiscard: SchemeRef[]
+  oldGold: number
+  oldSilver: number
+  newDeck: SchemeRef[]
+  newDiscard: SchemeRef[]
+  newGold: number
+  newHand: SchemeRef[]
+  newSilver: number
 }): PlayChanges {
-  const {
-    effectSummons,
-    effectChoices,
-    effectDeck,
-    effectDiscard,
-    effectGold,
-    effectSilver,
-    effectHand,
-    effectPlayerEvents
-  } = serializeEffect(effectResult)
   const playerChanges: Write<Player> = {
-    hand: effectHand
+    hand: newHand
   }
   const profileChanges: Write<Profile> = {}
-  const deckedChanged = isChanged(deck, effectDeck)
+  const deckedChanged = isChanged(oldDeck, newDeck)
   if (deckedChanged) {
-    playerChanges.deck = effectDeck
-    const topChanged = deck.length === 0
-      ? effectDeck.length > 0
-      : effectDeck.length === 0
+    playerChanges.deck = newDeck
+    const topChanged = oldDeck.length === 0
+      ? newDeck.length > 0
+      : newDeck.length === 0
     if (topChanged) {
-      profileChanges.deckEmpty = effectDeck.length === 0
+      profileChanges.deckEmpty = newDeck.length === 0
     }
   }
-  const discardChanged = isChanged(discard, effectDiscard)
+  const discardChanged = isChanged(oldDiscard, newDiscard)
   if (discardChanged) {
-    playerChanges.discard = effectDiscard
+    playerChanges.discard = newDiscard
   }
-  const effectTop = effectDiscard[effectDiscard.length - 1]
-  const resultTop = discard[discard.length - 1]
-  const topdiscardChanged = effectTop?.id !== resultTop?.id
-  if (topdiscardChanged) {
-    profileChanges.topDiscardScheme = effectTop ?? deleteField()
+  const newTop = newDiscard[newDiscard.length - 1]
+  const oldTop = oldDiscard[oldDiscard.length - 1]
+  const topDiscardChanged = newTop?.id !== oldTop?.id
+  if (topDiscardChanged) {
+    profileChanges.topDiscardScheme = newTop ?? deleteField()
   }
-  const goldChanged = effectGold !== gold
+  const goldChanged = newGold !== oldGold
   if (goldChanged) {
-    playerChanges.gold = effectGold
-    profileChanges.gold = effectGold
+    playerChanges.gold = newGold
+    profileChanges.gold = newGold
   }
-  const silverChanged = effectSilver !== silver
+  const silverChanged = newSilver !== oldSilver
   if (silverChanged) {
-    playerChanges.silver = effectSilver
-    profileChanges.silver = effectSilver
+    playerChanges.silver = newSilver
+    profileChanges.silver = newSilver
   }
   const profileChanged = Object.keys(profileChanges).length > 0
   return {
-    effectSummons,
-    effectChoices,
-    effectDeck,
-    effectDiscard,
-    effectGold,
-    effectSilver,
-    effectHand,
-    effectPlayerEvents,
     playerChanges,
     profileChanges,
     profileChanged

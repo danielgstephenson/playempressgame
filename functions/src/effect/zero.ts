@@ -3,7 +3,7 @@ import createPrivilege from '../create/privilege'
 import createEvent from '../create/event'
 
 export default function effectZero ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -23,7 +23,7 @@ export default function effectZero ({
   const deckSchemes = createPrivilege(2)
   const drawnDeck = [...deck, ...deckSchemes]
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: discard,

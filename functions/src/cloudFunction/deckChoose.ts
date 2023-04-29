@@ -1,13 +1,12 @@
 import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
-import { Game, Player, SchemeProps, Write } from '../types'
+import { Game, Player, Profile, SchemeProps, Write } from '../types'
 import { arrayUnion, deleteField } from 'firelord'
 import updateOtherPlayers from '../update/otherPlayers'
 import guardChoice from '../guard/choice'
 import getOtherPlayers from '../get/otherPlayers'
 import getJoined from '../get/joined'
 import { https } from 'firebase-functions/v1'
-import guardDefined from '../guard/defined'
 import guardChoiceChanges from '../guard/choiceChanges'
 import guardHighs from '../guard/highs'
 import choiceUpdatePlayer from '../update/ChoicePlayer'
@@ -31,11 +30,9 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     label: 'Deck choice scheme'
   })
   const privateChoiceEvent = createEvent(`You put scheme ${schemeRef.rank} face down on your deck.`)
+  const chosenPlayerEvents = [privateChoiceEvent]
   const publicChoiceEvent = createEvent(`${currentPlayer.displayName} put a scheme face down on their deck.`)
-  const lastEvent = currentPlayer.history[currentPlayer.history.length - 1]
-  const last = guardDefined(lastEvent, 'Last event')
-  const updatedLast = { ...last, children: [...last.children] }
-  updatedLast.children.push(privateChoiceEvent)
+  const chosenGameEvents = [publicChoiceEvent]
   const chosenPlayer = {
     ...currentPlayer,
     hand: currentPlayer.hand.filter(scheme => {
@@ -43,20 +40,17 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     }),
     deck: [...currentPlayer.deck, schemeRef]
   }
+  const chosenProfileChanges: Write<Profile> = {
+    deckEmpty: chosenPlayer.deck.length === 0
+  }
   const otherPlayers = await getOtherPlayers({
     currentUid: currentPlayer.userId,
     gameId: props.gameId,
     transaction
   })
   const chosenPlayers = [chosenPlayer, ...otherPlayers]
-  const chosenPlayerHistory = currentPlayer.history.slice(0, -1)
-  chosenPlayerHistory.push(updatedLast)
-  const chosenGameHistory = currentGame.history.slice(0, -1)
-  chosenGameHistory.push(publicChoiceEvent)
   const chosenGameChoices = currentGame.choices.filter(gameChoice => gameChoice.id !== choice.id)
-  const chosenGameChanges: Write<Game> = {
-    history: chosenGameHistory
-  }
+  const chosenGameChanges: Write<Game> = {}
   const waiting = currentGame.choices.length > 1
   if (waiting) {
     const playChanges = guardChoiceChanges({
@@ -64,7 +58,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
       choice,
       currentPlayer: chosenPlayer,
       currentGame,
-      currentPlayerRef
+      oldPlayer: currentPlayer
     })
     if (playChanges.effectSummons.length > 0) {
       chosenGameChanges.court = arrayUnion(...playChanges.effectSummons)
@@ -72,16 +66,17 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     if (playChanges.effectChoices.length > 0) {
       chosenGameChoices.push(...playChanges.effectChoices)
     }
-    chosenPlayerHistory.push(...playChanges.effectPlayerEvents)
+    chosenPlayerEvents.push(...playChanges.effectPlayerEvents)
     transaction.update(currentPlayerRef, {
       ...playChanges?.playerChanges,
-      history: chosenPlayerHistory
+      history: arrayUnion(...chosenPlayerEvents)
     })
     transaction.update(currentProfileRef, {
-      deckEmpty: chosenPlayer.deck.length === 0,
+      ...chosenProfileChanges,
       ...playChanges?.profileChanges
     })
     chosenGameChanges.choices = chosenGameChoices
+    chosenGameChanges.history = arrayUnion(...chosenGameEvents)
     transaction.update(currentGameRef, chosenGameChanges)
     updateOtherPlayers({
       currentUid,
@@ -99,10 +94,10 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     choice,
     currentPlayer: chosenPlayer,
     currentGame,
-    currentPlayerRef
+    oldPlayer: currentPlayer
   })
   const chosenGameSummons = [...playChanges.effectSummons]
-  chosenPlayerHistory.push(...playChanges.effectPlayerEvents)
+  chosenPlayerEvents.push(...playChanges.effectPlayerEvents)
   if (playChanges.effectChoices.length > 0) {
     chosenGameChoices.push(...playChanges.effectChoices)
     if (chosenGameSummons.length > 0) {
@@ -111,15 +106,16 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     transaction.update(currentGameRef, chosenGameChanges)
     transaction.update(currentPlayerRef, {
       ...playChanges.playerChanges,
-      history: chosenPlayerHistory
+      history: arrayUnion(...chosenPlayerEvents)
     })
-    if (playChanges.profileChanged) {
-      transaction.update(currentProfileRef, playChanges.profileChanges)
-    }
+    transaction.update(currentProfileRef, {
+      ...chosenProfileChanges,
+      ...playChanges.profileChanges
+    })
   }
   const { high, highEvent, highRank, highRef, highRefs, highs } = guardHighs(chosenPlayers)
-  chosenPlayerHistory.push(highEvent)
-  chosenGameHistory.push(highEvent)
+  chosenPlayerEvents.push(highEvent)
+  chosenGameEvents.push(highEvent)
   if (highs.length > 1) {
     chosenGameChanges.dungeon = arrayUnion(...highRefs)
     const imprisonedPlayers = chosenPlayers.filter(player => {
@@ -128,7 +124,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     const displayNames = imprisonedPlayers.map(player => player.displayName)
     const joined = getJoined(displayNames)
     const publicEvent = createEvent(`The ${highRank} played by ${joined} are imprisoned in the dungeon.`)
-    chosenGameHistory.push(publicEvent)
+    chosenGameEvents.push(publicEvent)
     chosenPlayers.forEach(player => {
       if (player.playScheme == null) {
         throw new https.HttpsError('failed-precondition', 'You have no play scheme.')
@@ -153,9 +149,8 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
       }
       choiceUpdatePlayer({
         choiceChanges: imprisonUpdate,
-        chosenPlayerHistory,
         current,
-        events: imprisonEvents,
+        events: [...chosenPlayerEvents, ...imprisonEvents],
         playChanges,
         player,
         transaction
@@ -166,7 +161,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     const summonee = chosenPlayers.find(player => player.playScheme?.id === high?.id)
     const displayName = String(summonee?.displayName)
     const publicEvent = createEvent(`The ${highRank} played by ${displayName} is summoned to the court.`)
-    chosenGameHistory.push(publicEvent)
+    chosenGameEvents.push(publicEvent)
     chosenPlayers.forEach(player => {
       const current = player.id === currentPlayer.id
       const summonEvents = [highEvent]
@@ -181,16 +176,19 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
       }
       choiceUpdatePlayer({
         choiceChanges: summonChanges,
-        chosenPlayerHistory,
         current,
-        events: summonEvents,
+        events: [...chosenPlayerEvents, ...summonEvents],
         playChanges,
         player,
         transaction
       })
     })
   }
-  transaction.update(currentGameRef, chosenGameChanges)
+  transaction.update(currentGameRef, {
+    ...chosenGameChanges,
+    choices: chosenGameChoices,
+    history: arrayUnion(...chosenGameEvents)
+  })
   console.info(`Chose scheme with id ${props.schemeId} to put on deck!`)
 })
 export default deckChoose

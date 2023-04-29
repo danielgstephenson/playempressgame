@@ -8,7 +8,7 @@ import earn from '../earn'
 import addEvent from '../addEvent'
 
 export default function effectSeven ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -75,7 +75,7 @@ export default function effectSeven ({
     nonMessage: `${rankMessage} is not green.`
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

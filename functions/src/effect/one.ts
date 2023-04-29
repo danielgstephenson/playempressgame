@@ -4,12 +4,12 @@ import createEvent from '../create/event'
 import createId from '../create/id'
 
 export default function effectOne ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
   dungeon,
-  first,
+  copiedByFirstEffect,
   gold,
   passedTimeline,
   hand,
@@ -32,12 +32,12 @@ export default function effectOne ({
   })
   const secondEvent = createEvent('Second, you trash a scheme from your hand.')
   const trashChoice: Choice = { id: createId(), playerId, type: 'trash' } as const
-  if (first === true) {
+  if (copiedByFirstEffect === true) {
     trashChoice.first = playSchemeRef
   }
   const trashedChoices = [...choices, trashChoice]
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: trashedChoices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

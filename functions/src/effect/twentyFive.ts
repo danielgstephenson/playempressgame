@@ -6,7 +6,7 @@ import getJoinedRanks from '../get/joined/ranks'
 import draw from '../draw'
 
 export default function effectTwentyFive ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -42,7 +42,7 @@ export default function effectTwentyFive ({
     nonMessage: `Your discard has ${revivedDiscard.length} schemes: ${discardRanks}.`
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

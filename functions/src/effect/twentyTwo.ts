@@ -3,7 +3,7 @@ import createEvent from '../create/event'
 import earn from '../earn'
 
 export default function effectTwentyTwo ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -38,7 +38,7 @@ export default function effectTwentyTwo ({
     nonMessage: 'The dungeon is empty.'
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: discard,

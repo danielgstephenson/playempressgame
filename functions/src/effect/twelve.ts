@@ -7,7 +7,7 @@ import isYellow from '../is/yellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectTwelve ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -17,6 +17,7 @@ export default function effectTwelve ({
   hand,
   playerId,
   playSchemes,
+  playSchemeRef,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if the leftmost timeline scheme is green or yellow, copy it.')
@@ -27,7 +28,7 @@ export default function effectTwelve ({
   const leftMessage = `The leftmost timeline scheme, ${leftRank}, is ${leftColor}.`
   const leftNonMessage = left == null ? 'The timeline is empty' : `The leftmost timeline scheme is ${leftRank}, is red.`
   const {
-    effectSummons: playAppointments,
+    effectSummons: playSummons,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -35,7 +36,7 @@ export default function effectTwelve ({
     effectHand: playHand,
     effectSilver: playSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     condition: leftYellow,
     deck,
@@ -46,6 +47,7 @@ export default function effectTwelve ({
     hand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: left,
     message: leftMessage,
     nonMessage: leftNonMessage,
@@ -62,7 +64,7 @@ export default function effectTwelve ({
     schemes: playSchemes
   })
   const {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -70,7 +72,7 @@ export default function effectTwelve ({
     effectHand: colorHand,
     effectSilver: colorSilver
   } = copyEffect({
-    appointments: playAppointments,
+    summons: playSummons,
     choices: playChoices,
     deck: playDeck,
     discard: playDiscard,
@@ -80,6 +82,7 @@ export default function effectTwelve ({
     hand: playHand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: greenScheme,
     message: greenMessage,
     nonEvent,
@@ -87,7 +90,7 @@ export default function effectTwelve ({
     silver: playSilver
   })
   return {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

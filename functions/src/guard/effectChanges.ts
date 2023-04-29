@@ -1,5 +1,5 @@
-import getPlayChanges from '../get/playChanges'
-import { Result, Player, Game, SchemeRef, PlayChanges } from '../types'
+import getEffectResultChanges from '../get/effectResultChanges'
+import { Result, Player, Game, SchemeRef, EffectResultChanges } from '../types'
 import guardEffectResult from './effectResult'
 
 export default function guardEffectChanges ({
@@ -7,6 +7,7 @@ export default function guardEffectChanges ({
   currentPlayer,
   currentGame,
   first,
+  oldPlayer,
   ref,
   resume
 }: {
@@ -14,9 +15,10 @@ export default function guardEffectChanges ({
   currentPlayer: Result<Player>
   currentGame: Result<Game>
   first?: boolean
+  oldPlayer?: Result<Player>
   ref: SchemeRef
   resume?: boolean
-}): PlayChanges {
+}): EffectResultChanges {
   const {
     effectResult,
     oldDeck,
@@ -30,12 +32,15 @@ export default function guardEffectChanges ({
     ref,
     resume
   })
-  const changes = getPlayChanges({
-    deck: oldDeck,
-    discard: oldDiscard,
+  const originalDeck = oldPlayer != null ? oldPlayer.deck : oldDeck
+  const originalDiscard = oldPlayer != null ? oldPlayer.discard : oldDiscard
+  const originalHand = oldPlayer != null ? oldPlayer.hand : oldHand
+  const changes = getEffectResultChanges({
+    deck: originalDeck,
+    discard: originalDiscard,
     effectResult,
     gold: currentPlayer.gold,
-    hand: oldHand,
+    hand: originalHand,
     silver: currentPlayer.silver
   })
   return changes

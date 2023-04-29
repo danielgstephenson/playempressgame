@@ -7,7 +7,7 @@ import isYellow from '../is/yellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectNine ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -19,6 +19,7 @@ export default function effectNine ({
   playerId,
   playSchemeRef,
   playSchemes,
+  resume,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you copy the leftmost yellow timeline scheme.')
@@ -30,7 +31,7 @@ export default function effectNine ({
     schemes: passedTimeline
   })
   const {
-    effectSummons: playAppointments,
+    effectSummons: playSummons,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -38,30 +39,43 @@ export default function effectNine ({
     effectHand: playHand,
     effectSilver: playSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     deck,
     discard,
     dungeon,
-    first: true,
+    copiedByFirstEffect: true,
     gold,
     passedTimeline,
     hand,
     playerId,
     playSchemeRef,
     playSchemes,
+    resume,
     scheme: yellowScheme,
     message: `The leftmost yellow timeline scheme is ${yellowRank}`,
     nonEvent,
     event: firstEvent,
     silver
   })
+  if (resume !== true && playChoices.length > 0) {
+    return {
+      effectSummons: playSummons,
+      effectChoices: playChoices,
+      effectDeck: playDeck,
+      effectDiscard: playDiscard,
+      effectGold: playGold,
+      effectHand: playHand,
+      effectPlayerEvents: [firstEvent],
+      effectSilver: playSilver
+    }
+  }
   const secondEvent = createEvent('Second, you copy the highest rank green dungeon scheme.')
   const dungeonSchemes = dungeon.filter(scheme => isGreen(scheme))
   const dungeonScheme = getHighestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    effectSummons: dungeonAppointments,
+    effectSummons: dungeonSummons,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
@@ -69,7 +83,7 @@ export default function effectNine ({
     effectHand: dungeonHand,
     effectSilver: dungeonSilver
   } = copyEffect({
-    appointments: playAppointments,
+    summons: playSummons,
     choices: playChoices,
     deck: playDeck,
     discard: playDiscard,
@@ -80,6 +94,7 @@ export default function effectNine ({
     playerId,
     playSchemeRef,
     playSchemes,
+    resume,
     scheme: dungeonScheme,
     message: `The highest rank green dungeon scheme is ${dungeonRank}`,
     nonMessage: 'There are no green dungeon schemes.',
@@ -87,7 +102,7 @@ export default function effectNine ({
     silver: playSilver
   })
   return {
-    effectSummons: dungeonAppointments,
+    effectSummons: dungeonSummons,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,

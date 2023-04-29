@@ -12,7 +12,7 @@ import isRed from '../is/red'
 import getJoinedRanks from '../get/joined/ranks'
 
 export default function effectFive ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -77,7 +77,7 @@ export default function effectFive ({
     depth: uniqueColors.length * 2
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

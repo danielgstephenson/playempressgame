@@ -7,7 +7,7 @@ import isYellow from '../is/yellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectEight ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -32,7 +32,7 @@ export default function effectEight ({
     schemes: playSchemes
   })
   const {
-    effectSummons: playAppointments,
+    effectSummons: playSummons,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -40,12 +40,12 @@ export default function effectEight ({
     effectHand: playHand,
     effectSilver: playSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     deck,
     discard,
     dungeon,
-    first: true,
+    copiedByFirstEffect: true,
     gold,
     passedTimeline,
     hand,
@@ -59,12 +59,24 @@ export default function effectEight ({
     event: firstEvent,
     silver
   })
+  if (resume !== true && playChoices.length > 0) {
+    return {
+      effectSummons: playSummons,
+      effectChoices: playChoices,
+      effectDeck: playDeck,
+      effectDiscard: playDiscard,
+      effectGold: playGold,
+      effectHand: playHand,
+      effectPlayerEvents: [firstEvent],
+      effectSilver: playSilver
+    }
+  }
   const secondEvent = createEvent('Second, you copy the lowest rank green or yellow dungeon scheme.')
   const dungeonSchemes = dungeon.filter(scheme => isGreenOrYellow(scheme))
   const dungeonScheme = getLowestRankScheme(dungeonSchemes)
   const dungeonRank = String(dungeonScheme?.rank)
   const {
-    effectSummons: dungeonAppointments,
+    effectSummons: dungeonSummons,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,
@@ -72,7 +84,7 @@ export default function effectEight ({
     effectHand: dungeonHand,
     effectSilver: dungeonSilver
   } = copyEffect({
-    appointments: playAppointments,
+    summons: playSummons,
     choices: playChoices,
     deck: playDeck,
     discard: playDiscard,
@@ -91,7 +103,7 @@ export default function effectEight ({
   })
   const playerEvents = resume === true ? [secondEvent] : [firstEvent, secondEvent]
   return {
-    effectSummons: dungeonAppointments,
+    effectSummons: dungeonSummons,
     effectChoices: dungeonChoices,
     effectDeck: dungeonDeck,
     effectDiscard: dungeonDiscard,

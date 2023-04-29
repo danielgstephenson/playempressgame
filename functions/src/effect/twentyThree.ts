@@ -9,7 +9,7 @@ import getLowestRankScheme from '../get/lowestRankScheme'
 import getHighestRankScheme from '../get/highestRankScheme'
 
 export default function effectTwentyThree ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -57,7 +57,7 @@ export default function effectTwentyThree ({
     depth: playDepth
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

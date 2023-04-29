@@ -7,7 +7,7 @@ import isGreenOrYellow from '../is/greenOrYellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectEleven ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -30,7 +30,7 @@ export default function effectEleven ({
   const nonMessage = top == null ? 'Your discard is empty' : `Your top discard scheme, ${topRank}, is red.`
   const discardGreenOrYellow = isGreenOrYellow(top)
   const {
-    effectSummons: discardAppointments,
+    effectSummons: discardSummons,
     effectChoices: discardChoices,
     effectDeck: discardDeck,
     effectDiscard: discardDiscard,
@@ -38,13 +38,13 @@ export default function effectEleven ({
     effectHand: discardHand,
     effectSilver: discardSilver
   } = copyEffects({
-    appointments,
+    summons,
     choices,
     condition: discardGreenOrYellow,
     deck,
     discard,
     dungeon,
-    first: true,
+    copiedByFirstEffect: true,
     gold,
     passedTimeline,
     hand,
@@ -61,7 +61,7 @@ export default function effectEleven ({
 
   if (discardChoices.length > 0) {
     return {
-      effectSummons: discardAppointments,
+      effectSummons: discardSummons,
       effectChoices: discardChoices,
       effectDeck: discardDeck,
       effectDiscard: discardDiscard,
@@ -82,7 +82,7 @@ export default function effectEleven ({
     schemes: playSchemes
   })
   const {
-    effectSummons: colorPlayAppointments,
+    effectSummons: colorPlaySummons,
     effectChoices: colorPlayChoices,
     effectDeck: colorPlayDeck,
     effectDiscard: colorPlayDiscard,
@@ -90,7 +90,7 @@ export default function effectEleven ({
     effectHand: colorPlayHand,
     effectSilver: colorPlaySilver
   } = copyEffects({
-    appointments: discardAppointments,
+    summons: discardSummons,
     choices: discardChoices,
     deck: discardDeck,
     discard: discardDiscard,
@@ -109,7 +109,7 @@ export default function effectEleven ({
   })
   const playerEvents = resume === true ? [secondEvent] : [firstEvent, secondEvent]
   return {
-    effectSummons: colorPlayAppointments,
+    effectSummons: colorPlaySummons,
     effectChoices: colorPlayChoices,
     effectDeck: colorPlayDeck,
     effectDiscard: colorPlayDiscard,

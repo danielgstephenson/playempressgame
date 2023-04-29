@@ -6,7 +6,7 @@ import isYellow from '../is/yellow'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectTen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -29,7 +29,7 @@ export default function effectTen ({
     ? 'Your discard is empty'
     : `Your top discard scheme, ${topDiscardRank}, is ${topDiscardColor}.`
   const {
-    effectSummons: discardAppointments,
+    effectSummons: discardSummons,
     effectChoices: discardChoices,
     effectDeck: discardDeck,
     effectDiscard: discardDiscard,
@@ -37,13 +37,13 @@ export default function effectTen ({
     effectHand: discardHand,
     effectSilver: discardSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     condition: topYellow,
     deck,
     discard,
     dungeon,
-    first: true,
+    copiedByFirstEffect: true,
     gold,
     passedTimeline,
     hand,
@@ -67,7 +67,7 @@ export default function effectTen ({
   })
   console.log('playNonEvent', playNonEvent)
   const {
-    effectSummons: playAppointments,
+    effectSummons: playSummons,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,
@@ -75,7 +75,7 @@ export default function effectTen ({
     effectHand: playHand,
     effectSilver: playSilver
   } = copyEffect({
-    appointments: discardAppointments,
+    summons: discardSummons,
     choices: discardChoices,
     deck: discardDeck,
     discard: discardDiscard,
@@ -93,7 +93,7 @@ export default function effectTen ({
     silver: discardSilver
   })
   return {
-    effectSummons: playAppointments,
+    effectSummons: playSummons,
     effectChoices: playChoices,
     effectDeck: playDeck,
     effectDiscard: playDiscard,

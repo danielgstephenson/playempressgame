@@ -5,7 +5,7 @@ import isYellow from '../is/yellow'
 import earn from '../earn'
 
 export default function effectSeventeen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -47,7 +47,7 @@ export default function effectSeventeen ({
   const discardDeck = discardFull ? [...deck, topScheme] : deck
   const discardDiscard = discardFull ? discard.slice(0, -1) : discard
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: discardDeck,
     effectDiscard: discardDiscard,

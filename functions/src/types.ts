@@ -139,12 +139,12 @@ export interface PassTime {
 }
 
 export interface SchemeEffectProps {
-  appointments: Scheme[]
+  summons: Scheme[]
   choices: Choice[]
   deck: Scheme[]
   discard: Scheme[]
   dungeon: Scheme[]
-  first?: boolean | undefined
+  copiedByFirstEffect?: boolean | undefined
   gold: number
   silver: number
   passedTimeline: Scheme[]
@@ -222,11 +222,13 @@ export interface PlayResult {
   profileChanges: Partial<Profile['writeFlatten']>
 }
 
-export interface PlayChanges extends SerializedEffect {
+export interface PlayChanges {
   playerChanges: Partial<Player['writeFlatten']>
   profileChanges: Partial<Profile['writeFlatten']>
   profileChanged: boolean
 }
+
+export type EffectResultChanges = SerializedEffect & PlayChanges
 
 export interface EffectResultGuard {
   oldDeck: Scheme[]

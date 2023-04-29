@@ -1,6 +1,6 @@
 import ProfilesReader from '../reader/profile'
-import ProfileItemView from './ProfileItem'
+import ProfileView from './Profile'
 
 export default function ProfilesView (): JSX.Element {
-  return <ProfilesReader DocView={ProfileItemView} />
+  return <ProfilesReader DocView={ProfileView} />
 }

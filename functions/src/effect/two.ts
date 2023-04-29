@@ -7,7 +7,7 @@ import addEvent from '../addEvent'
 import getGrammar from '../get/grammar'
 
 export default function effectTwo ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -46,7 +46,7 @@ export default function effectTwo ({
     depth: dungeon.length
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: drawnDeck,
     effectDiscard: drawnDiscard,

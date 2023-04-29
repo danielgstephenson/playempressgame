@@ -94,7 +94,7 @@
     "time": 0,
     "beginning": "Copy the lowest rank yellow scheme in play",
     "end": "Copy the lowest rank green or yellow dungeon scheme",
-    "threat": "If this is the highest rank scheme in play, put it face up on your discard instead of appointing to the court",
+    "threat": "If this is the highest rank scheme in play, put it face up on your discard instead of summoning it to the court",
     "link1": "https://en.wikipedia.org/wiki/Sayyida_al_Hurra",
     "link2": "https://www.thefreelibrary.com/Women+in+northern+Morocco%3A+between+the+documentary+and+the+imaginary-a0302403823"
   },
@@ -171,7 +171,7 @@
     "time": 0,
     "beginning": "If your top discard scheme is red, copy the leftmost green timeline scheme",
     "end": "Otherwise, copy your top discard scheme",
-    "threat": "If you appoint this to the court, copy it",
+    "threat": "If you summon this to the court, copy it",
     "link1": "https://en.wikipedia.org/wiki/Elizabeth_I#Mary,_Queen_of_Scots",
     "link2": "https://en.wikipedia.org/wiki/Regnans_in_Excelsis"
   },
@@ -203,7 +203,7 @@
     "color": "yellow",
     "time": 0,
     "beginning": "If your deck or discard is empty, earn 30 gold",
-    "end": "Appoint 1 Privilege from the bank to the court",
+    "end": "Summon 1 Privilege from the bank to the court",
     "threat": "",
     "link1": "https://en.wikipedia.org/wiki/%C3%86thelfl%C3%A6d",
     "link2": "https://en.wikipedia.org/wiki/Danegeld"
@@ -225,7 +225,7 @@
     "color": "yellow",
     "time": 0,
     "beginning": "Earn twice your top discard scheme's rank",
-    "end": "If it is not yellow, appoint it to the court",
+    "end": "If it is not yellow, summon it to the court",
     "threat": "",
     "link1": "http://scihi.org/mary-the-jewess-origins-chemistry/",
     "link2": "https://web.nli.org.il/sites/nli/english/library/reading_corner/pages/maria_the_jewess.aspx"

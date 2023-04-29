@@ -10,7 +10,7 @@ import addEvent from '../addEvent'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectThirteen ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -20,6 +20,7 @@ export default function effectThirteen ({
   hand,
   playerId,
   playSchemes,
+  playSchemeRef,
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, if there are no red timeline schemes, you copy the leftmost timeline scheme.')
@@ -34,6 +35,7 @@ export default function effectThirteen ({
       message: 'There are no red timeline schemes',
       schemes: passedTimeline
     })
+    firstEvent.children.push(colorsEvent)
   }
   const redRanks = getJoinedRanks(redSchemes)
   const left = passedTimeline[0]
@@ -44,7 +46,7 @@ export default function effectThirteen ({
     ? `The red timeline ${noun} ${verb} ${redRanks}.`
     : 'The timeline is empty.'
   const {
-    effectSummons: leftAppointements,
+    effectSummons: leftSummons,
     effectChoices: leftChoices,
     effectDeck: leftDeck,
     effectDiscard: leftDiscard,
@@ -52,7 +54,7 @@ export default function effectThirteen ({
     effectHand: lefthand,
     effectSilver: leftSilver
   } = copyEffect({
-    appointments,
+    summons,
     choices,
     condition: noRed,
     deck,
@@ -63,6 +65,7 @@ export default function effectThirteen ({
     hand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: left,
     message: leftMessage,
     nonMessage: leftNonMessage,
@@ -79,7 +82,7 @@ export default function effectThirteen ({
     schemes: playSchemes
   })
   const {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,
@@ -87,7 +90,7 @@ export default function effectThirteen ({
     effectHand: colorHand,
     effectSilver: colorSilver
   } = copyEffect({
-    appointments: leftAppointements,
+    summons: leftSummons,
     choices: leftChoices,
     deck: leftDeck,
     discard: leftDiscard,
@@ -97,6 +100,7 @@ export default function effectThirteen ({
     hand: lefthand,
     playerId,
     playSchemes,
+    playSchemeRef,
     scheme: colorScheme,
     message: colorMessage,
     nonEvent,
@@ -104,7 +108,7 @@ export default function effectThirteen ({
     silver: leftSilver
   })
   return {
-    effectSummons: colorAppointments,
+    effectSummons: colorSummons,
     effectChoices: colorChoices,
     effectDeck: colorDeck,
     effectDiscard: colorDiscard,

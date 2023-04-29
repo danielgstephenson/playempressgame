@@ -6,7 +6,7 @@ import earn from '../earn'
 import createColorsEvent from '../create/colorsEvent'
 
 export default function effectTwentyFour ({
-  appointments,
+  summons,
   choices,
   deck,
   discard,
@@ -41,7 +41,7 @@ export default function effectTwentyFour ({
     depth: discard.length
   })
   return {
-    effectSummons: appointments,
+    effectSummons: summons,
     effectChoices: choices,
     effectDeck: deck,
     effectDiscard: revivedDiscard,
