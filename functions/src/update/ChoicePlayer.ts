@@ -1,37 +1,44 @@
 import { Transaction, arrayUnion } from 'firelord'
 import { playersRef, profilesRef } from '../db'
-import { HistoryEvent, EffectResultChanges, Player, Result, Write } from '../types'
+import { HistoryEvent, Player, Profile, Result, Write } from '../types'
 
 export default function choiceUpdatePlayer ({
   choiceChanges,
   current,
-  events,
-  playChanges,
   player,
+  playerChanges,
+  profileChanges,
+  profileChanged,
+  privateEvents,
+  publicEvents,
+  sharedEvents,
   transaction
 }: {
   choiceChanges: Write<Player>
   current: boolean
-  events: HistoryEvent[]
+  playerChanges: Write<Player>
+  profileChanges: Write<Profile>
+  profileChanged: boolean
   player: Result<Player>
-  playChanges: EffectResultChanges
+  privateEvents: HistoryEvent[]
+  publicEvents: HistoryEvent[]
+  sharedEvents: HistoryEvent[]
   transaction: Transaction
 }): void {
-  console.log('choiceUpdatePlayer', { choiceChanges, current, events, playChanges, player })
   const playerRef = playersRef.doc(player.id)
   if (current) {
-    const playerChanges = {
-      ...playChanges.playerChanges,
+    const playerUpdate = {
+      ...playerChanges,
       ...choiceChanges,
-      history: arrayUnion(...events)
+      history: arrayUnion(...privateEvents, ...sharedEvents)
     }
-    transaction.update(playerRef, playerChanges)
+    transaction.update(playerRef, playerUpdate)
     const profileRef = profilesRef.doc(player.id)
-    if (playChanges.profileChanged) {
-      transaction.update(profileRef, playChanges.profileChanges)
+    if (profileChanged) {
+      transaction.update(profileRef, profileChanges)
     }
     return
   }
-  choiceChanges.history = arrayUnion(...events)
+  choiceChanges.history = arrayUnion(...publicEvents, ...sharedEvents)
   transaction.update(playerRef, choiceChanges)
 }

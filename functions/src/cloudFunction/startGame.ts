@@ -119,8 +119,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const deckIndex = sortedPortfolio.length - 2
   const topDeck = guardDefined(sortedPortfolio[deckIndex], 'Top deck')
   startEvent.children.push(createEvent(`The top deck scheme is ${topDeck}.`))
-  const discardIndex = sortedPortfolio.length - 1
-  const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
+  // const discardIndex = sortedPortfolio.length - 1
+  const topDiscard = 16 // guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   startEvent.children.push(createEvent(`The top discard scheme is ${topDiscard}.`))
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
   hand[2] = 1
