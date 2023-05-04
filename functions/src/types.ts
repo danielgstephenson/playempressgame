@@ -5,6 +5,7 @@ export interface HistoryEvent {
   message: string
   children: HistoryEvent[]
   timestamp: number
+  id: string
 }
 
 export interface SchemeRef {
@@ -250,3 +251,8 @@ export interface HighsGuard {
 }
 
 export type Write <Collection extends MetaType> = Partial<Collection['writeFlatten']>
+
+export interface PlayState {
+  game: Result<Game>
+  players: Array<Result<Player>>
+}

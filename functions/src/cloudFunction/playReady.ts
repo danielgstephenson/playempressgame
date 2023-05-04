@@ -19,6 +19,7 @@ import getAllPlayers from '../get/allPlayers'
 import guardPlayHandSchemes from '../guard/playHandSchemes'
 import serializeScheme from '../serialize/scheme'
 import getEffectResultChanges from '../get/effectResultChanges'
+import playLastReadyState from '../state/playReady'
 
 const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
@@ -76,6 +77,11 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     gameId: props.gameId,
     transaction
   })
+  const playState = {
+    game: currentGame,
+    players: allPlayers
+  }
+  const readiedState = playLastReadyState({ playState, currentPlayer })
   const playSchemes = guardPlayHandSchemes(allPlayers)
   const {
     passedTimeline,
