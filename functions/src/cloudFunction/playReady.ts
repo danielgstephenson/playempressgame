@@ -20,6 +20,8 @@ import guardPlayHandSchemes from '../guard/playHandSchemes'
 import serializeScheme from '../serialize/scheme'
 import getEffectResultChanges from '../get/effectResultChanges'
 import playLastReadyState from '../state/playReady'
+import playerToProfile from '../playerToProfile'
+import clone from '../clone'
 
 const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   const {
@@ -79,9 +81,13 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
   })
   const playState = {
     game: currentGame,
-    players: allPlayers
+    players: allPlayers,
+    profiles: allPlayers.map(player => playerToProfile(player))
   }
-  const readiedState = playLastReadyState({ playState, currentPlayer })
+  const originalState = clone(playState)
+  console.log('originalState', originalState)
+  playLastReadyState({ playState, currentPlayer })
+  console.log('readiedState', playState)
   const playSchemes = guardPlayHandSchemes(allPlayers)
   const {
     passedTimeline,
