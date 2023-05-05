@@ -1,11 +1,9 @@
-import guardHandScheme from './handScheme'
 import { Player, Result, Scheme } from '../types'
+import guardPlayHandScheme from './playHandScheme'
 
 export default function guardPlayHandSchemes (players: Array<Result<Player>>): Scheme[] {
   const playSchemes = players.map(player => {
-    const playScheme = guardHandScheme({
-      hand: player.hand, schemeId: player.playScheme?.id, label: 'Hand play scheme'
-    })
+    const playScheme = guardPlayHandScheme(player)
     return playScheme
   })
   return playSchemes

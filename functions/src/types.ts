@@ -255,4 +255,5 @@ export type Write <Collection extends MetaType> = Partial<Collection['writeFlatt
 export interface PlayState {
   game: Result<Game>
   players: Array<Result<Player>>
+  profiles: Array<Result<Profile>>
 }

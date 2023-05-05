@@ -1,5 +1,5 @@
 import createEvent from '../create/event'
-import { PlayState, Player, Result, SchemeRef } from '../types'
+import { PlayState, Player, Result } from '../types'
 
 export default function playLastReadyState ({
   playState,
@@ -10,20 +10,16 @@ export default function playLastReadyState ({
 }): PlayState {
   const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ready.`)
   const privateReadyEvent = createEvent('You are ready.')
-  playState.players = playState.players.map(player => {
+  playState.players.forEach(player => {
     if (player.id !== currentPlayer.id) {
       player.history.push(publicReadyEvent)
-      return player
+      return
     }
     player.history.push(privateReadyEvent)
-    return player
   })
-  playState.profiles.find(profile => {
-    if (profile.id !== currentPlayer.id) return false
-    profile.trashEmpty = false
+  playState.game.history.push(publicReadyEvent)
+  playState.profiles.forEach(profile => {
     profile.ready = false
-    return true
   })
-  playState.game.history.push(publicEvent)
   return playState
 }
