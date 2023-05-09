@@ -2,16 +2,16 @@ import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
 import { arrayUnion, deleteField } from 'firelord'
 import guardCurrentHand from '../guard/current/hand'
-import updatePublicEvent from '../update/publicEvent'
 import { SchemeProps } from '../types'
+import updateOtherPlayers from '../update/otherPlayers'
 
 const playUntrash = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Untrashing scheme ${props.schemeId}...`)
   const {
     currentUid,
     currentGame,
+    currentGameRef,
     currentPlayerRef,
-    currentProfileRef,
     currentPlayer,
     scheme: untrashScheme
   } = await guardCurrentHand({
@@ -27,16 +27,29 @@ const playUntrash = createCloudFunction<SchemeProps>(async (props, context, tran
       createEvent(`You returned scheme ${untrashScheme.rank} from your trash.`)
     )
   })
-  transaction.update(currentProfileRef, {
-    trashEmpty: true,
-    ready: false
+  const publicEvent = createEvent(`${currentPlayer.displayName} returned a scheme from their trash.`)
+  const publicUpdate = { history: arrayUnion(publicEvent) }
+  const untrashedProfiles = currentGame.profiles.map(profile => {
+    if (profile.userId === currentUid) {
+      return {
+        ...profile,
+        trashEmpty: true,
+        ready: false
+      }
+    }
+    return profile
   })
-  updatePublicEvent({
+  transaction.update(currentGameRef, {
+    ...publicUpdate,
+    profiles: untrashedProfiles
+  })
+  const userIds = currentGame.profiles.map(profile => profile.userId)
+  updateOtherPlayers({
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGame,
-    message: `${currentPlayer.displayName} returned the their trash scheme.`
+    update: publicUpdate,
+    userIds
   })
   console.info(`Untrashed scheme with id ${props.schemeId}!`)
 })

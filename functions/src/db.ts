@@ -32,7 +32,7 @@ import effectTwentyFive from './effect/twentyFive'
 import guardColor from './guard/color'
 import guardEffect from './guard/effect'
 import schemesJson from './schemes.json'
-import { Game, Player, Profile, SchemeData, SchemeEffect, User } from './types'
+import { Game, Player, SchemeData, SchemeEffect, User } from './types'
 
 admin.initializeApp(firebaseConfig)
 export const adminAuth = getAuth()
@@ -40,7 +40,6 @@ export const db = getFirestore()
 db.settings({ ignoreUndefinedProperties: true })
 export const gamesRef = getFirelord<Game>(db, 'games')
 export const usersRef = getFirelord<User>(db, 'users')
-export const profilesRef = getFirelord<Profile>(db, 'profiles')
 export const playersRef = getFirelord<Player>(db, 'players')
 export const effects: SchemeEffect[] = [
   effectZero,

@@ -1,11 +1,9 @@
-import createEvent from './create/event'
-import guardHandScheme from '../guard/handScheme'
+import createEvent from '../create/event'
 import guardTime from '../guard/time'
-import { HistoryEvent, PassTime, Player, Result, SchemeRef } from './types'
-import guardScheme from './guard/scheme'
-import getJoinedRanks from './get/joined/ranks'
+import getJoinedRanks from '../get/joined/ranks'
 import { PlayState } from '../types'
 import guardPlayHandScheme from '../guard/playHandScheme'
+import guardTimeEvent from '../guard/timeEvent'
 
 export default function passTimeState ({ playState }: {
   playState: PlayState
@@ -19,33 +17,48 @@ export default function passTimeState ({ playState }: {
   const timePasses = totalTime > playState.players.length
   if (timePasses) {
     const [passed, ...remaining] = playState.game.timeline
+    playState.game.timeline = remaining
     const passedRank = String(passed?.rank)
     const timeResult = `more than the ${playState.players.length} players, so ${passedRank} is removed from the timeline.`
-    const timeEvent = createEvent(`${totalMessage}, ${timeResult}`)
-    const beforeJoined = getJoinedRanks(timeline)
+    const timeMessage = `${totalMessage}, ${timeResult}`
+    const publicEvent = createEvent(timeMessage)
+    const beforeJoined = getJoinedRanks(playState.game.timeline)
     const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
     const afterJoined = getJoinedRanks(remaining)
     const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
-      const timeEvents = playState.players.map(player => {
-        const playScheme = guardPlayHandScheme(player)
-        const time = guardTime(playScheme.rank)
-        const displayName = player.id === currentPlayerId ? 'You' : player.displayName
-        const message = `${displayName} played scheme ${playScheme.rank} with ${time} time.`
-        const event = createEvent(message)
-      })
-      timeEvent.children = [...timeEvents, beforeEvent, afterEvent]
-      player.history.push(timeEvent)
+      const publicChild = guardTimeEvent({ player })
+      publicEvent.children.push(publicChild)
+      const privateEvent = createEvent(timeMessage)
+      const privateEvents = playState
+        .players
+        .map(timePlayer => guardTimeEvent({
+          player: timePlayer,
+          privateId: player.id
+        }))
+      privateEvent.children = [...privateEvents, beforeEvent, afterEvent]
+      player.history.push(privateEvent)
     })
-    const passedTimeline = remaining.map(ref => guardScheme({ ref }))
+    publicEvent.children.push(beforeEvent, afterEvent)
+    playState.game.history.push(publicEvent)
     return playState
   }
-  const timeResult = `not more than the ${allPlayers.length} players, so time does not pass.`
-  const timeEvent = createEvent(`The total time is ${totalTime}, ${timeResult}`)
-  timeEvent.children = timeEvents
-  const passedTimeline = timeline.map(ref => guardScheme({ ref }))
-  return {
-    passedTimeline,
-    timeEvent
-  }
+  const timeResult = `not more than the ${playState.players.length} players, so time does not pass.`
+  const timeMessage = `${totalMessage}, ${timeResult}`
+  const publicEvent = createEvent(timeMessage)
+  playState.players.forEach(player => {
+    const publicChild = guardTimeEvent({ player })
+    publicEvent.children.push(publicChild)
+    const privateEvent = createEvent(timeMessage)
+    const privateEvents = playState
+      .players
+      .map(timePlayer => guardTimeEvent({
+        player: timePlayer,
+        privateId: player.id
+      }))
+    privateEvent.children.push(...privateEvents)
+    player.history.push(privateEvent)
+  })
+  playState.game.history.push(publicEvent)
+  return playState
 }

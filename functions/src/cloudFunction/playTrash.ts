@@ -1,19 +1,19 @@
 import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
 import { arrayUnion } from 'firelord'
-import updatePublicEvent from '../update/publicEvent'
 import guardCurrentHand from '../guard/current/hand'
 import { SchemeProps } from '../types'
 import { https } from 'firebase-functions/v1'
+import updateOtherPlayers from '../update/otherPlayers'
 
 const playTrash = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Trashing scheme ${props.schemeId}...`)
   const {
     currentGame,
+    currentGameRef,
     currentUid,
     currentPlayerRef,
     currentPlayer,
-    currentProfileRef,
     scheme: trashScheme,
     schemeRef
   } = await guardCurrentHand({
@@ -35,16 +35,30 @@ const playTrash = createCloudFunction<SchemeProps>(async (props, context, transa
       createEvent(`You are trashing scheme ${trashScheme.rank}.`)
     )
   })
-  transaction.update(currentProfileRef, {
-    trashEmpty: false,
-    ready: false
+  const trashedProfiles = currentGame.profiles.map(profile => {
+    if (profile.userId === currentUid) {
+      return {
+        ...profile,
+        trashAreaEmpty: false,
+        ready: false
+      }
+    }
+    return profile
   })
-  updatePublicEvent({
+  const publicEvent = createEvent(`${currentPlayer.displayName} is trashing a scheme.`)
+  const publicUpdate = {
+    history: arrayUnion(publicEvent)
+  }
+  transaction.update(currentGameRef, {
+    ...publicUpdate,
+    profiles: trashedProfiles
+  })
+  updateOtherPlayers({
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGame,
-    message: `${currentPlayer.displayName} is trashing a scheme.`
+    update: publicUpdate,
+    userIds: currentGame.profiles.map(profile => profile.userId)
   })
   console.info(`Trashed scheme with id ${props.schemeId}!`)
 })

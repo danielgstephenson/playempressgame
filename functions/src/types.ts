@@ -1,4 +1,4 @@
-import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, PossiblyReadAsUndefined } from 'firelord'
+import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField } from 'firelord'
 import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
 
 export interface HistoryEvent {
@@ -29,9 +29,18 @@ export type Scheme = SchemeRef & SchemeData
 
 export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
 
-export interface GameUser {
-  id: string
+export interface Profile {
+  userId: string
+  gameId: string
+  deckEmpty: boolean
   displayName: string
+  topDiscardScheme?: SchemeRef | undefined
+  gold: number
+  silver: number
+  trashAreaEmpty: boolean
+  playAreaEmpty: boolean
+  ready: boolean
+  trashHistory: number[]
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -53,26 +62,13 @@ export type Game = MetaTypeCreator<{
   phase: string
   readyCount: number
   timeline: SchemeRef[]
-  users: GameUser[]
+  profiles: Profile[]
 }, 'games', string>
 
 export type User = MetaTypeCreator<{
   displayName: string
   uid: string
 }, 'users', string>
-
-export type Profile = MetaTypeCreator<{
-  userId: string
-  gameId: string
-  deckEmpty: boolean | PossiblyReadAsUndefined
-  displayName: string
-  topDiscardScheme: SchemeRef | DeleteField
-  gold: number
-  silver: number
-  trashEmpty: boolean | DeleteField
-  playEmpty: boolean | DeleteField
-  ready: boolean | DeleteField
-}, 'profiles', string>
 
 export type Player = MetaTypeCreator<{
   deck: SchemeRef[]
@@ -85,6 +81,7 @@ export type Player = MetaTypeCreator<{
   history: HistoryEvent[]
   playScheme: SchemeRef | DeleteField
   trashScheme: SchemeRef | DeleteField
+  trashHistory: SchemeRef[][]
   userId: string
 }, 'players', string>
 
@@ -102,7 +99,7 @@ export interface CurrentPlayingGuard {
   currentPlayer: Result<Player>
   currentPlayerId: string
   currentPlayerRef: DocumentReference<Player>
-  currentProfileRef: DocumentReference<Profile>
+  currentProfile: Profile
 }
 
 export interface GameProps {
@@ -220,12 +217,10 @@ export interface PlayResult {
   playerEvents: HistoryEvent[]
   playerChanges: Partial<Player['writeFlatten']>
   playerResult: Result<Player>
-  profileChanges: Partial<Profile['writeFlatten']>
 }
 
 export interface PlayChanges {
   playerChanges: Partial<Player['writeFlatten']>
-  profileChanges: Partial<Profile['writeFlatten']>
   profileChanged: boolean
 }
 
@@ -255,5 +250,4 @@ export type Write <Collection extends MetaType> = Partial<Collection['writeFlatt
 export interface PlayState {
   game: Result<Game>
   players: Array<Result<Player>>
-  profiles: Array<Result<Profile>>
 }

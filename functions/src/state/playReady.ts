@@ -1,5 +1,6 @@
 import createEvent from '../create/event'
 import { PlayState, Player, Result } from '../types'
+import passTimeState from './passTime'
 
 export default function playLastReadyState ({
   playState,
@@ -18,8 +19,16 @@ export default function playLastReadyState ({
     player.history.push(privateReadyEvent)
   })
   playState.game.history.push(publicReadyEvent)
-  playState.profiles.forEach(profile => {
+  playState.game.profiles.forEach(profile => {
     profile.ready = false
   })
+  const passedState = passTimeState({ playState })
+  const playedState = passedState.players.reduce((playedState, player) => {
+    const effectedState = effectState({
+      playState: playedState,
+      playingId: player.id
+    })
+    return effectedState
+  }, passedState)
   return playState
 }

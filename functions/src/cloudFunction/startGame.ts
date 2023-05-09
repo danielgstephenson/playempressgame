@@ -2,13 +2,12 @@ import { https } from 'firebase-functions/v1'
 import guardJoinPhase from '../guard/joinPhase'
 import createCloudFunction from '../create/cloudFunction'
 import createRange from '../create/range'
-import { playersRef, profilesRef, usersRef } from '../db'
+import { playersRef } from '../db'
 import createSchemeRef from '../create/schemeRef'
 import createEvent from '../create/event'
 import guardCurrentGame from '../guard/current/game'
-import { arrayUnion, documentId, query, where } from 'firelord'
+import { arrayUnion } from 'firelord'
 import guardDefined from '../guard/defined'
-import getQuery from '../get/query'
 import guardSchemeData from '../guard/schemeData'
 import isGreen from '../is/green'
 import isRed from '../is/red'
@@ -23,20 +22,18 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     gameId: props.gameId,
     transaction
   })
-  if (currentGameData.users.length < 2) {
+  if (currentGameData.profiles.length < 2) {
     throw new https.HttpsError(
       'failed-precondition',
       'This game does not have enough players.'
     )
   }
   guardJoinPhase({ gameData: currentGameData })
-  const idField = documentId()
-  const currentUserIds = currentGameData.users.map(user => user.id)
-  const whereId = where(idField, 'in', currentUserIds)
-  const currentUsersQuery = query(usersRef.collection(), whereId)
-  const users = await getQuery({ query: currentUsersQuery, transaction })
-  const currentUser = guardDefined(users.find(user => user.id === context.auth?.uid), 'Current user')
-  const startEvent = createEvent(`${currentUser.displayName} started game ${props.gameId}.`)
+  const foundProfile = currentGameData
+    .profiles
+    .find(profile => profile.userId === context.auth?.uid)
+  const currentProfile = guardDefined(foundProfile, 'Current profile')
+  const startEvent = createEvent(`${currentProfile.displayName} started game ${props.gameId}.`)
   const range = createRange(26) // [0..25]
   const separated = [1, 7]
   const rangeSeparated = range.filter(rank => !separated.includes(rank))
@@ -48,8 +45,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   })
   const shuffledRanks = getJoined(shuffled)
   startEvent.children.push(createEvent(`Shuffled schemes 0 and 2 through 25: ${shuffledRanks}`))
-  const empressSize = 13 + currentGameData.users.length
-  startEvent.children.push(createEvent(`The empress size is ${empressSize}, 13 plus the ${currentGameData.users.length} players.`))
+  const empressSize = 13 + currentGameData.profiles.length
+  startEvent.children.push(createEvent(`The empress size is ${empressSize}, 13 plus the ${currentGameData.profiles.length} players.`))
   const empressSlice = shuffled.slice(0, empressSize)
   const sorted = [...empressSlice].sort((aRank, bRank) => {
     return aRank - bRank
@@ -127,21 +124,14 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   hand[3] = 11
   hand[4] = 16
   startEvent.children.push(createEvent(`The hand is ${getJoined(hand)}.`))
-  transaction.update(currentGameRef, {
-    phase: 'play',
-    court: [courtScheme],
-    dungeon: [dungeonScheme],
-    timeline: timelineSchemes,
-    history: arrayUnion(startEvent)
-  })
-  users.forEach((user) => {
+  const startedProfiles = currentGameData.profiles.map((profile) => {
     const topDeckScheme = createSchemeRef(topDeck)
     const topDiscardScheme = createSchemeRef(topDiscard)
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createSchemeRef(rank))
     const playerData = {
-      userId: user.id,
+      userId: profile.userId,
       gameId: props.gameId,
       gold: 40,
       silver: 0,
@@ -149,17 +139,25 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       deck,
       discard,
       history: [...currentGameData.history, startEvent],
-      displayName: user.displayName
+      displayName: profile.displayName
     }
-    const playerId = `${user.id}_${props.gameId}`
+    const playerId = `${profile.userId}_${props.gameId}`
     const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData, { merge: true })
-    const profileRef = profilesRef.doc(playerId)
-    transaction.update(profileRef, {
+    return {
+      ...profile,
       topDiscardScheme,
       deckEmpty: false,
       gold: 40
-    })
+    }
+  })
+  transaction.update(currentGameRef, {
+    court: [courtScheme],
+    dungeon: [dungeonScheme],
+    history: arrayUnion(startEvent),
+    phase: 'play',
+    profiles: startedProfiles,
+    timeline: timelineSchemes
   })
   console.info(`Started game with id ${props.gameId}!`)
 })

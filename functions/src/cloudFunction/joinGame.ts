@@ -2,7 +2,7 @@ import { https } from 'firebase-functions/v1'
 import guardDocData from '../guard/docData'
 import guardJoinPhase from '../guard/joinPhase'
 import createCloudFunction from '../create/cloudFunction'
-import { gamesRef, profilesRef } from '../db'
+import { gamesRef } from '../db'
 import createEvent from '../create/event'
 import { GameProps } from '../types'
 import { arrayUnion } from 'firelord'
@@ -16,29 +16,28 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
     docRef: gameRef,
     transaction
   })
-  const existingGameUser = gameData.users.find(user => user.id === currentUid)
-  if (existingGameUser != null) {
+  const existingProfile = gameData.profiles.find(profile => profile.userId === currentUid)
+  if (existingProfile != null) {
     throw new https.HttpsError(
       'failed-precondition',
       'This user has already joined the game.'
     )
   }
   guardJoinPhase({ gameData })
-  const profileId = `${currentUid}_${props.gameId}`
-  const profileRef = profilesRef.doc(profileId)
-  transaction.set(profileRef, {
+  const profile = {
+    deckEmpty: true,
     displayName: currentUser.displayName,
     gameId: props.gameId,
     gold: 0,
+    playAreaEmpty: true,
+    ready: false,
     silver: 0,
+    trashAreaEmpty: true,
+    trashHistory: [],
     userId: currentUid
-  }, { merge: true })
-  const gameUser = {
-    id: currentUid,
-    displayName: currentUser.displayName
   }
   transaction.update(gameRef, {
-    users: arrayUnion(gameUser),
+    profiles: arrayUnion(profile),
     history: arrayUnion(
       createEvent(`${currentUser.displayName} joined game ${props.gameId}.`)
     )

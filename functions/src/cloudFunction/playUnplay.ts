@@ -2,16 +2,16 @@ import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
 import guardCurrentHand from '../guard/current/hand'
 import { arrayUnion, deleteField } from 'firelord'
-import updatePublicEvent from '../update/publicEvent'
 import { SchemeProps } from '../types'
+import updateOtherPlayers from '../update/otherPlayers'
 
 const playUnplay = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Unplaying scheme... ${props.schemeId}`)
   const {
     currentUid,
     currentGame,
+    currentGameRef,
     currentPlayerRef,
-    currentProfileRef,
     currentPlayer,
     scheme: unplayScheme
   } = await guardCurrentHand({
@@ -27,16 +27,29 @@ const playUnplay = createCloudFunction<SchemeProps>(async (props, context, trans
       createEvent(`You returned scheme ${unplayScheme.rank} from play.`)
     )
   })
-  transaction.update(currentProfileRef, {
-    playEmpty: true,
-    ready: false
+  const publicEvent = createEvent(`${currentPlayer.displayName} returned a scheme from play.`)
+  const publicUpdate = { history: arrayUnion(publicEvent) }
+  const unplayedProfiles = currentGame.profiles.map(profile => {
+    if (profile.userId === currentUid) {
+      return {
+        ...profile,
+        playEmpty: true,
+        ready: false
+      }
+    }
+    return profile
   })
-  updatePublicEvent({
+  transaction.update(currentGameRef, {
+    ...publicUpdate,
+    profiles: unplayedProfiles
+  })
+  const userIds = currentGame.profiles.map(profile => profile.userId)
+  updateOtherPlayers({
     currentUid,
     gameId: props.gameId,
     transaction,
-    gameData: currentGame,
-    message: `${currentPlayer.displayName} returned the their play scheme.`
+    update: publicUpdate,
+    userIds
   })
   console.info(`Unplayed scheme ${props.schemeId}!`)
 })

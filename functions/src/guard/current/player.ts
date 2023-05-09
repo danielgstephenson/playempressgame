@@ -1,9 +1,10 @@
 import { https } from 'firebase-functions'
 import { Transaction } from 'firelord'
-import { playersRef, profilesRef } from '../../db'
+import { playersRef } from '../../db'
 import { CurrentPlayingGuard } from '../../types'
 import guardDocData from '../docData'
 import guardCurrentGame from './game'
+import guardDefined from '../defined'
 
 export default async function guardCurrentPlaying ({
   context, transaction, gameId
@@ -31,7 +32,8 @@ export default async function guardCurrentPlaying ({
     transaction
   })
   const currentPlayer = { id: currentPlayerId, ...currentPlayerData }
-  const currentProfileRef = profilesRef.doc(currentPlayerId)
+  const foundProfile = currentGameData.profiles.find(profile => profile.userId === currentUid)
+  const currentProfile = guardDefined(foundProfile, 'You are not in this game.')
   return {
     currentPlayer,
     currentUid,
@@ -39,6 +41,6 @@ export default async function guardCurrentPlaying ({
     currentGameRef,
     currentPlayerRef,
     currentPlayerId,
-    currentProfileRef
+    currentProfile
   }
 }
