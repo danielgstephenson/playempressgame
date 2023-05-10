@@ -3,7 +3,7 @@ import guardCurrentPlaying from '../guard/current/player'
 import { playersRef, profilesRef } from '../db'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
-import { Choice, Game, PlayResult, Player, Result, SchemeProps, SchemeRef } from '../types'
+import { Choice, Game, PlayReadyProps, PlayResult, Player, Result, SchemeProps, Scheme } from '../types'
 import { arrayUnion, deleteField, increment } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -19,69 +19,101 @@ import getAllPlayers from '../get/allPlayers'
 import guardPlayHandSchemes from '../guard/playHandSchemes'
 import serializeScheme from '../serialize/scheme'
 import getEffectResultChanges from '../get/effectResultChanges'
-import playLastReadyState from '../state/playReady'
+import playLastReadyState from '../state/playLastReady'
 import playerToProfile from '../playerToProfile'
 import clone from '../clone'
+import guardString from '../guard/string'
 
-const playReady = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
+const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
+  const gameId = guardString(props.gameId, 'Play ready game id')
+  const trashSchemeId = guardString(props.trashSchemeId, 'Play ready trash scheme id')
+  const playSchemeId = guardString(props.playSchemeId, 'Play ready play scheme id')
   const {
     currentGameRef,
     currentGame,
     currentUid,
     currentPlayer,
     currentPlayerRef,
-    currentPlayerId,
-    currentProfileRef
+    currentPlayerId
   } = await guardCurrentPlaying({
-    gameId: props.gameId,
+    gameId,
     transaction,
     context
   })
   console.info(`Setting ${currentUid} ready...`)
-  if (currentPlayer.trashScheme == null) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'This player has not trashed a scheme.'
-    )
-  }
-  if (currentPlayer.playScheme == null) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'This player has not played a scheme.'
-    )
-  }
+  const trashScheme = guardHandScheme({
+    hand: currentPlayer.hand,
+    schemeId: trashSchemeId,
+    label: 'Play ready trash scheme'
+  })
+  const trashSchemeRef = serializeScheme(trashScheme)
+  const playScheme = guardHandScheme({
+    hand: currentPlayer.hand,
+    schemeId: playSchemeId,
+    label: 'Play ready play scheme'
+  })
+  const playSchemeRef = serializeScheme(playScheme)
   const realReadyCount = currentGame.readyCount + 1
-  const waiting = realReadyCount < currentGame.users.length
-  const youEvent = createEvent('You are ready.')
-  const youUpdate = createHistoryUpdate(youEvent)
+  const waiting = realReadyCount < currentGame.profiles.length
+  const newProfiles = currentGame.profiles.map(profile => {
+    if (profile.userId === currentUid) {
+      return {
+        ...profile,
+        ready: true
+      }
+    }
+    return profile
+  })
   if (waiting) {
+    const youEvent = createEvent('You are ready.')
+    const youUpdate = createHistoryUpdate(youEvent)
     console.log('waiting')
     const displayNameUpdate = createEventUpdate(`${currentPlayer.displayName} is ready.`)
+    const newProfiles = currentGame.profiles.map(profile => {
+      if (profile.userId === currentUid) {
+        return {
+          ...profile,
+          ready: true
+        }
+      }
+      return profile
+    })
     transaction.update(currentGameRef, {
       readyCount: increment(1),
+      profiles: newProfiles,
       ...displayNameUpdate
     })
+    const userIds = currentGame.profiles.map(profile => profile.userId)
     updateOtherPlayers({
       currentUid,
-      gameId:
-      props.gameId,
+      gameId,
       transaction,
-      users: currentGame.users,
+      userIds,
       update: displayNameUpdate
     })
     transaction.update(currentPlayerRef, youUpdate)
-    transaction.update(currentProfileRef, { ready: true })
     return
   }
   console.log('not waiting')
   const allPlayers = await getAllPlayers({
     currentPlayer,
-    gameId: props.gameId,
+    gameId,
     transaction
   })
+  const readiedPlayers = allPlayers.map(player => {
+    if (player.id === currentPlayerId) {
+      return {
+        ...player,
+        trashScheme: trashSchemeRef,
+        playScheme: playSchemeRef
+      }
+    }
+    return player
+  })
+  currentGame.profiles = newProfiles
   const playState = {
     game: currentGame,
-    players: allPlayers,
+    players: readiedPlayers,
     profiles: allPlayers.map(player => playerToProfile(player))
   }
   const originalState = clone(playState)
@@ -97,7 +129,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
     currentPlayerId,
     timeline: currentGame.timeline
   })
-  const gameSummons: SchemeRef[] = []
+  const gameSummons: Scheme[] = []
   const gameChoices: Choice[] = []
   function play (result: Result<Player>): PlayResult {
     const current = result.id === currentPlayerId
@@ -156,7 +188,7 @@ const playReady = createCloudFunction<SchemeProps>(async (props, context, transa
   const playResults = allPlayers.map(play)
   const timelineRefs = serializeSchemes(passedTimeline)
   const gameEvents = [createEvent('Everyone is ready.')]
-  const gameImprisons: SchemeRef[] = []
+  const gameImprisons: Scheme[] = []
   if (gameChoices.length === 0) {
     const high = getHighestRankScheme(playSchemes)
     if (high == null) {
