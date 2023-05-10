@@ -3,7 +3,7 @@ import guardJoinPhase from '../guard/joinPhase'
 import createCloudFunction from '../create/cloudFunction'
 import createRange from '../create/range'
 import { playersRef } from '../db'
-import createSchemeRef from '../create/schemeRef'
+import createScheme from '../create/scheme'
 import createEvent from '../create/event'
 import guardCurrentGame from '../guard/current/game'
 import { arrayUnion } from 'firelord'
@@ -14,12 +14,14 @@ import isRed from '../is/red'
 import isYellow from '../is/yellow'
 import { GameProps } from '../types'
 import getJoined from '../get/joined'
+import guardString from '../guard/string'
 
 const startGame = createCloudFunction<GameProps>(async (props, context, transaction) => {
-  console.info(`Starting game ${props.gameId}...`)
+  const gameId = guardString(props.gameId, 'Start game id')
+  console.info(`Starting game ${gameId}...`)
   const { currentGameData, currentGameRef } = await guardCurrentGame({
     context,
-    gameId: props.gameId,
+    gameId,
     transaction
   })
   if (currentGameData.profiles.length < 2) {
@@ -33,7 +35,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     .profiles
     .find(profile => profile.userId === context.auth?.uid)
   const currentProfile = guardDefined(foundProfile, 'Current profile')
-  const startEvent = createEvent(`${currentProfile.displayName} started game ${props.gameId}.`)
+  const startEvent = createEvent(`${currentProfile.displayName} started game ${gameId}.`)
   const range = createRange(26) // [0..25]
   const separated = [1, 7]
   const rangeSeparated = range.filter(rank => !separated.includes(rank))
@@ -105,9 +107,9 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const timeline = empressLeft.slice(1)
   const timelineRanks = getJoined(timeline)
   startEvent.children.push(createEvent(`The timeline is ${timelineRanks}.`))
-  const timelineSchemes = timeline.map(rank => createSchemeRef(rank))
-  const courtScheme = createSchemeRef(court)
-  const dungeonScheme = createSchemeRef(dungeon)
+  const timelineSchemes = timeline.map(rank => createScheme(rank))
+  const courtScheme = createScheme(court)
+  const dungeonScheme = createScheme(dungeon)
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
     return aRank - bRank
   })
@@ -125,14 +127,14 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   hand[4] = 16
   startEvent.children.push(createEvent(`The hand is ${getJoined(hand)}.`))
   const startedProfiles = currentGameData.profiles.map((profile) => {
-    const topDeckScheme = createSchemeRef(topDeck)
-    const topDiscardScheme = createSchemeRef(topDiscard)
+    const topDeckScheme = createScheme(topDeck)
+    const topDiscardScheme = createScheme(topDiscard)
     const deck = [topDeckScheme]
     const discard = [topDiscardScheme]
-    const handSchemes = hand.map(rank => createSchemeRef(rank))
+    const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {
       userId: profile.userId,
-      gameId: props.gameId,
+      gameId,
       gold: 40,
       silver: 0,
       hand: handSchemes,
@@ -141,7 +143,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       history: [...currentGameData.history, startEvent],
       displayName: profile.displayName
     }
-    const playerId = `${profile.userId}_${props.gameId}`
+    const playerId = `${profile.userId}_${gameId}`
     const playerRef = playersRef.doc(playerId)
     transaction.set(playerRef, playerData, { merge: true })
     return {
@@ -159,6 +161,6 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     profiles: startedProfiles,
     timeline: timelineSchemes
   })
-  console.info(`Started game with id ${props.gameId}!`)
+  console.info(`Started game with id ${gameId}!`)
 })
 export default startGame

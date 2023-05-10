@@ -1,6 +1,6 @@
 import guardEffect from './effect'
 import guardSchemes from './schemes'
-import { EffectResultGuard, Game, Player, Result, SchemeRef } from '../types'
+import { EffectResultGuard, Game, Player, Result, Scheme } from '../types'
 import guardPlaySchemes from './playSchemes'
 
 export default function guardEffectResult ({
@@ -13,7 +13,7 @@ export default function guardEffectResult ({
 }: {
   allPlayers: Array<Result<Player>>
   first?: boolean | undefined
-  ref: SchemeRef
+  ref: Scheme
   currentPlayer: Result<Player>
   resume?: boolean | undefined
   currentGame: Result<Game>

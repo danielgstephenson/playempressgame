@@ -1,4 +1,4 @@
-import { EffectResult, EffectResultChanges, SchemeRef } from '../types'
+import { EffectResult, EffectResultChanges, Scheme } from '../types'
 import serializeEffect from '../serialize/effect'
 import getPlayChanges from './playChanges'
 
@@ -10,11 +10,11 @@ export default function getEffectResultChanges ({
   hand,
   silver
 }: {
-  deck: SchemeRef[]
-  discard: SchemeRef[]
+  deck: Scheme[]
+  discard: Scheme[]
   effectResult: EffectResult
   gold: number
-  hand: SchemeRef[]
+  hand: Scheme[]
   silver: number
 }): EffectResultChanges {
   const {

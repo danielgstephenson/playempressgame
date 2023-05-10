@@ -7,11 +7,12 @@ import createEvent from '../create/event'
 import { GameProps } from '../types'
 import { arrayUnion } from 'firelord'
 import guardCurrentUser from '../guard/current/user'
+import guardString from '../guard/string'
 
 const joinGame = createCloudFunction<GameProps>(async (props, context, transaction) => {
-  console.info(`Joining game ${props.gameId}...`)
+  const gameId = guardString(props.gameId, 'Join game id')
   const { currentUser, currentUid } = await guardCurrentUser({ context, transaction })
-  const gameRef = gamesRef.doc(props.gameId)
+  const gameRef = gamesRef.doc(gameId)
   const gameData = await guardDocData({
     docRef: gameRef,
     transaction
@@ -27,7 +28,7 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
   const profile = {
     deckEmpty: true,
     displayName: currentUser.displayName,
-    gameId: props.gameId,
+    gameId,
     gold: 0,
     playAreaEmpty: true,
     ready: false,
@@ -39,9 +40,9 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
   transaction.update(gameRef, {
     profiles: arrayUnion(profile),
     history: arrayUnion(
-      createEvent(`${currentUser.displayName} joined game ${props.gameId}.`)
+      createEvent(`${currentUser.displayName} joined game ${gameId}.`)
     )
   })
-  console.info(`Joined game ${props.gameId}!`)
+  console.info(`Joined game ${gameId}!`)
 })
 export default joinGame

@@ -1,14 +1,14 @@
 import createEvent from './create/event'
 import guardHandScheme from './guard/handScheme'
 import guardTime from './guard/time'
-import { HistoryEvent, PassTime, Player, Result, SchemeRef } from './types'
+import { HistoryEvent, PassTime, Player, Result, Scheme } from './types'
 import guardScheme from './guard/scheme'
 import getJoinedRanks from './get/joined/ranks'
 
 export default function passTime ({ allPlayers, currentPlayerId, timeline }: {
   allPlayers: Array<Result<Player>>
   currentPlayerId: string
-  timeline: SchemeRef[]
+  timeline: Scheme[]
 }): PassTime {
   const timeEvents: HistoryEvent[] = [] 
   const totalTime = allPlayers.reduce((total, player) => {

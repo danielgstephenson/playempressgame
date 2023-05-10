@@ -30,7 +30,6 @@ import effectTwentyThree from './effect/twentyThree'
 import effectTwentyFour from './effect/twentyFour'
 import effectTwentyFive from './effect/twentyFive'
 import guardColor from './guard/color'
-import guardEffect from './guard/effect'
 import schemesJson from './schemes.json'
 import { Game, Player, SchemeData, SchemeEffect, User } from './types'
 
@@ -70,12 +69,10 @@ export const effects: SchemeEffect[] = [
   effectTwentyFive
 ]
 export const schemeData: SchemeData[] = schemesJson.map((scheme) => {
-  const effect = guardEffect(scheme.rank)
   const color = guardColor(scheme.color)
   const combined = {
     ...scheme,
-    color,
-    effect
+    color
   }
   return combined
 })

@@ -1,6 +1,6 @@
 import createEvent from '../create/event'
 import guardEffect from '../guard/effect'
-import { SchemeEffectProps, SchemeData, EffectResult, HistoryEvent, SchemeRef } from '../types'
+import { SchemeEffectProps, SchemeData, EffectResult, HistoryEvent, Scheme } from '../types'
 
 export default function copyEffect ({
   summons,
@@ -25,7 +25,7 @@ export default function copyEffect ({
   event
 }: SchemeEffectProps & {
   condition?: boolean
-  scheme: SchemeData | SchemeRef | undefined
+  scheme: SchemeData | Scheme | undefined
   message: string
   event: HistoryEvent
 } & ({

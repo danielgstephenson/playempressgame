@@ -1,6 +1,7 @@
 import createEvent from '../create/event'
 import { PlayState, Player, Result } from '../types'
 import passTimeState from './passTime'
+import playEffectState from './playEffect'
 
 export default function playLastReadyState ({
   playState,
@@ -24,11 +25,11 @@ export default function playLastReadyState ({
   })
   const passedState = passTimeState({ playState })
   const playedState = passedState.players.reduce((playedState, player) => {
-    const effectedState = effectState({
+    const effectedState = playEffectState({
       playState: playedState,
       playingId: player.id
     })
     return effectedState
   }, passedState)
-  return playState
+  return playedState
 }

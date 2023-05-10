@@ -1,6 +1,6 @@
 import { deleteField } from 'firelord'
 import isChanged from '../is/changed'
-import { Write, Player, Profile, SchemeRef, PlayChanges } from '../types'
+import { Write, Player, Profile, Scheme, PlayChanges } from '../types'
 
 export default function getPlayChanges ({
   oldDeck,
@@ -13,14 +13,14 @@ export default function getPlayChanges ({
   newHand,
   newSilver
 }: {
-  oldDeck: SchemeRef[]
-  oldDiscard: SchemeRef[]
+  oldDeck: Scheme[]
+  oldDiscard: Scheme[]
   oldGold: number
   oldSilver: number
-  newDeck: SchemeRef[]
-  newDiscard: SchemeRef[]
+  newDeck: Scheme[]
+  newDiscard: Scheme[]
   newGold: number
-  newHand: SchemeRef[]
+  newHand: Scheme[]
   newSilver: number
 }): PlayChanges {
   const playerChanges: Write<Player> = {

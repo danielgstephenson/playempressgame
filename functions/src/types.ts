@@ -6,11 +6,8 @@ export interface HistoryEvent {
   children: HistoryEvent[]
   timestamp: number
   id: string
-}
-
-export interface SchemeRef {
-  id: string
-  rank: number
+  round?: number
+  playerId?: string
 }
 export type SchemeColor = 'green' | 'yellow' | 'red'
 export interface SchemeData {
@@ -23,9 +20,10 @@ export interface SchemeData {
   threat?: string
   link1: string
   link2: string
-  effect: SchemeEffect
 }
-export type Scheme = SchemeRef & SchemeData
+export interface Scheme extends SchemeData {
+  id: string
+}
 
 export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
 
@@ -34,7 +32,7 @@ export interface Profile {
   gameId: string
   deckEmpty: boolean
   displayName: string
-  topDiscardScheme?: SchemeRef | undefined
+  topDiscardScheme?: Scheme | undefined
   gold: number
   silver: number
   trashAreaEmpty: boolean
@@ -49,20 +47,21 @@ export interface Choice {
   id: string
   playerId: string
   type: ChoiceType
-  first?: SchemeRef
+  first?: Scheme
 }
 
 export type Game = MetaTypeCreator<{
   choices: Choice[]
   createdAt: ServerTimestamp
-  court: SchemeRef[]
-  dungeon: SchemeRef[]
+  court: Scheme[]
+  dungeon: Scheme[]
   history: HistoryEvent[]
   name: string
   phase: string
   readyCount: number
-  timeline: SchemeRef[]
+  round: number
   profiles: Profile[]
+  timeline: Scheme[]
 }, 'games', string>
 
 export type User = MetaTypeCreator<{
@@ -71,17 +70,17 @@ export type User = MetaTypeCreator<{
 }, 'users', string>
 
 export type Player = MetaTypeCreator<{
-  deck: SchemeRef[]
-  discard: SchemeRef[]
+  deck: Scheme[]
+  discard: Scheme[]
   displayName: string
   gameId: string
   gold: number
   silver: number
-  hand: SchemeRef[]
+  hand: Scheme[]
   history: HistoryEvent[]
-  playScheme: SchemeRef | DeleteField
-  trashScheme: SchemeRef | DeleteField
-  trashHistory: SchemeRef[][]
+  playScheme: Scheme | DeleteField
+  trashScheme: Scheme | DeleteField
+  trashHistory: Scheme[][]
   userId: string
 }, 'players', string>
 
@@ -106,6 +105,11 @@ export interface GameProps {
   gameId: string
 }
 
+export interface PlayReadyProps extends GameProps {
+  trashSchemeId: string
+  playSchemeId: string
+}
+
 export interface SchemeProps extends GameProps {
   schemeId: string
 }
@@ -116,12 +120,12 @@ export interface HistoryUpdate {
 
 export interface CurrentHandGuard extends CurrentPlayingGuard {
   scheme: Scheme
-  schemeRef: SchemeRef
+  schemeRef: Scheme
 }
 
 export interface ChoiceGuard extends CurrentHandGuard {
   choice: Choice
-  schemeRef: SchemeRef
+  schemeRef: Scheme
 }
 
 export interface CurrentUserGuard {
@@ -137,20 +141,11 @@ export interface PassTime {
 }
 
 export interface SchemeEffectProps {
-  summons: Scheme[]
-  choices: Choice[]
-  deck: Scheme[]
-  discard: Scheme[]
-  dungeon: Scheme[]
-  copiedByFirstEffect?: boolean | undefined
-  gold: number
-  silver: number
-  passedTimeline: Scheme[]
-  hand: Scheme[]
-  playerId: string
-  playSchemeRef: SchemeRef
-  playSchemes: Scheme[]
-  resume?: boolean | undefined
+  playState: PlayState
+  copiedByFirstEffect: boolean
+  effectPlayer: Result<Player>
+  effectScheme: Scheme
+  resume: boolean
 }
 
 export interface EffectResult {
@@ -165,17 +160,17 @@ export interface EffectResult {
 }
 
 export interface SerializedEffect {
-  effectSummons: SchemeRef[]
+  effectSummons: Scheme[]
   effectChoices: Choice[]
-  effectDeck: SchemeRef[]
-  effectDiscard: SchemeRef[]
+  effectDeck: Scheme[]
+  effectDiscard: Scheme[]
   effectGold: number
   effectSilver: number
-  effectHand: SchemeRef[]
+  effectHand: Scheme[]
   effectPlayerEvents: HistoryEvent[]
 }
 
-export type SchemeEffect = (props: SchemeEffectProps) => EffectResult
+export type SchemeEffect = (props: SchemeEffectProps) => PlayState
 
 export interface DrawResult {
   drawnHand: Scheme[]
@@ -240,8 +235,8 @@ export interface HighsGuard {
   high: Scheme
   highEvent: HistoryEvent
   highRank: string
-  highRef: SchemeRef
-  highRefs: SchemeRef[]
+  highRef: Scheme
+  highRefs: Scheme[]
   highs: Scheme[]
 }
 

@@ -1,5 +1,5 @@
 import getEffectResultChanges from '../get/effectResultChanges'
-import { Result, Player, Game, SchemeRef, EffectResultChanges } from '../types'
+import { Result, Player, Game, Scheme, EffectResultChanges } from '../types'
 import guardEffectResult from './effectResult'
 
 export default function guardEffectChanges ({
@@ -16,7 +16,7 @@ export default function guardEffectChanges ({
   currentGame: Result<Game>
   first?: boolean
   oldPlayer?: Result<Player>
-  ref: SchemeRef
+  ref: Scheme
   resume?: boolean
 }): EffectResultChanges {
   const {

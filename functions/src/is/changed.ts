@@ -1,6 +1,6 @@
-import { SchemeRef } from '../types'
+import { Scheme } from '../types'
 
-export default function isChanged (a: SchemeRef[], b: SchemeRef[]): boolean {
+export default function isChanged (a: Scheme[], b: Scheme[]): boolean {
   if (a.length !== b.length) {
     return true
   }
