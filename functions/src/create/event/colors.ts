@@ -1,5 +1,5 @@
-import { Scheme, HistoryEvent } from '../types'
-import createEvent from './event'
+import { Scheme, HistoryEvent } from '../../types'
+import createEvent from '.'
 
 export default function createColorsEvent ({ message, schemes }: {
   message: string

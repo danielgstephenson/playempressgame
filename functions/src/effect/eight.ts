@@ -4,7 +4,7 @@ import getLowestRankScheme from '../get/lowestRankScheme'
 import copyEffect from './copy'
 import isGreenOrYellow from '../is/greenOrYellow'
 import isYellow from '../is/yellow'
-import createColorsEvent from '../create/colorsEvent'
+import createColorsEvent from '../create/event/colors'
 
 export default function effectEight ({
   summons,

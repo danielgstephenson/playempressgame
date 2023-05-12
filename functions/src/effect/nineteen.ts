@@ -3,7 +3,7 @@ import createEvent from '../create/event'
 import isYellow from '../is/yellow'
 import getHighestRankScheme from '../get/highestRankScheme'
 import earn from '../earn'
-import createColorsEvent from '../create/colorsEvent'
+import createColorsEvent from '../create/event/colors'
 
 export default function effectNineteen ({
   summons,

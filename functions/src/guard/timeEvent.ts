@@ -15,5 +15,6 @@ export default function guardTimeEvent ({
   const displayName = player.id === privateId ? 'You' : player.displayName
   const message = `${displayName} played scheme ${playScheme.rank} with ${time} time.`
   const event = createEvent(message)
+  event.playerId = player.id
   return event
 }

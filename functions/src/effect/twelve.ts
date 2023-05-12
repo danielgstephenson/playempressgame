@@ -4,7 +4,7 @@ import copyEffect from './copy'
 import isGreen from '../is/green'
 import getHighestRankScheme from '../get/highestRankScheme'
 import isYellow from '../is/yellow'
-import createColorsEvent from '../create/colorsEvent'
+import createColorsEvent from '../create/event/colors'
 
 export default function effectTwelve ({
   summons,

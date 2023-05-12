@@ -12,9 +12,9 @@ export default function playEffectState ({
   const foundPlayer = playState.players.find(player => player.id === playingId)
   const effectPlayer = guardDefined(foundPlayer, 'Effect player')
   const effectScheme = guardDefined(effectPlayer.playScheme, 'Play scheme')
-  const playEffect = effects[effectScheme.rank]
-  const effect = guardDefined(playEffect, 'Play effect')
-  const effectedState = effect({
+  const rankEffects = effects[effectScheme.rank]
+  const playEffects = guardDefined(rankEffects, 'Play effects')
+  const effectedState = playEffects({
     copiedByFirstEffect: false,
     playState,
     effectPlayer,

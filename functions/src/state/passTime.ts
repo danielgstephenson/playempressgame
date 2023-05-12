@@ -4,6 +4,7 @@ import getJoinedRanks from '../get/joined/ranks'
 import { PlayState } from '../types'
 import guardPlayHandScheme from '../guard/playHandScheme'
 import guardTimeEvent from '../guard/timeEvent'
+import playerSort from '../playerSort'
 
 export default function passTimeState ({ playState }: {
   playState: PlayState
@@ -21,26 +22,27 @@ export default function passTimeState ({ playState }: {
     const passedRank = String(passed?.rank)
     const timeResult = `more than the ${playState.players.length} players, so ${passedRank} is removed from the timeline.`
     const timeMessage = `${totalMessage}, ${timeResult}`
-    const publicEvent = createEvent(timeMessage)
+    const observerEvent = createEvent(timeMessage)
     const beforeJoined = getJoinedRanks(playState.game.timeline)
     const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
     const afterJoined = getJoinedRanks(remaining)
     const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
-      const publicChild = guardTimeEvent({ player })
-      publicEvent.children.push(publicChild)
-      const privateEvent = createEvent(timeMessage)
-      const privateEvents = playState
+      const observerChild = guardTimeEvent({ player })
+      observerEvent.children.push(observerChild)
+      const playerEvent = createEvent(timeMessage)
+      const privateChildren = playState
         .players
         .map(timePlayer => guardTimeEvent({
           player: timePlayer,
           privateId: player.id
         }))
-      privateEvent.children = [...privateEvents, beforeEvent, afterEvent]
-      player.history.push(privateEvent)
+      playerSort({ events: privateChildren, player })
+      playerEvent.children = [...privateChildren, beforeEvent, afterEvent]
+      player.history.push(playerEvent)
     })
-    publicEvent.children.push(beforeEvent, afterEvent)
-    playState.game.history.push(publicEvent)
+    observerEvent.children.push(beforeEvent, afterEvent)
+    playState.game.history.push(observerEvent)
     return playState
   }
   const timeResult = `not more than the ${playState.players.length} players, so time does not pass.`

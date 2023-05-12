@@ -35,8 +35,6 @@ export interface Profile {
   topDiscardScheme?: Scheme | undefined
   gold: number
   silver: number
-  trashAreaEmpty: boolean
-  playAreaEmpty: boolean
   ready: boolean
   trashHistory: number[]
 }
@@ -69,6 +67,11 @@ export type User = MetaTypeCreator<{
   uid: string
 }, 'users', string>
 
+export interface TrashEvent {
+  scheme: Scheme
+  round: number
+}
+
 export type Player = MetaTypeCreator<{
   deck: Scheme[]
   discard: Scheme[]
@@ -80,7 +83,7 @@ export type Player = MetaTypeCreator<{
   history: HistoryEvent[]
   playScheme: Scheme | DeleteField
   trashScheme: Scheme | DeleteField
-  trashHistory: Scheme[][]
+  trashHistory: TrashEvent[]
   userId: string
 }, 'players', string>
 
@@ -245,4 +248,12 @@ export type Write <Collection extends MetaType> = Partial<Collection['writeFlatt
 export interface PlayState {
   game: Result<Game>
   players: Array<Result<Player>>
+}
+
+export interface EffectsStateProps {
+  copiedByFirstEffect: boolean
+  playState: PlayState
+  effectPlayer: Result<Player>
+  effectScheme: Scheme
+  resume: boolean
 }

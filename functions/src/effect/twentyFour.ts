@@ -3,7 +3,7 @@ import createEvent from '../create/event'
 import revive from '../revive'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import earn from '../earn'
-import createColorsEvent from '../create/colorsEvent'
+import createColorsEvent from '../create/event/colors'
 
 export default function effectTwentyFour ({
   summons,

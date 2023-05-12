@@ -2,6 +2,8 @@ import createEvent from '../create/event'
 import { PlayState, Player, Result } from '../types'
 import passTimeState from './passTime'
 import playEffectState from './playEffect'
+import guardDefined from '../guard/defined'
+import playerSort from '../playerSort'
 
 export default function playLastReadyState ({
   playState,
@@ -22,14 +24,27 @@ export default function playLastReadyState ({
   playState.game.history.push(publicReadyEvent)
   playState.game.profiles.forEach(profile => {
     profile.ready = false
+    profile.trashHistory.push(1)
+  })
+  playState.players.forEach(player => {
+    player.hand = player.hand.filter(scheme => scheme.id !== player.trashScheme?.id)
+    const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
+    player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
+    player.trashScheme = undefined
   })
   const passedState = passTimeState({ playState })
-  const playedState = passedState.players.reduce((playedState, player) => {
+  const effectedState = passedState.players.reduce((playedState, player) => {
     const effectedState = playEffectState({
       playState: playedState,
       playingId: player.id
     })
     return effectedState
   }, passedState)
-  return playedState
+  effectedState.players.forEach(player => {
+    const roundIndex = player.history.findIndex(event => event.round === effectedState.game.round)
+    const roundSlice = player.history.splice(roundIndex)
+    const sorted = playerSort({ events: roundSlice, player })
+    player.history.push(...sorted)
+  })
+  return effectedState
 }

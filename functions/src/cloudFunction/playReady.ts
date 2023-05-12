@@ -1,9 +1,8 @@
 import createCloudFunction from '../create/cloudFunction'
 import guardCurrentPlaying from '../guard/current/player'
-import { playersRef, profilesRef } from '../db'
-import { https } from 'firebase-functions/v1'
+import { playersRef } from '../db'
 import createEvent from '../create/event'
-import { Choice, Game, PlayReadyProps, PlayResult, Player, Result, SchemeProps, Scheme } from '../types'
+import { Choice, Game, PlayReadyProps, PlayResult, Player, Result, Scheme } from '../types'
 import { arrayUnion, deleteField, increment } from 'firelord'
 import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
@@ -11,18 +10,16 @@ import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
 import passTime from '../passTime'
 import guardEffect from '../guard/effect'
-import guardSchemes from '../guard/schemes'
 import serializeSchemes from '../serialize/schemes'
 import getHighestRankScheme from '../get/highestRankScheme'
 import getJoined from '../get/joined'
-import getAllPlayers from '../get/allPlayers'
 import guardPlayHandSchemes from '../guard/playHandSchemes'
 import serializeScheme from '../serialize/scheme'
 import getEffectResultChanges from '../get/effectResultChanges'
 import playLastReadyState from '../state/playLastReady'
-import playerToProfile from '../playerToProfile'
 import clone from '../clone'
 import guardString from '../guard/string'
+import getOtherPlayers from '../get/otherPlayers'
 
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -46,13 +43,11 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     schemeId: trashSchemeId,
     label: 'Play ready trash scheme'
   })
-  const trashSchemeRef = serializeScheme(trashScheme)
   const playScheme = guardHandScheme({
     hand: currentPlayer.hand,
     schemeId: playSchemeId,
     label: 'Play ready play scheme'
   })
-  const playSchemeRef = serializeScheme(playScheme)
   const realReadyCount = currentGame.readyCount + 1
   const waiting = realReadyCount < currentGame.profiles.length
   const newProfiles = currentGame.profiles.map(profile => {
@@ -95,26 +90,21 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     return
   }
   console.log('not waiting')
-  const allPlayers = await getAllPlayers({
-    currentPlayer,
+  const otherPlayers = await getOtherPlayers({
+    currentUid,
     gameId,
     transaction
   })
-  const readiedPlayers = allPlayers.map(player => {
-    if (player.id === currentPlayerId) {
-      return {
-        ...player,
-        trashScheme: trashSchemeRef,
-        playScheme: playSchemeRef
-      }
-    }
-    return player
-  })
+  const readyPlayer = {
+    ...currentPlayer,
+    trashScheme,
+    playScheme
+  }
+  const readiedPlayers = [readyPlayer, ...otherPlayers]
   currentGame.profiles = newProfiles
   const playState = {
     game: currentGame,
-    players: readiedPlayers,
-    profiles: allPlayers.map(player => playerToProfile(player))
+    players: readiedPlayers
   }
   const originalState = clone(playState)
   console.log('originalState', originalState)

@@ -7,7 +7,7 @@ import getGrammar from '../get/grammar'
 import isGreenOrYellow from '../is/greenOrYellow'
 import isRed from '../is/red'
 import addEvent from '../addEvent'
-import createColorsEvent from '../create/colorsEvent'
+import createColorsEvent from '../create/event/colors'
 
 export default function effectThirteen ({
   summons,
