@@ -3,7 +3,7 @@ import createEvent from '../create/event'
 import isYellow from '../is/yellow'
 import earn from '../earn'
 import getTopScheme from '../get/topScheme'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 
 export default function effectTwenty ({
   summons,

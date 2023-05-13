@@ -2,8 +2,8 @@ import createEvent from '../create/event'
 import revive from '../revive'
 import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
-import getLowestTime from '../get/lowestTime'
-import addEvent from '../addEvent'
+import guardLowestTime from '../guard/lowestTime'
+import addEvent from '../add/event'
 import getGrammar from '../get/grammar'
 
 export default function effectTwo ({
@@ -20,7 +20,7 @@ export default function effectTwo ({
   silver
 }: SchemeEffectProps): EffectResult {
   const firstEvent = createEvent('First, you revive the lowest time in play')
-  const lowestTime = getLowestTime(playSchemes)
+  const lowestTime = guardLowestTime(playSchemes)
   addEvent(firstEvent, `The lowest time in play is ${lowestTime}.`)
   const {
     revivedDiscard,

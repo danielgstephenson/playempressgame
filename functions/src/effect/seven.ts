@@ -5,7 +5,7 @@ import guardDefined from '../guard/defined'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import isGreen from '../is/green'
 import earn from '../earn'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 
 export default function effectSeven ({
   summons,

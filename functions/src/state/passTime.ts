@@ -4,7 +4,7 @@ import getJoinedRanks from '../get/joined/ranks'
 import { PlayState } from '../types'
 import guardPlayHandScheme from '../guard/playHandScheme'
 import guardTimeEvent from '../guard/timeEvent'
-import playerSort from '../playerSort'
+import playerSort from '../sort/player'
 
 export default function passTimeState ({ playState }: {
   playState: PlayState

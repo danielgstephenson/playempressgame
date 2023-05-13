@@ -1,7 +1,7 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import earn from '../earn'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 
 export default function effectTwentyOne ({
   summons,

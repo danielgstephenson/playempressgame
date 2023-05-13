@@ -3,7 +3,7 @@ import { PlayState, Player, Result } from '../types'
 import passTimeState from './passTime'
 import playEffectState from './playEffect'
 import guardDefined from '../guard/defined'
-import playerSort from '../playerSort'
+import playerSort from '../sort/player'
 
 export default function playLastReadyState ({
   playState,
@@ -43,7 +43,7 @@ export default function playLastReadyState ({
   effectedState.players.forEach(player => {
     const roundIndex = player.history.findIndex(event => event.round === effectedState.game.round)
     const roundSlice = player.history.splice(roundIndex)
-    const sorted = playerSort({ events: roundSlice, player })
+    const sorted = playerSort({ events: roundSlice, playerId: player.id })
     player.history.push(...sorted)
   })
   return effectedState

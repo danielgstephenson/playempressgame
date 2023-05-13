@@ -3,7 +3,7 @@ import createEvent from '../create/event'
 import revive from '../revive'
 import draw from '../draw'
 import getHighestTime from '../get/highestTime'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 import getLowestRankScheme from '../get/lowestRankScheme'
 
 export default function effectSix ({

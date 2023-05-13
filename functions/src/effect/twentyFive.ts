@@ -1,7 +1,7 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import revive from '../revive'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 import getJoinedRanks from '../get/joined/ranks'
 import draw from '../draw'
 

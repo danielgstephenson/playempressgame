@@ -42,10 +42,10 @@ export interface Profile {
 export type ChoiceType = 'trash' | 'deck'
 
 export interface Choice {
-  id: string
-  playerId: string
-  type: ChoiceType
-  first?: Scheme
+  readonly id: string
+  readonly playerId: string
+  readonly type: ChoiceType
+  readonly first?: Scheme
 }
 
 export type Game = MetaTypeCreator<{
@@ -243,7 +243,8 @@ export interface HighsGuard {
   highs: Scheme[]
 }
 
-export type Write <Collection extends MetaType> = Partial<Collection['writeFlatten']>
+export type Write <Collection extends MetaType> =
+Partial<Collection['writeFlatten']>
 
 export interface PlayState {
   game: Result<Game>
@@ -256,4 +257,23 @@ export interface EffectsStateProps {
   effectPlayer: Result<Player>
   effectScheme: Scheme
   resume: boolean
+}
+
+export interface PlayerEvent extends HistoryEvent {
+  playerId: string
+}
+
+export interface PublicEvents {
+  observerEvent: HistoryEvent
+  otherPlayerEvents: PlayerEvent[]
+}
+
+export interface PlayEvents {
+  privateEvent: HistoryEvent
+  publicEvents: PublicEvents
+}
+
+export interface LowestPlayTimeEvents {
+  time: number
+  playTimeEvents: PlayEvents
 }

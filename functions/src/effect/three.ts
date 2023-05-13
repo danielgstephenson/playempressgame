@@ -3,7 +3,7 @@ import { SchemeEffectProps, EffectResult } from '../types'
 import draw from '../draw'
 import createEvent from '../create/event'
 import getHighestTime from '../get/highestTime'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 
 export default function effectThree ({
   summons,

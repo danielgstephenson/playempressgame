@@ -1,9 +1,9 @@
 import { SchemeEffectProps, EffectResult } from '../types'
 import createEvent from '../create/event'
 import draw from '../draw'
-import getLowestTime from '../get/lowestTime'
+import guardLowestTime from '../guard/lowestTime'
 import guardScheme from '../guard/scheme'
-import addEvent from '../addEvent'
+import addEvent from '../add/event'
 
 export default function effectFour ({
   summons,
@@ -22,7 +22,7 @@ export default function effectFour ({
   const privilege = guardScheme({ rank: 1 })
   const bankHand = [...hand, privilege]
   const secondEvent = createEvent('Second, you draw the lowest time in play.')
-  const lowestTime = getLowestTime(playSchemes)
+  const lowestTime = guardLowestTime(playSchemes)
   addEvent(secondEvent, `The lowest time in play is ${lowestTime}.`)
   const {
     drawnDeck,
