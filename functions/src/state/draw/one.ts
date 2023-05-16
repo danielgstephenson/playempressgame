@@ -2,7 +2,7 @@ import createScheme from '../../create/scheme'
 import guardDefined from '../../guard/defined'
 import { PlayState, Player, Result } from '../../types'
 
-export default function drawOneState ({
+export default function drawOne ({
   playState,
   player
 }: {
@@ -19,7 +19,7 @@ export default function drawOneState ({
     const flippedDiscard = copy.reverse()
     player.deck = flippedDiscard
     player.discard = []
-    return drawOneState({
+    return drawOne({
       playState,
       player
     })

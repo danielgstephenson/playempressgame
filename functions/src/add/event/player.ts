@@ -1,5 +1,5 @@
-import { HistoryEvent, PlayerEvent } from '../types'
-import createPlayerEvent from '../create/event/player'
+import { HistoryEvent, PlayerEvent } from '../../types'
+import createPlayerEvent from '../../create/event/player'
 
 export default function addPlayerEvent ({
   children = [],

@@ -37,7 +37,7 @@ export default function passTimeState ({ playState }: {
           player: timePlayer,
           privateId: player.id
         }))
-      playerSort({ events: privateChildren, player })
+      playerSort({ events: privateChildren, playerId: player.id })
       playerEvent.children = [...privateChildren, beforeEvent, afterEvent]
       player.history.push(playerEvent)
     })

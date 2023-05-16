@@ -1,6 +1,6 @@
-import guardLowestTime from '../guard/lowestTime'
-import { LowestPlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../types'
-import addPlayTimeEvents from './playTimeEvents'
+import guardLowestPlayTime from '../../guard/lowestPlayTime'
+import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../types'
+import addPlayTimeEvents from './playTime'
 
 export default function addLowestPlayTimeEvents ({
   playState,
@@ -12,10 +12,10 @@ export default function addLowestPlayTimeEvents ({
   privateEvent: PlayerEvent
   publicEvents: PublicEvents
   playerId: string
-}): LowestPlayTimeEvents {
-  const time = guardLowestTime(playState.players)
+}): PlayTimeEvents {
+  const time = guardLowestPlayTime(playState.players)
   const lowestTimeString = String(time)
-  const timeMessage = `The lowest time in play is ${lowestTimeString}.`
+  const timeMessage = `The lowest time in play is ${lowestTimeString}`
   const playTimeEvents = addPlayTimeEvents({
     privateEvent,
     publicEvents,

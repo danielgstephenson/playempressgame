@@ -1,6 +1,6 @@
-import guardHighestTime from '../guard/highestTime'
-import { LowestPlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../types'
-import addPlayTimeEvents from './playTimeEvents'
+import guardHighestPlayTime from '../../guard/highestPlayTime'
+import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../types'
+import addPlayTimeEvents from './playTime'
 
 export default function addHighestPlayTimeEvents ({
   playState,
@@ -12,8 +12,8 @@ export default function addHighestPlayTimeEvents ({
   privateEvent: PlayerEvent
   publicEvents: PublicEvents
   playerId: string
-}): LowestPlayTimeEvents {
-  const time = guardHighestTime(playState.players)
+}): PlayTimeEvents {
+  const time = guardHighestPlayTime(playState.players)
   const highestTimeString = String(time)
   const timeMessage = `The highest time in play is ${highestTimeString}.`
   const playTimeEvents = addPlayTimeEvents({

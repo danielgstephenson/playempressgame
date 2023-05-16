@@ -1,11 +1,11 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
 import draw from '../draw'
 import createChoice from '../../create/choice'
-import addPlayerEvent from '../../add/playerEvent'
-import addPublicEvent from '../../add/publicEvent'
+import addPlayerEvent from '../../add/event/player'
+import addPublicEvent from '../../add/event/public'
 
-export default function effectsOneState ({
+export default function effectsOne ({
   copiedByFirstEffect,
   playState,
   effectPlayer,

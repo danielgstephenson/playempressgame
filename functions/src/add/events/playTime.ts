@@ -1,5 +1,5 @@
-import { HistoryEvent, PlayState, PlayEvents, PublicEvents, Scheme } from '../types'
-import addSortedPlayerEvents from './addSortedPlayerEvents'
+import { HistoryEvent, PlayState, PlayEvents, PublicEvents, Scheme } from '../../types'
+import addSortedPlayerEvents from './sortedPlayer'
 
 export default function addPlayTimeEvents ({
   privateEvent,

@@ -1,16 +1,16 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps, Scheme } from '../../types'
-import addPublicEvent from '../../add/publicEvent'
-import addPlayerEvent from '../../add/playerEvent'
-import drawState from '../draw'
-import addLowestPlayTimeEvents from '../../add/lowestPlayTimeEvents'
-import addTopDiscardSchemeTimeEvents from '../../add/topDiscardSchemeTimeEvents'
-import reviveState from '../revive'
+import addPublicEvent from '../../add/event/public'
+import addPlayerEvent from '../../add/event/player'
+import draw from '../draw'
+import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
+import addTopDiscardSchemeTimeEvents from '../../add/events/topDiscardSchemeTime'
+import revive from '../revive'
 import guardPlayHandScheme from '../../guard/playHandScheme'
 import getGrammar from '../../get/grammar'
-import addSortedPlayerEvents from '../../add/addSortedPlayerEvents'
+import addSortedPlayerEvents from '../../add/events/sortedPlayer'
 
-export default function effectsFiveState ({
+export default function effectsFive ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -35,7 +35,7 @@ export default function effectsFiveState ({
     privateEvent: firstPrivateEvent,
     publicEvents: firstPublicChildren
   })
-  reviveState({
+  revive({
     depth: topDiscardSchemeTime,
     playState,
     player: effectPlayer,
@@ -76,7 +76,7 @@ export default function effectsFiveState ({
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  drawState({
+  draw({
     depth: lowest.time,
     playState,
     player: effectPlayer,

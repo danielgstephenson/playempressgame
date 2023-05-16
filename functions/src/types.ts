@@ -273,7 +273,12 @@ export interface PlayEvents {
   publicEvents: PublicEvents
 }
 
-export interface LowestPlayTimeEvents {
+export interface PlayTimeEvents {
   time: number
   playTimeEvents: PlayEvents
+}
+
+export interface PlayRankEvents {
+  scheme: Scheme
+  playRankEvents: PlayEvents
 }

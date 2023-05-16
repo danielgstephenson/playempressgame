@@ -3,9 +3,9 @@ import guardPlayHandSchemes from './playHandSchemes'
 import { Player, Result, Scheme } from '../types'
 import getLowestTimeScheme from '../get/lowestTimeScheme'
 
-export default function guardLowestTimeScheme (players: Array<Result<Player>>): Scheme {
+export default function guardLowestTimePlayScheme (players: Array<Result<Player>>): Scheme {
   const playSchemes = guardPlayHandSchemes(players)
-  const lowestTimeScheme = getLowestTimeScheme(playSchemes)
-  const scheme = guardDefined(lowestTimeScheme, 'Lowest time scheme')
-  return scheme
+  const scheme = getLowestTimeScheme(playSchemes)
+  const defined = guardDefined(scheme, 'Lowest time scheme')
+  return defined
 }

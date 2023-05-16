@@ -1,10 +1,10 @@
-import addPlayerEvent from '../../add/playerEvent'
-import addPublicEvents from '../../add/publicEvents'
-import addPublicEvent from '../../add/publicEvent'
+import addPlayerEvent from '../../add/event/player'
+import addPublicEvents from '../../add/events/public'
+import addPublicEvent from '../../add/event/public'
 import createPrivilege from '../../create/privilege'
 import { PlayState, EffectsStateProps } from '../../types'
 
-export default function effectsZeroState ({
+export default function effectsZero ({
   copiedByFirstEffect,
   playState,
   effectPlayer,

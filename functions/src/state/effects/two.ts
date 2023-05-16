@@ -1,15 +1,15 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
 import addEvent from '../../add/event'
-import addPublicEvent from '../../add/publicEvent'
-import addPlayerEvent from '../../add/playerEvent'
+import addPublicEvent from '../../add/event/public'
+import addPlayerEvent from '../../add/event/player'
 import getGrammar from '../../get/grammar'
 import getJoined from '../../get/joined'
-import drawState from '../draw'
-import reviveState from '../revive'
-import addLowestPlayTimeEvents from '../../add/lowestPlayTimeEvents'
+import draw from '../draw'
+import revive from '../revive'
+import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
 
-export default function effectsTwoState ({
+export default function effectsTwo ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -34,7 +34,7 @@ export default function effectsTwoState ({
     publicEvents: firstPublicChildren,
     playerId: effectPlayer.id
   })
-  reviveState({
+  revive({
     depth: lowest.time,
     playState,
     player: effectPlayer,
@@ -57,7 +57,7 @@ export default function effectsTwoState ({
     addEvent(otherPlayerEvent, dungeonMessage)
   })
   addEvent(secondPrivateEvent, dungeonMessage)
-  drawState({
+  draw({
     depth: playState.game.dungeon.length,
     playState,
     player: effectPlayer,

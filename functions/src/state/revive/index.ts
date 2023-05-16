@@ -1,12 +1,11 @@
-import addEvent from '../../add/event'
-import addPublicEvent from '../../add/publicEvent'
+import addEventsEverywhere from '../../add/events/everywhere'
 import clone from '../../clone'
 import getGrammar from '../../get/grammar'
 import getJoinedRanks from '../../get/joined/ranks'
 import { HistoryEvent, PlayState, Player, PublicEvents, Result } from '../../types'
-import reviveMultipleState from './multiple'
+import reviveMultiple from './multiple'
 
-export default function reviveState ({
+export default function revive ({
   depth,
   playState,
   player,
@@ -20,7 +19,7 @@ export default function reviveState ({
   publicEvents: PublicEvents
 }): PlayState {
   const playerClone = clone(player)
-  const revivedState = reviveMultipleState({
+  const revivedState = reviveMultiple({
     depth,
     playState,
     player
@@ -31,15 +30,27 @@ export default function reviveState ({
   })
   const listRanks = getJoinedRanks(revived)
   if (playerClone.discard.length === 0) {
-    addEvent(privateEvent, 'Your discard is empty.')
-    addPublicEvent(publicEvents, `${player.displayName}'s discard is empty.`)
+    addEventsEverywhere({
+      privateEvent,
+      publicEvents,
+      base: 'discard is empty',
+      displayName: player.displayName
+    })
   } else if (playerClone.discard.length < depth) {
     const { count, all } = getGrammar(playerClone.discard.length, 'scheme', 'schemes')
-    addEvent(privateEvent, `Your discard only has ${count}, ${listRanks}, so you revive ${all}.`)
-    addPublicEvent(publicEvents, `${player.displayName}'s discard only has ${count}, so they revive ${all}.`)
+    addEventsEverywhere({
+      privateEvent,
+      publicEvents,
+      privateMessage: `Your discard only has ${count}, ${listRanks}, so you revive ${all}.`,
+      publicMessage: `${player.displayName}'s discard only has ${count}, so they revive ${all}.`
+    })
   } else {
-    addEvent(privateEvent, `You revive ${listRanks}.`)
-    addPublicEvent(publicEvents, `${player.displayName} revives ${listRanks}.`)
+    addEventsEverywhere({
+      privateEvent,
+      publicEvents,
+      base: `revives ${listRanks}`,
+      displayName: player.displayName
+    })
   }
   return revivedState
 }

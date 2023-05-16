@@ -1,12 +1,12 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
-import addPublicEvent from '../../add/publicEvent'
-import addPlayerEvent from '../../add/playerEvent'
-import drawState from '../draw'
+import addPublicEvent from '../../add/event/public'
+import addPlayerEvent from '../../add/event/player'
+import draw from '../draw'
 import createPrivilege from '../../create/privilege'
-import addLowestPlayTimeEvents from '../../add/lowestPlayTimeEvents'
+import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
 
-export default function effectsFourState ({
+export default function effectsFour ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -39,7 +39,7 @@ export default function effectsFourState ({
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  drawState({
+  draw({
     depth: lowest.time,
     playState,
     player: effectPlayer,

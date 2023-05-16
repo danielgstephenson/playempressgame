@@ -1,12 +1,12 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
-import addPublicEvent from '../../add/publicEvent'
-import addPlayerEvent from '../../add/playerEvent'
-import drawState from '../draw'
+import addPublicEvent from '../../add/event/public'
+import addPlayerEvent from '../../add/event/player'
+import draw from '../draw'
 import createPrivilege from '../../create/privilege'
-import addHighestPlayTimeEvents from '../../add/highestPlayTimeEvents'
+import addHighestPlayTimeEvents from '../../add/events/highestPlayTime'
 
-export default function effectsThreeState ({
+export default function effectsThree ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -39,7 +39,7 @@ export default function effectsThreeState ({
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  drawState({
+  draw({
     depth: highest.time,
     playState,
     player: effectPlayer,

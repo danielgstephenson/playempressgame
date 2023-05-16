@@ -1,14 +1,14 @@
-import addPublicEvents from '../../add/publicEvents'
+import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
-import addPublicEvent from '../../add/publicEvent'
-import addPlayerEvent from '../../add/playerEvent'
-import drawState from '../draw'
-import reviveState from '../revive'
-import addHighestPlayTimeEvents from '../../add/highestPlayTimeEvents'
+import addPublicEvent from '../../add/event/public'
+import addPlayerEvent from '../../add/event/player'
+import draw from '../draw'
+import revive from '../revive'
+import addHighestPlayTimeEvents from '../../add/events/highestPlayTime'
 import getLowestRankScheme from '../../get/lowestRankScheme'
-import addEvent from '../../add/event'
+import addEventsEverywhere from '../../add/events/everywhere'
 
-export default function effectsSixState ({
+export default function effectsSix ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -33,7 +33,7 @@ export default function effectsSixState ({
     publicEvents: firstPublicChildren,
     playerId: effectPlayer.id
   })
-  reviveState({
+  revive({
     depth: highest.time,
     playState,
     player: effectPlayer,
@@ -49,14 +49,20 @@ export default function effectsSixState ({
   })
   const lowestDungeon = getLowestRankScheme(playState.game.dungeon)
   if (playState.game.dungeon.length === 0) {
-    addPublicEvent(secondPublicChildren, 'The dungeon is empty.')
-    addEvent(secondPrivateEvent, 'The dungeon is empty.')
+    addEventsEverywhere({
+      publicEvents: secondPublicChildren,
+      privateEvent: secondPrivateEvent,
+      message: 'The dungeon is empty.'
+    })
   } else {
     const lowestRank = String(lowestDungeon?.rank)
-    addPublicEvent(secondPublicChildren, `The lowest rank in the dungeon is ${lowestRank}.`)
-    addEvent(secondPrivateEvent, `The lowest rank in the dungeon is ${lowestRank}.`)
+    addEventsEverywhere({
+      publicEvents: secondPublicChildren,
+      privateEvent: secondPrivateEvent,
+      message: `The lowest rank in the dungeon is ${lowestRank}.`
+    })
   }
-  drawState({
+  draw({
     depth: lowestDungeon?.rank ?? 0,
     playState,
     player: effectPlayer,

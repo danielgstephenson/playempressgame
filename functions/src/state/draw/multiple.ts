@@ -1,7 +1,7 @@
 import { PlayState, Player, Result } from '../../types'
-import drawOneState from './one'
+import drawOne from './one'
 
-export default function drawMultipleState ({
+export default function drawMultiple ({
   depth,
   playState,
   player
@@ -13,11 +13,11 @@ export default function drawMultipleState ({
   if (depth === 0) {
     return playState
   }
-  const drawnState = drawOneState({
+  const drawnState = drawOne({
     playState,
     player
   })
-  return drawMultipleState({
+  return drawMultiple({
     depth: depth - 1,
     playState: drawnState,
     player

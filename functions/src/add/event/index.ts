@@ -1,5 +1,5 @@
-import createEvent from '../create/event'
-import { HistoryEvent } from '../types'
+import createEvent from '../../create/event'
+import { HistoryEvent } from '../../types'
 
 export default function addEvent (event: HistoryEvent, message: string): HistoryEvent {
   const created = createEvent(message)

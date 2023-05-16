@@ -1,6 +1,6 @@
-import { HistoryEvent, PlayState, Player, PublicEvents, Result } from '../types'
-import createPlayerEvent from '../create/event/player'
-import createEvent from '../create/event'
+import { HistoryEvent, PlayState, Player, PublicEvents, Result } from '../../types'
+import createPlayerEvent from '../../create/event/player'
+import createEvent from '../../create/event'
 
 export default function addPublicEvents ({
   children = [],

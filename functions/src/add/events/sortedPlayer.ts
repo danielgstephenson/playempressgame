@@ -1,9 +1,9 @@
-import guardPlayHandScheme from '../guard/playHandScheme'
-import sortChildren from '../sort/children'
-import { PublicEvents, HistoryEvent, PlayState, Scheme, PlayEvents } from '../types'
-import addPlayerEvents from './addPlayerEvents'
-import addPlayerEvent from './playerEvent'
-import addPublicEvent from './publicEvent'
+import guardPlayHandScheme from '../../guard/playHandScheme'
+import sortChildren from '../../sort/children'
+import { PublicEvents, HistoryEvent, PlayState, Scheme, PlayEvents } from '../../types'
+import addPlayerEvents from './player'
+import addPlayerEvent from '../event/player'
+import addPublicEvent from '../event/public'
 
 export default function addSortedPlayerEvents ({
   publicEvents,
@@ -20,7 +20,7 @@ export default function addSortedPlayerEvents ({
   privateMessage: string
   playerId: string
   playState: PlayState
-  templateCallback: (scheme: Scheme) => string
+  templateCallback?: (scheme: Scheme) => string
 }): PlayEvents {
   const sortedPublicEvents = addPublicEvent(publicEvents, publicMessage)
   const sortedPrivateEvent = addPlayerEvent({
@@ -32,10 +32,11 @@ export default function addSortedPlayerEvents ({
   playState.players.forEach(player => {
     const playScheme = guardPlayHandScheme(player)
     const playMessage = `played ${playScheme.rank}`
-    const customMessage = templateCallback(playScheme)
-    const schemeMessage = `${playMessage}, ${customMessage}`
-    const publicMessage = `${player.displayName} ${schemeMessage}`
-    const privateMessage = `You ${schemeMessage}`
+    const schemeMessage = templateCallback == null
+      ? playMessage
+      : `${playMessage}, ${templateCallback(playScheme)}`
+    const publicMessage = `${player.displayName} ${schemeMessage}.`
+    const privateMessage = `You ${schemeMessage}.`
     addPlayerEvents({
       publicEvents: sortedPublicEvents,
       privateEvent: sortedPrivateEvent,

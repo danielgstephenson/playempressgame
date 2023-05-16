@@ -1,7 +1,7 @@
 import { PlayState, Player, Result } from '../../types'
-import reviveOneState from './one'
+import reviveOne from './one'
 
-export default function reviveMultipleState ({
+export default function reviveMultiple ({
   depth,
   playState,
   player
@@ -13,8 +13,8 @@ export default function reviveMultipleState ({
   if (depth === 0) {
     return playState
   }
-  const revivedState = reviveOneState({ playState, player })
-  return reviveMultipleState({
+  const revivedState = reviveOne({ playState, player })
+  return reviveMultiple({
     depth: depth - 1,
     playState: revivedState,
     player

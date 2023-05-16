@@ -1,7 +1,7 @@
-import getTopScheme from '../get/topScheme'
-import { HistoryEvent, PublicEvents, Scheme } from '../types'
-import addEvent from './event'
-import addPublicEvent from './publicEvent'
+import getTopScheme from '../../get/topScheme'
+import { HistoryEvent, PublicEvents, Scheme } from '../../types'
+import addEvent from '../event'
+import addPublicEvent from '../event/public'
 
 export default function addTopDiscardSchemeTimeEvents ({
   discard,

@@ -1,7 +1,7 @@
 import guardDefined from '../../guard/defined'
 import { PlayState, Player, Result } from '../../types'
 
-export default function reviveOneState ({
+export default function reviveOne ({
   playState,
   player
 }: {
