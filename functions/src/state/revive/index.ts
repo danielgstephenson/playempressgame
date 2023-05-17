@@ -33,7 +33,7 @@ export default function revive ({
     addEventsEverywhere({
       privateEvent,
       publicEvents,
-      base: 'discard is empty',
+      suffix: 'discard is empty',
       displayName: player.displayName
     })
   } else if (playerClone.discard.length < depth) {
@@ -48,7 +48,7 @@ export default function revive ({
     addEventsEverywhere({
       privateEvent,
       publicEvents,
-      base: `revives ${listRanks}`,
+      suffix: `revives ${listRanks}`,
       displayName: player.displayName
     })
   }

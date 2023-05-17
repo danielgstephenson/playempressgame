@@ -2,7 +2,7 @@ import { effects } from '../db'
 import guardDefined from '../guard/defined'
 import { PlayState } from '../types'
 
-export default function playEffectState ({
+export default function playEffects ({
   playState,
   playingId
 }: {

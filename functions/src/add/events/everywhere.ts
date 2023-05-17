@@ -3,7 +3,7 @@ import addEvent from '../event'
 import addPublicEvent from '../event/public'
 
 export default function addEventsEverywhere ({
-  base,
+  suffix,
   displayName,
   message,
   privateEvent,
@@ -20,19 +20,19 @@ export default function addEventsEverywhere ({
   privateEvent?: undefined
   publicEvents?: undefined
 }) & ({
-  base?: undefined
+  suffix?: undefined
   displayName?: undefined
   message?: undefined
   privateMessage: string
   publicMessage: string
 } | {
-  base?: undefined
+  suffix?: undefined
   displayName?: undefined
   message: string
   privateMessage?: undefined
   publicMessage?: undefined
 } | {
-  base: string
+  suffix: string
   displayName: string
   message?: undefined
   privateMessage?: undefined
@@ -49,9 +49,9 @@ export default function addEventsEverywhere ({
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   } else {
-    const publicMessage = `${displayName}'s ${base}.`
+    const publicMessage = `${displayName}'s ${suffix}.`
     const addedPublic = addPublicEvent(publicProp, publicMessage)
-    const privateMessage = `Your ${base}.`
+    const privateMessage = `Your ${suffix}.`
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   }

@@ -7,7 +7,7 @@ import guardSchemeData from '../../guard/schemeData'
 import guardDefined from '../../guard/defined'
 import earn from '../earn'
 import isGreen from '../../is/green'
-import addLowestPlayRankEvents from '../../add/events/lowestPlayRank'
+import addLowestRankPlaySchemeEvents from '../../add/events/lowestRankPlayScheme'
 
 export default function effectsSeven ({
   copiedByFirstEffect,
@@ -93,7 +93,7 @@ export default function effectsSeven ({
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-  const { scheme } = addLowestPlayRankEvents({
+  const { scheme } = addLowestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,
     publicEvents: secondPublicChildren,

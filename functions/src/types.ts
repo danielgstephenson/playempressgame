@@ -278,7 +278,12 @@ export interface PlayTimeEvents {
   playTimeEvents: PlayEvents
 }
 
-export interface PlayRankEvents {
+export interface SchemePlayEvents {
   scheme: Scheme
-  playRankEvents: PlayEvents
+  playEvents: PlayEvents
+}
+
+export interface MaybeSchemePlayEvents {
+  scheme?: Scheme
+  playEvents: PlayEvents
 }

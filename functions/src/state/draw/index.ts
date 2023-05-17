@@ -39,7 +39,7 @@ export default function draw ({
     addEventsEverywhere({
       privateEvent,
       publicEvents,
-      base: 'deck is empty.',
+      suffix: 'deck is empty.',
       displayName: player.displayName
     })
   } else if (playerClone.deck.length < depth) {

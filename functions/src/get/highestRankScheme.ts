@@ -1,4 +1,4 @@
-import { Scheme, Scheme } from '../types'
+import { Scheme } from '../types'
 import getSchemes from './schemes'
 
 export default function getHighestRankScheme (refs: Scheme[]): Scheme | undefined {

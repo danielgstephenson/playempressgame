@@ -1,8 +1,8 @@
 import guardLowestRankPlayScheme from '../../guard/lowestRankPlayScheme'
-import { PlayState, PlayerEvent, PublicEvents, PlayRankEvents } from '../../types'
+import { PlayState, PlayerEvent, PublicEvents, SchemePlayEvents } from '../../types'
 import addSortedPlayerEvents from './sortedPlayer'
 
-export default function addLowestPlayRankEvents ({
+export default function addLowestRankPlaySchemeEvents ({
   playState,
   privateEvent,
   publicEvents,
@@ -12,7 +12,7 @@ export default function addLowestPlayRankEvents ({
   privateEvent: PlayerEvent
   publicEvents: PublicEvents
   playerId: string
-}): PlayRankEvents {
+}): SchemePlayEvents {
   const scheme = guardLowestRankPlayScheme(playState.players)
   const rank = String(scheme.rank)
   const message = `The lowest rank in play is ${rank}.`
@@ -24,5 +24,5 @@ export default function addLowestPlayRankEvents ({
     playerId,
     playState
   })
-  return { scheme, playRankEvents }
+  return { scheme, playEvents: playRankEvents }
 }

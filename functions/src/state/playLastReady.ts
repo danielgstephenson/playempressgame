@@ -1,7 +1,7 @@
 import createEvent from '../create/event'
 import { PlayState, Player, Result } from '../types'
 import passTimeState from './passTime'
-import playEffectState from './playEffect'
+import playEffects from './playEffects'
 import guardDefined from '../guard/defined'
 import playerSort from '../sort/player'
 
@@ -34,7 +34,7 @@ export default function playLastReadyState ({
   })
   const passedState = passTimeState({ playState })
   const effectedState = passedState.players.reduce((playedState, player) => {
-    const effectedState = playEffectState({
+    const effectedState = playEffects({
       playState: playedState,
       playingId: player.id
     })

@@ -25,7 +25,7 @@ export default function earn ({
       : '0'
   const base = `earn ${amountMessage}`
   addEventsEverywhere({
-    base,
+    suffix: base,
     displayName: player.displayName,
     privateEvent,
     publicEvents
