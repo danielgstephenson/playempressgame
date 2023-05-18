@@ -3,11 +3,10 @@ import { PlayState, EffectsStateProps } from '../../types'
 import addPublicEvent from '../../add/event/public'
 import addPlayerEvent from '../../add/event/player'
 import copyEffects from './copy'
-import addLowestRankGreenOrYellowDungeonSchemeEvents from '../../add/events/scheme/dungeon/rank/lowest/greenOrYellow'
-import guardDefined from '../../guard/defined'
-import addLeftmostYellowTimelineSchemeEvents from '../../add/events/scheme/timeline/leftmost/yellow'
+import addTopDiscardSchemeGreenOrYellowEvents from '../../add/events/scheme/topDiscard/greenOrYellow'
+import addHighestRankGreenOrYellowPlaySchemeEvents from '../../add/events/scheme/play/rank/highest/greenOrYellow'
 
-export default function effectsNine ({
+export default function effectsEleven ({
   copiedByFirstEffect,
   playState,
   effectPlayer,
@@ -20,25 +19,25 @@ export default function effectsNine ({
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
   if (!resume) {
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} copies the leftmost yellow timeline scheme.`)
+    const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is green or yellow, they copy it.`)
     const firstPrivateEvent = addPlayerEvent({
       events: effectPlayer.history,
-      message: 'First, you copy the leftmost yellow timeline scheme.',
+      message: 'First, if your top discard scheme is green or yellow, copy it.',
       playerId: effectPlayer.id,
       round: playState.game.round
     })
-    const { scheme } = addLeftmostYellowTimelineSchemeEvents({
-      playState,
+    const scheme = addTopDiscardSchemeGreenOrYellowEvents({
       privateEvent: firstPrivateEvent,
-      publicEvents: firstPublicChildren
+      publicEvents: firstPublicChildren,
+      displayName: effectPlayer.displayName,
+      discard: effectPlayer.discard
     })
     if (scheme != null) {
-      const timelineScheme = guardDefined(scheme, 'Leftmost yellow timeline scheme')
       const firstChoices = copyEffects({
         first: true,
         playState,
         effectPlayer,
-        effectScheme: timelineScheme,
+        effectScheme: scheme,
         resume: false
       })
       if (firstChoices.length > 0) {
@@ -46,14 +45,14 @@ export default function effectsNine ({
       }
     }
   }
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the highest rank green dungeon scheme.`)
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the lowest rank green or yellow scheme in play.`)
   const secondPrivateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'Second, you copy the highest rank green dungeon scheme.',
+    message: 'Second, you copy the lowest rank green or yellow scheme in play.',
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-  const { scheme } = addLowestRankGreenOrYellowDungeonSchemeEvents({
+  const { scheme } = addHighestRankGreenOrYellowPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,
     publicEvents: secondPublicChildren,

@@ -287,3 +287,8 @@ export interface MaybeSchemePlayEvents {
   scheme?: Scheme
   playEvents: PlayEvents
 }
+
+export interface MaybeSchemesPlayEvents {
+  schemes?: Scheme[]
+  playEvents: PlayEvents
+}

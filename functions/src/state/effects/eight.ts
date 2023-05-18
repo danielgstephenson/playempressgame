@@ -32,15 +32,17 @@ export default function effectsEight ({
       publicEvents: firstPublicChildren,
       playerId: effectPlayer.id
     })
-    const firstChoices = copyEffects({
-      first: true,
-      playState,
-      effectPlayer,
-      effectScheme: scheme,
-      resume: false
-    })
-    if (firstChoices.length > 0) {
-      return playState
+    if (scheme != null) {
+      const firstChoices = copyEffects({
+        first: true,
+        playState,
+        effectPlayer,
+        effectScheme: scheme,
+        resume: false
+      })
+      if (firstChoices.length > 0) {
+        return playState
+      }
     }
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the lowest rank green or yellow dungeon scheme.`)
@@ -56,12 +58,14 @@ export default function effectsEight ({
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  copyEffects({
-    first: false,
-    playState,
-    effectPlayer,
-    effectScheme: scheme,
-    resume: false
-  })
+  if (scheme != null) {
+    copyEffects({
+      first: false,
+      playState,
+      effectPlayer,
+      effectScheme: scheme,
+      resume: false
+    })
+  }
   return playState
 }

@@ -1,21 +1,19 @@
-import guardDefined from '../../../../guard/defined'
-import isYellow from '../../../../is/yellow'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../types'
-import addEventsEverywhere from '../../everywhere'
-import addTimelineEvents from '.'
+import { MaybeSchemesPlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import addEventsEverywhere from '../../../everywhere'
+import addTimelineEvents from '..'
+import isYellow from '../../../../../is/yellow'
+import getJoinedRanks from '../../../../../get/joined/ranks'
+import getGrammar from '../../../../../get/grammar'
 
-export default function addLeftmostYellowTimelineSchemeEvents ({
+export default function addAreYellowTimelineSchemeEvents ({
   playState,
   privateEvent,
-  publicEvents,
-  playerId
+  publicEvents
 }: {
   playState: PlayState
   privateEvent: PlayerEvent
   publicEvents: PublicEvents
-  playerId: string
-}): MaybeSchemePlayEvents {
-  const yellowSchemes = playState.game.timeline.filter(isYellow)
+}): MaybeSchemesPlayEvents {
   if (playState.game.timeline.length === 0) {
     const playEvents = addEventsEverywhere({
       privateEvent,
@@ -23,7 +21,9 @@ export default function addLeftmostYellowTimelineSchemeEvents ({
       message: 'The timeline is empty.'
     })
     return { playEvents }
-  } else if (yellowSchemes.length === 0) {
+  }
+  const schemes = playState.game.timeline.filter(isYellow)
+  if (schemes.length === 0) {
     const playEvents = addEventsEverywhere({
       privateEvent,
       publicEvents,
@@ -35,17 +35,17 @@ export default function addLeftmostYellowTimelineSchemeEvents ({
     })
     return { playEvents }
   } else {
-    const yellowScheme = yellowSchemes[0]
-    const scheme = guardDefined(yellowScheme, 'Leftmost yellow timeline scheme')
+    const joined = getJoinedRanks(schemes)
+    const grammar = getGrammar(schemes.length)
     const playEvents = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      message: `The leftmost yellow timeline scheme is ${scheme.rank}.`
+      message: `The yellow timeline ${grammar.noun} ${grammar.verb} ${joined}.`
     })
     addTimelineEvents({
       playEvents,
       timeline: playState.game.timeline
     })
-    return { scheme, playEvents }
+    return { schemes, playEvents }
   }
 }

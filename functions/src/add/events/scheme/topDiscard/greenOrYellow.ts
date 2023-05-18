@@ -1,8 +1,8 @@
-import isYellow from '../../../../is/yellow'
+import isGreenOrYellow from '../../../../is/greenOrYellow'
 import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
 import addTopDiscardSchemeColorEvents from './color'
 
-export default function addTopDiscardSchemeYellowEvents ({
+export default function addTopDiscardSchemeGreenOrYellowEvents ({
   discard,
   displayName,
   privateEvent,
@@ -16,7 +16,7 @@ export default function addTopDiscardSchemeYellowEvents ({
   return addTopDiscardSchemeColorEvents({
     discard,
     displayName,
-    isColor: isYellow,
+    isColor: isGreenOrYellow,
     privateEvent,
     publicEvents
   })

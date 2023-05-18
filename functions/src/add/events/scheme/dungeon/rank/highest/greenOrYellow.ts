@@ -1,8 +1,8 @@
-import guardLowestRankGreenOrYellowDungeonScheme from '../../../../../../guard/lowestRankGreenOrYellowDungeonScheme'
+import guardHighestRankGreenOrYellowDungeonScheme from '../../../../../../guard/highestRankGreenOrYellowDungeonScheme'
 import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../../types'
 import addEventsEverywhere from '../../../../everywhere'
 
-export default function addLowestRankGreenOrYellowDungeonSchemeEvents ({
+export default function addHighestRankGreenOrYellowDungeonSchemeEvents ({
   playState,
   privateEvent,
   publicEvents,
@@ -13,7 +13,7 @@ export default function addLowestRankGreenOrYellowDungeonSchemeEvents ({
   publicEvents: PublicEvents
   playerId: string
 }): MaybeSchemePlayEvents {
-  const scheme = guardLowestRankGreenOrYellowDungeonScheme(playState.game)
+  const scheme = guardHighestRankGreenOrYellowDungeonScheme(playState.game)
   if (scheme == null) {
     const playEvents = addEventsEverywhere({
       publicEvents,
@@ -23,7 +23,7 @@ export default function addLowestRankGreenOrYellowDungeonSchemeEvents ({
     return { playEvents }
   }
   const rank = String(scheme.rank)
-  const message = `The lowest rank green or yellow dungeon scheme is ${rank}.`
+  const message = `The highest rank green or yellow dungeon scheme is ${rank}.`
   const playEvents = addEventsEverywhere({
     publicEvents,
     privateEvent,

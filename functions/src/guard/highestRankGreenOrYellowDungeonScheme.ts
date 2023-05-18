@@ -1,13 +1,13 @@
 import { Game, Result, Scheme } from '../types'
 import isGreenOrYellow from '../is/greenOrYellow'
-import getLowestRankScheme from '../get/lowestRankScheme'
+import getHighestRankScheme from '../get/highestRankScheme'
 
-export default function guardLowestRankGreenOrYellowDungeonScheme (
+export default function guardHighestRankGreenOrYellowDungeonScheme (
   game: Result<Game>
 ): Scheme | undefined {
   const greenOrYellowSchemes = game
     .dungeon
     .filter(scheme => isGreenOrYellow(scheme))
-  const scheme = getLowestRankScheme(greenOrYellowSchemes)
+  const scheme = getHighestRankScheme(greenOrYellowSchemes)
   return scheme
 }
