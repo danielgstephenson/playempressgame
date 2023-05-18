@@ -1,9 +1,9 @@
-import guardPlayHandScheme from '../../guard/playHandScheme'
-import sortChildren from '../../sort/children'
-import { PublicEvents, HistoryEvent, PlayState, Scheme, PlayEvents } from '../../types'
-import addPlayerEvents from './player'
-import addPlayerEvent from '../event/player'
-import addPublicEvent from '../event/public'
+import guardPlayHandScheme from '../../../guard/playHandScheme'
+import sortChildren from '../../../sort/children'
+import { PublicEvents, HistoryEvent, PlayState, Scheme, PlayEvents } from '../../../types'
+import addPlayerEvents from '.'
+import addPlayerEvent from '../../event/player'
+import addPublicEvent from '../../event/public'
 
 export default function addSortedPlayerEvents ({
   publicEvents,

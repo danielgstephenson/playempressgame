@@ -1,8 +1,8 @@
-import getGrammar from '../../get/grammar'
-import getJoinedRanks from '../../get/joined/ranks'
-import guardDefined from '../../guard/defined'
-import { PlayEvents, HistoryEvent, PublicEvents, Scheme } from '../../types'
-import addEventsEverywhere from './everywhere'
+import getGrammar from '../../../../get/grammar'
+import getJoinedRanks from '../../../../get/joined/ranks'
+import guardDefined from '../../../../guard/defined'
+import { PlayEvents, HistoryEvent, PublicEvents, Scheme } from '../../../../types'
+import addEventsEverywhere from '../../everywhere'
 
 export default function addTimelineEvents ({
   playEvents,

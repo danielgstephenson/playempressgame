@@ -7,7 +7,7 @@ import guardSchemeData from '../../guard/schemeData'
 import guardDefined from '../../guard/defined'
 import earn from '../earn'
 import isGreen from '../../is/green'
-import addLowestRankPlaySchemeEvents from '../../add/events/lowestRankPlayScheme'
+import addLowestRankPlaySchemeEvents from '../../add/events/scheme/play/rank/lowest'
 
 export default function effectsSeven ({
   copiedByFirstEffect,

@@ -20,10 +20,10 @@ export default function effectsNine ({
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
   if (!resume) {
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} copies the leftmost yellow timeline scheme.`)
+    const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they copy it.`)
     const firstPrivateEvent = addPlayerEvent({
       events: effectPlayer.history,
-      message: 'First, you copy the leftmost yellow timeline scheme.',
+      message: 'First, if your top discard scheme is yellow, copy it.',
       playerId: effectPlayer.id,
       round: playState.game.round
     })

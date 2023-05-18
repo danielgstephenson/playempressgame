@@ -1,6 +1,6 @@
-import { effects } from '../db'
-import guardDefined from '../guard/defined'
-import { PlayState } from '../types'
+import { effects } from '../../db'
+import guardDefined from '../../guard/defined'
+import { PlayState } from '../../types'
 
 export default function playEffects ({
   playState,

@@ -1,6 +1,6 @@
-import guardLowestRankGreenOrYellowDungeonScheme from '../../guard/lowestRankGreenOrYellowDungeonScheme'
-import { PlayState, PlayerEvent, PublicEvents, SchemePlayEvents } from '../../types'
-import addEventsEverywhere from './everywhere'
+import guardLowestRankGreenOrYellowDungeonScheme from '../../../../../../guard/lowestRankGreenOrYellowDungeonScheme'
+import { PlayState, PlayerEvent, PublicEvents, SchemePlayEvents } from '../../../../../../types'
+import addEventsEverywhere from '../../../../everywhere'
 
 export default function addLowestRankGreenOrYellowDungeonSchemeEvents ({
   playState,

@@ -1,8 +1,8 @@
-import guardDefined from '../../guard/defined'
-import isYellow from '../../is/yellow'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../types'
-import addEventsEverywhere from './everywhere'
-import addTimelineEvents from './timeline'
+import guardDefined from '../../../../guard/defined'
+import isYellow from '../../../../is/yellow'
+import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../types'
+import addEventsEverywhere from '../../everywhere'
+import addTimelineEvents from '.'
 
 export default function addLeftmostYellowTimelineSchemeEvents ({
   playState,

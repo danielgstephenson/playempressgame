@@ -1,7 +1,7 @@
 import createEvent from '../create/event'
 import { PlayState, Player, Result } from '../types'
 import passTimeState from './passTime'
-import playEffects from './playEffects'
+import playEffects from './effects/play'
 import guardDefined from '../guard/defined'
 import playerSort from '../sort/player'
 

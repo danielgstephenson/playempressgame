@@ -1,6 +1,6 @@
-import guardLowestRankYellowPlayScheme from '../../guard/lowestRankYellowPlayScheme'
-import { PlayState, PlayerEvent, PublicEvents, SchemePlayEvents } from '../../types'
-import addSortedPlayerEvents from './sortedPlayer'
+import guardLowestRankYellowPlayScheme from '../../../../../../guard/lowestRankYellowPlayScheme'
+import { PlayState, PlayerEvent, PublicEvents, SchemePlayEvents } from '../../../../../../types'
+import addSortedPlayerEvents from '../../../../player/sorted'
 
 export default function addLowestRankYellowPlaySchemeEvents ({
   playState,

@@ -1,7 +1,7 @@
-import clone from '../clone'
-import { effects } from '../db'
-import guardDefined from '../guard/defined'
-import { Choice, PlayState, Player, Result, Scheme } from '../types'
+import clone from '../../../clone'
+import { effects } from '../../../db'
+import guardDefined from '../../../guard/defined'
+import { Choice, PlayState, Player, Result, Scheme } from '../../../types'
 
 export default function copyEffects ({
   effectPlayer,

@@ -3,12 +3,12 @@ import { PlayState, EffectsStateProps, Scheme } from '../../types'
 import addPublicEvent from '../../add/event/public'
 import addPlayerEvent from '../../add/event/player'
 import draw from '../draw'
-import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
-import addTopDiscardSchemeTimeEvents from '../../add/events/topDiscardSchemeTime'
+import addLowestPlayTimeEvents from '../../add/events/scheme/play/time/lowest'
+import addTopDiscardSchemeTimeEvents from '../../add/events/topDiscardScheme/time'
 import revive from '../revive'
 import guardPlayHandScheme from '../../guard/playHandScheme'
 import getGrammar from '../../get/grammar'
-import addSortedPlayerEvents from '../../add/events/sortedPlayer'
+import addSortedPlayerEvents from '../../add/events/player/sorted'
 
 export default function effectsFive ({
   copiedByFirstEffect,

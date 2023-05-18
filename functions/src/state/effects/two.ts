@@ -7,7 +7,7 @@ import getGrammar from '../../get/grammar'
 import getJoined from '../../get/joined'
 import draw from '../draw'
 import revive from '../revive'
-import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
+import addLowestPlayTimeEvents from '../../add/events/scheme/play/lowest/rank/lowestPlayTime'
 
 export default function effectsTwo ({
   copiedByFirstEffect,

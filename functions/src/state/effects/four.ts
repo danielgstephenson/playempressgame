@@ -4,7 +4,7 @@ import addPublicEvent from '../../add/event/public'
 import addPlayerEvent from '../../add/event/player'
 import draw from '../draw'
 import createPrivilege from '../../create/privilege'
-import addLowestPlayTimeEvents from '../../add/events/lowestPlayTime'
+import addLowestPlayTimeEvents from '../../add/events/scheme/play/lowest/rank/lowestPlayTime'
 
 export default function effectsFour ({
   copiedByFirstEffect,

@@ -1,6 +1,6 @@
-import { HistoryEvent, PublicEvents } from '../../types'
-import addEvent from '../event'
-import addPlayerEvent from '../event/player'
+import { HistoryEvent, PublicEvents } from '../../../types'
+import addEvent from '../../event'
+import addPlayerEvent from '../../event/player'
 
 export default function addPlayerEvents ({
   publicEvents,

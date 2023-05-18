@@ -1,6 +1,6 @@
-import guardHighestPlayTime from '../../guard/highestPlayTime'
-import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../types'
-import addPlayTimeEvents from './playTime'
+import guardHighestPlayTime from '../../../../../guard/highestPlayTime'
+import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import addPlayTimeEvents from '.'
 
 export default function addHighestPlayTimeEvents ({
   playState,

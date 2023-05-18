@@ -4,7 +4,7 @@ import addPublicEvent from '../../add/event/public'
 import addPlayerEvent from '../../add/event/player'
 import draw from '../draw'
 import createPrivilege from '../../create/privilege'
-import addHighestPlayTimeEvents from '../../add/events/highestPlayTime'
+import addHighestPlayTimeEvents from '../../add/events/scheme/play/time/highest'
 
 export default function effectsThree ({
   copiedByFirstEffect,

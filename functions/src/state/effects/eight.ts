@@ -2,9 +2,9 @@ import addPublicEvents from '../../add/events/public'
 import { PlayState, EffectsStateProps } from '../../types'
 import addPublicEvent from '../../add/event/public'
 import addPlayerEvent from '../../add/event/player'
-import copyEffects from '../copyEffects'
-import addLowestRankYellowPlaySchemeEvents from '../../add/events/lowestRankYellowPlayScheme'
-import addLowestRankGreenOrYellowDungeonSchemeEvents from '../../add/events/lowestRankGreenOrYellowDungeonScheme'
+import copyEffects from './copy'
+import addLowestRankYellowPlaySchemeEvents from '../../add/events/scheme/play/rank/lowest/yellow'
+import addLowestRankGreenOrYellowDungeonSchemeEvents from '../../add/events/scheme/dungeon/rank/lowest/greenOrYellow'
 
 export default function effectsEight ({
   copiedByFirstEffect,
