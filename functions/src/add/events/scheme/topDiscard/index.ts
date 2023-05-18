@@ -1,9 +1,9 @@
-import getTopScheme from '../../../get/topScheme'
-import { HistoryEvent, PublicEvents, Scheme } from '../../../types'
-import addEvent from '../../event'
-import addPublicEvent from '../../event/public'
+import getTopScheme from '../../../../get/topScheme'
+import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
+import addEvent from '../../../event'
+import addPublicEvent from '../../../event/public'
 
-export default function addTopDiscardSchemeYellowEvents ({
+export default function addTopDiscardSchemeEvents ({
   discard,
   displayName,
   privateEvent,

@@ -1,6 +1,6 @@
-import { HistoryEvent, PublicEvents, Scheme } from '../../../types'
-import addEvent from '../../event'
-import addPublicEvent from '../../event/public'
+import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
+import addEvent from '../../../event'
+import addPublicEvent from '../../../event/public'
 import addTopDiscardSchemeEvents from '.'
 
 export default function addTopDiscardSchemeTimeEvents ({
