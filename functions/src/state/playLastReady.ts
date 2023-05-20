@@ -4,6 +4,10 @@ import passTimeState from './passTime'
 import playEffects from './effects/play'
 import guardDefined from '../guard/defined'
 import playerSort from '../sort/player'
+import guardHighestRankPlayScheme from '../guard/highestRankPlayScheme'
+import filterIds from '../filterIds'
+import clone from '../clone'
+import addPublicEvent from '../add/event/public'
 
 export default function playLastReadyState ({
   playState,
@@ -33,6 +37,7 @@ export default function playLastReadyState ({
     player.trashScheme = undefined
   })
   const passedState = passTimeState({ playState })
+  const playStateClone = clone(passedState)
   const effectedState = passedState.players.reduce((playedState, player) => {
     const effectedState = playEffects({
       playState: playedState,
@@ -46,5 +51,17 @@ export default function playLastReadyState ({
     const sorted = playerSort({ events: roundSlice, playerId: player.id })
     player.history.push(...sorted)
   })
+  const effectsChoices = filterIds(effectedState.game.choices, playStateClone.game.choices)
+  if (effectsChoices.length === 0) {
+    return effectedState
+  }
+  const highestPlayScheme = guardHighestRankPlayScheme(effectedState.players)
+  const highestPlayEvent = createEvent(`The highest rank scheme in play is ${highestPlayScheme.rank}.`)
+  playState.players.forEach(player => {
+    player.history.push(highestPlayEvent)
+  })
+  playState.game.history.push(highestPlayEvent)
+  const highPlayers = effectedState.players.filter(player => player.playScheme?.rank === highestPlayScheme.rank)
+  if (highPlayers.length === 1) {
   return effectedState
 }

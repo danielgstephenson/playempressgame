@@ -184,7 +184,7 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     if (high == null) {
       throw new Error('No highest rank scheme.')
     }
-    const highRank = String(high?.rank)
+    const highRank = String(high.rank)
     const highEvent = createEvent(`The highest rank scheme in play is ${highRank}.`)
     const highs = playSchemes.filter(scheme => scheme.rank === high?.rank)
     if (highs.length > 1) {
