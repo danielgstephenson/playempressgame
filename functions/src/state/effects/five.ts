@@ -55,7 +55,7 @@ export default function effectsFive ({
     return [...uniqueColors, playScheme.color]
   }, [])
   const doubleColors = uniqueColors.length * 2
-  const { phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
+  const { toBeCount: phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
   const publicMessage = `There ${phrase} in play, so ${effectPlayer.displayName} draws ${doubleColors}`
   const privateMessage = `There ${phrase} in play, so you draw ${doubleColors}`
   function templateCallback (scheme: Scheme): string {

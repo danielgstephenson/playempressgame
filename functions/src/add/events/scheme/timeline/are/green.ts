@@ -40,7 +40,7 @@ export default function addAreGreenTimelineSchemeEvents ({
     const playEvents = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      message: `The green timeline ${grammar.noun} ${grammar.verb} ${joined}.`
+      message: `The green timeline ${grammar.noun} ${grammar.toBe} ${joined}.`
     })
     addTimelineEvents({
       playEvents,

@@ -3,6 +3,7 @@ import addEvent from '../event'
 import addPublicEvent from '../event/public'
 
 export default function addEventsEverywhere ({
+  possessive = true,
   suffix,
   displayName,
   message,
@@ -11,7 +12,9 @@ export default function addEventsEverywhere ({
   playEvents,
   publicEvents,
   publicMessage
-}: ({
+}: {
+  possessive?: boolean
+} & ({
   playEvents?: undefined
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
@@ -49,9 +52,11 @@ export default function addEventsEverywhere ({
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   } else {
-    const publicMessage = `${displayName}'s ${suffix}.`
+    const publicPrefix = possessive ? `${displayName}'s` : displayName
+    const publicMessage = `${publicPrefix} ${suffix}.`
     const addedPublic = addPublicEvent(publicProp, publicMessage)
-    const privateMessage = `Your ${suffix}.`
+    const privatePrefix = possessive ? 'Your' : 'You'
+    const privateMessage = `${privatePrefix} ${suffix}.`
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   }

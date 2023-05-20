@@ -199,11 +199,17 @@ export interface ReviveData extends ReviveResult {
 
 export interface Grammar {
   count: string
-  verb: string
+  toBe: string
   noun: string
-  phrase: string
+  toBeCount: string
   object: string
   all: string
+}
+
+export interface GetJoinedRanksGrammar {
+  grammar: Grammar
+  joinedRanks: string
+  joinedCount: string
 }
 
 export interface Earning {

@@ -27,7 +27,7 @@ export default function effectThirteen ({
   const redSchemes = passedTimeline.filter(isRed)
   const noRed = redSchemes.length === 0
   if (noRed) {
-    const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
+    const { toBe: verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
     const redRanks = getJoinedRanks(redSchemes)
     addEvent(firstEvent, `There ${verb} red timeline ${noun}, ${redRanks}.`)
   } else {
@@ -41,7 +41,7 @@ export default function effectThirteen ({
   const left = passedTimeline[0]
   const leftRank = String(left?.rank)
   const leftMessage = `The leftmost timeline scheme is ${leftRank}.`
-  const { verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
+  const { toBe: verb, noun } = getGrammar(redSchemes.length, 'scheme', 'schemes')
   const leftNonMessage = noRed
     ? `The red timeline ${noun} ${verb} ${redRanks}.`
     : 'The timeline is empty.'

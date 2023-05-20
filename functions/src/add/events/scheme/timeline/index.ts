@@ -23,7 +23,7 @@ export default function addTimelineEvents ({
   const publicProp = playEvents == null ? publicEvents : playEvents.publicEvents
   const privateProp = playEvents == null ? privateEvent : playEvents.privateEvent
   const joined = getJoinedRanks(timeline)
-  const { verb, noun } = getGrammar(timeline.length)
+  const { toBe: verb, noun } = getGrammar(timeline.length)
   addEventsEverywhere({
     publicEvents: publicProp,
     privateEvent: privateProp,

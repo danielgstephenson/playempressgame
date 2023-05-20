@@ -1,5 +1,6 @@
 import clone from '../../../clone'
 import { effects } from '../../../db'
+import filterIds from '../../../filterIds'
 import guardDefined from '../../../guard/defined'
 import { Choice, PlayState, Player, Result, Scheme } from '../../../types'
 
@@ -26,9 +27,6 @@ export default function copyEffects ({
     effectScheme,
     resume
   })
-  const effectChoices = effectedState
-    .game
-    .choices
-    .filter(choice => choicesClone.every(clone => clone.id !== choice.id))
+  const effectChoices = filterIds(effectedState.game.choices, choicesClone)
   return effectChoices
 }

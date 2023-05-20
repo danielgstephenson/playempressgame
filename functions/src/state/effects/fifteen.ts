@@ -22,10 +22,10 @@ export default function effectsFifteen ({
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
   if (!resume) {
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, if your top discard scheme is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`)
+    const firstPublicChildren = addPublicEvent(publicEvents, `If your top discard scheme is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`)
     const firstPrivateEvent = addPlayerEvent({
       events: effectPlayer.history,
-      message: 'First, if your top discard scheme is red, copy the leftmost green timeline scheme.',
+      message: 'If your top discard scheme is red, copy the leftmost green timeline scheme.',
       playerId: effectPlayer.id,
       round: playState.game.round
     })

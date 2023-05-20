@@ -1,19 +1,17 @@
 import guardDefined from '../../../../../guard/defined'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents, Scheme } from '../../../../../types'
+import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
 import addAreTimelineSchemeEvents from '../are'
 
-export default function addLeftmostTimelineSchemeEvents ({
+export default function addRightmostTimelineSchemeEvents ({
   playState,
   privateEvent,
-  publicEvents,
-  templateCallback
+  publicEvents
 }: {
   playState: PlayState
   privateEvent: PlayerEvent
   publicEvents: PublicEvents
-  templateCallback?: (scheme: Scheme) => string
 }): MaybeSchemePlayEvents {
   const { schemes, playEvents: areEvents } = addAreTimelineSchemeEvents({
     playState,
@@ -21,16 +19,12 @@ export default function addLeftmostTimelineSchemeEvents ({
     publicEvents
   })
   if (schemes?.length === 0) return { playEvents: areEvents }
-  const leftmostScheme = schemes?.[0]
-  const scheme = guardDefined(leftmostScheme, 'Leftmost timeline scheme')
-  const leftmostMessage = `The leftmost timeline scheme is ${scheme.rank}`
-  const message = templateCallback == null
-    ? `${leftmostMessage}.`
-    : `${leftmostMessage}, ${templateCallback(scheme)}.`
+  const right = schemes?.[schemes.length - 1]
+  const scheme = guardDefined(right, 'Rightmost timeline scheme')
   const playEvents = addEventsEverywhere({
     privateEvent,
     publicEvents,
-    message
+    message: `The rightmost timeline scheme is ${scheme.rank}.`
   })
   addTimelineEvents({
     playEvents,

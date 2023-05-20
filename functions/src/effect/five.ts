@@ -48,25 +48,25 @@ export default function effectFive ({
     return [...uniqueColors, playScheme.color]
   }, [])
   const doubleColors = uniqueColors.length * 2
-  const { phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
+  const { toBeCount: phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
   const colorsEvent = createEvent(`There ${phrase} in play, so you draw ${doubleColors}`)
   secondEvent.children.push(colorsEvent)
   const greenSchemes = playSchemes.filter(isGreen)
   if (greenSchemes.length !== 0) {
     const greenRanks = getJoinedRanks(greenSchemes)
-    const { verb } = getGrammar(greenSchemes.length)
+    const { toBe: verb } = getGrammar(greenSchemes.length)
     addEvent(colorsEvent, `${greenRanks} ${verb} green.`)
   }
   const yellowSchemes = playSchemes.filter(isYellow)
   if (yellowSchemes.length !== 0) {
     const yellowRanks = getJoinedRanks(yellowSchemes)
-    const { verb } = getGrammar(yellowSchemes.length)
+    const { toBe: verb } = getGrammar(yellowSchemes.length)
     addEvent(colorsEvent, `${yellowRanks} ${verb} yellow.`)
   }
   const redSchemes = playSchemes.filter(isRed)
   if (redSchemes.length !== 0) {
     const redRanks = getJoinedRanks(redSchemes)
-    const { verb } = getGrammar(redSchemes.length)
+    const { toBe: verb } = getGrammar(redSchemes.length)
     addEvent(colorsEvent, `${redRanks} ${verb} red.`)
   }
   const { drawnDeck, drawnDiscard, drawnHand } = draw({

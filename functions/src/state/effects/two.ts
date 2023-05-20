@@ -48,7 +48,7 @@ export default function effectsTwo ({
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-  const { phrase } = getGrammar(playState.game.dungeon.length)
+  const { toBeCount: phrase } = getGrammar(playState.game.dungeon.length)
   const dungeonRanks = playState.game.dungeon.map(scheme => scheme.rank)
   const dungeonJoined = getJoined(dungeonRanks)
   const dungeonMessage = `There ${phrase} in the dungeon, ${dungeonJoined}.`
