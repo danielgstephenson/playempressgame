@@ -1,6 +1,6 @@
 import { Transaction } from 'firelord'
 import endPlay from './endPlay'
-import playEffects from './state/effects/play'
+import playEffects from './effects/play'
 import { Choice, PlayState, Player, Result } from './types'
 import setPlayState from './setPlayState'
 

@@ -1,5 +1,6 @@
 import { Auth, User } from 'firebase/auth'
 import { HttpsCallableResult } from 'firebase/functions'
+import { Timestamp } from 'firebase/firestore'
 
 export interface AuthState {
   auth?: Auth
@@ -13,10 +14,18 @@ export interface AuthState {
 export interface Doc {
   id?: string
 }
-
+export type SchemeColor = 'green' | 'yellow' | 'red'
 export interface Scheme {
   id: string
   rank: number
+  color: SchemeColor
+  title: string
+  time: number
+  beginning: string
+  end: string
+  threat?: string
+  link1: string
+  link2: string
 }
 
 export interface HistoryEvent {
@@ -25,59 +34,62 @@ export interface HistoryEvent {
   timestamp: number
 }
 
-export interface GameUser {
-  id: string
+export interface TrashEvent {
+  round: number
+}
+
+export interface PrivateTrashEvent extends TrashEvent {
+  scheme: Scheme
+}
+
+export interface Profile {
+  userId: string
+  gameId: string
+  deckEmpty: boolean
   displayName: string
+  topDiscardScheme?: Scheme | undefined
+  gold: number
+  silver: number
+  ready: boolean
+  trashHistory: TrashEvent[]
 }
 
 export type ChoiceType = 'trash' | 'deck'
 
 export interface Choice {
-  playerId: string
-  type: ChoiceType
+  readonly id: string
+  readonly playerId: string
+  readonly type: ChoiceType
+  readonly first?: Scheme
 }
 
-export interface Game extends Doc {
+export interface Game extends Doc{
   choices: Choice[]
-  createdAt: {
-    seconds: number
-    nanoseconds: number
-  }
+  createdAt: Timestamp
   court: Scheme[]
   dungeon: Scheme[]
   history: HistoryEvent[]
   name: string
   phase: string
   readyCount: number
+  round: number
+  profiles: Profile[]
   timeline: Scheme[]
-  users: GameUser[]
-}
-
-export interface Profile extends Doc {
-  deckEmpty?: boolean
-  gameId: string
-  userId: string
-  displayName: string
-  gold: number
-  topDiscardScheme?: Scheme
-  trashEmpty?: boolean
-  playEmpty?: boolean
-  ready?: boolean
-  silver: number
 }
 
 export interface Player extends Doc {
   deck: Scheme[]
   discard: Scheme[]
+  displayName: string
   gameId: string
   gold: number
-  hand: Scheme[]
-  userId: string
-  trashScheme?: Scheme
-  playScheme?: Scheme
-  history: HistoryEvent[]
-  displayName: string
   silver: number
+  hand: Scheme[]
+  history: HistoryEvent[]
+  playScheme?: Scheme
+  trashScheme?: Scheme
+  trashHistory: PrivateTrashEvent[]
+  userId: string
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>

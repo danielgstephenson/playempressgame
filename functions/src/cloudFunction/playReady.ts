@@ -7,7 +7,7 @@ import createHistoryUpdate from '../create/historyUpdate'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
-import playLastReady from '../state/playLastReady'
+import playLastReady from '../playLastReady'
 import guardString from '../guard/string'
 import getOtherPlayers from '../get/otherPlayers'
 

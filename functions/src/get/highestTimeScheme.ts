@@ -1,4 +1,4 @@
-import { Scheme, Scheme } from '../types'
+import { Scheme } from '../types'
 import getSchemes from './schemes'
 import reduceHighestTime from '../reduce/highestTime'
 

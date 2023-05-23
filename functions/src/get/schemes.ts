@@ -1,5 +1,5 @@
 import guardSchemeData from '../guard/schemeData'
-import { Scheme, Scheme } from '../types'
+import { Scheme } from '../types'
 
 export default function getSchemes (schemeRefs: Scheme[]): Scheme[] {
   const schemes = schemeRefs.map((ref) => {

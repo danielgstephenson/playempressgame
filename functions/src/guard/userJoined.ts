@@ -8,7 +8,7 @@ export default function guardUserJoined ({
   gameData: Game['read']
   userId: string
 }): void {
-  const user = gameData.users.find((user) => user.id === userId)
+  const user = gameData.profiles.find((profile) => profile.userId === userId)
   if (user == null) {
     throw new https.HttpsError(
       'failed-precondition',
