@@ -1,16 +1,7 @@
-import { https } from 'firebase-functions/v1'
 import { Player, Result, Scheme } from '../types'
-import guardScheme from './scheme'
+import guardDefined from './defined'
 
 export default function guardPlayScheme (player: Result<Player>): Scheme {
-  if (player.playScheme == null) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'You are not playing a scheme'
-    )
-  }
-  const playScheme = guardScheme({
-    ref: player.playScheme
-  })
-  return playScheme
+  const scheme = guardDefined(player.playScheme, `${player.displayName}'s play scheme`)
+  return scheme
 }

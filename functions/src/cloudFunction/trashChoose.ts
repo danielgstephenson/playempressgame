@@ -1,8 +1,9 @@
 import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
-import { Profile, SchemeProps, Write } from '../types'
+import { SchemeProps } from '../types'
 import guardChoice from '../guard/choice'
-import implementChoice from '../implementChoice'
+import getOtherPlayers from '../get/otherPlayers'
+import onChoiceComplete from '../onChoiceComplete'
 
 const trashChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Choosing scheme ${props.schemeId} to trash...`)
@@ -10,11 +11,8 @@ const trashChoose = createCloudFunction<SchemeProps>(async (props, context, tran
     choice,
     currentUid,
     currentGame,
-    currentGameRef,
     currentPlayer,
-    currentPlayerRef,
-    currentProfileRef,
-    schemeRef
+    scheme
   } = await guardChoice({
     gameId: props.gameId,
     transaction,
@@ -22,31 +20,35 @@ const trashChoose = createCloudFunction<SchemeProps>(async (props, context, tran
     schemeId: props.schemeId,
     label: 'Trash choice scheme'
   })
-  const privateChoiceEvent = createEvent(`You chose scheme ${schemeRef.rank} to trash from your hand.`)
-  const chosenPlayerEvents = [privateChoiceEvent]
-  const publicChoiceEvent = createEvent(`${currentPlayer.displayName} chose a a scheme to trash from their hand.`)
-  const publicEvents = [publicChoiceEvent]
-  const chosenPlayer = {
-    ...currentPlayer,
-    hand: currentPlayer.hand.filter(scheme => {
-      return scheme.id !== props.schemeId
-    })
-  }
-  const chosenProfileChanges: Write<Profile> = {}
-  await implementChoice({
-    chosenPlayer,
-    gameId: props.gameId,
-    currentGame,
-    transaction,
-    currentPlayer,
-    choice,
-    chosenPlayerEvents,
-    currentPlayerRef,
-    currentProfileRef,
-    chosenProfileChanges,
+  const otherPlayers = await getOtherPlayers({
     currentUid,
-    publicEvents,
-    currentGameRef
+    gameId: currentGame.id,
+    transaction
+  })
+  const players = [currentPlayer, ...otherPlayers]
+  const playState = {
+    game: currentGame,
+    players
+  }
+  currentPlayer.hand = currentPlayer.hand.filter(scheme => {
+    return scheme.id !== props.schemeId
+  })
+  currentPlayer.trashHistory.push({ scheme, round: currentGame.round })
+  playState.game.profiles.forEach(profile => {
+    if (profile.userId === currentUid) {
+      profile.trashHistory.push({ round: currentGame.round })
+    }
+  })
+  const privateChoiceEvent = createEvent(`You chose scheme ${scheme.rank} to trash.`)
+  currentPlayer.history.push(privateChoiceEvent)
+  const publicChoiceEvent = createEvent(`${currentPlayer.displayName} chose a scheme to trash.`)
+  playState.game.history.push(publicChoiceEvent)
+  otherPlayers.forEach(otherPlayer => otherPlayer.history.push(publicChoiceEvent))
+  onChoiceComplete({
+    choice,
+    currentPlayer,
+    playState,
+    transaction
   })
   console.info(`Chose scheme with id ${props.schemeId} to trash!`)
 })

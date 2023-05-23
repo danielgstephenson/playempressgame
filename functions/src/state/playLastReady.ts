@@ -4,64 +4,62 @@ import passTimeState from './passTime'
 import playEffects from './effects/play'
 import guardDefined from '../guard/defined'
 import playerSort from '../sort/player'
-import guardHighestRankPlayScheme from '../guard/highestRankPlayScheme'
 import filterIds from '../filterIds'
 import clone from '../clone'
-import addPublicEvent from '../add/event/public'
+import endPlay from '../endPlay'
+import { Transaction } from 'firelord'
 
-export default function playLastReadyState ({
+export default function playLastReady ({
   playState,
-  currentPlayer
+  currentPlayer,
+  transaction
 }: {
   playState: PlayState
   currentPlayer: Result<Player>
+  transaction: Transaction
 }): PlayState {
   const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ready.`)
   const privateReadyEvent = createEvent('You are ready.')
+  const everyoneEvent = createEvent('Everyone is ready.')
   playState.players.forEach(player => {
     if (player.id !== currentPlayer.id) {
-      player.history.push(publicReadyEvent)
+      player.history.push(publicReadyEvent, everyoneEvent)
       return
     }
-    player.history.push(privateReadyEvent)
+    player.history.push(privateReadyEvent, everyoneEvent)
   })
-  playState.game.history.push(publicReadyEvent)
+  playState.game.history.push(publicReadyEvent, everyoneEvent)
   playState.game.profiles.forEach(profile => {
     profile.ready = false
-    profile.trashHistory.push(1)
+    profile.trashHistory.push({ round: playState.game.round })
   })
   playState.players.forEach(player => {
-    player.hand = player.hand.filter(scheme => scheme.id !== player.trashScheme?.id)
+    player.hand = player.hand.filter(scheme => scheme.id !== player.trashScheme?.id && scheme.id !== player.playScheme?.id)
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
     player.trashScheme = undefined
   })
-  const passedState = passTimeState({ playState })
-  const playStateClone = clone(passedState)
-  const effectedState = passedState.players.reduce((playedState, player) => {
-    const effectedState = playEffects({
-      playState: playedState,
-      playingId: player.id
+  passTimeState({ playState })
+  const playStateClone = clone(playState)
+  playState.players.forEach((player) => {
+    playEffects({
+      playState,
+      playingId: player.id,
+      resume: false
     })
-    return effectedState
-  }, passedState)
-  effectedState.players.forEach(player => {
-    const roundIndex = player.history.findIndex(event => event.round === effectedState.game.round)
+  })
+  playState.players.forEach(player => {
+    const roundIndex = player.history.findIndex(event => event.round === playState.game.round)
     const roundSlice = player.history.splice(roundIndex)
     const sorted = playerSort({ events: roundSlice, playerId: player.id })
     player.history.push(...sorted)
   })
-  const effectsChoices = filterIds(effectedState.game.choices, playStateClone.game.choices)
+  const effectsChoices = filterIds(playState.game.choices, playStateClone.game.choices)
   if (effectsChoices.length === 0) {
-    return effectedState
+    endPlay({
+      playState,
+      transaction
+    })
   }
-  const highestPlayScheme = guardHighestRankPlayScheme(effectedState.players)
-  const highestPlayEvent = createEvent(`The highest rank scheme in play is ${highestPlayScheme.rank}.`)
-  playState.players.forEach(player => {
-    player.history.push(highestPlayEvent)
-  })
-  playState.game.history.push(highestPlayEvent)
-  const highPlayers = effectedState.players.filter(player => player.playScheme?.rank === highestPlayScheme.rank)
-  if (highPlayers.length === 1) {
-  return effectedState
+  return playState
 }

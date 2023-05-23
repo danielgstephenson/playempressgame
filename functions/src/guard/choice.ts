@@ -1,5 +1,4 @@
 import { https } from 'firebase-functions/v1'
-import serializeScheme from '../serialize/scheme'
 import guardCurrentHand from './current/hand'
 import { ChoiceGuard } from '../types'
 import { Transaction } from 'firelord'
@@ -18,7 +17,6 @@ export default async function guardChoice ({ context, gameId, label, schemeId, t
     schemeId,
     label
   })
-  const schemeRef = serializeScheme(handGuard.scheme)
   console.log('choices:', handGuard.currentGame.choices)
   console.log('currentplayerId:', handGuard.currentPlayerId)
   const choice = handGuard
@@ -34,7 +32,6 @@ export default async function guardChoice ({ context, gameId, label, schemeId, t
 
   return {
     ...handGuard,
-    choice,
-    schemeRef
+    choice
   }
 }

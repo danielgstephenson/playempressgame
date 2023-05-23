@@ -36,7 +36,7 @@ export interface Profile {
   gold: number
   silver: number
   ready: boolean
-  trashHistory: number[]
+  trashHistory: PublicTrashEvent[]
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -67,9 +67,12 @@ export type User = MetaTypeCreator<{
   uid: string
 }, 'users', string>
 
-export interface TrashEvent {
-  scheme: Scheme
+export interface PublicTrashEvent {
   round: number
+}
+
+export interface PrivateTrashEvent extends PublicTrashEvent {
+  scheme: Scheme
 }
 
 export type Player = MetaTypeCreator<{
@@ -83,7 +86,7 @@ export type Player = MetaTypeCreator<{
   history: HistoryEvent[]
   playScheme: Scheme | DeleteField
   trashScheme: Scheme | DeleteField
-  trashHistory: TrashEvent[]
+  trashHistory: PrivateTrashEvent[]
   userId: string
 }, 'players', string>
 
@@ -123,12 +126,10 @@ export interface HistoryUpdate {
 
 export interface CurrentHandGuard extends CurrentPlayingGuard {
   scheme: Scheme
-  schemeRef: Scheme
 }
 
 export interface ChoiceGuard extends CurrentHandGuard {
   choice: Choice
-  schemeRef: Scheme
 }
 
 export interface CurrentUserGuard {
