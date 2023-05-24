@@ -1,9 +1,9 @@
-import guardPlayHandScheme from '../../../guard/playHandScheme'
 import sortChildren from '../../../sort/children'
 import { PublicEvents, HistoryEvent, PlayState, Scheme, PlayEvents } from '../../../types'
 import addPlayerEvents from '.'
 import addPlayerEvent from '../../event/player'
 import addPublicEvent from '../../event/public'
+import guardPlayScheme from '../../../guard/playScheme'
 
 export default function addSortedPlayerEvents ({
   publicEvents,
@@ -30,7 +30,7 @@ export default function addSortedPlayerEvents ({
     round: playState.game.round
   })
   playState.players.forEach(player => {
-    const playScheme = guardPlayHandScheme(player)
+    const playScheme = guardPlayScheme(player)
     const playMessage = `played ${playScheme.rank}`
     const schemeMessage = templateCallback == null
       ? playMessage

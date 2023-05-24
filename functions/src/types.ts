@@ -35,8 +35,7 @@ export interface Profile {
   topDiscardScheme?: Scheme | undefined
   gold: number
   silver: number
-  ready: boolean
-  trashHistory: PublicTrashEvent[]
+  trashHistory: TrashEvent[]
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -67,11 +66,11 @@ export type User = MetaTypeCreator<{
   uid: string
 }, 'users', string>
 
-export interface PublicTrashEvent {
+export interface TrashEvent {
   round: number
 }
 
-export interface PrivateTrashEvent extends PublicTrashEvent {
+export interface PrivateTrashEvent extends TrashEvent {
   scheme: Scheme
 }
 
@@ -88,6 +87,7 @@ export type Player = MetaTypeCreator<{
   trashScheme: Scheme | DeleteField
   trashHistory: PrivateTrashEvent[]
   userId: string
+  ready: boolean
 }, 'players', string>
 
 export interface CurrentGameGuard {

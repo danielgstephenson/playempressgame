@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -20,13 +21,14 @@ export default function effectsSix ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the highest time in play.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you revive the highest time in play.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the highest time in play.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, you revive the highest time in play.')
   const highest = addHighestPlayTimeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -41,12 +43,7 @@ export default function effectsSix ({
     publicEvents: firstPublicChildren
   })
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws the lowest rank in the dungeon.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you draw the lowest rank in the dungeon.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you draw the lowest rank in the dungeon.')
   const lowestDungeon = getLowestRankScheme(playState.game.dungeon)
   if (playState.game.dungeon.length === 0) {
     addEventsEverywhere({

@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -17,13 +18,14 @@ export default function effectsTwentyTwo ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the rightmost timeline scheme's rank.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: "First, earn the rightmost timeline scheme's rank.",
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the rightmost timeline scheme's rank.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, earn the rightmost timeline scheme\'s rank.')
   const { scheme } = addRightmostTimelineSchemeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -38,12 +40,7 @@ export default function effectsTwentyTwo ({
     })
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns 5 gold for each dungeon scheme.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you earn 5 gold for each dungeon scheme.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, earn 5 gold for each dungeon scheme.')
   const dungeonAmount = playState.game.dungeon.length * 5
   earn({
     amount: dungeonAmount,

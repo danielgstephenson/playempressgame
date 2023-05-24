@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -18,21 +19,17 @@ export default function effectsThree ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} puts three Privilege on their discard.`)
-  addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you put three Privilege on your discard.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} puts three Privilege on their discard.`)
+  addEvent(privateEvent, 'First, you put three Privilege on your discard.')
   effectPlayer.discard.push(...createPrivilege(3))
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws the highest time in play.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you draw the highest time in play.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you draw the highest time in play.')
   const highest = addHighestPlayTimeEvents({
     playState,
     privateEvent: secondPrivateEvent,

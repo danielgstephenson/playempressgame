@@ -1,4 +1,4 @@
-import { MaybeSchemesPlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { HistoryEvent, MaybeSchemesPlayEvents, PlayState, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 
 export default function addAreTimelineSchemeEvents ({
@@ -7,7 +7,7 @@ export default function addAreTimelineSchemeEvents ({
   publicEvents
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): MaybeSchemesPlayEvents {
   if (playState.game.timeline.length === 0) {

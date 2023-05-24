@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -18,14 +19,15 @@ export default function effectsTwelve ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
+  const privateEvent = addPlayerEvent({
+    events: effectPlayer.history,
+    message: `You play ${effectScheme.rank}.`,
+    playerId: effectPlayer.id,
+    round: playState.game.round
+  })
   if (!resume) {
     const firstPublicChildren = addPublicEvent(publicEvents, `First, if the leftmost timeline scheme is green or yellow, ${effectPlayer.displayName} copies it.`)
-    const firstPrivateEvent = addPlayerEvent({
-      events: effectPlayer.history,
-      message: 'First, if the leftmost timeline scheme is green or yellow, copy it.',
-      playerId: effectPlayer.id,
-      round: playState.game.round
-    })
+    const firstPrivateEvent = addEvent(privateEvent, 'First, if the leftmost timeline scheme is green or yellow, you copy it.')
     const { scheme } = addLeftmostTimelineSchemeIsGreenOrYellowEvents({
       privateEvent: firstPrivateEvent,
       publicEvents: firstPublicChildren,
@@ -46,12 +48,7 @@ export default function effectsTwelve ({
     }
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the highest rank green scheme in play.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you copy the highest rank green scheme in play.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you copy the highest rank green scheme in play.')
   const { scheme } = addHighestRankGreenPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,

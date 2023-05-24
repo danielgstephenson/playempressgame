@@ -49,6 +49,7 @@ export default function revive ({
     addEventsEverywhere({
       privateEvent,
       publicEvents,
+      possessive: false,
       suffix: `revives ${listRanks}`,
       displayName: player.displayName
     })

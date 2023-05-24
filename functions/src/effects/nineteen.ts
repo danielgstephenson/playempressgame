@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -18,13 +19,14 @@ export default function effectsNineteen ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the leftmost timeline scheme's rank.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: "First, earn the leftmost timeline scheme's rank.",
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the leftmost timeline scheme's rank.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, earn the leftmost timeline scheme\'s rank.')
   const { scheme } = addLeftmostTimelineSchemeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -39,12 +41,7 @@ export default function effectsNineteen ({
     })
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns the highest yellow rank in play.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, earn the highest yellow rank in play.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, earn the highest yellow rank in play.')
   const { scheme: yellowScheme } = addHighestRankYellowPlaySchemeEvents({
     playState,
     playerId: effectPlayer.id,

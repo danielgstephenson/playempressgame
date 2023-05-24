@@ -1,4 +1,4 @@
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addLowestRankPlaySchemeEvents from './lowest'
 
@@ -10,7 +10,7 @@ export default function addLowerRankPlaySchemeEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   rank: number
   playerId: string

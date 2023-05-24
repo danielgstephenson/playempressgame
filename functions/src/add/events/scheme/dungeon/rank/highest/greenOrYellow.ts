@@ -1,5 +1,5 @@
 import guardHighestRankGreenOrYellowDungeonScheme from '../../../../../../guard/highestRankGreenOrYellowDungeonScheme'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../../types'
 import addEventsEverywhere from '../../../../everywhere'
 
 export default function addHighestRankGreenOrYellowDungeonSchemeEvents ({
@@ -9,7 +9,7 @@ export default function addHighestRankGreenOrYellowDungeonSchemeEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   playerId: string
 }): MaybeSchemePlayEvents {

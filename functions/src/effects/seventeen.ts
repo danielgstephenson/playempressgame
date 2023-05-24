@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -19,13 +20,14 @@ export default function effectsSeventeen ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they earn twice its rank.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, if your top discard scheme is yellow, you earn twice its rank.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they earn twice its rank.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, if your top discard scheme is yellow, you earn twice its rank.')
   const scheme = addTopDiscardSchemeYellowEvents({
     discard: effectPlayer.discard,
     displayName: effectPlayer.displayName,
@@ -41,12 +43,7 @@ export default function effectsSeventeen ({
     })
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} puts their top discard scheme on their deck.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you put your top discard scheme on your deck.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you put your top discard scheme on your deck.')
   const discardScheme = addTopDiscardSchemeEvents({
     discard: effectPlayer.discard,
     displayName: effectPlayer.displayName,

@@ -50,7 +50,6 @@ export interface Profile {
   topDiscardScheme?: Scheme | undefined
   gold: number
   silver: number
-  ready: boolean
   trashHistory: TrashEvent[]
 }
 
@@ -83,13 +82,23 @@ export interface Player extends Doc {
   displayName: string
   gameId: string
   gold: number
-  silver: number
   hand: Scheme[]
   history: HistoryEvent[]
   playScheme?: Scheme
+  ready: boolean
+  silver: number
   trashScheme?: Scheme
   trashHistory: PrivateTrashEvent[]
   userId: string
 }
 
 export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>
+
+export interface Play {
+  trashScheme?: Scheme
+  playScheme?: Scheme
+  trash?: (scheme: Scheme) => void
+  play?: (scheme: Scheme) => void
+  emptyTrash?: () => void
+  emptyPlay?: () => void
+}

@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -22,13 +23,14 @@ export default function effectsTwentyThree ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName} top discard scheme is green, they revive 5.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, if your top discard scheme is green, revive 5.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName} top discard scheme is green, they revive 5.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, if your top discard scheme is green, revive 5.')
   const scheme = addTopDiscardSchemeGreenEvents({
     discard: effectPlayer.discard,
     privateEvent: firstPrivateEvent,
@@ -45,12 +47,7 @@ export default function effectsTwentyThree ({
     })
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the highest or lowest rank scheme in play is green, ${effectPlayer.displayName} they draw 5.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, if the highest or lowest rank scheme in play is green, draw 5.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, if the highest or lowest rank scheme in play is green, draw 5.')
   const { scheme: highScheme } = addHighestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,

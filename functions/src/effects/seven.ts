@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -21,14 +22,14 @@ export default function effectsSeven ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if the left two timeline schemes are the same color, ${effectPlayer.displayName} earns the higher rank.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, if the left two timeline schemes are the same color, you earn the higher rank.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if the left two timeline schemes are the same color, ${effectPlayer.displayName} earns the higher rank.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, if the left two timeline schemes are the same color, you earn the higher rank.')
   const leftTwo = playState.game.timeline.slice(0, 2)
   function isSame (): false | Scheme {
     if (leftTwo.length === 0) {
@@ -87,12 +88,7 @@ export default function effectsSeven ({
     publicEvents: firstPublicChildren
   })
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns 10 gold.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, if the lowest rank scheme in play is green, you earn 10 gold.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, if the lowest rank scheme in play is green, you earn 10 gold.')
   const { scheme } = addLowestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,

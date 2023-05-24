@@ -133,15 +133,17 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {
-      userId: profile.userId,
-      gameId,
-      gold: 40,
-      silver: 0,
-      hand: handSchemes,
       deck,
       discard,
+      displayName: profile.displayName,
+      gameId,
+      gold: 40,
+      hand: handSchemes,
       history: [...currentGameData.history, startEvent],
-      displayName: profile.displayName
+      ready: false,
+      silver: 0,
+      trashHistory: [],
+      userId: profile.userId
     }
     const playerId = `${profile.userId}_${gameId}`
     const playerRef = playersRef.doc(playerId)

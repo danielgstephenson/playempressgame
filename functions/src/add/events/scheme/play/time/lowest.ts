@@ -1,5 +1,5 @@
 import guardLowestPlayTime from '../../../../../guard/lowestPlayTime'
-import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { PlayTimeEvents, PlayState, PublicEvents, HistoryEvent } from '../../../../../types'
 import addPlayTimeEvents from '.'
 
 export default function addLowestPlayTimeEvents ({
@@ -9,7 +9,7 @@ export default function addLowestPlayTimeEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   playerId: string
 }): PlayTimeEvents {

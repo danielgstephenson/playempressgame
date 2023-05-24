@@ -1,19 +1,18 @@
-import { useContext } from 'react'
-import { gameContext } from '../reader/game'
-import { playerContext } from '../reader/player'
-import Action from './Action'
+import ChakraButton from '../lib/firewrite/chakra/Button'
+import { Scheme } from '../types'
 import Curtain from './Curtain'
 import StatusView from './Status'
 
-export default function PlayAreaView ({ fn, id, label }: {
-  fn: string
-  id?: string
+export default function PlayAreaView ({
+  scheme,
+  onReturn,
+  label
+}: {
+  scheme?: Scheme
+  onReturn?: () => void
   label: string
 }): JSX.Element {
-  const gameState = useContext(gameContext)
-  const playerState = useContext(playerContext)
-  const scheme = id == null ? id : playerState.hand?.find(scheme => scheme.id === id)
-  const showAction = id != null
+  const showAction = scheme != null
   return (
     <>
       <StatusView
@@ -21,10 +20,9 @@ export default function PlayAreaView ({ fn, id, label }: {
         value={scheme?.rank}
       />
       <Curtain open={showAction}>
-        <Action
-          fn={fn}
+        <ChakraButton
           label='Return to hand'
-          props={{ gameId: gameState.id, schemeId: id }}
+          onClick={onReturn}
         />
       </Curtain>
     </>

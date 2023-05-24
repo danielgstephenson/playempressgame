@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addSortedPlayerEvents from '../add/events/player/sorted'
@@ -6,7 +7,7 @@ import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import addTopDiscardSchemeTimeEvents from '../add/events/scheme/topDiscard/time'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
-import guardPlayHandScheme from '../guard/playHandScheme'
+import guardPlayScheme from '../guard/playScheme'
 import revive from '../revive'
 import { EffectsStateProps, PlayState, Scheme } from '../types'
 
@@ -22,13 +23,14 @@ export default function effectsFive ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you revive your top discard scheme\'s time.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, you revive your top discard scheme\'s time.')
   const topDiscardSchemeTime = addTopDiscardSchemeTimeEvents({
     discard: effectPlayer.discard,
     displayName: effectPlayer.displayName,
@@ -43,14 +45,9 @@ export default function effectsFive ({
     publicEvents: firstPublicChildren
   })
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws twice the number of colors in play.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you draw twice the number of colors in play.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you draw twice the number of colors in play.')
   const uniqueColors = playState.players.reduce<string[]>((uniqueColors, player) => {
-    const playScheme = guardPlayHandScheme(player)
+    const playScheme = guardPlayScheme(player)
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
     return [...uniqueColors, playScheme.color]
   }, [])

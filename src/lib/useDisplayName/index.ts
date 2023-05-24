@@ -19,7 +19,7 @@ export default function useDisplayName (auth?: Auth): string | undefined {
         await authUser?.reload()
         if (authUser?.displayName == null) {
           console.warn('Reloading user without display name...')
-          await wait(5000)
+          await wait(2000)
           await authUser?.reload()
           if (authUser?.displayName == null) {
             throw new Error('This user has no display name.')

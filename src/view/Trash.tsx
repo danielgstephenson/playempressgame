@@ -1,10 +1,17 @@
 import { useContext } from 'react'
-import { playerContext } from '../reader/player'
+import playContext from '../context/play'
 import PlayAreaView from './PlayArea'
 
 export default function TrashView (): JSX.Element {
-  const playerState = useContext(playerContext)
+  const playState = useContext(playContext)
+  function handleReturn (): void {
+    playState.emptyTrash?.()
+  }
   return (
-    <PlayAreaView fn='playUntrash' label='Trash' id={playerState.trashScheme?.id} />
+    <PlayAreaView
+      onReturn={handleReturn}
+      label='Trash'
+      scheme={playState.trashScheme}
+    />
   )
 }

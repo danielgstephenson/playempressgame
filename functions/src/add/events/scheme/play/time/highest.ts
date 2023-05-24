@@ -1,5 +1,5 @@
 import guardHighestPlayTime from '../../../../../guard/highestPlayTime'
-import { PlayTimeEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { PlayTimeEvents, PlayState, PublicEvents, HistoryEvent } from '../../../../../types'
 import addPlayTimeEvents from '.'
 
 export default function addHighestPlayTimeEvents ({
@@ -9,7 +9,7 @@ export default function addHighestPlayTimeEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   playerId: string
 }): PlayTimeEvents {

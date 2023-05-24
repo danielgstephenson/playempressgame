@@ -1,6 +1,6 @@
 import createEvent from '../create/event'
 import { HistoryEvent, Player, Result } from '../types'
-import guardPlayHandScheme from './playHandScheme'
+import guardPlayScheme from './playScheme'
 import guardTime from './time'
 
 export default function guardTimeEvent ({
@@ -10,7 +10,7 @@ export default function guardTimeEvent ({
   player: Result<Player>
   privateId?: string
 }): HistoryEvent {
-  const playScheme = guardPlayHandScheme(player)
+  const playScheme = guardPlayScheme(player)
   const time = guardTime(playScheme.rank)
   const displayName = player.id === privateId ? 'You' : player.displayName
   const message = `${displayName} played scheme ${playScheme.rank} with ${time} time.`

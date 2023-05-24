@@ -1,10 +1,10 @@
 import guardDefined from './defined'
-import guardPlayHandSchemes from './playHandSchemes'
 import { Player, Result, Scheme } from '../types'
 import getHighestTimeScheme from '../get/highestTimeScheme'
+import guardPlaySchemes from './playSchemes'
 
 export default function guardHighestTimePlayScheme (players: Array<Result<Player>>): Scheme {
-  const playSchemes = guardPlayHandSchemes(players)
+  const playSchemes = guardPlaySchemes(players)
   const highestTimeScheme = getHighestTimeScheme(playSchemes)
   const scheme = guardDefined(highestTimeScheme, 'Highest time scheme')
   return scheme

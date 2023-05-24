@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -17,13 +18,14 @@ export default function effectsOne ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} draws 2 cards.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you draw 2 cards.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} draws 2 cards.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, you draw 2 cards.')
   draw({
     depth: 2,
     playState,
@@ -32,12 +34,7 @@ export default function effectsOne ({
     publicEvents: firstPublicChildren
   })
   addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} chooses a scheme from their hand to trash.`)
-  addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you choose a scheme to trash from your hand.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  addEvent(privateEvent, 'Second, you choose a scheme from your hand to trash.')
   const trashChoice = createChoice({
     copiedByFirstEffect,
     effectPlayer,

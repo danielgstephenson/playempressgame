@@ -1,7 +1,7 @@
 import addTimelineEvents from '../..'
 import guardDefined from '../../../../../../guard/defined'
 import isGreenOrYellow from '../../../../../../is/greenOrYellow'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../../types'
 import addEventsEverywhere from '../../../../everywhere'
 
 export default function addLeftmostTimelineSchemeIsGreenOrYellowEvents ({
@@ -11,7 +11,7 @@ export default function addLeftmostTimelineSchemeIsGreenOrYellowEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   playerId: string
 }): MaybeSchemePlayEvents {

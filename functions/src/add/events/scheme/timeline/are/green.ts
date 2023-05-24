@@ -1,4 +1,4 @@
-import { MaybeSchemesPlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { HistoryEvent, MaybeSchemesPlayEvents, PlayState, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
 import getJoinedRanks from '../../../../../get/joined/ranks'
@@ -11,7 +11,7 @@ export default function addAreGreenTimelineSchemeEvents ({
   publicEvents
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): MaybeSchemesPlayEvents {
   if (playState.game.timeline.length === 0) {

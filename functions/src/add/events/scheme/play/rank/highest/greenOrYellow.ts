@@ -1,5 +1,5 @@
 import guardHighestRankYellowPlayScheme from '../../../../../../guard/highestRankYellowPlayScheme'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../../types'
 import addEventsEverywhere from '../../../../everywhere'
 import addSortedPlayerEvents from '../../../../player/sorted'
 
@@ -10,7 +10,7 @@ export default function addHighestRankGreenOrYellowPlaySchemeEvents ({
   playerId
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   playerId: string
 }): MaybeSchemePlayEvents {

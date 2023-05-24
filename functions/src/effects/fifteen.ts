@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -21,14 +22,15 @@ export default function effectsFifteen ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
+  const privateEvent = addPlayerEvent({
+    events: effectPlayer.history,
+    message: `You play ${effectScheme.rank}.`,
+    playerId: effectPlayer.id,
+    round: playState.game.round
+  })
   if (!resume) {
     const firstPublicChildren = addPublicEvent(publicEvents, `If your top discard scheme is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`)
-    const firstPrivateEvent = addPlayerEvent({
-      events: effectPlayer.history,
-      message: 'If your top discard scheme is red, copy the leftmost green timeline scheme.',
-      playerId: effectPlayer.id,
-      round: playState.game.round
-    })
+    const firstPrivateEvent = addEvent(privateEvent, 'If your top discard scheme is red, you copy the leftmost green timeline scheme.')
     const scheme = addTopDiscardSchemeRedEvents({
       discard: effectPlayer.discard,
       displayName: effectPlayer.displayName,
@@ -56,12 +58,7 @@ export default function effectsFifteen ({
     }
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Otherwise, ${effectPlayer.displayName} copies their top discard scheme.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Otherwise, copy your top discard scheme.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Otherwise, you copy your top discard scheme.')
   const scheme = addTopDiscardSchemeEvents({
     discard: effectPlayer.discard,
     displayName: effectPlayer.displayName,

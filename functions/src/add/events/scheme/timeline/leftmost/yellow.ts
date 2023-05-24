@@ -1,5 +1,5 @@
 import guardDefined from '../../../../../guard/defined'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents } from '../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
 import addAreYellowTimelineSchemeEvents from '../are/yellow'
@@ -10,7 +10,7 @@ export default function addLeftmostYellowTimelineSchemeEvents ({
   publicEvents
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): MaybeSchemePlayEvents {
   const { schemes, playEvents: areEvents } = addAreYellowTimelineSchemeEvents({

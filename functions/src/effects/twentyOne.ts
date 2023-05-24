@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -18,13 +19,14 @@ export default function effectsTwentyOne ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} pays five times the leftmost timeline scheme's time in gold.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: "First, pay five times the leftmost timeline scheme's time in gold.",
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} pays five times the leftmost timeline scheme's time in gold.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, pay five times the leftmost timeline scheme\'s time in gold.')
   const { scheme } = addLeftmostTimelineSchemeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -87,12 +89,7 @@ export default function effectsTwentyOne ({
     }
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns twice the left timeline scheme's rank.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: "Second, you earn twice the left timeline scheme's rank.",
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, earn twice the left timeline scheme\'s rank.')
   if (scheme == null) {
     addEventsEverywhere({
       publicEvents: secondPublicChildren,

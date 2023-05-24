@@ -1,50 +1,62 @@
 import { Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import { Fragment, useContext } from 'react'
+import playContext from '../context/play'
+import ChakraButton from '../lib/firewrite/chakra/Button'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
-import Action from './Action'
+import Cloud from './Cloud'
 import Curtain from './Curtain'
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
+  const playState = useContext(playContext)
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   const deckChoice = choice?.type === 'deck'
   const trashChoice = choice?.type === 'trash'
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const playTrash = noChoice && gameState.phase === 'play'
   const playPlay = noChoice && gameState.phase === 'play'
-  const schemeViews = playerState.hand?.map(scheme => {
+  const unplayed = playerState
+    .hand
+    ?.filter(scheme =>
+      scheme.id !== playState.trashScheme?.id &&
+      scheme.id !== playState.playScheme?.id
+    )
+  const schemeViews = unplayed?.map(scheme => {
     if (scheme.id === playerState.trashScheme?.id || scheme.id === playerState.playScheme?.id) {
       return <Fragment key={scheme.id} />
+    }
+    function handleTrash (): void {
+      playState.trash?.(scheme)
+    }
+    function handlePlay (): void {
+      playState.play?.(scheme)
     }
     return (
       <VStack key={scheme.id} spacing='0'>
         <Text>{scheme.rank}</Text>
         <Curtain open={playTrash}>
-          <Action
-            fn='playTrash'
+          <ChakraButton
             label='Trash'
-            props={{ schemeId: scheme.id, gameId: gameState.id }}
-            m='0px'
+            onClick={handleTrash}
           />
         </Curtain>
         <Curtain open={playPlay}>
-          <Action
-            fn='playPlay'
+          <ChakraButton
             label='Play'
-            props={{ schemeId: scheme.id, gameId: gameState.id }}
+            onClick={handlePlay}
           />
         </Curtain>
         <Curtain open={deckChoice}>
-          <Action
+          <Cloud
             fn='deckChoose'
             label='Put on deck'
             props={{ schemeId: scheme.id, gameId: gameState.id }}
           />
         </Curtain>
         <Curtain open={trashChoice}>
-          <Action
+          <Cloud
             fn='trashChoose'
             label='Trash'
             props={{ schemeId: scheme.id, gameId: gameState.id }}

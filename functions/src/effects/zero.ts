@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -16,21 +17,17 @@ export default function effectsZero ({
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`,
     playState
   })
-  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} takes 8 Privilege into their hand.`)
-  addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you take 8 Privilege into your hand.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} takes 8 Privilege into their hand.`)
+  addEvent(privateEvent, 'First, you take 8 Privilege into your hand.')
   effectPlayer.hand.push(...createPrivilege(8))
   addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} puts 2 Privilege on their deck.`)
-  addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you put 2 Privilege on your deck.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  addEvent(privateEvent, 'Second, you put 2 Privilege on your deck.')
   effectPlayer.deck.push(...createPrivilege(2))
   return playState
 }

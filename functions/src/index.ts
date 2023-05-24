@@ -6,6 +6,7 @@ import onDeleteUser from './cloudFunction/onDeleteUser'
 import playReady from './cloudFunction/playReady'
 import deckChoose from './cloudFunction/deckChoose'
 import trashChoose from './cloudFunction/trashChoose'
+import 'source-map-support/register'
 
 exports.addGame = addGame
 exports.deckChoose = deckChoose

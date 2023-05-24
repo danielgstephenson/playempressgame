@@ -21,13 +21,14 @@ export default function effectsTwo ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the lowest time in play.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, you revive the lowest time in play.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the lowest time in play.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, you revive the lowest time in play.')
   const lowest = addLowestPlayTimeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -42,12 +43,7 @@ export default function effectsTwo ({
     publicEvents: lowest.playTimeEvents.publicEvents
   })
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws the number of schemes in the dungeon.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, you draw the number of schemes in the dungeon.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you draw the number of schemes in the dungeon.')
   const { toBeCount: phrase } = getGrammar(playState.game.dungeon.length)
   const dungeonRanks = playState.game.dungeon.map(scheme => scheme.rank)
   const dungeonJoined = getJoined(dungeonRanks)

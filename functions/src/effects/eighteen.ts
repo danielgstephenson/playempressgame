@@ -20,13 +20,14 @@ export default function effectsEighteen ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, if your deck or discard is empty, you earn 30 gold.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 30 gold.')
   const deckEmpty = effectPlayer.deck.length === 0
   if (deckEmpty) {
     addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is empty.`)
@@ -68,12 +69,7 @@ export default function effectsEighteen ({
     })
   }
   addPublicEvent(publicEvents, 'Second, one Privilege is summoned to the court')
-  addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, one Privilege is summoned to the court.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  addEvent(privateEvent, 'Second, one Privilege is summoned to the court')
   playState.game.court.push(...createPrivilege(1))
   return playState
 }

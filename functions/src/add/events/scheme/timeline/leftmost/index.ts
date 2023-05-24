@@ -1,5 +1,5 @@
 import guardDefined from '../../../../../guard/defined'
-import { MaybeSchemePlayEvents, PlayState, PlayerEvent, PublicEvents, Scheme } from '../../../../../types'
+import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents, Scheme } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
 import addAreTimelineSchemeEvents from '../are'
@@ -11,7 +11,7 @@ export default function addLeftmostTimelineSchemeEvents ({
   templateCallback
 }: {
   playState: PlayState
-  privateEvent: PlayerEvent
+  privateEvent: HistoryEvent
   publicEvents: PublicEvents
   templateCallback?: (scheme: Scheme) => string
 }): MaybeSchemePlayEvents {

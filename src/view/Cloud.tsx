@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { ConsumerWriterProps } from '../lib/firewrite/types'
 import { ButtonProps } from '@chakra-ui/react'
 
-export default function Action <Props extends {}> ({
+export default function Cloud <Props extends {}> ({
   fn,
   label,
   onCall,

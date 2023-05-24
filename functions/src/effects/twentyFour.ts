@@ -1,3 +1,4 @@
+import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addPublicEvents from '../add/events/public'
@@ -18,13 +19,14 @@ export default function effectsTwentyFour ({
     playState,
     message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
   })
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the lowest green rank in play.`)
-  const firstPrivateEvent = addPlayerEvent({
+  const privateEvent = addPlayerEvent({
     events: effectPlayer.history,
-    message: 'First, earn the lowest green rank in play.',
+    message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the lowest green rank in play.`)
+  const firstPrivateEvent = addEvent(privateEvent, 'First, earn the lowest green rank in play.')
   const { scheme: playScheme } = addLowestRankGreenPlaySchemeEvents({
     playState,
     privateEvent: firstPrivateEvent,
@@ -40,12 +42,7 @@ export default function effectsTwentyFour ({
     })
   }
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} revives their entire discard.`)
-  const secondPrivateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: 'Second, revive your entire discard.',
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, revive your entire discard.')
   revive({
     depth: effectPlayer.discard.length,
     playState,

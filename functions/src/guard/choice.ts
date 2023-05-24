@@ -17,8 +17,6 @@ export default async function guardChoice ({ context, gameId, label, schemeId, t
     schemeId,
     label
   })
-  console.log('choices:', handGuard.currentGame.choices)
-  console.log('currentplayerId:', handGuard.currentPlayerId)
   const choice = handGuard
     .currentGame
     .choices
