@@ -145,10 +145,12 @@ export interface PassTime {
 }
 
 export interface SchemeEffectProps {
-  playState: PlayState
   copiedByFirstEffect: boolean
   effectPlayer: Result<Player>
   effectScheme: Scheme
+  playState: PlayState
+  privateEvent: HistoryEvent
+  publicEvents: PublicEvents
   resume: boolean
 }
 
@@ -258,20 +260,16 @@ export interface PlayState {
   players: Array<Result<Player>>
 }
 
-export interface EffectsStateProps {
-  copiedByFirstEffect: boolean
-  playState: PlayState
-  effectPlayer: Result<Player>
-  effectScheme: Scheme
-  resume: boolean
-}
-
 export interface PlayerEvent extends HistoryEvent {
   playerId: string
 }
 
 export interface PublicEvents {
   observerEvent: HistoryEvent
+  otherPlayerEvents: HistoryEvent[]
+}
+
+export interface PlayerPublicEvents extends PublicEvents {
   otherPlayerEvents: PlayerEvent[]
 }
 

@@ -1,3 +1,4 @@
+import addPublicEvents from '../add/events/public'
 import createCloudFunction from '../create/cloudFunction'
 import createEvent from '../create/event'
 import { SchemeProps } from '../types'
@@ -41,13 +42,17 @@ const trashChoose = createCloudFunction<SchemeProps>(async (props, context, tran
   })
   const privateChoiceEvent = createEvent(`You chose scheme ${scheme.rank} to trash.`)
   currentPlayer.history.push(privateChoiceEvent)
-  const publicChoiceEvent = createEvent(`${currentPlayer.displayName} chose a scheme to trash.`)
-  playState.game.history.push(publicChoiceEvent)
-  otherPlayers.forEach(otherPlayer => otherPlayer.history.push(publicChoiceEvent))
+  const publicChoiceEvents = addPublicEvents({
+    effectPlayer: currentPlayer,
+    message: `${currentPlayer.displayName} chose a scheme to trash.`,
+    playState
+  })
   onChoiceComplete({
     choice,
     currentPlayer,
     playState,
+    privateEvent: privateChoiceEvent,
+    publicEvents: publicChoiceEvents,
     transaction
   })
   console.info(`Chose scheme with id ${props.schemeId} to trash!`)

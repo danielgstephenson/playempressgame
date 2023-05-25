@@ -2,6 +2,7 @@ import addEventsEverywhere from '../add/events/everywhere'
 import clone from '../clone'
 import getGrammar from '../get/grammar'
 import getJoinedRanks from '../get/joined/ranks'
+import guardProfile from '../guard/profile'
 import { HistoryEvent, PlayState, Player, PublicEvents, Result } from '../types'
 import drawMultiple from './multiple'
 
@@ -17,9 +18,13 @@ export default function draw ({
   player: Result<Player>
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
-}): PlayState {
+}): void {
+  if (depth === 0) {
+    return
+  }
+  const profile = guardProfile(playState, player.userId)
   const playerClone = clone(player)
-  const drawnState = drawMultiple({
+  drawMultiple({
     depth,
     playState,
     player
@@ -64,6 +69,7 @@ export default function draw ({
       privateMessage: 'You flip your discard pile to refresh your deck.',
       publicMessage: `${player.displayName} flips their discard pile to refresh their deck.`
     })
+    profile.topDiscardScheme = undefined
     const { count, all } = getGrammar(discardDrawn.length, 'scheme', 'schemes')
     const discardDrawnRanks = getJoinedRanks(discardDrawn)
     if (discardDrawn.length === playerClone.discard.length) {
@@ -103,5 +109,4 @@ export default function draw ({
       publicMessage
     })
   }
-  return drawnState
 }

@@ -1,39 +1,28 @@
 import addEvent from '../add/event'
-import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
-import addPublicEvents from '../add/events/public'
 import createChoice from '../create/choice'
 import earn from '../earn'
 import getGrammar from '../get/grammar'
 import getJoinedRanks from '../get/joined/ranks'
-import { EffectsStateProps, PlayState } from '../types'
+import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsSixteen ({
   copiedByFirstEffect,
-  playState,
   effectPlayer,
   effectScheme,
+  playState,
+  privateEvent,
+  publicEvents,
   resume
-}: EffectsStateProps): PlayState {
-  const publicEvents = addPublicEvents({
-    effectPlayer,
-    playState,
-    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
-  })
-  const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: `You play ${effectScheme.rank}.`,
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+}: SchemeEffectProps): PlayState {
+  const firstPrivateChild = addEvent(privateEvent, 'First, if you have 5 or less schemes in hand, you earn 25 gold.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, if  ${effectPlayer.displayName} has 5 or less schemes in hand, they earn 25 gold.`)
-  const firstPrivateEvent = addEvent(privateEvent, 'First, if you have 5 or less schemes in hand, you earn 25 gold.')
   const less = effectPlayer.hand.length < 6
   const { count } = getGrammar(effectPlayer.hand.length)
   const joined = getJoinedRanks(effectPlayer.hand)
   const privateMessage = `You have ${count} in hand, ${joined}.`
-  addEvent(firstPrivateEvent, privateMessage)
+  addEvent(firstPrivateChild, privateMessage)
   const lessMessage = less ? '5 or less schemes' : 'more than 5 schemes'
   const publicMessage = `${effectPlayer.displayName} has ${lessMessage} in hand.`
   addPublicEvent(firstPublicChildren, publicMessage)
@@ -41,16 +30,17 @@ export default function effectsSixteen ({
   earn({
     amount: lessBonus,
     player: effectPlayer,
-    privateEvent: firstPrivateEvent,
+    playState,
+    privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, put 1 scheme from your hand on your deck.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName} took gold, they put 1 scheme from their hand on their deck.`)
-  const secondPrivateEvent = addEvent(privateEvent, 'Second, if you took gold, put 1 scheme from your hand on your deck.')
   if (less) {
     addEventsEverywhere({
       possessive: false,
       suffix: 'just took 25 gold',
-      privateEvent: secondPrivateEvent,
+      privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
       displayName: effectPlayer.displayName
     })
@@ -65,7 +55,7 @@ export default function effectsSixteen ({
     addEventsEverywhere({
       possessive: false,
       suffix: 'did not take gold',
-      privateEvent: secondPrivateEvent,
+      privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
       displayName: effectPlayer.displayName
     })

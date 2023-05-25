@@ -1,30 +1,27 @@
 import clone from '../../clone'
 import filterIds from '../../filterIds'
-import guardEffect from '../../guard/effect'
-import { Choice, PlayState, Player, Result, Scheme } from '../../types'
+import { Choice, SchemeEffectProps } from '../../types'
+import applyEffects from '../apply'
 
 export default function copyEffects ({
+  copiedByFirstEffect,
   effectPlayer,
   effectScheme,
-  first,
   playState,
+  privateEvent,
+  publicEvents,
   resume
-}: {
-  effectPlayer: Result<Player>
-  effectScheme: Scheme
-  first: boolean
-  playState: PlayState
-  resume: boolean
-}): Choice[] {
-  const rankEffects = guardEffect(effectScheme.rank)
+}: SchemeEffectProps): Choice[] {
   const choicesClone = clone(playState.game.choices)
-  const effectedState = rankEffects({
-    copiedByFirstEffect: first,
-    playState,
+  applyEffects({
+    copiedByFirstEffect,
     effectPlayer,
     effectScheme,
+    playState,
+    privateEvent,
+    publicEvents,
     resume
   })
-  const effectChoices = filterIds(effectedState.game.choices, choicesClone)
+  const effectChoices = filterIds(playState.game.choices, choicesClone)
   return effectChoices
 }

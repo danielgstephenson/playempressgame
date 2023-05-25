@@ -1,51 +1,40 @@
 import addEvent from '../add/event'
-import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addSortedPlayerEvents from '../add/events/player/sorted'
-import addPublicEvents from '../add/events/public'
-import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import addTopDiscardSchemeTimeEvents from '../add/events/scheme/topDiscard/time'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
 import guardPlayScheme from '../guard/playScheme'
 import revive from '../revive'
-import { EffectsStateProps, PlayState, Scheme } from '../types'
+import { PlayState, Scheme, SchemeEffectProps } from '../types'
 
 export default function effectsFive ({
   copiedByFirstEffect,
-  playState,
   effectPlayer,
   effectScheme,
+  privateEvent,
+  publicEvents,
+  playState,
   resume
-}: EffectsStateProps): PlayState {
-  const publicEvents = addPublicEvents({
-    effectPlayer,
-    playState,
-    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
-  })
-  const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: `You play ${effectScheme.rank}.`,
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+}: SchemeEffectProps): PlayState {
+  console.log('effectsFive')
+  const firstPrivateChild = addEvent(privateEvent, 'First, revive your top discard scheme\'s time.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
-  const firstPrivateEvent = addEvent(privateEvent, 'First, you revive your top discard scheme\'s time.')
   const topDiscardSchemeTime = addTopDiscardSchemeTimeEvents({
     discard: effectPlayer.discard,
     displayName: effectPlayer.displayName,
-    privateEvent: firstPrivateEvent,
+    privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
   revive({
     depth: topDiscardSchemeTime,
     playState,
     player: effectPlayer,
-    privateEvent: firstPrivateEvent,
+    privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
+  const secondPrivateChild = addEvent(privateEvent, 'Second, draw twice the number of colors in play.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws twice the number of colors in play.`)
-  const secondPrivateEvent = addEvent(privateEvent, 'Second, you draw twice the number of colors in play.')
   const uniqueColors = playState.players.reduce<string[]>((uniqueColors, player) => {
     const playScheme = guardPlayScheme(player)
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
@@ -60,25 +49,19 @@ export default function effectsFive ({
   }
   addSortedPlayerEvents({
     publicEvents: secondPublicChildren,
-    privateEvent: secondPrivateEvent,
+    privateEvent: secondPrivateChild,
     publicMessage,
     privateMessage,
     playerId: effectPlayer.id,
     playState,
     templateCallback
   })
-  const lowest = addLowestPlayTimeEvents({
-    playState,
-    privateEvent: secondPrivateEvent,
-    publicEvents: secondPublicChildren,
-    playerId: effectPlayer.id
-  })
   draw({
-    depth: lowest.time,
+    depth: doubleColors,
     playState,
     player: effectPlayer,
-    privateEvent: lowest.playTimeEvents.privateEvent,
-    publicEvents: lowest.playTimeEvents.publicEvents
+    privateEvent: secondPrivateChild,
+    publicEvents: secondPublicChildren
   })
   return playState
 }

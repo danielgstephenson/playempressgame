@@ -1,45 +1,36 @@
 import addEvent from '../add/event'
-import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
-import addPublicEvents from '../add/events/public'
 import addLowestRankGreenOrYellowDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/lowest/greenOrYellow'
 import addLowestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/lowest/yellow'
-import { EffectsStateProps, PlayState } from '../types'
+import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
 
 export default function effectsEight ({
   copiedByFirstEffect,
-  playState,
   effectPlayer,
   effectScheme,
+  playState,
+  privateEvent,
+  publicEvents,
   resume
-}: EffectsStateProps): PlayState {
-  const publicEvents = addPublicEvents({
-    effectPlayer,
-    playState,
-    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
-  })
-  const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: `You play ${effectScheme.rank}.`,
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+}: SchemeEffectProps): PlayState {
   if (!resume) {
+    const firstPrivateChild = addEvent(privateEvent, 'First, you copy the lowest rank yellow scheme in play.')
     const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} copies the lowest rank yellow scheme in play.`)
-    const firstPrivateEvent = addEvent(privateEvent, 'First, you copy the lowest rank yellow scheme in play.')
     const { scheme } = addLowestRankYellowPlaySchemeEvents({
       playState,
-      privateEvent: firstPrivateEvent,
+      privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren,
       playerId: effectPlayer.id
     })
     if (scheme != null) {
       const firstChoices = copyEffects({
-        first: true,
-        playState,
+        copiedByFirstEffect: true,
         effectPlayer,
         effectScheme: scheme,
+        playState,
+        privateEvent: firstPrivateChild,
+        publicEvents: firstPublicChildren,
         resume: false
       })
       if (firstChoices.length > 0) {
@@ -47,20 +38,22 @@ export default function effectsEight ({
       }
     }
   }
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the lowest rank green or yellow dungeon scheme.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the lowest rank green or yellow dungeon scheme.`)
-  const secondPrivateEvent = addEvent(privateEvent, 'Second, you copy the lowest rank green or yellow dungeon scheme.')
   const { scheme } = addLowestRankGreenOrYellowDungeonSchemeEvents({
     playState,
-    privateEvent: secondPrivateEvent,
+    privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
   if (scheme != null) {
     copyEffects({
-      first: false,
-      playState,
+      copiedByFirstEffect: false,
       effectPlayer,
       effectScheme: scheme,
+      playState,
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren,
       resume: false
     })
   }

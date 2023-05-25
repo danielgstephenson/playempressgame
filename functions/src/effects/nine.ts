@@ -1,31 +1,20 @@
 import addEvent from '../add/event'
-import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
-import addPublicEvents from '../add/events/public'
 import addLowestRankGreenOrYellowDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/lowest/greenOrYellow'
 import addLeftmostYellowTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost/yellow'
 import guardDefined from '../guard/defined'
-import { EffectsStateProps, PlayState } from '../types'
+import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
 
 export default function effectsNine ({
   copiedByFirstEffect,
-  playState,
   effectPlayer,
   effectScheme,
+  playState,
+  privateEvent,
+  publicEvents,
   resume
-}: EffectsStateProps): PlayState {
-  const publicEvents = addPublicEvents({
-    effectPlayer,
-    playState,
-    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
-  })
-  const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: `You play ${effectScheme.rank}.`,
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+}: SchemeEffectProps): PlayState {
   if (!resume) {
     const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} copies the leftmost yellow timeline scheme.`)
     const firstPrivateEvent = addEvent(privateEvent, 'First, you copy the leftmost yellow timeline scheme.')
@@ -37,10 +26,12 @@ export default function effectsNine ({
     if (scheme != null) {
       const timelineScheme = guardDefined(scheme, 'Leftmost yellow timeline scheme')
       const firstChoices = copyEffects({
-        first: true,
-        playState,
+        copiedByFirstEffect: true,
         effectPlayer,
         effectScheme: timelineScheme,
+        playState,
+        privateEvent: firstPrivateEvent,
+        publicEvents: firstPublicChildren,
         resume: false
       })
       if (firstChoices.length > 0) {
@@ -58,10 +49,12 @@ export default function effectsNine ({
   })
   if (scheme != null) {
     copyEffects({
-      first: false,
-      playState,
+      copiedByFirstEffect: false,
       effectPlayer,
       effectScheme: scheme,
+      playState,
+      privateEvent: secondPrivateEvent,
+      publicEvents: secondPublicChildren,
       resume: false
     })
   }

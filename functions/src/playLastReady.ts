@@ -52,7 +52,6 @@ export default function playLastReady ({
   playState.players.forEach(player => {
     const roundIndex = player.history.findIndex(event => event.round === playState.game.round)
     const roundSlice = player.history.splice(roundIndex)
-    console.log('roundSlice.length', roundSlice.length)
     const sorted = playerSort({ events: roundSlice, playerId: player.id })
     player.history.push(...sorted)
   })

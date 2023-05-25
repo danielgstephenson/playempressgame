@@ -1,35 +1,25 @@
 import addEvent from '../add/event'
-import addPlayerEvent from '../add/event/player'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
-import addPublicEvents from '../add/events/public'
 import addLeftmostTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost'
 import earn from '../earn'
-import { EffectsStateProps, PlayState } from '../types'
+import guardProfile from '../guard/profile'
+import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsTwentyOne ({
   copiedByFirstEffect,
-  playState,
   effectPlayer,
   effectScheme,
+  playState,
+  privateEvent,
+  publicEvents,
   resume
-}: EffectsStateProps): PlayState {
-  const publicEvents = addPublicEvents({
-    effectPlayer,
-    playState,
-    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`
-  })
-  const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
-    message: `You play ${effectScheme.rank}.`,
-    playerId: effectPlayer.id,
-    round: playState.game.round
-  })
+}: SchemeEffectProps): PlayState {
+  const firstPrivateChild = addEvent(privateEvent, 'First, pay five times the leftmost timeline scheme\'s time in gold.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} pays five times the leftmost timeline scheme's time in gold.`)
-  const firstPrivateEvent = addEvent(privateEvent, 'First, pay five times the leftmost timeline scheme\'s time in gold.')
   const { scheme } = addLeftmostTimelineSchemeEvents({
     playState,
-    privateEvent: firstPrivateEvent,
+    privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren,
     templateCallback: (scheme) => {
       const { time } = scheme
@@ -37,6 +27,9 @@ export default function effectsTwentyOne ({
     }
   })
   if (scheme != null && scheme.time > 0) {
+    const profile = guardProfile(
+      playState, effectPlayer.userId
+    )
     const leftFive = scheme.time * 5
     const silverCost = Math.min(leftFive, effectPlayer.silver)
     if (silverCost > 0) {
@@ -49,11 +42,12 @@ export default function effectsTwentyOne ({
         : `You pay ${silverCost} silver.`
       addEventsEverywhere({
         publicEvents: firstPublicChildren,
-        privateEvent: firstPrivateEvent,
+        privateEvent: firstPrivateChild,
         publicMessage,
         privateMessage
       })
       effectPlayer.silver -= silverCost
+      profile.silver -= silverCost
     }
     const leftSilverRemaining = leftFive - silverCost
     const leftGold = Math.ceil(leftSilverRemaining / 5) * 5
@@ -68,11 +62,12 @@ export default function effectsTwentyOne ({
         : `You pay ${goldCost} gold.`
       addEventsEverywhere({
         publicEvents: firstPublicChildren,
-        privateEvent: firstPrivateEvent,
+        privateEvent: firstPrivateChild,
         publicMessage,
         privateMessage
       })
       effectPlayer.gold -= goldCost
+      profile.gold -= goldCost
     }
     const leftGoldRemaining = leftGold - goldCost
     const change = leftGoldRemaining === 0 ? goldCost - leftSilverRemaining : 0
@@ -81,26 +76,28 @@ export default function effectsTwentyOne ({
       const privateMessage = `You take ${change} silver in change.`
       addEventsEverywhere({
         publicEvents: firstPublicChildren,
-        privateEvent: firstPrivateEvent,
+        privateEvent: firstPrivateChild,
         publicMessage,
         privateMessage
       })
       effectPlayer.silver += change
+      profile.silver += change
     }
   }
+  const secondPrivateChild = addEvent(privateEvent, 'Second, earn twice the left timeline scheme\'s rank.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns twice the left timeline scheme's rank.`)
-  const secondPrivateEvent = addEvent(privateEvent, 'Second, earn twice the left timeline scheme\'s rank.')
   if (scheme == null) {
     addEventsEverywhere({
       publicEvents: secondPublicChildren,
-      privateEvent: secondPrivateEvent,
+      privateEvent: secondPrivateChild,
       message: 'The timeline is empty.'
     })
   } else {
     earn({
       amount: scheme.rank * 2,
       player: effectPlayer,
-      privateEvent: secondPrivateEvent,
+      playState,
+      privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren
     })
   }

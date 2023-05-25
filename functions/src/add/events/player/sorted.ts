@@ -47,8 +47,10 @@ export default function addSortedPlayerEvents ({
       round: playState.game.round
     })
   })
-  sortedPublicEvents.otherPlayerEvents.forEach(sortChildren)
-  sortChildren(sortedPrivateEvent)
+  sortedPublicEvents.otherPlayerEvents.forEach(otherPlayerEvent => {
+    sortChildren({ event: otherPlayerEvent, playerId })
+  })
+  sortChildren({ event: sortedPrivateEvent, playerId })
 
   return {
     privateEvent: sortedPrivateEvent,

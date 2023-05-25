@@ -1,14 +1,19 @@
 import addEventsEverywhere from './add/events/everywhere'
-import { HistoryEvent, Player, PublicEvents, Result } from './types'
+import guardProfile from './guard/profile'
+import {
+  HistoryEvent, PlayState, Player, PublicEvents, Result
+} from './types'
 
 export default function earn ({
   amount,
   player,
+  playState,
   privateEvent,
   publicEvents
 }: {
   amount: number
   player: Result<Player>
+  playState: PlayState
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): void {
@@ -23,13 +28,17 @@ export default function earn ({
     : someSilver
       ? `${remainder} silver`
       : '0'
-  const base = `earn ${amountMessage}`
+  const suffix = `earn ${amountMessage}`
   addEventsEverywhere({
-    suffix: base,
+    possessive: false,
+    suffix,
     displayName: player.displayName,
     privateEvent,
     publicEvents
   })
-  player.gold = player.gold + earnedGold
-  player.silver = player.silver + remainder
+  const profile = guardProfile(playState, player.userId)
+  player.gold += earnedGold
+  player.silver += remainder
+  profile.gold += earnedGold
+  profile.silver += remainder
 }

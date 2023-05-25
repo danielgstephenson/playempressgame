@@ -6,20 +6,31 @@ export default function addPlayerEvent ({
   events,
   message,
   playerId,
-  round
+  round,
+  debug = false
 }: {
   children?: PlayerEvent[]
   events: HistoryEvent[]
   message: string
   playerId: string
   round?: number | undefined
+  debug?: boolean
 }): PlayerEvent {
+  if (debug) {
+    console.log('events before', events)
+  }
   const event = createPlayerEvent({
     children,
     playerId,
     round,
     message
   })
+  if (debug) {
+    console.log('event', event)
+  }
   events.push(event)
+  if (debug) {
+    console.log('events after', events)
+  }
   return event
 }

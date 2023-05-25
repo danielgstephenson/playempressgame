@@ -1,16 +1,27 @@
 import { PublicEvents } from '../../types'
 import addEvent from '.'
-import addPlayerEvent from './player'
 
-export default function addPublicEvent (publicEvents: PublicEvents, message: string): PublicEvents {
+export default function addPublicEvent (
+  publicEvents: PublicEvents,
+  message: string,
+  debug: boolean = false
+): PublicEvents {
+  if (debug) {
+    console.log('message', message)
+    console.log('publicEvents', publicEvents)
+  }
   const observerEvent = addEvent(publicEvents.observerEvent, message)
   const otherPlayerEvents = publicEvents
     .otherPlayerEvents
-    .map(event => addPlayerEvent({
-      events: event.children,
-      message,
-      playerId: event.playerId,
-      round: event.round
-    }))
+    .map(otherPlayerEvent => {
+      const playerEvent = addEvent(otherPlayerEvent, message)
+      if (debug) {
+        console.log('playerEvent', playerEvent)
+      }
+      return playerEvent
+    })
+  if (debug) {
+    console.log('otherPlayerEvents', otherPlayerEvents)
+  }
   return { observerEvent, otherPlayerEvents }
 }

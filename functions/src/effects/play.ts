@@ -1,6 +1,8 @@
+import addPlayerEvent from '../add/event/player'
+import addPublicEvents from '../add/events/public'
 import guardDefined from '../guard/defined'
-import guardEffect from '../guard/effect'
 import { PlayState } from '../types'
+import applyEffects from './apply'
 
 export default function playEffects ({
   playState,
@@ -10,17 +12,28 @@ export default function playEffects ({
   playState: PlayState
   playingId: string
   resume: boolean
-}): PlayState {
+}): void {
   const foundPlayer = playState.players.find(player => player.id === playingId)
   const effectPlayer = guardDefined(foundPlayer, 'Effect player')
   const effectScheme = guardDefined(effectPlayer.playScheme, 'Play scheme')
-  const rankEffects = guardEffect(effectScheme.rank)
-  const effectedState = rankEffects({
+  const publicEvents = addPublicEvents({
+    effectPlayer,
+    message: `${effectPlayer.displayName} plays ${effectScheme.rank}.`,
+    playState
+  })
+  const privateEvent = addPlayerEvent({
+    events: effectPlayer.history,
+    message: `You play ${effectScheme.rank}.`,
+    playerId: effectPlayer.id,
+    round: playState.game.round
+  })
+  applyEffects({
     copiedByFirstEffect: false,
-    playState,
     effectPlayer,
     effectScheme,
+    playState,
+    privateEvent,
+    publicEvents,
     resume
   })
-  return effectedState
 }

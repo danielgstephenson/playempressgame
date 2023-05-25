@@ -18,9 +18,12 @@ export default function revive ({
   player: Result<Player>
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
-}): PlayState {
+}): void {
+  if (depth === 0) {
+    return
+  }
   const playerClone = clone(player)
-  const revivedState = reviveMultiple({
+  reviveMultiple({
     depth,
     playState,
     player
@@ -50,9 +53,8 @@ export default function revive ({
       privateEvent,
       publicEvents,
       possessive: false,
-      suffix: `revives ${listRanks}`,
+      suffix: `revive ${listRanks}`,
       displayName: player.displayName
     })
   }
-  return revivedState
 }
