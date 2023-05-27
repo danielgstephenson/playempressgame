@@ -16,58 +16,21 @@ export default function endPlay ({
   transaction: Transaction
 }): void {
   const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
-  addBroadcastEvent({
-    players: playState.players,
-    game: playState.game,
-    message: `The highest rank scheme in play is ${highestPlayScheme.rank}.`
-  })
   const highPlayers = playState
     .players
     .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
   const notHighPlayers = playState
     .players
     .filter(player => player.playScheme?.rank !== highestPlayScheme.rank)
-  if (highestPlayScheme.rank === 8) {
-    const privateMessage = 'The threat on your 8 activates, so you put on your discard'
-    if (highPlayers.length === 1) {
-      const highPlayer = guardFirst(highPlayers, 'High player')
-      const suffix = 'instead of summoning it to the court.'
-      const privateEvent = createEvent(
-        `${privateMessage} ${suffix}`
-      )
-      highPlayer.history.push(privateEvent)
-      addBroadcastEvent({
-        players: notHighPlayers,
-        game: playState.game,
-        message: `The threat on ${highPlayer.displayName}'s 8 activates, so they put it on their discard instead of summoning it to the court.`
-      })
-    } else {
-      const suffix = 'instead of imprisoning them in the dungeon.'
-      const privateEvent = createEvent(
-        `${privateMessage} ${suffix}`
-      )
-      highPlayers.forEach(highPlayer => {
-        highPlayer.history.push(privateEvent)
-      })
-      const highDisplayNames = highPlayers.map(p => p.displayName)
-      const joinedHighDisplayNames = getJoined(highDisplayNames)
-      addBroadcastEvent({
-        players: notHighPlayers,
-        game: playState.game,
-        message: `The threat on ${joinedHighDisplayNames}'s 8s activate, so they put them on their discards instead of imprisoning them in the dungeon.`
-      })
-    }
-    return setPlayState({ playState, transaction })
-  }
   const eightPlayers = playState
     .players
     .filter(player => player.playScheme?.rank === 8)
-  const child = createEvent(`The highest rank scheme in play is ${highestPlayScheme.rank}, not 8.`)
+  const eightChild = createEvent(`The highest rank scheme in play is ${highestPlayScheme.rank}, not 8.`)
   if (eightPlayers.length === 1) {
     const eightPlayer = guardFirst(eightPlayers, 'Eight player')
     const privateMessage = 'The threat on your 8 does not activate.'
     const privateEvent = createEvent(privateMessage)
-    privateEvent.children.push(child)
+    privateEvent.children.push(eightChild)
     eightPlayer.history.push(privateEvent)
     const otherPlayers = playState
       .players
@@ -77,7 +40,7 @@ export default function endPlay ({
       game: playState.game,
       message: `The threat on ${eightPlayer.displayName}'s 8 does not activate.`
     })
-    publicEvent.children.push(child)
+    publicEvent.children.push(eightChild)
   } else if (eightPlayers.length > 0) {
     eightPlayers.forEach(eightPlayer => {
       const otherEightPlayers = eightPlayers
@@ -88,7 +51,7 @@ export default function endPlay ({
       const message = `The threat on ${joined}'s 8s does not activate.`
       const event = createEvent(message)
       eightPlayer.history.push(event)
-      event.children.push(child)
+      event.children.push(eightChild)
     })
     const displayNames = eightPlayers.map(p => p.displayName)
     const joined = getJoined(displayNames)
@@ -100,7 +63,7 @@ export default function endPlay ({
       game: playState.game,
       message: `The threat on the 8s played by ${joined} does not activate.`
     })
-    event.children.push(child)
+    event.children.push(eightChild)
   }
 
   if (highPlayers.length === 1) {

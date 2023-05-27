@@ -15,8 +15,10 @@ export default function effectsFifteen ({
   playState,
   privateEvent,
   publicEvents,
-  resume
+  resume,
+  threat
 }: SchemeEffectProps): PlayState {
+  console.log('fifteen threat', threat)
   if (!resume) {
     const firstPrivateChild = addEvent(privateEvent, 'If your top discard scheme is red, you copy the leftmost green timeline scheme.')
     const firstPublicChildren = addPublicEvent(publicEvents, `If your top discard scheme is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`)
@@ -40,7 +42,8 @@ export default function effectsFifteen ({
           playState,
           privateEvent: firstPrivateChild,
           publicEvents: firstPublicChildren,
-          resume: false
+          resume: false,
+          threat
         })
         if (firstChoices.length > 0) {
           return playState
@@ -73,7 +76,8 @@ export default function effectsFifteen ({
         playState,
         privateEvent: secondPrivateChild,
         publicEvents: secondPublicChildren,
-        resume: false
+        resume: false,
+        threat
       })
     }
   }

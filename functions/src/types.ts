@@ -45,6 +45,7 @@ export interface Choice {
   readonly playerId: string
   readonly type: ChoiceType
   readonly first?: Scheme
+  readonly threat?: Scheme
 }
 
 export type Game = MetaTypeCreator<{
@@ -152,6 +153,7 @@ export interface SchemeEffectProps {
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
   resume: boolean
+  threat?: Scheme | undefined
 }
 
 export interface EffectResult {

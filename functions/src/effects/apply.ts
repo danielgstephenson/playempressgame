@@ -8,7 +8,8 @@ export default function applyEffects ({
   playState,
   privateEvent,
   publicEvents,
-  resume
+  resume,
+  threat
 }: SchemeEffectProps): void {
   const rankEffects = guardEffect(effectScheme.rank)
   rankEffects({
@@ -18,6 +19,7 @@ export default function applyEffects ({
     playState,
     privateEvent,
     publicEvents,
-    resume
+    resume,
+    threat
   })
 }

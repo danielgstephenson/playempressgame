@@ -11,7 +11,8 @@ export default function effectsOne ({
   effectScheme,
   privateEvent,
   publicEvents,
-  resume
+  resume,
+  threat
 }: SchemeEffectProps): PlayState {
   const firstPrivateChild = addEvent(privateEvent, 'First, you draw 2 cards.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} draws 2 cards.`)
@@ -28,7 +29,8 @@ export default function effectsOne ({
     copiedByFirstEffect,
     effectPlayer,
     effectScheme,
-    type: 'trash'
+    type: 'trash',
+    threat
   })
   playState.game.choices.push(trashChoice)
   return playState

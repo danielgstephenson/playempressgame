@@ -5,19 +5,23 @@ export default function createChoice ({
   copiedByFirstEffect,
   effectPlayer,
   effectScheme,
-  type
+  type,
+  threat
 }: {
   copiedByFirstEffect: boolean
   effectScheme: Scheme
   effectPlayer: Result<Player>
   type: ChoiceType
+  threat?: Scheme | undefined
 }): Choice {
   const first = copiedByFirstEffect ? { first: effectScheme } : {}
-  const choice = {
+  const threatProps = threat != null ? { threat } : {}
+  const choice: Choice = {
     id: createId(),
     playerId: effectPlayer.id,
     type,
-    ...first
+    ...first,
+    ...threatProps
   }
   return choice
 }

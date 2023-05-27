@@ -10,8 +10,10 @@ export default function copyEffects ({
   playState,
   privateEvent,
   publicEvents,
-  resume
+  resume,
+  threat
 }: SchemeEffectProps): Choice[] {
+  console.log('copy threat', threat)
   const choicesClone = clone(playState.game.choices)
   applyEffects({
     copiedByFirstEffect,
@@ -20,7 +22,8 @@ export default function copyEffects ({
     playState,
     privateEvent,
     publicEvents,
-    resume
+    resume,
+    threat
   })
   const effectChoices = filterIds(playState.game.choices, choicesClone)
   return effectChoices
