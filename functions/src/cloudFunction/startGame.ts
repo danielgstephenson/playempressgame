@@ -74,7 +74,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   if (lowestYellow == null) {
     startEvent.children.push(createEvent('There are no yellow schemes remaining.'))
   } else {
-    startEvent.children.push(createEvent(`The only remaining yellow scheme is ${lowestYellow}.`))
+    startEvent.children.push(createEvent(`The lowest remaining yellow scheme is ${lowestYellow}.`))
   }
   const lowGreen = empressGreen.slice(0, 2)
   if (lowGreen.length === 0) {
@@ -104,17 +104,13 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const lowestLeft = guardDefined(empressLeft[0], 'Lowest left')
   startEvent.children.push(createEvent(`The lowest remaining scheme is ${lowestLeft}.`))
   const portfolio = [...basePortfolio, lowestLeft]
-  const timeline = empressLeft.slice(1)
-  const timelineRanks = getJoined(timeline)
-  startEvent.children.push(createEvent(`The timeline is ${timelineRanks}.`))
-  const timelineSchemes = timeline.map(rank => createScheme(rank))
-  const courtScheme = createScheme(court)
-  const dungeonScheme = createScheme(dungeon)
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
     return aRank - bRank
   })
   const portfolioRanks = getJoined(sortedPortfolio)
   startEvent.children.push(createEvent(`The portfolio is ${portfolioRanks}.`))
+  const courtScheme = createScheme(court)
+  const dungeonScheme = createScheme(dungeon)
   const deckIndex = sortedPortfolio.length - 2
   const topDeck = guardDefined(sortedPortfolio[deckIndex], 'Top deck')
   startEvent.children.push(createEvent(`The top deck scheme is ${topDeck}.`))
@@ -126,6 +122,10 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   hand[3] = 11
   hand[4] = 16
   startEvent.children.push(createEvent(`The hand is ${getJoined(hand)}.`))
+  const timeline = empressLeft.slice(1)
+  const timelineRanks = getJoined(timeline)
+  startEvent.children.push(createEvent(`The timeline is ${timelineRanks}.`))
+  const timelineSchemes = timeline.map(rank => createScheme(rank))
   const startedProfiles = currentGameData.profiles.map((profile) => {
     const topDeckScheme = createScheme(topDeck)
     const topDiscardScheme = createScheme(topDiscard)

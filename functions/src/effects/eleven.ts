@@ -1,6 +1,6 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
-import addHighestRankGreenOrYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/greenOrYellow'
+import addLowestRankGreenOrYellowPlaySchemeEvents from '../add/events/scheme/play/rank/lowest/greenOrYellow'
 import addTopDiscardSchemeGreenOrYellowEvents from '../add/events/scheme/topDiscard/greenOrYellow'
 import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
@@ -40,7 +40,7 @@ export default function effectsEleven ({
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the lowest rank green or yellow scheme in play.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the lowest rank green or yellow scheme in play.`)
-  const { scheme } = addHighestRankGreenOrYellowPlaySchemeEvents({
+  const { scheme } = addLowestRankGreenOrYellowPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren,

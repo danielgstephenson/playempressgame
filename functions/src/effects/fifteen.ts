@@ -60,7 +60,7 @@ export default function effectsFifteen ({
     addEventsEverywhere({
       publicEvents: secondPublicChildren,
       privateEvent: secondPrivateChild,
-      suffix: `top discard scheme is ${scheme.rank}, which is ${scheme.color}.`,
+      suffix: `top discard scheme, ${scheme.rank}, is ${scheme.color}`,
       displayName: effectPlayer.displayName
     })
   }

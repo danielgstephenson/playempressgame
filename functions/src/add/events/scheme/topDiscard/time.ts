@@ -24,6 +24,6 @@ export default function addTopDiscardSchemeTimeEvents ({
     return 0
   }
   addPublicEvent(publicEvents, `${displayName}'s top discard scheme is ${scheme.rank} with ${scheme.time} time.`)
-  addEvent(privateEvent, `Your top discard scheme is ${scheme.rank} with ${scheme.time} time.`)
+  addEvent(privateEvent, `Your top discard scheme, ${scheme.rank}, has ${scheme.time} time.`)
   return scheme.time
 }

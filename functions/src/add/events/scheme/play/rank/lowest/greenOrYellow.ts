@@ -1,9 +1,9 @@
-import guardHighestRankGreenOrYellowPlayScheme from '../../../../../../guard/highestRankGreenOrYellowPlayScheme'
+import guardLowestRankGreenOrYellowPlayScheme from '../../../../../../guard/lowestRankGreenOrYellowPlayScheme copy'
 import { HistoryEvent, MaybeSchemePlayEvents, PlayState, PublicEvents } from '../../../../../../types'
 import addEventsEverywhere from '../../../../everywhere'
 import addSortedPlayerEvents from '../../../../player/sorted'
 
-export default function addHighestRankGreenOrYellowPlaySchemeEvents ({
+export default function addLowestRankGreenOrYellowPlaySchemeEvents ({
   playState,
   privateEvent,
   publicEvents,
@@ -14,7 +14,7 @@ export default function addHighestRankGreenOrYellowPlaySchemeEvents ({
   publicEvents: PublicEvents
   playerId: string
 }): MaybeSchemePlayEvents {
-  const scheme = guardHighestRankGreenOrYellowPlayScheme(playState.players)
+  const scheme = guardLowestRankGreenOrYellowPlayScheme(playState.players)
   if (scheme == null) {
     const playEvents = addEventsEverywhere({
       publicEvents,
@@ -24,7 +24,7 @@ export default function addHighestRankGreenOrYellowPlaySchemeEvents ({
     return { playEvents }
   }
   const rank = String(scheme.rank)
-  const message = `The highest rank green or yellow scheme in play is ${rank}.`
+  const message = `The lowest rank green or yellow scheme in play is ${rank}.`
   const playRankEvents = addSortedPlayerEvents({
     publicEvents,
     privateEvent,

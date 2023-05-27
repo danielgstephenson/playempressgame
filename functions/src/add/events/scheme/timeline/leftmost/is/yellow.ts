@@ -24,7 +24,7 @@ export default function addLeftmostTimelineSchemeIsYellowEvents ({
     return { playEvents }
   }
   const scheme = guardDefined(playState.game.timeline[0], 'Leftmost timeline scheme')
-  const message = `The leftmost timeline scheme is ${scheme.rank}, which is ${scheme.color}.`
+  const message = `The leftmost timeline scheme, ${scheme.rank}, is ${scheme.color}.`
   const playEvents = addEventsEverywhere({
     privateEvent,
     publicEvents,
