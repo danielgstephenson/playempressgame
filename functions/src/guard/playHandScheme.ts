@@ -8,7 +8,7 @@ export default function guardPlayHandScheme (player: Result<Player>): Scheme {
     })
     return playScheme
   } catch (error) {
-    console.log('guardPlayHandScheme error player', player)
+    console.error('guardPlayHandScheme error player', player)
     throw error
   }
 }

@@ -35,7 +35,6 @@ export default function playLastReady ({
   })
   passTime({ playState })
   playState.players.forEach(player => {
-    player.ready = false
     player.hand = player.hand.filter(scheme => scheme.id !== player.trashScheme?.id && scheme.id !== player.playScheme?.id)
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
@@ -63,6 +62,8 @@ export default function playLastReady ({
       transaction
     })
   } else {
+    console.log('playLastReady setPlayState players', playState.players)
+    console.log('playLastReady setPlayState currentplayer', currentPlayer)
     setPlayState({
       playState,
       transaction

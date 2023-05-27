@@ -7,6 +7,7 @@ import PlayerView from './Player'
 import authContext from '../context/auth'
 import Status from './Status'
 import profileContext from '../context/profile'
+import PublicTrashView from './PublicTrash'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -25,6 +26,9 @@ export default function ProfileView (): JSX.Element {
           <Status label='Silver' value={profileState.silver} />
           <Status label='Top Discard' value={profileState.topDiscardScheme?.rank} />
           <Status label='Deck Empty' value={deckEmpty} />
+          <Curtain open={!showPlayer}>
+            <PublicTrashView />
+          </Curtain>
           <Curtain open={showPlayer}>
             <PlayerReader DocView={PlayerView} />
           </Curtain>

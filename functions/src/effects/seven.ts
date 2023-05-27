@@ -17,7 +17,6 @@ export default function effectsSeven ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  console.log('effectsSeven')
   const firstPrivateChild = addEvent(privateEvent, 'First, if the left two timeline schemes are the same color, you earn the higher rank.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, if the left two timeline schemes are the same color, ${effectPlayer.displayName} earns the higher rank.`)
   const leftTwo = playState.game.timeline.slice(0, 2)

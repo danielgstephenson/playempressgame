@@ -7,8 +7,8 @@ export default function addPublicEvent (
   debug: boolean = false
 ): PublicEvents {
   if (debug) {
-    console.log('message', message)
-    console.log('publicEvents', publicEvents)
+    console.debug('message', message)
+    console.debug('publicEvents', publicEvents)
   }
   const observerEvent = addEvent(publicEvents.observerEvent, message)
   const otherPlayerEvents = publicEvents
@@ -16,12 +16,12 @@ export default function addPublicEvent (
     .map(otherPlayerEvent => {
       const playerEvent = addEvent(otherPlayerEvent, message)
       if (debug) {
-        console.log('playerEvent', playerEvent)
+        console.debug('playerEvent', playerEvent)
       }
       return playerEvent
     })
   if (debug) {
-    console.log('otherPlayerEvents', otherPlayerEvents)
+    console.debug('otherPlayerEvents', otherPlayerEvents)
   }
   return { observerEvent, otherPlayerEvents }
 }

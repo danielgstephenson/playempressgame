@@ -1,30 +1,17 @@
-import ChakraButton from '../lib/firewrite/chakra/Button'
-import { Scheme } from '../types'
-import Curtain from './Curtain'
-import StatusView from './Status'
+import { useContext } from 'react'
+import playContext from '../context/play'
+import TableauView from './Tableau'
 
-export default function PlayAreaView ({
-  scheme,
-  onReturn,
-  label
-}: {
-  scheme?: Scheme
-  onReturn?: () => void
-  label: string
-}): JSX.Element {
-  const showAction = scheme != null
+export default function PlayAreaView (): JSX.Element {
+  const playState = useContext(playContext)
+  function handleReturn (): void {
+    playState.emptyPlay?.()
+  }
   return (
-    <>
-      <StatusView
-        label={label}
-        value={scheme?.rank}
-      />
-      <Curtain open={showAction}>
-        <ChakraButton
-          label='Return to hand'
-          onClick={onReturn}
-        />
-      </Curtain>
-    </>
+    <TableauView
+      onReturn={handleReturn}
+      label='Play'
+      scheme={playState.playScheme}
+    />
   )
 }

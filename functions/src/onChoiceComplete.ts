@@ -38,7 +38,6 @@ export default function onChoiceComplete ({
     .choices
     .filter(c => c.id !== choice.id)
   if (playState.game.choices.length === 0) {
-    console.log('choice test', choice)
     if (choice.threat == null) {
       endThreats({ playState, transaction })
     } else {

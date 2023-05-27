@@ -53,27 +53,18 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       update: publicUpdate
     })
     const youEvent = createEvent('You are ready.')
-    const trashScheme = guardHandScheme({
-      hand: currentPlayer.hand,
-      schemeId: trashSchemeId,
-      label: 'Play ready trash scheme'
-    })
-    const playScheme = guardHandScheme({
-      hand: currentPlayer.hand,
-      schemeId: playSchemeId,
-      label: 'Play ready play scheme'
-    })
     const youUpdate = {
       history: arrayUnion(youEvent),
       ready: true,
       playScheme,
       trashScheme
     }
+    console.log('youUpdate', youUpdate)
     transaction.update(currentPlayerRef, youUpdate)
     console.info(`${currentUid} is ready!`)
     return
   }
-  console.log('not waiting...')
+  console.info('not waiting...')
   const otherPlayers = await getOtherPlayers({
     currentUid,
     gameId,
@@ -82,15 +73,16 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
   const readyPlayer = {
     ...currentPlayer,
     trashScheme,
-    playScheme
+    playScheme,
+    ready: true
   }
   const readiedPlayers = [readyPlayer, ...otherPlayers]
   const playState = {
     game: currentGame,
     players: readiedPlayers
   }
-  console.log('before playLastReady')
-  playLastReady({ playState, currentPlayer, transaction })
+  console.log('readyPlayer', readyPlayer)
+  playLastReady({ playState, currentPlayer: readyPlayer, transaction })
   console.info(`${currentUid} was the last to ready!`)
 })
 export default playReady

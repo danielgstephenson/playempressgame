@@ -15,8 +15,10 @@ export default function HandView (): JSX.Element {
   const deckChoice = choice?.type === 'deck'
   const trashChoice = choice?.type === 'trash'
   const noChoice = gameState.choices == null || gameState.choices.length === 0
-  const playTrash = noChoice && gameState.phase === 'play'
-  const playPlay = noChoice && gameState.phase === 'play'
+  const showPlay = noChoice && gameState.phase === 'play' && playerState.ready !== true
+  console.log('gameState', gameState)
+  console.log('playerState', playerState)
+  console.log('showPlay', showPlay)
   const unplayed = playerState
     .hand
     ?.filter(scheme =>
@@ -36,13 +38,13 @@ export default function HandView (): JSX.Element {
     return (
       <VStack key={scheme.id} spacing='0'>
         <Text>{scheme.rank}</Text>
-        <Curtain open={playTrash}>
+        <Curtain open={showPlay}>
           <ChakraButton
             label='Trash'
             onClick={handleTrash}
           />
         </Curtain>
-        <Curtain open={playPlay}>
+        <Curtain open={showPlay}>
           <ChakraButton
             label='Play'
             onClick={handlePlay}

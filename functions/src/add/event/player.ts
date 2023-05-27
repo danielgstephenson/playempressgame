@@ -17,7 +17,7 @@ export default function addPlayerEvent ({
   debug?: boolean
 }): PlayerEvent {
   if (debug) {
-    console.log('events before', events)
+    console.debug('events before', events)
   }
   const event = createPlayerEvent({
     children,
@@ -26,11 +26,11 @@ export default function addPlayerEvent ({
     message
   })
   if (debug) {
-    console.log('event', event)
+    console.debug('event', event)
   }
   events.push(event)
   if (debug) {
-    console.log('events after', events)
+    console.debug('events after', events)
   }
   return event
 }

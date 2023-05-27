@@ -1,17 +1,17 @@
 import { useContext } from 'react'
 import playContext from '../context/play'
-import PlayAreaView from './PlayArea'
+import TableauView from './Tableau'
 
-export default function PlayView (): JSX.Element {
+export default function TrashAreaView (): JSX.Element {
   const playState = useContext(playContext)
   function handleReturn (): void {
-    playState.emptyPlay?.()
+    playState.emptyTrash?.()
   }
   return (
-    <PlayAreaView
+    <TableauView
       onReturn={handleReturn}
-      label='Play'
-      scheme={playState.playScheme}
+      label='Trash'
+      scheme={playState.trashScheme}
     />
   )
 }

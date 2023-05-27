@@ -13,7 +13,6 @@ export default function copyEffects ({
   resume,
   threat
 }: SchemeEffectProps): Choice[] {
-  console.log('copy threat', threat)
   const choicesClone = clone(playState.game.choices)
   applyEffects({
     copiedByFirstEffect,

@@ -17,6 +17,7 @@ export default function setPlayState ({
       playScheme: rest.playScheme ?? deleteField(),
       trashScheme: rest.trashScheme ?? deleteField()
     }
+    console.log('player ready', player.displayName, player.id, player.ready, newPlayer.ready)
     transaction.update(playerRef, newPlayer)
   })
   const { id, ...rest } = playState.game

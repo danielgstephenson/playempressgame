@@ -17,7 +17,6 @@ export default function effectsSixteen ({
   resume,
   threat
 }: SchemeEffectProps): PlayState {
-  console.log('sixteen threat', threat)
   const firstPrivateChild = addEvent(privateEvent, 'First, if you have 5 or less schemes in hand, you earn 25 gold.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, if  ${effectPlayer.displayName} has 5 or less schemes in hand, they earn 25 gold.`)
   const less = effectPlayer.hand.length < 6
@@ -53,7 +52,6 @@ export default function effectsSixteen ({
       type: 'deck',
       threat
     })
-    console.log('sixteen choice', choice)
     playState.game.choices.push(choice)
   } else {
     addEventsEverywhere({

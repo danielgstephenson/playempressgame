@@ -17,7 +17,6 @@ export default function effectsFive ({
   playState,
   resume
 }: SchemeEffectProps): PlayState {
-  console.log('effectsFive')
   const firstPrivateChild = addEvent(privateEvent, 'First, revive your top discard scheme\'s time.')
   const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
   const topDiscardSchemeTime = addTopDiscardSchemeTimeEvents({
