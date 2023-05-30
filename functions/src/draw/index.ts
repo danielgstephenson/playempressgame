@@ -96,8 +96,19 @@ export default function draw ({
     if (scheme.rank !== 1) {
       return false
     }
-    const already = playerClone.hand.some(handScheme => handScheme.id === scheme.id)
-    return !already
+    const alreadyHand = playerClone.hand.some(handScheme => handScheme.id === scheme.id)
+    if (alreadyHand) {
+      return false
+    }
+    const alreadyDeck = playerClone.deck.some(deckScheme => deckScheme.id === scheme.id)
+    if (alreadyDeck) {
+      return false
+    }
+    const alreadyDiscard = playerClone.discard.some(discardScheme => discardScheme.id === scheme.id)
+    if (alreadyDiscard) {
+      return false
+    }
+    return true
   })
   if (privilegeTaken.length > 0) {
     const privateMessage = `Your deck and discard are empty, so you take ${privilegeTaken.length} Privilege into your hand.`

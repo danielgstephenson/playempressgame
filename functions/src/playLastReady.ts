@@ -8,7 +8,7 @@ import filterIds from './filterIds'
 import clone from './clone'
 import { Transaction } from 'firelord'
 import setPlayState from './setPlayState'
-import endThreats from './endThreats'
+import endPlay from './endPlay'
 
 export default function playLastReady ({
   playState,
@@ -57,7 +57,7 @@ export default function playLastReady ({
   const effectsChoices = filterIds(playState.game.choices, playStateClone.game.choices)
   console.log('effectsChoices.length', effectsChoices.length)
   if (effectsChoices.length === 0) {
-    endThreats({
+    endPlay({
       playState,
       transaction
     })

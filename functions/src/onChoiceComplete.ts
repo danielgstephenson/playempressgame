@@ -4,7 +4,7 @@ import { Choice, HistoryEvent, PlayState, Player, PublicEvents, Result } from '.
 import setPlayState from './setPlayState'
 import applyEffects from './effects/apply'
 import guardDefined from './guard/defined'
-import endThreats from './endThreats'
+import drawUpToThree from './drawUpToThree'
 
 export default function onChoiceComplete ({
   choice,
@@ -39,9 +39,9 @@ export default function onChoiceComplete ({
     .filter(c => c.id !== choice.id)
   if (playState.game.choices.length === 0) {
     if (choice.threat == null) {
-      endThreats({ playState, transaction })
-    } else {
       endPlay({ playState, transaction })
+    } else {
+      drawUpToThree({ playState, transaction })
     }
   } else {
     setPlayState({ playState, transaction })
