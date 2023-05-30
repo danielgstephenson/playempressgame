@@ -34,5 +34,6 @@ export interface WriterComponentProps {
   label: string
   loading?: boolean
   error?: Error
+  errorMessage?: string
 }
 export type WriterComponent = FC<WriterComponentProps>

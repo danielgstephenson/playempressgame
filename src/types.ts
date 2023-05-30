@@ -9,6 +9,10 @@ export interface AuthState {
   currentUserLoading?: Boolean
   currentUserError?: Error | undefined
   displayName?: string
+  setSignOutErrorMessage?: (message: string) => void
+  signOut?: () => Promise<boolean>
+  signOutErrorMessage?: string
+  signOutLoading?: boolean
 }
 
 export interface Doc {

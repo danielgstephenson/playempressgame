@@ -7,12 +7,13 @@ export default function ChakraButton ({
   label,
   loading,
   error,
+  errorMessage,
   ...buttonProps
 }: WriterComponentProps & ButtonProps): JSX.Element {
   return (
     <Button onClick={onClick} isLoading={loading} {...buttonProps}>
       {label}
-      <ChakraIcon loading={loading} error={error} />
+      <ChakraIcon loading={loading} error={error} errorMessage={errorMessage} />
     </Button>
   )
 }

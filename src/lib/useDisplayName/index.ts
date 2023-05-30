@@ -1,9 +1,11 @@
 import { Auth } from 'firebase/auth'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import authContext from '../../context/auth'
 import wait from './wait'
 
-export default function useDisplayName (auth?: Auth): string | undefined {
+export default function useDisplayName (auth: Auth): string | undefined {
   const [displayName, setDisplayName] = useState<string>()
+  const { signOut, setSignOutErrorMessage } = useContext(authContext)
   useEffect(() => {
     if (auth == null) {
       console.warn('No auth provided to useDisplayName.')
@@ -19,10 +21,11 @@ export default function useDisplayName (auth?: Auth): string | undefined {
         await authUser?.reload()
         if (authUser?.displayName == null) {
           console.warn('Reloading user without display name...')
-          await wait(2000)
+          await wait(3000)
           await authUser?.reload()
           if (authUser?.displayName == null) {
-            throw new Error('This user has no display name.')
+            await signOut?.()
+            setSignOutErrorMessage?.('This user has no display name.')
           } else {
             setDisplayName(authUser.displayName)
           }
