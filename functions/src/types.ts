@@ -203,12 +203,14 @@ export interface ReviveData extends ReviveResult {
 }
 
 export interface Grammar {
-  count: string
-  toBe: string
-  noun: string
-  toBeCount: string
-  object: string
   all: string
+  count: string
+  noun: string
+  object: string
+  toBe: string
+  toBeCount: string
+  spelled: string
+  possessivePhrase: string
 }
 
 export interface GetJoinedRanksGrammar {

@@ -12,6 +12,7 @@ import copyEffects from './effects/copy'
 import getJoinedPossessive from './get/joined/possessive'
 import guardPlayScheme from './guard/playScheme'
 import drawUpToThree from './drawUpToThree'
+import addPublicEvent from './add/event/public'
 
 export default function endPlay ({
   playState,
@@ -127,15 +128,41 @@ export default function endPlay ({
     playState.game.court.push(guardPlayScheme(highPlayer))
     if (highestPlayScheme.rank !== 15) {
       highPlayer.playScheme = undefined
+      const privateSummonMessage = `Your ${highestPlayScheme.rank} is summoned to the court.`
+      const privateSummonEvent = createEvent(privateSummonMessage)
+      highPlayer.history.push(privateSummonEvent)
+      addBroadcastEvent({
+        players: notHighPlayers,
+        game: playState.game,
+        message: `${highPlayer.displayName}'s ${highestPlayScheme.rank} is summoned to the court.`
+      })
+    } else {
+      const privateMessage = 'Your 15 is summoned to the court, so you carry out its threat.'
+      const privateEvent = createEvent(privateMessage)
+      highPlayer.history.push(privateEvent)
+      addEvent(privateEvent, 'You copy your 15.')
+      const publicEvents = addPublicEvents({
+        effectPlayer: highPlayer,
+        message: `${highPlayer.displayName}'s 15 is summoned to the court, so they carry out its threat.`,
+        playState
+      })
+      addPublicEvent(publicEvents, `${highPlayer.displayName} copies their 15.`)
+      const playScheme = guardPlayScheme(highPlayer)
+      const choices = copyEffects({
+        copiedByFirstEffect: true,
+        effectPlayer: highPlayer,
+        effectScheme: playScheme,
+        playState,
+        privateEvent,
+        publicEvents,
+        resume: false,
+        threat: playScheme
+      })
+      highPlayer.playScheme = undefined
+      if (choices.length > 0) {
+        return setPlayState({ playState, transaction })
+      }
     }
-    const privateSummonMessage = `Your ${highestPlayScheme.rank} is summoned to the court.`
-    const privateSummonEvent = createEvent(privateSummonMessage)
-    highPlayer.history.push(privateSummonEvent)
-    addBroadcastEvent({
-      players: notHighPlayers,
-      game: playState.game,
-      message: `${highPlayer.displayName}'s ${highestPlayScheme.rank} is summoned to the court.`
-    })
   } else {
     highPlayers.forEach(highPlayer => {
       const otherHighPlayers = highPlayers.filter(player => player.id !== highPlayer.id)
@@ -154,34 +181,6 @@ export default function endPlay ({
       game: playState.game,
       message: `The ${highestPlayScheme.rank}s played by ${joinedHighDisplayNames} are summoned to the court.`
     })
-  }
-  if (highestPlayScheme.rank === 15) {
-    if (highPlayers.length === 1) {
-      const privateMessage = 'You carry out the threat on your 15, so you copy it.'
-      const highPlayer = guardFirst(highPlayers, 'High player')
-      console.log('highPlayer', highPlayer)
-      const privateEvent = createEvent(privateMessage)
-      highPlayer.history.push(privateEvent)
-      const publicEvents = addPublicEvents({
-        effectPlayer: highPlayer,
-        message: `The threat on ${highPlayer.displayName}'s 15 activates, so they copy it.`,
-        playState
-      })
-      const playScheme = guardPlayScheme(highPlayer)
-      const choices = copyEffects({
-        copiedByFirstEffect: true,
-        effectPlayer: highPlayer,
-        effectScheme: playScheme,
-        playState,
-        privateEvent,
-        publicEvents,
-        resume: false,
-        threat: playScheme
-      })
-      if (choices.length > 0) {
-        return setPlayState({ playState, transaction })
-      }
-    }
   }
   const notFifteen = highestPlayScheme.rank !== 15
   const multipleHighPlayers = highPlayers.length > 1
