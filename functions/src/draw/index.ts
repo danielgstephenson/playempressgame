@@ -111,8 +111,9 @@ export default function draw ({
     return true
   })
   if (privilegeTaken.length > 0) {
-    const privateMessage = `Your deck and discard are empty, so you take ${privilegeTaken.length} Privilege into your hand.`
-    const publicMessage = `${player.displayName} takes ${privilegeTaken.length} Privilege into their hand.`
+    const { count } = getGrammar(privilegeTaken.length, 'Privilege', 'Privilege')
+    const privateMessage = `Your deck and discard are empty, so you take ${count} into your hand.`
+    const publicMessage = `${player.displayName} takes ${count} into their hand.`
     addEventsEverywhere({
       privateEvent,
       publicEvents,

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Heading } from '@chakra-ui/react'
 import HistoryEventView from './HistoryEvent'
 import { HistoryEvent } from '../types'
@@ -10,11 +10,17 @@ export default function HistoryView ({
   history?: HistoryEvent[]
   children?: ReactNode
 }): JSX.Element {
+  const ref = useRef<HTMLDivElement>(null)
   const items = history?.map((event, index) => (
     <HistoryEventView event={event} key={index} />
   ))
+  // Scroll to bottom
+  useEffect(() => {
+    if (ref.current == null) return
+    ref.current.scrollTop = ref.current.scrollHeight
+  }, [history])
   return (
-    <Accordion allowToggle>
+    <Accordion allowToggle defaultIndex={0}>
       <AccordionItem>
         <Heading size='sm'>
           <AccordionButton>
@@ -25,7 +31,11 @@ export default function HistoryView ({
           </AccordionButton>
         </Heading>
         <AccordionPanel>
-          <Accordion allowMultiple>
+          <Accordion
+            ref={ref}
+            allowMultiple height='200px'
+            overflowY='scroll'
+          >
             {items}
           </Accordion>
         </AccordionPanel>

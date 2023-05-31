@@ -21,13 +21,15 @@ export default function getGrammar (
         all: 'them all',
         spelled: numberToWords(number)
       }
-  const count = `${number} ${parts.noun}`
+  const count = `${parts.spelled} ${parts.noun}`
   const toBeCount = `${parts.toBe} ${count}`
-  const possessivePhrase = `have ${count}`
+  const possessiveSecond = `have ${count}`
+  const possessiveThird = `has ${count}`
   return {
     ...parts,
     count,
-    possessivePhrase,
+    possessiveSecond,
+    possessiveThird,
     toBeCount
   }
 }

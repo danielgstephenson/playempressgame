@@ -39,10 +39,11 @@ export default function drawUpToThree ({
     })
     if (player.hand.length < 3) {
       const depth = 3 - player.hand.length
-      const { possessivePhrase } = getGrammar(player.hand.length)
-      const privateMessage = `You ${possessivePhrase} in hand, so you draw ${depth}.`
+      const depthGrammar = getGrammar(depth)
+      const { possessiveSecond, possessiveThird } = getGrammar(player.hand.length)
+      const privateMessage = `You ${possessiveSecond} in hand, so you draw ${depthGrammar.spelled}.`
       const privateEvent = addEvent(playerEvent, privateMessage)
-      const publicMessage = `${player.displayName} ${possessivePhrase} in hand, so they draw ${depth}.`
+      const publicMessage = `${player.displayName} ${possessiveThird} in hand, so they draw ${depthGrammar.spelled}.`
       const otherPlayers = playState.players.filter(p => p.id !== player.id)
       const otherPlayerEvents = otherPlayers.map(player => {
         const otherPlayerEvent = guardPlayerEvent({

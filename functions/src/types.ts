@@ -210,7 +210,8 @@ export interface Grammar {
   toBe: string
   toBeCount: string
   spelled: string
-  possessivePhrase: string
+  possessiveSecond: string
+  possessiveThird: string
 }
 
 export interface GetJoinedRanksGrammar {
