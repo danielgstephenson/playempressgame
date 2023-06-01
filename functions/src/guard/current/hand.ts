@@ -1,7 +1,7 @@
 import { https } from 'firebase-functions'
 import { Transaction } from 'firelord'
 import guardHandScheme from '../handScheme'
-import guardCurrentPlaying from './player'
+import guardCurrentPlaying from './playing'
 import { CurrentHandGuard } from '../../types'
 
 export default async function guardCurrentHand ({ context, transaction, gameId, schemeId, label }: {

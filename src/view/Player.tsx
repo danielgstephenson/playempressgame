@@ -8,10 +8,12 @@ import PlayerHistoryView from './PlayerHistory'
 import ChoiceView from './Choice'
 import PlayProvider from '../context/play/Provider'
 import PrivateTrashView from './PrivateTrash'
+import BidView from './Bid'
 
 export default function PlayerView (): JSX.Element {
   return (
     <PlayProvider>
+      <BidView />
       <TrashAreaView />
       <PrivateTrashView />
       <PlayAreaView />

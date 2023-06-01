@@ -28,14 +28,15 @@ export interface Scheme extends SchemeData {
 export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
 
 export interface Profile {
-  userId: string
-  gameId: string
+  bid: number
   deckEmpty: boolean
   displayName: string
-  topDiscardScheme?: Scheme | undefined
+  gameId: string
   gold: number
   silver: number
+  topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
+  userId: string
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -76,6 +77,7 @@ export interface PrivateTrashEvent extends TrashEvent {
 }
 
 export type Player = MetaTypeCreator<{
+  bid: number
   deck: Scheme[]
   discard: Scheme[]
   displayName: string
@@ -98,7 +100,7 @@ export interface CurrentGameGuard {
   currentUserRef: DocumentReference<User>
 }
 
-export interface CurrentPlayingGuard {
+export interface CurrentPlayerGuard {
   currentUid: string
   currentGame: Result<Game>
   currentGameRef: DocumentReference<Game>
@@ -110,6 +112,10 @@ export interface CurrentPlayingGuard {
 
 export interface GameProps {
   gameId: string
+}
+
+export interface BidProps extends GameProps {
+  bid: number
 }
 
 export interface PlayReadyProps extends GameProps {
@@ -125,7 +131,7 @@ export interface HistoryUpdate {
   history: ArrayUnionOrRemove<HistoryEvent>
 }
 
-export interface CurrentHandGuard extends CurrentPlayingGuard {
+export interface CurrentHandGuard extends CurrentPlayerGuard {
   scheme: Scheme
 }
 
@@ -140,11 +146,6 @@ export interface CurrentUserGuard {
   currentUser: Result<User>
 }
 
-export interface PassTime {
-  passedTimeline: Scheme[]
-  timeEvent: HistoryEvent
-}
-
 export interface SchemeEffectProps {
   copiedByFirstEffect: boolean
   effectPlayer: Result<Player>
@@ -154,28 +155,6 @@ export interface SchemeEffectProps {
   publicEvents: PublicEvents
   resume: boolean
   threat?: Scheme | undefined
-}
-
-export interface EffectResult {
-  effectSummons: Scheme[]
-  effectChoices: Choice[]
-  effectDeck: Scheme[]
-  effectDiscard: Scheme[]
-  effectGold: number
-  effectSilver: number
-  effectHand: Scheme[]
-  effectPlayerEvents: HistoryEvent[]
-}
-
-export interface SerializedEffect {
-  effectSummons: Scheme[]
-  effectChoices: Choice[]
-  effectDeck: Scheme[]
-  effectDiscard: Scheme[]
-  effectGold: number
-  effectSilver: number
-  effectHand: Scheme[]
-  effectPlayerEvents: HistoryEvent[]
 }
 
 export type SchemeEffect = (props: SchemeEffectProps) => PlayState
@@ -223,38 +202,6 @@ export interface GetJoinedRanksGrammar {
 export interface Earning {
   gold: number
   silver: number
-}
-
-export interface PlayResult {
-  playerEvents: HistoryEvent[]
-  playerChanges: Partial<Player['writeFlatten']>
-  playerResult: Result<Player>
-}
-
-export interface PlayChanges {
-  playerChanges: Partial<Player['writeFlatten']>
-  profileChanged: boolean
-}
-
-export type EffectResultChanges = SerializedEffect & PlayChanges
-
-export interface EffectResultGuard {
-  oldDeck: Scheme[]
-  oldDiscard: Scheme[]
-  oldDungeon: Scheme[]
-  oldHand: Scheme[]
-  oldPlayers: Array<Result<Player>>
-  passedTimeline: Scheme[]
-  effectResult: EffectResult
-}
-
-export interface HighsGuard {
-  high: Scheme
-  highEvent: HistoryEvent
-  highRank: string
-  highRef: Scheme
-  highRefs: Scheme[]
-  highs: Scheme[]
 }
 
 export type Write <Collection extends MetaType> =

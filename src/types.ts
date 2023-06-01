@@ -81,6 +81,7 @@ export interface Game extends Doc{
 }
 
 export interface Player extends Doc {
+  bid: number
   deck: Scheme[]
   discard: Scheme[]
   displayName: string

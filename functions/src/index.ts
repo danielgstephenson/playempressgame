@@ -7,8 +7,10 @@ import playReady from './cloudFunction/playReady'
 import deckChoose from './cloudFunction/deckChoose'
 import trashChoose from './cloudFunction/trashChoose'
 import 'source-map-support/register'
+import bid from './cloudFunction/bid'
 
 exports.addGame = addGame
+exports.bid = bid
 exports.deckChoose = deckChoose
 exports.joinGame = joinGame
 exports.onCreateUser = onCreateUser

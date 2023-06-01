@@ -135,6 +135,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {
+      bid: 0,
       deck,
       discard,
       displayName: profile.displayName,

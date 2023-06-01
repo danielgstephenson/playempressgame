@@ -1,288 +1,132 @@
 [
     {
         "rank": 0,
-        "title": "Inherit a title",
         "color": "green",
-        "time": 3,
-        "beginning": "Take 8 Privilege from the bank into your hand",
-        "end": "Put 2 Privilege from the bank face down on your deck",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Isabella_of_France",
-        "link2": "https://www.britannica.com/topic/Salic-Law-of-Succession"
+        "time": 3
     },
     {
         "rank": 1,
-        "title": "Privilege",
         "color": "green",
-        "time": 3,
-        "beginning": "Draw 2",
-        "end": "Trash 1 from your hand",
-        "threat": "",
-        "link1": "https://en.wikisource.org/wiki/Page:The_English_Peasant.djvu/28",
-        "link2": "https://www.marxists.org/archive/foot-paul/1981/06/1381.html"
+        "time": 3
     },
     {
         "rank": 2,
-        "title": "Fight for Freedom",
         "color": "green",
-        "time": 3,
-        "beginning": "Revive the lowest time in play",
-        "end": "Draw 1 for each dungeon scheme",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Margaret_Fell",
-        "link2": "https://plato.stanford.edu/entries/margaret-fell/"
+        "time": 3
     },
     {
         "rank": 3,
-        "title": "Serve as Sheriff",
         "color": "green",
-        "time": 1,
-        "beginning": "Put 3 Privilege from the bank face up on your discard",
-        "end": "Draw the highest time in play",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Nicola_de_la_Haie",
-        "link2": "https://en.wikipedia.org/wiki/Philip_Marc"
+        "time": 1
     },
     {
         "rank": 4,
-        "title": "Declare independence",
         "color": "green",
-        "time": 3,
-        "beginning": "Take 1 Privilege from the bank into your hand",
-        "end": "Draw the lowest time in play",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Mavia_(queen)",
-        "link2": "https://en.wikipedia.org/wiki/Tanukhids"
+        "time": 3
     },
     {
         "rank": 5,
-        "title": "Found a secret order",
         "color": "green",
-        "time": 0,
-        "beginning": "Revive your top discard scheme's time",
-        "end": "Draw twice the number of colors in play",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Illuminati#Origins",
-        "link2": "https://www.sacred-texts.com/sro/mhj/mhj313.htm"
+        "time": 0
     },
     {
         "rank": 6,
-        "title": "Frame the hostage",
         "color": "green",
-        "time": 0,
-        "beginning": "Revive the highest time in play",
-        "end": "Draw the lowest rank in the dungeon",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Mary,_Queen_of_Scots",
-        "link2": "https://en.wikipedia.org/wiki/Babington_Plot"
+        "time": 0
     },
     {
         "rank": 7,
-        "title": "Host a wedding",
         "color": "yellow",
-        "time": 1,
-        "beginning": "If the left 2 timeline schemes are the same color, earn the higher rank",
-        "end": "If the lowest rank scheme in play is green, earn 10 gold",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Margaret_of_Valois",
-        "link2": "https://en.wikipedia.org/wiki/St._Bartholomew%27s_Day_massacre"
+        "time": 1
     },
     {
         "rank": 8,
-        "title": "Buccaneer a treasure ship",
         "color": "red",
-        "time": 0,
-        "beginning": "Copy the lowest rank yellow scheme in play",
-        "end": "Copy the lowest rank green or yellow dungeon scheme",
-        "threat": "If this is the highest rank scheme in play, put it face up on your discard instead of summoning it to the court",
-        "link1": "https://en.wikipedia.org/wiki/Sayyida_al_Hurra",
-        "link2": "https://www.thefreelibrary.com/Women+in+northern+Morocco%3A+between+the+documentary+and+the+imaginary-a0302403823"
+        "time": 0
     },
     {
         "rank": 9,
-        "title": "Start a bloodfeud",
         "color": "red",
-        "time": 3,
-        "beginning": "Copy the leftmost yellow timeline scheme",
-        "end": "Copy the highest rank green dungeon scheme",
-        "threat": "If someone else wins the auction, they must imprison their top discard scheme",
-        "link1": "https://en.wikipedia.org/wiki/Fredegund",
-        "link2": "https://en.wikipedia.org/wiki/Brunhilda_of_Austrasia"
+        "time": 3
     },
     {
         "rank": 10,
-        "title": "Call in allies",
         "color": "red",
-        "time": 3,
-        "beginning": "If your top discard scheme is yellow, copy it",
-        "end": "Copy the highest rank yellow scheme in play",
-        "threat": "If you bid 10 or more, your bid is increased by 10",
-        "link1": "https://en.wikipedia.org/wiki/Maria_Theresa",
-        "link2": "https://en.wikipedia.org/wiki/War_of_the_Austrian_Succession"
+        "time": 3
     },
     {
         "rank": 11,
-        "title": "Challenge to a duel",
         "color": "red",
-        "time": 0,
-        "beginning": "If your top discard scheme is green or yellow, copy it",
-        "end": "Copy the lowest rank green or yellow scheme in play",
-        "threat": "If someone else bids 5 or more, you may bid silver",
-        "link1": "https://en.wikipedia.org/wiki/Armande_F%C3%A9lice_de_La_Porte_Mazarin",
-        "link2": "https://www.academia.edu/56569598/THE_MYTHOLOGISATION_OF_DUELLING_BY_WOMEN"
+        "time": 0
     },
     {
         "rank": 12,
-        "title": "Storm the palace",
         "color": "red",
-        "time": 2,
-        "beginning": "If the leftmost timeline scheme is green or yellow, copy it",
-        "end": "Copy the highest rank green scheme in play",
-        "threat": "If you win the auction, you may take cards from the dungeon as well as the court",
-        "link1": "https://en.wikipedia.org/wiki/Women%27s_March_on_Versailles",
-        "link2": "https://en.wikipedia.org/wiki/Storming_of_the_Bastille"
+        "time": 2
     },
     {
         "rank": 13,
-        "title": "Spread the rebellion",
         "color": "red",
-        "time": 2,
-        "beginning": "If there are no red timeline schemes, copy the leftmost timeline scheme",
-        "end": "Copy the highest rank green or yellow scheme in play",
-        "threat": "If someone else wins the auction, they may not take schemes from the court",
-        "link1": "https://en.wikipedia.org/wiki/Protofeminism#Women_in_the_Peasants'_Revolt",
-        "link2": "https://reynolds-news.com/2019/07/23/revolting-women/"
+        "time": 2
     },
     {
         "rank": 14,
-        "title": "Plunder the enemy",
         "color": "red",
-        "time": 0,
-        "beginning": "If there is a lower rank scheme in play, copy the rightmost yellow timeline scheme",
-        "end": "Copy the highest rank green or yellow dungeon scheme",
-        "threat": "If you make no trades, you may reorder the schemes in your deck at the end of the round",
-        "link1": "https://en.wikipedia.org/wiki/Fourth_Crusade#Sack_of_Constantinople",
-        "link2": "https://en.wikipedia.org/wiki/Latin_Empire#Economy"
+        "time": 0
     },
     {
         "rank": 15,
-        "title": "Defeat the church",
         "color": "red",
-        "time": 0,
-        "beginning": "If your top discard scheme is red, copy the leftmost green timeline scheme",
-        "end": "Otherwise, copy your top discard scheme",
-        "threat": "If you summon this to the court, copy it",
-        "link1": "https://en.wikipedia.org/wiki/Elizabeth_I#Mary,_Queen_of_Scots",
-        "link2": "https://en.wikipedia.org/wiki/Regnans_in_Excelsis"
+        "time": 0
     },
     {
         "rank": 16,
-        "title": "Evict the tenants",
         "color": "yellow",
-        "time": 1,
-        "beginning": "If you have 5 or less schemes in hand, earn 25 gold",
-        "end": "If you took gold, put 1 scheme from your hand face down on your deck",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Star_Chamber",
-        "link2": "https://core.ac.uk/reader/189162082"
+        "time": 1
     },
     {
         "rank": 17,
-        "title": "Smuggle contraband",
         "color": "yellow",
-        "time": 1,
-        "beginning": "If your top discard scheme is yellow, earn twice its rank",
-        "end": "Put your top discard scheme face down on your deck",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Battle_of_Mudeford",
-        "link2": "https://www.bournemouthecho.co.uk/news/18777047.quayside-pub-mudeford-weathering-covid-storm/"
+        "time": 1
     },
     {
         "rank": 18,
-        "title": "Choose the next Pope",
         "color": "yellow",
-        "time": 0,
-        "beginning": "If your deck or discard is empty, earn 30 gold",
-        "end": "Summon 1 Privilege from the bank to the court",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/%C3%86thelfl%C3%A6d",
-        "link2": "https://en.wikipedia.org/wiki/Danegeld"
+        "time": 0
     },
     {
         "rank": 19,
-        "title": "Blackmail her Majesty",
         "color": "yellow",
-        "time": 0,
-        "beginning": "Earn the leftmost timeline scheme's rank",
-        "end": "Earn the highest yellow rank in play",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Libelle_(literary_genre)",
-        "link2": "https://en.wikipedia.org/wiki/Let_them_eat_cake"
+        "time": 0
     },
     {
         "rank": 20,
-        "title": "Learn ancient alchemy",
         "color": "yellow",
-        "time": 0,
-        "beginning": "Earn twice your top discard scheme's rank",
-        "end": "If it is not yellow, summon it to the court",
-        "threat": "",
-        "link1": "http://scihi.org/mary-the-jewess-origins-chemistry/",
-        "link2": "https://web.nli.org.il/sites/nli/english/library/reading_corner/pages/maria_the_jewess.aspx"
+        "time": 0
     },
     {
         "rank": 21,
-        "title": "Marry the Duchess",
         "color": "yellow",
-        "time": 0,
-        "beginning": "Pay five times the left timeline scheme's time in gold",
-        "end": "Earn twice its rank",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Emma_of_Normandy",
-        "link2": "https://en.wikipedia.org/wiki/Encomium_Emmae_Reginae"
+        "time": 0
     },
     {
         "rank": 22,
-        "title": "Collect alms",
         "color": "yellow",
-        "time": 0,
-        "beginning": "Earn the rightmost timeline scheme's rank",
-        "end": "Earn 5 gold for each dungeon scheme",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/K%C3%B6sem_Sultan#Charities",
-        "link2": "https://en.wikipedia.org/wiki/Sultanate_of_Women"
+        "time": 0
     },
     {
         "rank": 23,
-        "title": "Rule alongside your mother",
         "color": "green",
-        "time": 0,
-        "beginning": "If your top discard scheme is green, revive 5",
-        "end": "If the highest or lowest rank scheme in play is green, draw 5",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Beatrice_of_Lorraine#Regency",
-        "link2": "https://www.academia.edu/2080419/Before_Matilde_Beatrice_of_Lorena_Dux_et_Marchio_Tusciae"
+        "time": 0
     },
     {
         "rank": 24,
-        "title": "Enclose peasant land",
         "color": "green",
-        "time": 1,
-        "beginning": "Earn the lowest green rank in play",
-        "end": "Revive your entire discard",
-        "threat": "",
-        "link1": "https://en.wikipedia.org/wiki/Statute_of_Merton",
-        "link2": "https://camdencivilrightsproject.com/2015/11/14/discourse-on-the-origin-of-inequality-among-mankind/"
+        "time": 1
     },
     {
         "rank": 25,
-        "title": "Become a Saint",
         "color": "green",
-        "time": 2,
-        "beginning": "If you have 50 or less gold, revive 5",
-        "end": "If your discard is empty, draw 5",
-        "threat": "",
-        "link1": "https://www.goarch.org/chapel/saints?contentid=2084",
-        "link2": "http://www.royalhouseofgeorgia.ge/p/eng/436/order-queen-tamar"
+        "time": 2
     }
 ]

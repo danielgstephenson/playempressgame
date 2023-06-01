@@ -1,5 +1,5 @@
 import createCloudFunction from '../create/cloudFunction'
-import guardCurrentPlaying from '../guard/current/player'
+import guardCurrentPlaying from '../guard/current/playing'
 import createEvent from '../create/event'
 import { PlayReadyProps } from '../types'
 import { arrayUnion, increment } from 'firelord'
