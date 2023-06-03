@@ -1,11 +1,12 @@
 import { HistoryEvent } from '../../types'
 import createId from '../id'
 
-export default function createEvent (message: string, children: HistoryEvent[] = []): HistoryEvent {
-  return {
+export default function createEvent (message: string, events: HistoryEvent[] = []): HistoryEvent {
+  const event = {
     message,
     timestamp: Date.now(),
-    children,
+    events,
     id: createId()
   }
+  return event
 }

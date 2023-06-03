@@ -34,7 +34,7 @@ export interface Scheme {
 
 export interface HistoryEvent {
   message: string
-  children?: HistoryEvent[]
+  events?: HistoryEvent[]
   timestamp: number
 }
 
@@ -47,6 +47,7 @@ export interface PrivateTrashEvent extends TrashEvent {
 }
 
 export interface Profile {
+  bid: number
   userId: string
   gameId: string
   deckEmpty: boolean
@@ -71,7 +72,7 @@ export interface Game extends Doc{
   createdAt: Timestamp
   court: Scheme[]
   dungeon: Scheme[]
-  history: HistoryEvent[]
+  events: HistoryEvent[]
   name: string
   phase: string
   readyCount: number
@@ -81,6 +82,7 @@ export interface Game extends Doc{
 }
 
 export interface Player extends Doc {
+  auctionReady: boolean
   bid: number
   deck: Scheme[]
   discard: Scheme[]
@@ -88,16 +90,17 @@ export interface Player extends Doc {
   gameId: string
   gold: number
   hand: Scheme[]
-  history: HistoryEvent[]
+  events: HistoryEvent[]
   playScheme?: Scheme
-  ready: boolean
+  playReady: boolean
   silver: number
   trashScheme?: Scheme
   trashHistory: PrivateTrashEvent[]
   userId: string
 }
 
-export type FunctionCaller = (data?: unknown) => Promise<HttpsCallableResult<unknown> | undefined>
+export type FunctionCaller = (data?: unknown) =>
+Promise<HttpsCallableResult<unknown> | undefined>
 
 export interface Play {
   trashScheme?: Scheme

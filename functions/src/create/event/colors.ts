@@ -8,7 +8,7 @@ export default function createColorsEvent ({ message, schemes }: {
   const event = createEvent(message)
   schemes.forEach(scheme => {
     const schemeEvent = createEvent(`${scheme.rank} is ${scheme.color}.`)
-    event.children.push(schemeEvent)
+    event.events.push(schemeEvent)
   })
   return event
 }

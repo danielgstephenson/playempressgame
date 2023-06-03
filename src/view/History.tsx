@@ -4,10 +4,10 @@ import HistoryEventView from './HistoryEvent'
 import { HistoryEvent } from '../types'
 
 export default function HistoryView ({
-  history,
+  events: history,
   children
 }: {
-  history?: HistoryEvent[]
+  events?: HistoryEvent[]
   children?: ReactNode
 }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null)

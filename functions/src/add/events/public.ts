@@ -12,7 +12,7 @@ export default function addPublicEvents ({
   playState: PlayState
 }): PlayerPublicEvents {
   const observerEvent = createEvent(message)
-  playState.game.history.push(observerEvent)
+  playState.game.events.push(observerEvent)
   const otherPlayers = playState.players.filter(player => player.id !== effectPlayer.id)
   const otherPlayerEvents = otherPlayers.map(player => {
     const event = createPlayerEvent({
@@ -20,7 +20,7 @@ export default function addPublicEvents ({
       round: playState.game.round,
       message
     })
-    player.history.push(event)
+    player.events.push(event)
     return event
   })
   return { observerEvent, otherPlayerEvents }

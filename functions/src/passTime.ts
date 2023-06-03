@@ -34,7 +34,7 @@ export default function passTime ({ playState }: {
     const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
       const observerChild = guardTimeEvent({ player })
-      observerEvent.children.push(observerChild)
+      observerEvent.events.push(observerChild)
       const playerEvent = createEvent(timeMessage)
       const privateChildren = playState
         .players
@@ -43,11 +43,11 @@ export default function passTime ({ playState }: {
           privateId: player.id
         }))
       playerSort({ events: privateChildren, playerId: player.id })
-      playerEvent.children = [...privateChildren, beforeEvent, afterEvent]
-      player.history.push(playerEvent)
+      playerEvent.events = [...privateChildren, beforeEvent, afterEvent]
+      player.events.push(playerEvent)
     })
-    observerEvent.children.push(beforeEvent, afterEvent)
-    playState.game.history.push(observerEvent)
+    observerEvent.events.push(beforeEvent, afterEvent)
+    playState.game.events.push(observerEvent)
     return playState
   }
   const timeResult = `not more than the ${playersLengthGrammar.spelled} players, so time does not pass.`
@@ -55,7 +55,7 @@ export default function passTime ({ playState }: {
   const publicEvent = createEvent(timeMessage)
   playState.players.forEach(player => {
     const publicChild = guardTimeEvent({ player })
-    publicEvent.children.push(publicChild)
+    publicEvent.events.push(publicChild)
     const privateEvent = createEvent(timeMessage)
     const privateEvents = playState
       .players
@@ -63,9 +63,9 @@ export default function passTime ({ playState }: {
         player: timePlayer,
         privateId: player.id
       }))
-    privateEvent.children.push(...privateEvents)
-    player.history.push(privateEvent)
+    privateEvent.events.push(...privateEvents)
+    player.events.push(privateEvent)
   })
-  playState.game.history.push(publicEvent)
+  playState.game.events.push(publicEvent)
   return playState
 }

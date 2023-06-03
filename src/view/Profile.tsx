@@ -22,6 +22,7 @@ export default function ProfileView (): JSX.Element {
       <Box width='100%'>
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>
+          <Status label='Bid' value={profileState.bid} />
           <Status label='Gold' value={profileState.gold} />
           <Status label='Silver' value={profileState.silver} />
           <Status label='Top Discard' value={profileState.topDiscardScheme?.rank} />

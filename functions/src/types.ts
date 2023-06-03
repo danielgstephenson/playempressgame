@@ -1,9 +1,14 @@
-import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField } from 'firelord'
-import { ArrayUnionOrRemove, MetaType } from 'firelord/dist/types'
+import { https } from 'firebase-functions'
+import { ServerTimestamp, MetaTypeCreator, DocumentReference, DeleteField, Transaction, MetaType } from 'firelord'
+import { ArrayUnionOrRemove } from 'firelord/dist/types'
 
-export interface HistoryEvent {
+export interface EventContainer {
+  events: HistoryEvent[]
+}
+
+export interface HistoryEvent extends EventContainer {
   message: string
-  children: HistoryEvent[]
+  events: HistoryEvent[]
   timestamp: number
   id: string
   round?: number
@@ -13,13 +18,7 @@ export type SchemeColor = 'green' | 'yellow' | 'red'
 export interface SchemeData {
   rank: number
   color: SchemeColor
-  title: string
   time: number
-  beginning: string
-  end: string
-  threat?: string
-  link1: string
-  link2: string
 }
 export interface Scheme extends SchemeData {
   id: string
@@ -28,15 +27,20 @@ export interface Scheme extends SchemeData {
 export type Result <Collection extends MetaType> = Collection['read'] & { id: string }
 
 export interface Profile {
+  auctionReady: boolean
   bid: number
   deckEmpty: boolean
   displayName: string
   gameId: string
   gold: number
+  lastBidder: boolean
+  playReady: boolean
+  playScheme?: Scheme | undefined
   silver: number
   topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
   userId: string
+  withdrawn: boolean
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -54,10 +58,9 @@ export type Game = MetaTypeCreator<{
   createdAt: ServerTimestamp
   court: Scheme[]
   dungeon: Scheme[]
-  history: HistoryEvent[]
+  events: HistoryEvent[]
   name: string
   phase: string
-  readyCount: number
   round: number
   profiles: Profile[]
   timeline: Scheme[]
@@ -77,20 +80,23 @@ export interface PrivateTrashEvent extends TrashEvent {
 }
 
 export type Player = MetaTypeCreator<{
+  auctionReady: boolean
   bid: number
   deck: Scheme[]
   discard: Scheme[]
   displayName: string
+  events: HistoryEvent[]
   gameId: string
   gold: number
-  silver: number
   hand: Scheme[]
-  history: HistoryEvent[]
+  lastBidder: boolean
   playScheme: Scheme | DeleteField
+  silver: number
   trashScheme: Scheme | DeleteField
   trashHistory: PrivateTrashEvent[]
   userId: string
-  ready: boolean
+  withdrawn: boolean
+  playReady: boolean
 }, 'players', string>
 
 export interface CurrentGameGuard {
@@ -128,7 +134,7 @@ export interface SchemeProps extends GameProps {
 }
 
 export interface HistoryUpdate {
-  history: ArrayUnionOrRemove<HistoryEvent>
+  events: ArrayUnionOrRemove<HistoryEvent>
 }
 
 export interface CurrentHandGuard extends CurrentPlayerGuard {
@@ -249,3 +255,11 @@ export interface MaybeSchemesPlayEvents {
   schemes?: Scheme[]
   playEvents: PlayEvents
 }
+
+export type TransactionCallback <Props> = (
+  props: Props,
+  context: https.CallableContext,
+  transaction: Transaction
+) => Promise<unknown>
+
+export type CloudCallback <Props> = TransactionCallback<Props> | Array<TransactionCallback<Props>>

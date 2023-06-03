@@ -13,16 +13,16 @@ import BidView from './Bid'
 export default function PlayerView (): JSX.Element {
   return (
     <PlayProvider>
-      <BidView />
-      <TrashAreaView />
-      <PrivateTrashView />
+      <PlayerHistoryView />
+      <PlayerActionsView />
       <PlayAreaView />
+      <TrashAreaView />
+      <BidView />
       <ChoiceView />
       <HandView />
+      <PrivateTrashView />
       <DeckView />
       <DiscardView />
-      <PlayerActionsView />
-      <PlayerHistoryView />
     </PlayProvider>
   )
 }

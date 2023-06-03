@@ -19,9 +19,9 @@ export default function BidView (): JSX.Element {
     <>
       <Status label='Bid' value={playerState.bid} />
       <NumberInput
-        step={5}
-        min={playerState.bid}
-        max={playerState.gold}
+        // step={5}
+        // min={playerState.bid}
+        // max={playerState.gold}
         value={bid}
         onChange={handleChange}
       >
@@ -35,6 +35,26 @@ export default function BidView (): JSX.Element {
         fn='bid'
         label='Bid'
         props={{ bid, gameId: gameState.id }}
+      />
+      <Cloud
+        fn='imprison'
+        label='Imprison'
+        props={{ gameId: gameState.id }}
+      />
+      <Cloud
+        fn='buy'
+        label='Buy'
+        props={{ gameId: gameState.id }}
+      />
+      <Cloud
+        fn='concede'
+        label='Concede'
+        props={{ gameId: gameState.id }}
+      />
+      <Cloud
+        fn='withdraw'
+        label='Withdraw'
+        props={{ gameId: gameState.id }}
       />
     </>
   )

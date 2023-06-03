@@ -9,7 +9,7 @@ export default function sortChildren ({
   playerId: string
 }): void {
   playerSort({
-    events: event.children,
+    events: event.events,
     playerId
   })
 }

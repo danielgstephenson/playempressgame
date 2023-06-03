@@ -10,7 +10,7 @@ export default function PlayerActionsView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
   const playState = useContext(playContext)
-  const showReady = playState.trashScheme != null && playState.playScheme != null && playerState.ready !== true
+  const showReady = gameState.phase === 'play' && playState.trashScheme != null && playState.playScheme != null && playerState.playReady !== true
   const props = {
     gameId: gameState.id,
     trashSchemeId: playState.trashScheme?.id,

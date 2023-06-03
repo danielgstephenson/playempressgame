@@ -1,12 +1,9 @@
 import { HttpsFunction, https, runWith } from 'firebase-functions'
-import { Transaction, runTransaction } from 'firelord'
+import { runTransaction } from 'firelord'
+import { CloudCallback } from '../types'
 
-export default function createCloudFunction <T> (
-  callback: (
-    props: T,
-    context: https.CallableContext,
-    transaction: Transaction
-  ) => Promise<any>
+export default function createCloudFunction <Props> (
+  callback: CloudCallback<Props>
 ): HttpsFunction {
   return runWith({
     enforceAppCheck: true
@@ -16,6 +13,14 @@ export default function createCloudFunction <T> (
         'failed-precondition',
         'The function must be called from an App Check verified app.'
       )
+    }
+    if (Array.isArray(callback)) {
+      for (const c of callback) {
+        await runTransaction(async transaction => {
+          return await c(props, context, transaction)
+        })
+      }
+      return
     }
     return await runTransaction(async transaction => {
       return await callback(props, context, transaction)

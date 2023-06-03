@@ -6,10 +6,10 @@ export default function HistoryEventView ({
 }: {
   event: HistoryEvent
 }): JSX.Element {
-  const items = event.children?.map((event, index) => (
+  const items = event.events?.map((event, index) => (
     <HistoryEventView key={index} event={event} />
   ))
-  const hasChildren = event.children != null && event.children?.length > 0
+  const hasChildren = event.events != null && event.events?.length > 0
   const icon = hasChildren && <AccordionIcon />
   const panel = hasChildren && <AccordionPanel>{items}</AccordionPanel>
   return (

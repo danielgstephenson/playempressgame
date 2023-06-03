@@ -1,6 +1,7 @@
 import { Transaction, deleteField } from 'firelord'
 import { PlayState, Player } from './types'
 import { gamesRef, playersRef } from './db'
+import guardProfile from './guard/profile'
 
 export default function setPlayState ({
   playState,
@@ -17,7 +18,11 @@ export default function setPlayState ({
       playScheme: rest.playScheme ?? deleteField(),
       trashScheme: rest.trashScheme ?? deleteField()
     }
-    console.log('player ready', player.displayName, player.id, player.ready, newPlayer.ready)
+    const profile = guardProfile(playState, player.userId)
+    profile.gold = player.gold
+    profile.silver = player.silver
+    profile.topDiscardScheme = player.discard[player.discard.length - 1]
+    profile.deckEmpty = player.deck.length === 0
     transaction.update(playerRef, newPlayer)
   })
   const { id, ...rest } = playState.game

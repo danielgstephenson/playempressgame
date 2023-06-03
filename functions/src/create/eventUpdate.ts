@@ -5,6 +5,6 @@ import { HistoryUpdate } from '../types'
 export default function createEventUpdate (message: string): HistoryUpdate {
   const event = createEvent(message)
   return {
-    history: arrayUnion(event)
+    events: arrayUnion(event)
   }
 }

@@ -26,19 +26,24 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
   }
   guardJoinPhase({ gameData })
   const profile = {
+    auctionReady: false,
+    bid: 0,
     deckEmpty: true,
     displayName: currentUser.displayName,
     gameId,
     gold: 0,
+    lastBidder: false,
     playAreaEmpty: true,
+    playReady: false,
     silver: 0,
     trashAreaEmpty: true,
     trashHistory: [],
-    userId: currentUid
+    userId: currentUid,
+    withdrawn: false
   }
   transaction.update(gameRef, {
     profiles: arrayUnion(profile),
-    history: arrayUnion(
+    events: arrayUnion(
       createEvent(`${currentUser.displayName} joined game ${gameId}.`)
     )
   })

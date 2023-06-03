@@ -1,6 +1,6 @@
+import addEvent from '../add/event'
 import addPublicEvents from '../add/events/public'
 import createCloudFunction from '../create/cloudFunction'
-import createEvent from '../create/event'
 import { SchemeProps } from '../types'
 import guardChoice from '../guard/choice'
 import getOtherPlayers from '../get/otherPlayers'
@@ -40,8 +40,7 @@ const trashChoose = createCloudFunction<SchemeProps>(async (props, context, tran
       profile.trashHistory.push({ round: currentGame.round })
     }
   })
-  const privateChoiceEvent = createEvent(`You chose scheme ${scheme.rank} to trash.`)
-  currentPlayer.history.push(privateChoiceEvent)
+  const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to trash.`)
   const publicChoiceEvents = addPublicEvents({
     effectPlayer: currentPlayer,
     message: `${currentPlayer.displayName} chose a scheme to trash.`,

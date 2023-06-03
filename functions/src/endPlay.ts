@@ -38,7 +38,7 @@ export default function endPlay ({
       const highPlayer = guardFirst(highPlayers, 'High player')
       const privateMessage = 'Your 8 is the highest rank in play, so you carry out its threat.'
       const privateEvent = createEvent(privateMessage)
-      highPlayer.history.push(privateEvent)
+      highPlayer.events.push(privateEvent)
       const privateChildMessage = 'You put your 8 on your discard instead of summoning it to the court.'
       addEvent(privateEvent, privateChildMessage)
       const broadcastEvent = addBroadcastEvent({
@@ -56,9 +56,9 @@ export default function endPlay ({
         const joinedPossessive = getJoinedPossessive(displayNames)
         const privateMessage = `${joinedPossessive} 8s are the highest rank in play, so you carry out your threats.`
         const privateEvent = createEvent(privateMessage)
-        highPlayer.history.push(privateEvent)
+        highPlayer.events.push(privateEvent)
         const joined = getJoined(displayNames)
-        const privateChildMessage = `${joined} put your 8s on your discards instead of summoning them to the court.`
+        const privateChildMessage = `${joined} put your 8s on your discards instead of imprisoning them in the dungeon.`
         addEvent(privateEvent, privateChildMessage)
       })
       const highDisplayNames = highPlayers.map(p => p.displayName)
@@ -69,7 +69,7 @@ export default function endPlay ({
         message: `${joinedHighDisplayNamesPossessive} 8s are the highest rank in play, so they carry out their threats.`
       })
       const joinedHighDisplayNames = getJoined(highDisplayNames)
-      const childMessage = `${joinedHighDisplayNames} put their 8s on their discards instead of summoning them to the court.`
+      const childMessage = `${joinedHighDisplayNames} put their 8s on their discards instead of imprisoning them in the dungeon.`
       addEvent(broadcastEvent, childMessage)
     }
     highPlayers.forEach(highPlayer => {
@@ -77,7 +77,7 @@ export default function endPlay ({
       highPlayer.discard = [...highPlayer.discard, playScheme]
       highPlayer.playScheme = undefined
     })
-    return setPlayState({ playState, transaction })
+    return drawUpToThree({ playState, transaction })
   } else {
     const eightPlayers = playState
       .players
@@ -87,8 +87,8 @@ export default function endPlay ({
       const eightPlayer = guardFirst(eightPlayers, 'Eight player')
       const privateMessage = 'You do not carry out the threat on your 8.'
       const privateEvent = createEvent(privateMessage)
-      privateEvent.children.push(eightChild)
-      eightPlayer.history.push(privateEvent)
+      privateEvent.events.push(eightChild)
+      eightPlayer.events.push(privateEvent)
       const otherPlayers = playState
         .players
         .filter(player => player.id !== eightPlayer.id)
@@ -97,7 +97,7 @@ export default function endPlay ({
         game: playState.game,
         message: `${eightPlayer.displayName} does not carry out the threat on their 8.`
       })
-      publicEvent.children.push(eightChild)
+      publicEvent.events.push(eightChild)
     } else if (eightPlayers.length > 0) {
       eightPlayers.forEach(eightPlayer => {
         const otherEightPlayers = eightPlayers
@@ -107,8 +107,8 @@ export default function endPlay ({
         const joined = getJoined(displayNames)
         const message = `${joined} do not carry out the threats on their 8s.`
         const event = createEvent(message)
-        eightPlayer.history.push(event)
-        event.children.push(eightChild)
+        eightPlayer.events.push(event)
+        event.events.push(eightChild)
       })
       const displayNames = eightPlayers.map(p => p.displayName)
       const joined = getJoinedPossessive(displayNames)
@@ -120,7 +120,7 @@ export default function endPlay ({
         game: playState.game,
         message: `${joined} do not carry out the threat on their 8s.`
       })
-      event.children.push(eightChild)
+      event.events.push(eightChild)
     }
   }
   if (highPlayers.length === 1) {
@@ -130,7 +130,7 @@ export default function endPlay ({
       highPlayer.playScheme = undefined
       const privateSummonMessage = `Your ${highestPlayScheme.rank} is summoned to the court.`
       const privateSummonEvent = createEvent(privateSummonMessage)
-      highPlayer.history.push(privateSummonEvent)
+      highPlayer.events.push(privateSummonEvent)
       addBroadcastEvent({
         players: notHighPlayers,
         game: playState.game,
@@ -139,7 +139,7 @@ export default function endPlay ({
     } else {
       const privateMessage = 'Your 15 is summoned to the court, so you carry out its threat.'
       const privateEvent = createEvent(privateMessage)
-      highPlayer.history.push(privateEvent)
+      highPlayer.events.push(privateEvent)
       addEvent(privateEvent, 'You copy your 15.')
       const publicEvents = addPublicEvents({
         effectPlayer: highPlayer,
@@ -170,7 +170,7 @@ export default function endPlay ({
       const displayNames = ['You', ...otherHighDisplayNames]
       const joinedDisplayNames = getJoined(displayNames)
       const privateEvent = createEvent(`${joinedDisplayNames} imprison your ${highestPlayScheme.rank}s in the dungeon.`)
-      highPlayer.history.push(privateEvent)
+      highPlayer.events.push(privateEvent)
       playState.game.dungeon.push(guardPlayScheme(highPlayer))
       highPlayer.playScheme = undefined
     })
@@ -198,8 +198,8 @@ export default function endPlay ({
       const fifteenPlayer = guardFirst(fifteenPlayers, 'Fifteen player')
       const privateMessage = 'You do not carry out the threat on your 15.'
       const privateEvent = createEvent(privateMessage)
-      privateEvent.children.push(highestChild)
-      fifteenPlayer.history.push(privateEvent)
+      privateEvent.events.push(highestChild)
+      fifteenPlayer.events.push(privateEvent)
       const otherPlayers = playState
         .players
         .filter(player => player.id !== fifteenPlayer.id)
@@ -208,7 +208,7 @@ export default function endPlay ({
         game: playState.game,
         message: `${fifteenPlayer.displayName} does not carry out the threat on their 15.`
       })
-      publicEvent.children.push(highestChild)
+      publicEvent.events.push(highestChild)
     } else if (fifteenPlayers.length > 0) {
       fifteenPlayers.forEach(fifteenPlayer => {
         const otherFifteenPlayers = fifteenPlayers
@@ -218,7 +218,7 @@ export default function endPlay ({
         const joined = getJoined(displayNames)
         const message = `${joined} do not carry out the threats on their 15s.`
         const event = createEvent(message, [highestChild])
-        fifteenPlayer.history.push(event)
+        fifteenPlayer.events.push(event)
       })
       const displayNames = fifteenPlayers.map(p => p.displayName)
       const joined = getJoined(displayNames)
@@ -230,7 +230,7 @@ export default function endPlay ({
         game: playState.game,
         message: `${joined} do not carry out the threats on their 15s.`
       })
-      event.children.push(highestChild)
+      event.events.push(highestChild)
     }
   }
   drawUpToThree({ playState, transaction })

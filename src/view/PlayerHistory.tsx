@@ -7,7 +7,7 @@ export default function PlayerHistoryView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
     <>
-      <HistoryView history={playerState.history}>
+      <HistoryView events={playerState.events}>
         <Heading size='sm'>Player History</Heading>
       </HistoryView>
     </>

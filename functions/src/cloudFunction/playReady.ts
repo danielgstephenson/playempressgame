@@ -2,7 +2,7 @@ import createCloudFunction from '../create/cloudFunction'
 import guardCurrentPlaying from '../guard/current/playing'
 import createEvent from '../create/event'
 import { PlayReadyProps } from '../types'
-import { arrayUnion, increment } from 'firelord'
+import { arrayUnion } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
@@ -36,12 +36,22 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     schemeId: playSchemeId,
     label: 'Play ready play scheme'
   })
-  const realReadyCount = currentGame.readyCount + 1
+  const readyProfiles = currentGame.profiles.filter(profile => profile.playReady)
+  const realReadyCount = readyProfiles.length + 1
   const waiting = realReadyCount < currentGame.profiles.length
   if (waiting) {
     const publicUpdate = createEventUpdate(`${currentPlayer.displayName} is ready.`)
+    const profiles = currentGame.profiles.map(profile => {
+      if (profile.userId === currentUid) {
+        return {
+          ...profile,
+          playReady: true
+        }
+      }
+      return profile
+    })
     transaction.update(currentGameRef, {
-      readyCount: increment(1),
+      profiles,
       ...publicUpdate
     })
     const userIds = currentGame.profiles.map(profile => profile.userId)
@@ -54,12 +64,11 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     })
     const youEvent = createEvent('You are ready.')
     const youUpdate = {
-      history: arrayUnion(youEvent),
-      ready: true,
+      events: arrayUnion(youEvent),
+      playReady: true,
       playScheme,
       trashScheme
     }
-    console.log('youUpdate', youUpdate)
     transaction.update(currentPlayerRef, youUpdate)
     console.info(`${currentUid} is ready!`)
     return
@@ -74,14 +83,13 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     ...currentPlayer,
     trashScheme,
     playScheme,
-    ready: true
+    playReady: true
   }
   const readiedPlayers = [readyPlayer, ...otherPlayers]
   const playState = {
     game: currentGame,
     players: readiedPlayers
   }
-  console.log('readyPlayer', readyPlayer)
   playLastReady({ playState, currentPlayer: readyPlayer, transaction })
   console.info(`${currentUid} was the last to ready!`)
 })

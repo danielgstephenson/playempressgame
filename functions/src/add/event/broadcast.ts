@@ -11,9 +11,9 @@ export default function addBroadcastEvent ({
   message: string
 }): HistoryEvent {
   const event = createEvent(message)
-  game.history.push(event)
+  game.events.push(event)
   players.forEach(player => {
-    player.history.push(event)
+    player.events.push(event)
   })
   return event
 }

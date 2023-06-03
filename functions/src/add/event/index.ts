@@ -1,8 +1,8 @@
 import createEvent from '../../create/event'
-import { HistoryEvent } from '../../types'
+import { EventContainer, HistoryEvent } from '../../types'
 
-export default function addEvent (event: HistoryEvent, message: string): HistoryEvent {
+export default function addEvent (event: EventContainer, message: string): HistoryEvent {
   const created = createEvent(message)
-  event.children.push(created)
+  event.events.push(created)
   return created
 }

@@ -1,16 +1,15 @@
 import createCloudFunction from '../create/cloudFunction'
 import createId from '../create/id'
 import { gamesRef } from '../db'
-import createEvent from '../create/event'
 import { serverTimestamp } from 'firelord'
-import { Game } from '../types'
 import guardCurrentUser from '../guard/current/user'
+import addEvent from '../add/event'
 
 const addGame = createCloudFunction(async (props, context, transaction) => {
   console.info('Adding game...')
   const { currentUser } = await guardCurrentUser({ context, transaction })
   const id = createId()
-  const newData: Game['write'] = {
+  const newData = {
     name: id,
     createdAt: serverTimestamp(),
     choices: [],
@@ -18,11 +17,12 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     profiles: [],
     court: [],
     dungeon: [],
-    history: [createEvent(`${currentUser.displayName} created game ${id}.`)],
+    events: [],
     readyCount: 0,
     round: 1,
     timeline: []
   }
+  addEvent(newData, `${currentUser.displayName} created game ${id}.`)
   const gameRef = gamesRef.doc(id)
   transaction.create(gameRef, newData)
   console.info(`Added game with id ${id}`)

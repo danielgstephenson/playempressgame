@@ -22,7 +22,7 @@ export default function playEffects ({
     playState
   })
   const privateEvent = addPlayerEvent({
-    events: effectPlayer.history,
+    events: effectPlayer.events,
     message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
