@@ -1,22 +1,23 @@
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import playContext from '.'
-import { playerContext } from '../../reader/player'
 import { Scheme } from '../../types'
 
 export default function PlayProvider ({ children }: {
   children: React.ReactNode
 }): JSX.Element {
-  const playerState = useContext(playerContext)
   const [trashScheme, setTrashScheme] = useState<Scheme>()
   const [playScheme, setPlayScheme] = useState<Scheme>()
-  useEffect(() => {
-    setTrashScheme(playerState.trashScheme)
-    setPlayScheme(playerState.playScheme)
-  }, [playerState.trashScheme, playerState.playScheme])
-  function trash (scheme: Scheme): void {
+  const [taken, setTaken] = useState<string[]>([])
+  function leave (schemeId: string): void {
+    setTaken(taken.filter(scheme => scheme !== schemeId))
+  }
+  function take (schemeId: string): void {
+    setTaken([...taken, schemeId])
+  }
+  function trash (scheme: Scheme | undefined): void {
     setTrashScheme(scheme)
   }
-  function play (scheme: Scheme): void {
+  function play (scheme: Scheme | undefined): void {
     setPlayScheme(scheme)
   }
   function emptyTrash (): void {
@@ -26,12 +27,15 @@ export default function PlayProvider ({ children }: {
     setPlayScheme(undefined)
   }
   const state = {
-    trashScheme,
-    playScheme,
-    trash,
-    play,
+    emptyPlay,
     emptyTrash,
-    emptyPlay
+    leave,
+    play,
+    playScheme,
+    take,
+    taken,
+    trash,
+    trashScheme
   }
   return (
     <playContext.Provider value={state}>

@@ -6,13 +6,21 @@ import PlayAreaView from './PlayArea'
 import PlayerActionsView from './PlayerActions'
 import PlayerHistoryView from './PlayerHistory'
 import ChoiceView from './Choice'
-import PlayProvider from '../context/play/Provider'
 import PrivateTrashView from './PrivateTrash'
 import BidView from './Bid'
+import { useContext, useEffect } from 'react'
+import { playerContext } from '../reader/player'
+import playContext from '../context/play'
 
 export default function PlayerView (): JSX.Element {
+  const playerState = useContext(playerContext)
+  const playState = useContext(playContext)
+  useEffect(() => {
+    playState.trash?.(playerState.trashScheme)
+    playState.play?.(playerState.playScheme)
+  }, [playerState.id])
   return (
-    <PlayProvider>
+    <>
       <PlayerHistoryView />
       <PlayerActionsView />
       <PlayAreaView />
@@ -23,6 +31,6 @@ export default function PlayerView (): JSX.Element {
       <PrivateTrashView />
       <DeckView />
       <DiscardView />
-    </PlayProvider>
+    </>
   )
 }

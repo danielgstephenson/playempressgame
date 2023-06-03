@@ -103,10 +103,13 @@ export type FunctionCaller = (data?: unknown) =>
 Promise<HttpsCallableResult<unknown> | undefined>
 
 export interface Play {
-  trashScheme?: Scheme
-  playScheme?: Scheme
-  trash?: (scheme: Scheme) => void
-  play?: (scheme: Scheme) => void
-  emptyTrash?: () => void
   emptyPlay?: () => void
+  emptyTrash?: () => void
+  play?: (scheme: Scheme | undefined) => void
+  playScheme?: Scheme
+  taken?: string[]
+  take?: (schemeId: string) => void
+  leave?: (schemeId: string) => void
+  trash?: (scheme: Scheme | undefined) => void
+  trashScheme?: Scheme
 }
