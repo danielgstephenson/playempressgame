@@ -22,7 +22,6 @@ export default function AuthProvider ({
     setSignOutErrorMessage(signOutError?.message)
   }, [signOutError])
   const { displayName, setDisplayName } = useDisplayName(auth)
-  console.log('signOutLoading', signOutLoading)
   const unauthLoading = signOutLoading
   const authed = currentUser != null &&
     currentUserError == null &&

@@ -4,7 +4,6 @@ import CardStackView from './CardStack'
 
 export default function TableauView (): JSX.Element {
   const profileState = useContext(profileContext)
-  console.log('profileState', profileState)
   return (
     <CardStackView label='Tableau' cardGroup={profileState.tableau} />
   )
