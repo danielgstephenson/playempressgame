@@ -48,7 +48,7 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     return
   }
   const leftmost = currentGame.timeline[0]
-  const endMessage = 'Everyone is ready to buy, so'
+  const endMessage = 'Everyone is ready, so'
   const { spelled } = getGrammar(currentPlayer.bid)
   const privateEndSuffix = leftmost == null
     ? 'the auction ends'
@@ -58,14 +58,21 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     ? 'the auction ends'
     : `${currentPlayer.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
   const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
+  const tableauUpdate = leftmost == null
+    ? {}
+    : { tableau: arrayUnion(leftmost) }
   transaction.update(currentPlayerRef, {
     ...END_AUCTION_PLAYER,
     events: arrayUnion(privateReadyEvent, privateEndEvent),
-    gold: increment(-currentPlayer.bid)
+    gold: increment(-currentPlayer.bid),
+    ...tableauUpdate
   })
   const profiles = currentGame.profiles.map(profile => {
+    const tableauUpdate = leftmost == null
+      ? {}
+      : { tableau: [...profile.tableau, leftmost] }
     const currentChanges = profile.userId === currentPlayer.userId
-      ? { gold: currentPlayer.gold - currentPlayer.bid }
+      ? { gold: currentPlayer.gold - currentPlayer.bid, ...tableauUpdate }
       : {}
     return {
       ...profile,

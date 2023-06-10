@@ -3,7 +3,6 @@ import addEventsEverywhere from '../add/events/everywhere'
 import clone from '../clone'
 import getGrammar from '../get/grammar'
 import getJoinedRanks from '../get/joined/ranks'
-import guardProfile from '../guard/profile'
 import { HistoryEvent, PlayState, Player, PublicEvents, Result, DrawState } from '../types'
 import drawMultiple from './multiple'
 
@@ -100,7 +99,7 @@ export default function draw ({
     const flippedDeckJoined = getJoinedRanks(drawState.flippedDeck)
     const flippedDeckMessage = `Your deck becomes ${flippedDeckJoined}.`
     addEvent(events.privateEvent, flippedDeckMessage)
-    const deckBeforeDiscardMessage = `Your deck was ${deckDrawnDeckJoined}.`
+    const deckBeforeDiscardMessage = `Your deck was ${flippedDeckJoined}.`
     const beforeDiscardHandMessage = `Your hand was ${deckDrawnJoined}.`
     const discardDrawnHandJoined = getJoinedRanks(
       drawState.discardDrawnHand

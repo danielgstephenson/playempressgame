@@ -54,7 +54,7 @@ const concede = createCloudFunction<AuctionProps>(async (props, context, transac
     return
   }
   const leftmost = currentGame.timeline[0]
-  const endMessage = 'Everyone is ready to buy, so'
+  const endMessage = 'Everyone is ready, so'
   const { spelled } = getGrammar(highestUntiedProfile.bid)
   const buyerEndSuffix = leftmost == null
     ? 'the auction ends'
@@ -66,18 +66,25 @@ const concede = createCloudFunction<AuctionProps>(async (props, context, transac
   const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
   const buyerPlayerId = `${highestUntiedProfile.userId}_${gameId}`
   const buyerRef = playersRef.doc(buyerPlayerId)
+  const tableauUpdate = leftmost == null
+    ? {}
+    : { tableau: arrayUnion(leftmost) }
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
     events: arrayUnion(publicReadyEvent, buyerEndEvent),
-    ...END_AUCTION_PLAYER
+    ...END_AUCTION_PLAYER,
+    ...tableauUpdate
   })
   transaction.update(currentPlayerRef, {
     events: arrayUnion(privateReadyEvent, publicEndEvent),
     ...END_AUCTION_PLAYER
   })
   const profiles = currentGame.profiles.map(profile => {
+    const tableauUpdate = leftmost == null
+      ? {}
+      : { tableau: [...profile.tableau, leftmost] }
     const buyerChanges = profile.userId === highestUntiedProfile.userId
-      ? { gold: profile.gold - highestUntiedProfile.bid }
+      ? { gold: profile.gold - highestUntiedProfile.bid, tableauUpdate }
       : {}
     return {
       ...profile,

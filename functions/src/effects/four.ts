@@ -3,6 +3,7 @@ import addPublicEvent from '../add/event/public'
 import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import createPrivilege from '../create/privilege'
 import draw from '../draw'
+import getJoinedRanks from '../get/joined/ranks'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsFour ({
@@ -18,11 +19,15 @@ export default function effectsFour ({
     privateEvent,
     'First, you take one Privilege into your hand.'
   )
-  addPublicEvent(
+  const firstPublicEvents = addPublicEvent(
     publicEvents,
     `First, ${effectPlayer.displayName} takes one Privilege into their hand.`
   )
+  const before = getJoinedRanks(effectPlayer.hand)
+  addPublicEvent(firstPublicEvents, `Your hand was ${before}.`)
   effectPlayer.hand.push(...createPrivilege(1))
+  const after = getJoinedRanks(effectPlayer.hand)
+  addPublicEvent(firstPublicEvents, `Your hand becomes ${after}.`)
   const secondPrivateChild = addEvent(
     privateEvent,
     'Second, you draw the lowest time in play.'

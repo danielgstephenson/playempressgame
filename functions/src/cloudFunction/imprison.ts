@@ -9,7 +9,7 @@ import isAuctionWaiting from '../is/auctionWaiting'
 import updateAuctionWaiting from '../update/auctionWaiting'
 import updateImprison from '../update/imprison'
 import getJoined from '../get/joined'
-import gameToPlayerState from '../gameToPlayerState'
+import getOtherPlayers from '../get/otherPlayers'
 
 const imprison = createCloudFunction<AuctionProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -69,16 +69,21 @@ const imprison = createCloudFunction<AuctionProps>(async (props, context, transa
     console.info(`${currentUid} is ready to imprison!`)
     return
   }
-  const playerState = gameToPlayerState({
-    currentUid,
-    discard: currentPlayer.discard,
-    game: currentGame,
-    privateMessage,
-    publicMessage
+  currentPlayer.events.push(privateReadyEvent)
+  const otherPlayers = await getOtherPlayers({
+    currentUid: currentPlayer.userId,
+    gameId: props.gameId,
+    transaction
   })
-  updateImprison({
-    currentPlayer: playerState.currentPlayer,
-    playState: playerState.playState,
+  otherPlayers.forEach(player => player.events.push(publicReadyEvent))
+  const players = [currentPlayer, ...otherPlayers]
+  const playState = {
+    game: currentGame,
+    players
+  }
+  await updateImprison({
+    currentPlayer,
+    playState,
     transaction
   })
   console.info(`${currentUid} imprisoned!`)

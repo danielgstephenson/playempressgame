@@ -3,10 +3,10 @@ import { Result, Player, PlayState } from '../types'
 import addPlayerEvent from '../add/event/player'
 import addEvent from '../add/event'
 import { Transaction } from 'firelord'
-import updatePlayState from '../updatePlayState'
 import discardTableau from '../discardTableau'
+import setPlayState from '../setPlayState'
 
-export default function updateImprison ({
+export default async function updateImprison ({
   currentPlayer,
   playState,
   transaction
@@ -14,7 +14,7 @@ export default function updateImprison ({
   currentPlayer: Result<Player>
   playState: PlayState
   transaction: Transaction
-}): void {
+}): Promise<void> {
   const imprisoned = [...playState.game.court]
   const leftmost = playState.game.timeline.shift()
   if (leftmost != null) {
@@ -23,7 +23,7 @@ export default function updateImprison ({
   playState.game.court = []
   playState.game.dungeon.push(...imprisoned)
   const { grammar, joinedRanks } = getJoinedRanksGrammar(imprisoned)
-  const imprisonMessage = `Everyone is ready to imprison, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`
+  const imprisonMessage = `Everyone is ready, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`
   const observerEndEvent = addEvent(playState.game, imprisonMessage)
   const playerEndEvents = playState.players.map(player => {
     const playerEndEvent = addPlayerEvent({
@@ -39,7 +39,7 @@ export default function updateImprison ({
     playerEvents: playerEndEvents,
     playState
   })
-  updatePlayState({
+  setPlayState({
     playState,
     transaction
   })

@@ -22,7 +22,7 @@ export default function passTime ({ playState }: {
   const totalMessage = `The total time is ${totalTimeGrammar.spelled}`
   const timePasses = totalTime > playState.players.length
   if (timePasses) {
-    const moreMessage = `${totalMessage} more than the ${playersLengthGrammar.spelled} players`
+    const moreMessage = `${totalMessage}, more than the ${playersLengthGrammar.spelled} players`
     if (playState.game.timeline.length === 0) {
       const emptyMessage = `${moreMessage}, but the the timeline is empty because the game is ending.`
       addEvent(playState.game, emptyMessage)
@@ -34,9 +34,7 @@ export default function passTime ({ playState }: {
     const [passed, ...remaining] = playState.game.timeline
     playState.game.timeline = remaining
     const defined = guardDefined(passed, 'Passed scheme')
-    const passedRankGrammar = getGrammar(defined.rank)
-    const timeResult = `${moreMessage}, so ${passedRankGrammar.spelled} is removed from the timeline.`
-    const timeMessage = `${totalMessage}, ${timeResult}`
+    const timeMessage = `${moreMessage}, so ${defined.rank} is removed from the timeline.`
     const observerEvent = createEvent(timeMessage)
     const beforeJoined = getJoinedRanks(playState.game.timeline)
     const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
