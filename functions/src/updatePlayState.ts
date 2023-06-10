@@ -62,6 +62,5 @@ export default function updatePlayState ({
   })
   const { id, ...rest } = playState.game
   const gameRef = gamesRef.doc(id)
-  console.log('rest', rest)
   transaction.update(gameRef, rest)
 }

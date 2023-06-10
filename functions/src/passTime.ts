@@ -2,19 +2,19 @@ import createEvent from './create/event'
 import guardTime from './guard/time'
 import getJoinedRanks from './get/joined/ranks'
 import { PlayState } from './types'
-import guardPlayHandScheme from './guard/playHandScheme'
 import guardTimeEvent from './guard/timeEvent'
 import playerSort from './sort/player'
 import getGrammar from './get/grammar'
 import guardDefined from './guard/defined'
 import addEvent from './add/event'
+import guardPlayScheme from './guard/playScheme'
 
 export default function passTime ({ playState }: {
   playState: PlayState
 }): PlayState {
   const playersLengthGrammar = getGrammar(playState.players.length)
   const totalTime = playState.players.reduce((total, player) => {
-    const playScheme = guardPlayHandScheme(player)
+    const playScheme = guardPlayScheme(player)
     const time = guardTime(playScheme.rank)
     return total + time
   }, 0)

@@ -10,6 +10,8 @@ import { Transaction } from 'firelord'
 import setPlayState from './setPlayState'
 import summonOrImprison from './summonOrImprison'
 import addChoiceEvents from './add/events/choice'
+import getJoinedRanks from './get/joined/ranks'
+import addEvent from './add/event'
 
 export default function playLastReady ({
   playState,
@@ -20,21 +22,7 @@ export default function playLastReady ({
   currentPlayer: Result<Player>
   transaction: Transaction
 }): void {
-  const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ready.`)
-  const privateReadyEvent = createEvent('You are ready.')
-  const everyoneEvent = createEvent('Everyone is ready.')
-  playState.players.forEach(player => {
-    if (player.id !== currentPlayer.id) {
-      player.events.push(publicReadyEvent, everyoneEvent)
-      return
-    }
-    player.events.push(privateReadyEvent, everyoneEvent)
-  })
-  playState.game.events.push(publicReadyEvent, everyoneEvent)
-  playState.game.profiles.forEach(profile => {
-    profile.trashHistory.push({ round: playState.game.round })
-  })
-  passTime({ playState })
+  const joinedBefore = getJoinedRanks(currentPlayer.hand)
   playState.players.forEach(player => {
     player.hand = player
       .hand
@@ -42,8 +30,27 @@ export default function playLastReady ({
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
   })
+  const joinedAfter = getJoinedRanks(currentPlayer.hand)
+  const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ready.`)
+  const privateReadyEvent = createEvent('You are ready.')
+  addEvent(privateReadyEvent, `Your hand was ${joinedBefore}`)
+  addEvent(privateReadyEvent, `Your hand becomes ${joinedAfter}`)
+  const everyoneEvent = createEvent('Everyone is ready.')
+  playState.players.forEach(player => {
+    const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
+    const trashEvent = createEvent(`You trash ${trashScheme.rank}.`)
+    if (player.id !== currentPlayer.id) {
+      player.events.push(publicReadyEvent, everyoneEvent, trashEvent)
+      return
+    }
+    player.events.push(privateReadyEvent, everyoneEvent, trashEvent)
+  })
+  playState.game.events.push(publicReadyEvent, everyoneEvent)
+  playState.game.profiles.forEach(profile => {
+    profile.trashHistory.push({ round: playState.game.round })
+  })
+  passTime({ playState })
   const playStateClone = clone(playState)
-  console.log('playState.players', playState.players)
   playState.players.forEach((player) => {
     playEffects({
       playState,

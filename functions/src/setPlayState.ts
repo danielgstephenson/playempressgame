@@ -18,7 +18,6 @@ export default function setPlayState ({
       playScheme: rest.playScheme ?? deleteField(),
       trashScheme: rest.trashScheme ?? deleteField()
     }
-    console.log('newplayer.events', newPlayer.events)
     transaction.update(playerRef, newPlayer)
     const profile = guardProfile(playState, player.userId)
     profile.gold = player.gold

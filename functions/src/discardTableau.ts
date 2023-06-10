@@ -3,35 +3,28 @@ import addPlayerEvent from './add/event/player'
 import { PLAYER_CHOOSE_MESSAGE, END_AUCTION_PLAYER, OBSERVER_CHOOSE_MESSAGE } from './constants'
 import getJoinedRanks from './get/joined/ranks'
 import getJoinedRanksGrammar from './get/joined/ranks/grammar'
-import guardDefined from './guard/defined'
-import { HistoryEvent, PlayState } from './types'
+import { PlayState } from './types'
 
 export default function discardTableau ({
-  observerEvent,
-  playerEvents,
   playState
 }: {
-  observerEvent: HistoryEvent
   playState: PlayState
-  playerEvents: HistoryEvent[]
 }): void {
   playState.players.forEach(player => {
     Object.assign(player, END_AUCTION_PLAYER)
     if (player.tableau.length > 0) {
       player.tableau.sort((a, b) => a.rank - b.rank)
+      const joined = getJoinedRanksGrammar(player.tableau)
       const discardBefore = [...player.discard]
       player.discard.push(...player.tableau)
       player.tableau = []
-      const joined = getJoinedRanksGrammar(player.tableau)
-      const privateMessage = `You put ${joined.joinedRanks} on your discard.`
-      const publicMessage = `${player.displayName} puts ${joined.joinedRanks} on their discard.`
-      addEvent(observerEvent, publicMessage)
+      const privateMessage = `You put ${joined.joinedRanks} from your tableau on your discard.`
+      const publicMessage = `${player.displayName} puts ${joined.joinedRanks} from their tableau on their discard.`
+      addEvent(playState.game, publicMessage)
       playState.players.forEach(p => {
-        const found = playerEvents.find(event => event.playerId === p.id)
-        const playerEndEvent = guardDefined(found, 'Player end event')
         if (p.userId === player.userId) {
           const event = addPlayerEvent({
-            container: playerEndEvent,
+            container: p,
             message: privateMessage,
             round: playState.game.round,
             playerId: player.id
@@ -42,7 +35,7 @@ export default function discardTableau ({
           addEvent(event, `Your discard becomes ${after}.`)
         } else {
           addPlayerEvent({
-            container: playerEndEvent,
+            container: p,
             message: publicMessage,
             round: playState.game.round,
             playerId: player.id

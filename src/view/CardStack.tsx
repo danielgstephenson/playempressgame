@@ -11,8 +11,9 @@ export default function CardStackView ({
   children?: ReactNode
   cardGroup?: Scheme[]
 }): JSX.Element {
+  const reversed = cardGroup?.slice().reverse()
   return (
-    <CardGroupView label={label} cardGroup={cardGroup}>
+    <CardGroupView label={label} cardGroup={reversed}>
       {children}
     </CardGroupView>
   )

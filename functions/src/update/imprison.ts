@@ -24,8 +24,8 @@ export default async function updateImprison ({
   playState.game.dungeon.push(...imprisoned)
   const { grammar, joinedRanks } = getJoinedRanksGrammar(imprisoned)
   const imprisonMessage = `Everyone is ready, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`
-  const observerEndEvent = addEvent(playState.game, imprisonMessage)
-  const playerEndEvents = playState.players.map(player => {
+  addEvent(playState.game, imprisonMessage)
+  playState.players.forEach(player => {
     const playerEndEvent = addPlayerEvent({
       container: player,
       message: imprisonMessage,
@@ -35,8 +35,6 @@ export default async function updateImprison ({
     return playerEndEvent
   })
   discardTableau({
-    observerEvent: observerEndEvent,
-    playerEvents: playerEndEvents,
     playState
   })
   setPlayState({

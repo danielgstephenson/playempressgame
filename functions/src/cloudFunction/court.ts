@@ -11,7 +11,6 @@ import getOtherPlayers from '../get/otherPlayers'
 import setPlayState from '../setPlayState'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
-  console.log('props', props)
   const {
     currentGame,
     currentUid,
@@ -57,25 +56,20 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const privateMessage = props.schemeIds.length === 0
     ? 'You took no schemes from the court.'
     : `You took ${joined} from the court.`
-  const currentPlayerEvent = addEvent(currentPlayer, privateMessage)
+  addEvent(currentPlayer, privateMessage)
   const publicMessage = props.schemeIds.length === 0
     ? `${currentPlayer.displayName} took no schemes from the court.`
     : `${currentPlayer.displayName} took ${joined} from the court.`
-  const observerEvent = addEvent(currentGame, publicMessage)
-  const otherPlayerEvents = otherPlayers.map(player => {
-    return addEvent(player, publicMessage)
+  addEvent(currentGame, publicMessage)
+  otherPlayers.forEach(player => {
+    addEvent(player, publicMessage)
   })
-  const playerEvents = [currentPlayerEvent, ...otherPlayerEvents]
   const players = [currentPlayer, ...otherPlayers]
   const playState = {
     game: currentGame,
     players
   }
-  discardTableau({
-    observerEvent,
-    playState,
-    playerEvents
-  })
+  discardTableau({ playState })
   setPlayState({
     playState,
     transaction

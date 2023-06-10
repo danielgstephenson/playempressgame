@@ -72,8 +72,6 @@ export default function draw ({
     })
     addEvent(events.privateEvent, originalHandMessage)
     addEvent(events.privateEvent, afterDeckMessage)
-    addEvent(events.privateEvent, originalDeckMessage)
-    addEvent(events.privateEvent, deckDeckDrawnMessage)
   } else {
     const events = addEventsEverywhere({
       privateEvent,
@@ -123,8 +121,6 @@ export default function draw ({
       })
       addEvent(events.privateEvent, beforeDiscardHandMessage)
       addEvent(events.privateEvent, handAfterDiscardMessage)
-      addEvent(events.privateEvent, deckBeforeDiscardMessage)
-      addEvent(events.privateEvent, discardDrawnDeckMessage)
     } else {
       const privateMessage = `You draw ${count} from your refreshed deck, ${discardDrawnRanks}.`
       const publicMessage = `${player.displayName} draws ${count} from their refreshed deck.`

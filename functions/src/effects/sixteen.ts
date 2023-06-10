@@ -38,21 +38,32 @@ export default function effectsSixteen ({
   const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, put one scheme from your hand on your deck.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName} took gold, they put one scheme from their hand on their deck.`)
   if (less) {
-    addEventsEverywhere({
-      possessive: false,
-      suffix: 'just took twenty five gold',
-      privateEvent: secondPrivateChild,
-      publicEvents: secondPublicChildren,
-      displayName: effectPlayer.displayName
-    })
-    const choice = createChoice({
-      copiedByFirstEffect,
-      effectPlayer,
-      effectScheme,
-      type: 'deck',
-      threat
-    })
-    playState.game.choices.push(choice)
+    const justMessage = 'just took twenty five gold'
+    if (effectPlayer.hand.length === 0) {
+      addEventsEverywhere({
+        possessive: false,
+        suffix: `${justMessage}, but their hand is empty`,
+        privateEvent: secondPrivateChild,
+        publicEvents: secondPublicChildren,
+        displayName: effectPlayer.displayName
+      })
+    } else {
+      addEventsEverywhere({
+        possessive: false,
+        suffix: justMessage,
+        privateEvent: secondPrivateChild,
+        publicEvents: secondPublicChildren,
+        displayName: effectPlayer.displayName
+      })
+      const choice = createChoice({
+        copiedByFirstEffect,
+        effectPlayer,
+        effectScheme,
+        type: 'deck',
+        threat
+      })
+      playState.game.choices.push(choice)
+    }
   } else {
     addEventsEverywhere({
       possessive: false,

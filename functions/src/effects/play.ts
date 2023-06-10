@@ -27,8 +27,6 @@ export default function playEffects ({
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-  console.log('privateEvent', privateEvent)
-  console.log('effectPlayer.events', effectPlayer.events)
   applyEffects({
     copiedByFirstEffect: false,
     effectPlayer,
