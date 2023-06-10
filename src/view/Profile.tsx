@@ -8,6 +8,7 @@ import authContext from '../context/auth'
 import Status from './Status'
 import profileContext from '../context/profile'
 import PublicTrashView from './PublicTrash'
+import TableauView from './Tableau'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -25,6 +26,7 @@ export default function ProfileView (): JSX.Element {
           <Status label='Bid' value={profileState.bid} />
           <Status label='Gold' value={profileState.gold} />
           <Status label='Silver' value={profileState.silver} />
+          <TableauView />
           <Status label='Top Discard' value={profileState.topDiscardScheme?.rank} />
           <Status label='Deck Empty' value={deckEmpty} />
           <Curtain open={!showPlayer}>

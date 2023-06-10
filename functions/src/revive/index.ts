@@ -1,4 +1,5 @@
 
+import addEvent from '../add/event'
 import addEventsEverywhere from '../add/events/everywhere'
 import clone from '../clone'
 import getGrammar from '../get/grammar'
@@ -23,6 +24,10 @@ export default function revive ({
     return
   }
   const playerClone = clone(player)
+  const handBeforeJoined = getJoinedRanks(playerClone.hand)
+  const handBeforeMessage = `Your hand was ${handBeforeJoined}.`
+  const discardBeforeJoined = getJoinedRanks(playerClone.discard)
+  const discardBeforeMessage = `Your discard was ${discardBeforeJoined}.`
   reviveMultiple({
     depth,
     playState,
@@ -32,6 +37,10 @@ export default function revive ({
     const fromDiscard = playerClone.discard.some(discardScheme => handScheme.id === discardScheme.id)
     return fromDiscard
   })
+  const afterHandJoined = getJoinedRanks(player.hand)
+  const afterHandMessage = `Your hand becomes ${afterHandJoined}.`
+  const afterDiscardJoined = getJoinedRanks(player.discard)
+  const afterDiscardMessage = `Your discard becomes ${afterDiscardJoined}.`
   const listRanks = getJoinedRanks(revived)
   if (playerClone.discard.length === 0) {
     addEventsEverywhere({
@@ -42,19 +51,27 @@ export default function revive ({
     })
   } else if (playerClone.discard.length < depth) {
     const { count, all } = getGrammar(playerClone.discard.length, 'scheme', 'schemes')
-    addEventsEverywhere({
+    const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
       privateMessage: `Your discard only has ${count}, ${listRanks}, so you revive ${all}.`,
       publicMessage: `${player.displayName}'s discard only has ${count}, so they revive ${all}.`
     })
+    addEvent(events.privateEvent, handBeforeMessage)
+    addEvent(events.privateEvent, afterHandMessage)
+    addEvent(events.privateEvent, discardBeforeMessage)
+    addEvent(events.privateEvent, afterDiscardMessage)
   } else {
-    addEventsEverywhere({
+    const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
       possessive: false,
       suffix: `revive ${listRanks}`,
       displayName: player.displayName
     })
+    addEvent(events.privateEvent, handBeforeMessage)
+    addEvent(events.privateEvent, afterHandMessage)
+    addEvent(events.privateEvent, discardBeforeMessage)
+    addEvent(events.privateEvent, afterDiscardMessage)
   }
 }

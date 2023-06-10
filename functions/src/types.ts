@@ -35,8 +35,8 @@ export interface Profile {
   gold: number
   lastBidder: boolean
   playReady: boolean
-  playScheme?: Scheme | undefined
   silver: number
+  tableau: Scheme[]
   topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
   userId: string
@@ -92,6 +92,7 @@ export type Player = MetaTypeCreator<{
   lastBidder: boolean
   playScheme: Scheme | DeleteField
   silver: number
+  tableau: Scheme[]
   trashScheme: Scheme | DeleteField
   trashHistory: PrivateTrashEvent[]
   userId: string
@@ -120,6 +121,10 @@ export interface GameProps {
   gameId: string
 }
 
+export interface AuctionProps extends GameProps {
+  discard: Scheme[]
+}
+
 export interface BidProps extends GameProps {
   bid: number
 }
@@ -131,6 +136,10 @@ export interface PlayReadyProps extends GameProps {
 
 export interface SchemeProps extends GameProps {
   schemeId: string
+}
+
+export interface SchemesProps extends GameProps {
+  schemeIds: string[]
 }
 
 export interface HistoryUpdate {
@@ -201,8 +210,9 @@ export interface Grammar {
 
 export interface GetJoinedRanksGrammar {
   grammar: Grammar
-  joinedRanks: string
   joinedCount: string
+  joinedRanks: string
+  joinedToBe: string
 }
 
 export interface Earning {
@@ -216,6 +226,21 @@ Partial<Collection['writeFlatten']>
 export interface PlayState {
   game: Result<Game>
   players: Array<Result<Player>>
+}
+
+export interface DrawState {
+  allDrawn: Scheme[]
+  beforePrivilegeHand: Scheme[]
+  deckDrawn: Scheme[]
+  deckDrawnDeck: Scheme[]
+  deckDrawnHand: Scheme[]
+  discardDrawn: Scheme[]
+  discardDrawnDeck: Scheme[]
+  discardDrawnHand: Scheme[]
+  discardFlipped: boolean
+  flippedDeck: Scheme[]
+  playState: PlayState
+  privilegeTaken: Scheme[]
 }
 
 export interface PlayerEvent extends HistoryEvent {
@@ -247,13 +272,13 @@ export interface SchemePlayEvents {
 }
 
 export interface MaybeSchemePlayEvents {
-  scheme?: Scheme
-  playEvents: PlayEvents
+  scheme?: Scheme | undefined
+  playEvents?: PlayEvents | undefined
 }
 
 export interface MaybeSchemesPlayEvents {
-  schemes?: Scheme[]
-  playEvents: PlayEvents
+  schemes?: Scheme[] | undefined
+  playEvents?: PlayEvents | undefined
 }
 
 export type TransactionCallback <Props> = (
@@ -263,3 +288,10 @@ export type TransactionCallback <Props> = (
 ) => Promise<unknown>
 
 export type CloudCallback <Props> = TransactionCallback<Props> | Array<TransactionCallback<Props>>
+
+export interface PlayerState {
+  currentPlayer: Result<Player>
+  observerEvent: HistoryEvent
+  playerEvents: PlayerEvent[]
+  playState: PlayState
+}

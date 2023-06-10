@@ -8,7 +8,7 @@ export default function SignOutView (): JSX.Element {
   const authState = useContext(authContext)
   if (authState.auth == null) throw new Error('Auth is null')
   async function signOutToHome (): Promise<void> {
-    await authState.signOut?.()
+    await authState.unauth?.()
     navigate('/')
   }
   const displayName = String(authState.displayName)
@@ -17,7 +17,7 @@ export default function SignOutView (): JSX.Element {
     <ChakraButton
       label={label}
       onClick={signOutToHome}
-      loading={authState.signOutLoading}
+      loading={authState.unauthLoading}
       errorMessage={authState.signOutErrorMessage}
     />
   )

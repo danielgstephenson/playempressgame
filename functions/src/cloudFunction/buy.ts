@@ -1,22 +1,25 @@
 import createCloudFunction from '../create/cloudFunction'
-import { GameProps } from '../types'
+import { GameProps, Player, Write } from '../types'
 import guardString from '../guard/string'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
-import { increment } from 'firelord'
+import { arrayUnion, increment } from 'firelord'
 import getGrammar from '../get/grammar'
 import guardAuctionUnready from '../guard/auctionUnready'
 import isAuctionWaiting from '../is/auctionWaiting'
 import updateAuctionWaiting from '../update/auctionWaiting'
-import updateEndAuction from '../update/endAuction'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
+import { END_AUCTION, END_AUCTION_PLAYER } from '../constants'
+import { playersRef } from '../db'
 
 const imprison = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
   const {
     currentGame,
+    currentGameRef,
     currentUid,
-    currentPlayer
+    currentPlayer,
+    currentPlayerRef
   } = await guardAuctionUnready({
     gameId,
     transaction,
@@ -55,20 +58,36 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     ? 'the auction ends'
     : `${currentPlayer.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
   const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
-  updateEndAuction({
-    currentGame,
-    currentPlayer,
-    currentPlayerChanges: {
-      gold: increment(-currentPlayer.bid)
-    },
-    currentProfileChanges: {
-      gold: currentPlayer.gold - currentPlayer.bid
-    },
-    privateReadyEvent,
-    privateEndEvent,
-    publicReadyEvent,
-    publicEndEvent,
-    transaction
+  transaction.update(currentPlayerRef, {
+    ...END_AUCTION_PLAYER,
+    events: arrayUnion(privateReadyEvent, privateEndEvent),
+    gold: increment(-currentPlayer.bid)
+  })
+  const profiles = currentGame.profiles.map(profile => {
+    const currentChanges = profile.userId === currentPlayer.userId
+      ? { gold: currentPlayer.gold - currentPlayer.bid }
+      : {}
+    return {
+      ...profile,
+      ...END_AUCTION,
+      ...currentChanges
+    }
+  })
+  transaction.update(currentGameRef, {
+    events: arrayUnion(publicReadyEvent, publicEndEvent),
+    profiles
+  })
+  const publicUpdate: Write<Player> = {
+    events: arrayUnion(publicReadyEvent, publicEndEvent),
+    ...END_AUCTION_PLAYER
+  }
+  currentGame.profiles.forEach(profile => {
+    if (profile.userId === currentPlayer.userId) {
+      return
+    }
+    const playerId = `${profile.userId}_${currentGame.id}`
+    const playerRef = playersRef.doc(playerId)
+    transaction.update(playerRef, publicUpdate)
   })
   console.info(`${currentUid} bought!`)
 })

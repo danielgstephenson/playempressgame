@@ -13,8 +13,9 @@ import getJoinedPossessive from './get/joined/possessive'
 import guardPlayScheme from './guard/playScheme'
 import drawUpToThree from './drawUpToThree'
 import addPublicEvent from './add/event/public'
+import addChoiceEvents from './add/events/choice'
 
-export default function endPlay ({
+export default function summonOrImprison ({
   playState,
   transaction
 }: {
@@ -75,7 +76,6 @@ export default function endPlay ({
     highPlayers.forEach(highPlayer => {
       const playScheme = guardPlayScheme(highPlayer)
       highPlayer.discard = [...highPlayer.discard, playScheme]
-      highPlayer.playScheme = undefined
     })
     return drawUpToThree({ playState, transaction })
   } else {
@@ -127,7 +127,6 @@ export default function endPlay ({
     const highPlayer = guardFirst(highPlayers, 'High player')
     playState.game.court.push(guardPlayScheme(highPlayer))
     if (highestPlayScheme.rank !== 15) {
-      highPlayer.playScheme = undefined
       const privateSummonMessage = `Your ${highestPlayScheme.rank} is summoned to the court.`
       const privateSummonEvent = createEvent(privateSummonMessage)
       highPlayer.events.push(privateSummonEvent)
@@ -158,8 +157,8 @@ export default function endPlay ({
         resume: false,
         threat: playScheme
       })
-      highPlayer.playScheme = undefined
       if (choices.length > 0) {
+        addChoiceEvents(playState)
         return setPlayState({ playState, transaction })
       }
     }
@@ -172,7 +171,6 @@ export default function endPlay ({
       const privateEvent = createEvent(`${joinedDisplayNames} imprison your ${highestPlayScheme.rank}s in the dungeon.`)
       highPlayer.events.push(privateEvent)
       playState.game.dungeon.push(guardPlayScheme(highPlayer))
-      highPlayer.playScheme = undefined
     })
     const highDisplayNames = highPlayers.map(p => p.displayName)
     const joinedHighDisplayNames = getJoined(highDisplayNames)

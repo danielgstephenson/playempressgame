@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import playContext from '.'
 import { Scheme } from '../../types'
 
@@ -8,24 +8,24 @@ export default function PlayProvider ({ children }: {
   const [trashScheme, setTrashScheme] = useState<Scheme>()
   const [playScheme, setPlayScheme] = useState<Scheme>()
   const [taken, setTaken] = useState<string[]>([])
-  function leave (schemeId: string): void {
-    setTaken(taken.filter(scheme => scheme !== schemeId))
-  }
-  function take (schemeId: string): void {
-    setTaken([...taken, schemeId])
-  }
-  function trash (scheme: Scheme | undefined): void {
+  const leave = useCallback((schemeId: string) => {
+    setTaken(taken => taken.filter(scheme => scheme !== schemeId))
+  }, [])
+  const take = useCallback((schemeId: string) => {
+    setTaken(taken => [...taken, schemeId])
+  }, [])
+  const trash = useCallback((scheme: Scheme | undefined) => {
     setTrashScheme(scheme)
-  }
-  function play (scheme: Scheme | undefined): void {
+  }, [])
+  const play = useCallback((scheme: Scheme | undefined) => {
     setPlayScheme(scheme)
-  }
-  function emptyTrash (): void {
+  }, [])
+  const emptyTrash = useCallback(() => {
     setTrashScheme(undefined)
-  }
-  function emptyPlay (): void {
+  }, [])
+  const emptyPlay = useCallback(() => {
     setPlayScheme(undefined)
-  }
+  }, [])
   const state = {
     emptyPlay,
     emptyTrash,

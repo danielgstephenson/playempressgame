@@ -1,9 +1,7 @@
 import { Scheme } from '../types'
-import getSchemes from './schemes'
 
-export default function getLowestRankScheme (refs: Scheme[]): Scheme | undefined {
-  if (refs.length === 0) return undefined
-  const schemes = getSchemes(refs)
+export default function getLowestRankScheme (schemes: Scheme[]): Scheme | undefined {
+  if (schemes.length === 0) return undefined
   const lowestRankScheme = schemes.reduce((lowest, scheme) => {
     if (scheme.rank < lowest.rank) return scheme
     return lowest

@@ -22,11 +22,13 @@ export default function playEffects ({
     playState
   })
   const privateEvent = addPlayerEvent({
-    events: effectPlayer.events,
+    container: effectPlayer,
     message: `You play ${effectScheme.rank}.`,
     playerId: effectPlayer.id,
     round: playState.game.round
   })
+  console.log('privateEvent', privateEvent)
+  console.log('effectPlayer.events', effectPlayer.events)
   applyEffects({
     copiedByFirstEffect: false,
     effectPlayer,

@@ -1,40 +1,46 @@
-import { Transaction, arrayUnion } from 'firelord'
-import createEvent from '../create/event'
 import getJoinedRanksGrammar from '../get/joined/ranks/grammar'
-import { Result, Game, Player, HistoryEvent } from '../types'
-import updateEndAuction from './endAuction'
+import { Result, Player, PlayState } from '../types'
+import addPlayerEvent from '../add/event/player'
+import addEvent from '../add/event'
+import { Transaction } from 'firelord'
+import updatePlayState from '../updatePlayState'
+import discardTableau from '../discardTableau'
 
 export default function updateImprison ({
-  currentGame,
   currentPlayer,
-  privateReadyEvent,
-  publicReadyEvent,
+  playState,
   transaction
 }: {
-  currentGame: Result<Game>
   currentPlayer: Result<Player>
-  privateReadyEvent: HistoryEvent
-  publicReadyEvent: HistoryEvent
+  playState: PlayState
   transaction: Transaction
 }): void {
-  const imprisoned = [...currentGame.court]
-  const leftmost = currentGame.timeline[0]
+  const imprisoned = [...playState.game.court]
+  const leftmost = playState.game.timeline.shift()
   if (leftmost != null) {
     imprisoned.push(leftmost)
   }
+  playState.game.court = []
+  playState.game.dungeon.push(...imprisoned)
   const { grammar, joinedRanks } = getJoinedRanksGrammar(imprisoned)
-  const endEvent = createEvent(`Everyone is ready to imprison, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`)
-  updateEndAuction({
-    currentGame,
-    currentPlayer,
-    gameChanges: {
-      court: [],
-      dungeon: arrayUnion(...imprisoned),
-      phase: 'play'
-    },
-    privateReadyEvent,
-    publicReadyEvent,
-    publicEndEvent: endEvent,
+  const imprisonMessage = `Everyone is ready to imprison, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`
+  const observerEndEvent = addEvent(playState.game, imprisonMessage)
+  const playerEndEvents = playState.players.map(player => {
+    const playerEndEvent = addPlayerEvent({
+      container: player,
+      message: imprisonMessage,
+      round: playState.game.round,
+      playerId: player.id
+    })
+    return playerEndEvent
+  })
+  discardTableau({
+    observerEvent: observerEndEvent,
+    playerEvents: playerEndEvents,
+    playState
+  })
+  updatePlayState({
+    playState,
     transaction
   })
 }

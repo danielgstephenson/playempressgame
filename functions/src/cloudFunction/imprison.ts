@@ -1,5 +1,5 @@
 import createCloudFunction from '../create/cloudFunction'
-import { GameProps } from '../types'
+import { AuctionProps } from '../types'
 import guardString from '../guard/string'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
@@ -9,8 +9,9 @@ import isAuctionWaiting from '../is/auctionWaiting'
 import updateAuctionWaiting from '../update/auctionWaiting'
 import updateImprison from '../update/imprison'
 import getJoined from '../get/joined'
+import gameToPlayerState from '../gameToPlayerState'
 
-const imprison = createCloudFunction<GameProps>(async (props, context, transaction) => {
+const imprison = createCloudFunction<AuctionProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
   const {
     currentGame,
@@ -21,7 +22,7 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     transaction,
     context
   })
-  console.info(`Readying ${currentPlayer.id} for imprisonment...`)
+  console.info(`Readying ${currentPlayer.id} to imprison...`)
   const tiers = currentGame
     .profiles
     .filter(profile => currentGame
@@ -43,16 +44,19 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
   const leftmostTimeline = currentGame.timeline[0]
   const joinedCourt = getJoinedRanksGrammar(currentGame.court)
   const readyMessage = 'ready to imprison'
-  const timelineMessage = leftmostTimeline == null
-    ? ''
-    : `${leftmostTimeline.rank} from the timeline`
-  const courtMessage = currentGame.court.length === 0
-    ? ''
-    : `${joinedCourt.joinedRanks} from the court`
-  const schemesMessage = getJoined([timelineMessage, courtMessage])
+  const schemeMessages = []
+  if (leftmostTimeline != null) {
+    schemeMessages.push(`${leftmostTimeline.rank} from the timeline`)
+  }
+  if (currentGame.court.length > 0) {
+    schemeMessages.push(`${joinedCourt.joinedRanks} from the court`)
+  }
+  const schemesMessage = getJoined(schemeMessages)
   const imprisonMessage = `${readyMessage} ${schemesMessage}.`
-  const privateReadyEvent = createEvent(`You are ${imprisonMessage}`)
-  const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ${imprisonMessage}`)
+  const privateMessage = `You are ${imprisonMessage}`
+  const publicMessage = `${currentPlayer.displayName} is ${imprisonMessage}`
+  const privateReadyEvent = createEvent(privateMessage)
+  const publicReadyEvent = createEvent(publicMessage)
   const waiting = isAuctionWaiting(currentGame)
   if (waiting) {
     updateAuctionWaiting({
@@ -65,13 +69,18 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     console.info(`${currentUid} is ready to imprison!`)
     return
   }
+  const playerState = gameToPlayerState({
+    currentUid,
+    discard: currentPlayer.discard,
+    game: currentGame,
+    privateMessage,
+    publicMessage
+  })
   updateImprison({
-    currentGame,
-    currentPlayer,
-    privateReadyEvent,
-    publicReadyEvent,
+    currentPlayer: playerState.currentPlayer,
+    playState: playerState.playState,
     transaction
   })
-  console.info(`${currentUid} withdrew!`)
+  console.info(`${currentUid} imprisoned!`)
 })
 export default imprison

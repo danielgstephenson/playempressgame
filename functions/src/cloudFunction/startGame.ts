@@ -16,6 +16,7 @@ import { GameProps } from '../types'
 import getJoined from '../get/joined'
 import guardString from '../guard/string'
 import addEvent from '../add/event'
+import { OBSERVER_CHOOSE_MESSAGE, PLAYER_CHOOSE_MESSAGE } from '../constants'
 
 const startGame = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Start game id')
@@ -131,6 +132,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   addEvent(startEvent, `The timeline is ${timelineRanks}.`)
   const timelineSchemes = timeline.map(rank => createScheme(rank))
   const startedProfiles = currentGameData.profiles.map((profile) => {
+    const chooseEvent = createEvent(PLAYER_CHOOSE_MESSAGE)
     const topDeckScheme = createScheme(topDeck)
     const topDiscardScheme = createScheme(topDiscard)
     const deck = [topDeckScheme]
@@ -142,13 +144,14 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       deck,
       discard,
       displayName: profile.displayName,
-      events: [...currentGameData.events, startEvent],
+      events: [...currentGameData.events, startEvent, chooseEvent],
       gameId,
       gold: 40,
       hand: handSchemes,
       lastBidder: false,
       playReady: false,
       silver: 0,
+      tableau: [],
       trashHistory: [],
       userId: profile.userId,
       withdrawn: false
@@ -163,10 +166,11 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       gold: 40
     }
   })
+  const observerChooseEvent = createEvent(OBSERVER_CHOOSE_MESSAGE)
   transaction.update(currentGameRef, {
     court: [courtScheme],
     dungeon: [dungeonScheme],
-    events: arrayUnion(startEvent),
+    events: arrayUnion(startEvent, observerChooseEvent),
     phase: 'play',
     profiles: startedProfiles,
     timeline: timelineSchemes

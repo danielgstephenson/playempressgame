@@ -1,25 +1,25 @@
-import { PlayState, Player, Result } from '../types'
+import { PlayState, Player, Result, DrawState } from '../types'
 import drawOne from './one'
 
 export default function drawMultiple ({
   depth,
-  playState,
+  drawState,
   player
 }: {
   depth: number
-  playState: PlayState
+  drawState: DrawState
   player: Result<Player>
-}): PlayState {
+}): DrawState {
   if (depth === 0) {
-    return playState
+    return drawState
   }
   const drawnState = drawOne({
-    playState,
+    drawState,
     player
   })
   return drawMultiple({
     depth: depth - 1,
-    playState: drawnState,
+    drawState: drawnState,
     player
   })
 }

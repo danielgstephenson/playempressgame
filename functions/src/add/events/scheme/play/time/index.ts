@@ -16,7 +16,7 @@ export default function addPlayTimeEvents ({
 }): PlayEvents {
   function templateCallback (scheme: Scheme): string {
     const time = String(scheme.time)
-    return `which has ${time} time.`
+    return `which has ${time} time`
   }
   return addSortedPlayerEvents({
     publicEvents,

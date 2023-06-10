@@ -6,13 +6,10 @@ export default function getHighestUntiedProfile (
   const highest = game
     .profiles
     .reduce<Profile | undefined>((highest, profile) => {
-    console.log('highest', highest)
-    console.log('profile', profile)
     if (highest != null && highest.bid > profile.bid) {
       const highestTiers = game
         .profiles
         .filter(profile => profile.bid === highest.bid)
-      console.log('tiers.length', highestTiers.length)
       if (highestTiers.length === 1) {
         return highest
       }

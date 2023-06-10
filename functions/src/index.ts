@@ -12,11 +12,13 @@ import concede from './cloudFunction/concede'
 import buy from './cloudFunction/buy'
 import imprison from './cloudFunction/imprison'
 import withdraw from './cloudFunction/withdraw'
+import court from './cloudFunction/court'
 
 exports.addGame = addGame
 exports.bid = bid
 exports.buy = buy
 exports.concede = concede
+exports.court = court
 exports.deckChoose = deckChoose
 exports.imprison = imprison
 exports.joinGame = joinGame

@@ -24,7 +24,7 @@ export default function addSortedPlayerEvents ({
 }): PlayEvents {
   const sortedPublicEvents = addPublicEvent(publicEvents, publicMessage)
   const sortedPrivateEvent = addPlayerEvent({
-    events: privateEvent.events,
+    container: privateEvent,
     message: privateMessage,
     playerId,
     round: playState.game.round

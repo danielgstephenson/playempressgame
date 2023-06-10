@@ -6,10 +6,12 @@ import getGrammar from '../../../../../get/grammar'
 import isGreen from '../../../../../is/green'
 
 export default function addAreGreenTimelineSchemeEvents ({
+  addList = true,
   playState,
   privateEvent,
   publicEvents
 }: {
+  addList?: boolean
   playState: PlayState
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
@@ -34,7 +36,7 @@ export default function addAreGreenTimelineSchemeEvents ({
       timeline: playState.game.timeline
     })
     return { playEvents }
-  } else {
+  } else if (addList) {
     const joined = getJoinedRanks(schemes)
     const grammar = getGrammar(schemes.length)
     const playEvents = addEventsEverywhere({
@@ -47,5 +49,7 @@ export default function addAreGreenTimelineSchemeEvents ({
       timeline: playState.game.timeline
     })
     return { schemes, playEvents }
+  } else {
+    return { schemes }
   }
 }

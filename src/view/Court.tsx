@@ -3,14 +3,13 @@ import { Fragment, useContext } from 'react'
 import playContext from '../context/play'
 import ChakraButton from '../lib/firewrite/chakra/Button'
 import { gameContext } from '../reader/game'
+import Cloud from './Cloud'
 import Curtain from './Curtain'
 
 export default function CourtView (): JSX.Element {
   const playState = useContext(playContext)
   const gameState = useContext(gameContext)
-  if (gameState.court == null || gameState.court.length === 0) {
-    return <Text>Empty</Text>
-  }
+  const full = gameState.court != null && gameState.court.length > 0
   const group = gameState
     .court
     ?.map(scheme => {
@@ -36,10 +35,18 @@ export default function CourtView (): JSX.Element {
         </Box>
       )
     })
+
   return (
     <>
       <Heading size='sm'>Court:</Heading>
-      <HStack flexWrap='wrap'>{group}</HStack>
+      <Curtain open={full} hider={<Text>Empty</Text>}>
+        <HStack flexWrap='wrap'>x{group}</HStack>
+      </Curtain>
+      <Cloud
+        fn='court'
+        label='Ready'
+        props={{ gameId: gameState.id, schemes: playState.taken }}
+      />
     </>
   )
 }

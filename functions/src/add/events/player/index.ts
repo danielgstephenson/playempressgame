@@ -27,14 +27,14 @@ export default function addPlayerEvents ({
   publicEvents.otherPlayerEvents.forEach(otherPlayerEvent => {
     if (otherPlayerEvent.playerId === playerId) {
       addPlayerEvent({
-        events: otherPlayerEvent.events,
+        container: otherPlayerEvent,
         message: privateMessage,
         playerId,
         round
       })
     } else {
       addPlayerEvent({
-        events: otherPlayerEvent.events,
+        container: otherPlayerEvent,
         message: publicMessage,
         playerId,
         round

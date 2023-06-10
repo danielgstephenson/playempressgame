@@ -18,12 +18,20 @@ export default function setPlayState ({
       playScheme: rest.playScheme ?? deleteField(),
       trashScheme: rest.trashScheme ?? deleteField()
     }
+    console.log('newplayer.events', newPlayer.events)
+    transaction.update(playerRef, newPlayer)
     const profile = guardProfile(playState, player.userId)
     profile.gold = player.gold
     profile.silver = player.silver
     profile.topDiscardScheme = player.discard[player.discard.length - 1]
     profile.deckEmpty = player.deck.length === 0
-    transaction.update(playerRef, newPlayer)
+    profile.auctionReady = player.auctionReady
+    profile.bid = player.bid
+    profile.lastBidder = player.lastBidder
+    profile.playReady = player.playReady
+    profile.tableau = player.tableau
+    profile.trashHistory = player.trashHistory.map(event => ({ round: event.round }))
+    profile.withdrawn = player.withdrawn
   })
   const { id, ...rest } = playState.game
   const gameRef = gamesRef.doc(id)

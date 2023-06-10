@@ -18,7 +18,6 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     court: [],
     dungeon: [],
     events: [],
-    readyCount: 0,
     round: 1,
     timeline: []
   }

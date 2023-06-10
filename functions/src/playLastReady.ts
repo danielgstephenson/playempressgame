@@ -8,7 +8,8 @@ import filterIds from './filterIds'
 import clone from './clone'
 import { Transaction } from 'firelord'
 import setPlayState from './setPlayState'
-import endPlay from './endPlay'
+import summonOrImprison from './summonOrImprison'
+import addChoiceEvents from './add/events/choice'
 
 export default function playLastReady ({
   playState,
@@ -35,12 +36,14 @@ export default function playLastReady ({
   })
   passTime({ playState })
   playState.players.forEach(player => {
-    player.hand = player.hand.filter(scheme => scheme.id !== player.trashScheme?.id && scheme.id !== player.playScheme?.id)
+    player.hand = player
+      .hand
+      .filter(scheme => scheme.id !== player.trashScheme?.id && scheme.id !== player.playScheme?.id)
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
-    player.trashScheme = undefined
   })
   const playStateClone = clone(playState)
+  console.log('playState.players', playState.players)
   playState.players.forEach((player) => {
     playEffects({
       playState,
@@ -56,11 +59,12 @@ export default function playLastReady ({
   })
   const effectsChoices = filterIds(playState.game.choices, playStateClone.game.choices)
   if (effectsChoices.length === 0) {
-    endPlay({
+    summonOrImprison({
       playState,
       transaction
     })
   } else {
+    addChoiceEvents(playState)
     setPlayState({
       playState,
       transaction

@@ -1,5 +1,5 @@
 import createCloudFunction from '../create/cloudFunction'
-import { GameProps } from '../types'
+import { AuctionProps } from '../types'
 import guardString from '../guard/string'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
@@ -10,9 +10,9 @@ import updateAuctionWaiting from '../update/auctionWaiting'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import getGrammar from '../get/grammar'
 import { playersRef } from '../db'
-import { END_AUCTION } from '../constants'
+import { END_AUCTION, END_AUCTION_PLAYER } from '../constants'
 
-const concede = createCloudFunction<GameProps>(async (props, context, transaction) => {
+const concede = createCloudFunction<AuctionProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
   const {
     currentGame,
@@ -27,7 +27,6 @@ const concede = createCloudFunction<GameProps>(async (props, context, transactio
   })
   console.info(`Readying ${currentPlayer.id} for imprisonment...`)
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
-  console.log('highestUntiedProfile', highestUntiedProfile)
   if (highestUntiedProfile == null) {
     throw new https.HttpsError(
       'failed-precondition',
@@ -70,19 +69,18 @@ const concede = createCloudFunction<GameProps>(async (props, context, transactio
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
     events: arrayUnion(publicReadyEvent, buyerEndEvent),
-    ...END_AUCTION
+    ...END_AUCTION_PLAYER
   })
   transaction.update(currentPlayerRef, {
     events: arrayUnion(privateReadyEvent, publicEndEvent),
-    ...END_AUCTION
+    ...END_AUCTION_PLAYER
   })
   const profiles = currentGame.profiles.map(profile => {
-    const { playScheme, ...rest } = profile
     const buyerChanges = profile.userId === highestUntiedProfile.userId
       ? { gold: profile.gold - highestUntiedProfile.bid }
       : {}
     return {
-      ...rest,
+      ...profile,
       ...END_AUCTION,
       ...buyerChanges
     }
@@ -102,7 +100,7 @@ const concede = createCloudFunction<GameProps>(async (props, context, transactio
     const playerRef = playersRef.doc(playerId)
     transaction.update(playerRef, {
       events: arrayUnion(publicReadyEvent, publicEndEvent),
-      ...END_AUCTION
+      ...END_AUCTION_PLAYER
     })
   })
   console.info(`${currentUid} conceded!`)

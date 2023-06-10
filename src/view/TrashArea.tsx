@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import playContext from '../context/play'
-import TableauView from './Tableau'
+import SchemeAreaView from './SchemeAreaView'
 
 export default function TrashAreaView (): JSX.Element {
   const playState = useContext(playContext)
@@ -8,7 +8,7 @@ export default function TrashAreaView (): JSX.Element {
     playState.emptyTrash?.()
   }
   return (
-    <TableauView
+    <SchemeAreaView
       onReturn={handleReturn}
       label='Trash'
       scheme={playState.trashScheme}

@@ -10,9 +10,9 @@ export interface AuthState {
   currentUserError?: Error | undefined
   displayName?: string
   setSignOutErrorMessage?: (message: string) => void
-  signOut?: () => Promise<boolean>
   signOutErrorMessage?: string
-  signOutLoading?: boolean
+  unauth?: () => Promise<boolean>
+  unauthLoading?: boolean
 }
 
 export interface Doc {
@@ -47,15 +47,21 @@ export interface PrivateTrashEvent extends TrashEvent {
 }
 
 export interface Profile {
+  auctionReady: boolean
   bid: number
-  userId: string
-  gameId: string
   deckEmpty: boolean
   displayName: string
-  topDiscardScheme?: Scheme | undefined
+  gameId: string
   gold: number
+  lastBidder: boolean
+  playReady: boolean
+  playScheme?: Scheme | undefined
   silver: number
+  tableau: Scheme[]
+  topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
+  userId: string
+  withdrawn: boolean
 }
 
 export type ChoiceType = 'trash' | 'deck'
@@ -87,16 +93,19 @@ export interface Player extends Doc {
   deck: Scheme[]
   discard: Scheme[]
   displayName: string
+  events: HistoryEvent[]
   gameId: string
   gold: number
   hand: Scheme[]
-  events: HistoryEvent[]
+  lastBidder: boolean
   playScheme?: Scheme
-  playReady: boolean
   silver: number
+  tableau: Scheme[]
   trashScheme?: Scheme
   trashHistory: PrivateTrashEvent[]
   userId: string
+  withdrawn: boolean
+  playReady: boolean
 }
 
 export type FunctionCaller = (data?: unknown) =>
@@ -112,4 +121,9 @@ export interface Play {
   leave?: (schemeId: string) => void
   trash?: (scheme: Scheme | undefined) => void
   trashScheme?: Scheme
+}
+
+export interface DisplayNameState {
+  displayName?: string
+  setDisplayName: (displayName: string | undefined) => void
 }

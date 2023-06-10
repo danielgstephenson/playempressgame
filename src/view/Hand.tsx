@@ -16,9 +16,6 @@ export default function HandView (): JSX.Element {
   const trashChoice = choice?.type === 'trash'
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const showPlay = noChoice && gameState.phase === 'play' && playerState.playReady !== true
-  console.log('gameState', gameState)
-  console.log('playerState', playerState)
-  console.log('showPlay', showPlay)
   const unplayed = playerState
     .hand
     ?.filter(scheme =>

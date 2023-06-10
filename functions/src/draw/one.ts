@@ -1,31 +1,48 @@
 import createScheme from '../create/scheme'
 import guardDefined from '../guard/defined'
-import { PlayState, Player, Result } from '../types'
+import { PlayState, Player, Result, DrawState } from '../types'
 
 export default function drawOne ({
-  playState,
+  drawState,
   player
 }: {
-  playState: PlayState
+  drawState: DrawState
   player: Result<Player>
-}): PlayState {
+}): DrawState {
   if (player.deck.length === 0) {
     if (player.discard.length === 0) {
+      if (drawState.privilegeTaken.length === 0) {
+        drawState.beforePrivilegeHand = [...player.hand]
+      }
       const privilege = createScheme(1)
+      drawState.privilegeTaken.push(privilege)
+      drawState.allDrawn.push(privilege)
       player.hand.push(privilege)
-      return playState
+      return drawState
     }
     const copy = [...player.discard]
     const flippedDiscard = copy.reverse()
+    drawState.discardFlipped = true
     player.deck = flippedDiscard
+    drawState.flippedDeck = [...flippedDiscard]
     player.discard = []
     return drawOne({
-      playState,
+      drawState,
       player
     })
   }
   const popScheme = player.deck.pop()
   const topScheme = guardDefined(popScheme, 'Draw one top scheme')
   player.hand.push(topScheme)
-  return playState
+  drawState.allDrawn.push(topScheme)
+  if (drawState.discardFlipped) {
+    drawState.discardDrawn.push(topScheme)
+    drawState.discardDrawnDeck = [...player.deck]
+    drawState.discardDrawnHand = [...player.hand]
+  } else {
+    drawState.deckDrawnHand = [...player.hand]
+    drawState.deckDrawnDeck = [...player.deck]
+    drawState.deckDrawn.push(topScheme)
+  }
+  return drawState
 }

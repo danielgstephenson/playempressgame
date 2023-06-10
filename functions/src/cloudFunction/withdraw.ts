@@ -8,8 +8,9 @@ import { arrayUnion, increment } from 'firelord'
 import updateImprison from '../update/imprison'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import getGrammar from '../get/grammar'
-import { END_AUCTION } from '../constants'
+import { END_AUCTION, END_AUCTION_PLAYER } from '../constants'
 import { playersRef } from '../db'
+import gameToPlayerState from '../gameToPlayerState'
 
 const withdraw = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -38,8 +39,10 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
       'You are the last bidder.'
     )
   }
-  const privateReadyEvent = createEvent('You withdraw.')
-  const publicReadyEvent = createEvent(`${currentPlayer.displayName} withdrew.`)
+  const privateMessage = 'You withdraw.'
+  const publicMessage = `${currentPlayer.displayName} withdrew.`
+  const privateReadyEvent = createEvent(privateMessage)
+  const publicReadyEvent = createEvent(publicMessage)
   const unwithdrawnProfiles = currentGame.profiles.filter(profile => !profile.withdrawn)
   const auctionWaiting = unwithdrawnProfiles.length > 2
   if (auctionWaiting) {
@@ -78,11 +81,16 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
   }
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
   if (highestUntiedProfile == null) {
+    const playerState = gameToPlayerState({
+      currentUid,
+      discard: currentPlayer.discard,
+      game: currentGame,
+      privateMessage,
+      publicMessage
+    })
     updateImprison({
-      currentGame,
-      currentPlayer,
-      privateReadyEvent,
-      publicReadyEvent,
+      playState: playerState.playState,
+      currentPlayer: playerState.currentPlayer,
       transaction
     })
     console.info(`${currentUid} withdrew!`)
@@ -104,19 +112,18 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
     events: arrayUnion(publicReadyEvent, buyerEndEvent),
-    ...END_AUCTION
+    ...END_AUCTION_PLAYER
   })
   transaction.update(currentPlayerRef, {
     events: arrayUnion(privateReadyEvent, publicEndEvent),
-    ...END_AUCTION
+    ...END_AUCTION_PLAYER
   })
   const profiles = currentGame.profiles.map(profile => {
-    const { playScheme, ...rest } = profile
     const buyerChanges = profile.userId === highestUntiedProfile.userId
       ? { gold: profile.gold - highestUntiedProfile.bid }
       : {}
     return {
-      ...rest,
+      ...profile,
       ...END_AUCTION,
       ...buyerChanges
     }
@@ -136,7 +143,7 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     const playerRef = playersRef.doc(playerId)
     transaction.update(playerRef, {
       events: arrayUnion(publicReadyEvent, publicEndEvent),
-      ...END_AUCTION
+      ...END_AUCTION_PLAYER
     })
   })
   console.info(`${currentUid} withdrew!`)

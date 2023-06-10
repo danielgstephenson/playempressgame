@@ -7,6 +7,7 @@ import guardTimeEvent from './guard/timeEvent'
 import playerSort from './sort/player'
 import getGrammar from './get/grammar'
 import guardDefined from './guard/defined'
+import addEvent from './add/event'
 
 export default function passTime ({ playState }: {
   playState: PlayState
@@ -21,11 +22,20 @@ export default function passTime ({ playState }: {
   const totalMessage = `The total time is ${totalTimeGrammar.spelled}`
   const timePasses = totalTime > playState.players.length
   if (timePasses) {
+    const moreMessage = `${totalMessage} more than the ${playersLengthGrammar.spelled} players`
+    if (playState.game.timeline.length === 0) {
+      const emptyMessage = `${moreMessage}, but the the timeline is empty because the game is ending.`
+      addEvent(playState.game, emptyMessage)
+      playState.players.forEach(player => {
+        addEvent(player, emptyMessage)
+      })
+      return playState
+    }
     const [passed, ...remaining] = playState.game.timeline
     playState.game.timeline = remaining
     const defined = guardDefined(passed, 'Passed scheme')
     const passedRankGrammar = getGrammar(defined.rank)
-    const timeResult = `more than the ${playersLengthGrammar.spelled} players, so ${passedRankGrammar.spelled} is removed from the timeline.`
+    const timeResult = `${moreMessage}, so ${passedRankGrammar.spelled} is removed from the timeline.`
     const timeMessage = `${totalMessage}, ${timeResult}`
     const observerEvent = createEvent(timeMessage)
     const beforeJoined = getJoinedRanks(playState.game.timeline)

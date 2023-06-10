@@ -11,7 +11,9 @@ import guardPlayerEvent from './guard/playerEvent'
 import guardFirst from './guard/first'
 import getScore from './get/score'
 import getJoined from './get/joined'
-import guardProfile from './guard/profile'
+import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
+import guardPlayScheme from './guard/playScheme'
+import addPlayerWinEvents from './add/events/player/win'
 
 export default function drawUpToThree ({
   playState,
@@ -20,13 +22,13 @@ export default function drawUpToThree ({
   playState: PlayState
   transaction: Transaction
 }): void {
-  console.log('drawUpToThree')
-  playState.game.phase = 'auction'
-  playState.players.forEach(player => {
-    player.playReady = false
-  })
-  playState.game.profiles.forEach(profile => {
-    profile.playReady = false
+  const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
+  const notHighPlayers = playState
+    .players
+    .filter(player => player.playScheme?.rank !== highestPlayScheme.rank)
+  notHighPlayers.forEach(player => {
+    const playScheme = guardPlayScheme(player)
+    player.tableau.push(playScheme)
   })
   const underPlayers = playState.players.filter(player => player.hand.length < 3)
   if (underPlayers.length === 0) {
@@ -40,7 +42,7 @@ export default function drawUpToThree ({
     const observerEvent = createEvent('Everyone draws up to three.')
     playState.game.events.push(observerEvent)
     const playerEvents = playState.players.map(player => addPlayerEvent({
-      events: player.events,
+      container: player,
       message: 'Everyone draws up to three.',
       playerId: player.id
     }))
@@ -76,8 +78,6 @@ export default function drawUpToThree ({
           publicEvents
         })
       }
-      const profile = guardProfile(playState, player.userId)
-      profile.playScheme = player.playScheme
     })
   }
   const leftmost = playState.game.timeline[0]
@@ -90,7 +90,7 @@ export default function drawUpToThree ({
       const winnerScore = getScore(winner)
       const score = getScore(player)
       if (score === winnerScore) {
-        const tiers = [...winners, player]
+        const tiers: Array<Result<Player>> = [...winners, player]
         const handHighest = tiers.reduce((highest, tier) => {
           const highestScheme = tier.hand.reduce((highestScheme, scheme) => {
             return scheme.rank > highestScheme.rank ? scheme : highestScheme
@@ -116,22 +116,66 @@ export default function drawUpToThree ({
     if (winners.length > 1) {
       const winnerNames = winners.map(winner => winner.displayName)
       const joined = getJoined(winnerNames)
-      const message = `${joined} tie for the win.`
-      addBroadcastEvent({
-        players: playState.players,
-        game: playState.game,
-        message
+      const loserMessage = `${joined} tie for the win.`
+      const observerWinEvent = addEvent(playState.game, loserMessage)
+      const playerWinEvents = playState.players.map(player => {
+        const winner = winners.some(winner => winner.id === player.id)
+        if (!winner) {
+          return addPlayerEvent({
+            container: player,
+            message: loserMessage,
+            playerId: player.id,
+            round: playState.game.round
+          })
+        }
+        const otherWinners = winners.filter(winner => winner.id !== player.id)
+        const otherWinnerNames = otherWinners.map(winner => winner.displayName)
+        const names = ['You', ...otherWinnerNames]
+        const joined = getJoined(names)
+        const message = `${joined} tie for the win.`
+        return addPlayerEvent({
+          container: player,
+          message,
+          playerId: player.id,
+          round: playState.game.round
+        })
       })
+      addPlayerWinEvents({
+        playState,
+        observerEvent: observerWinEvent,
+        playerEvents: playerWinEvents
+      })
+      return setPlayState({ playState, transaction })
     }
     const winner = guardFirst(winners, 'Winner')
-    const message = `${winner.displayName} wins.`
-    addBroadcastEvent({
-      players: playState.players,
-      game: playState.game,
-      message
+    const winnerMessage = 'You win.'
+    const loserMessage = `${winner.displayName} wins.`
+    const observerWinEvent = addEvent(playState.game, loserMessage)
+    const playerWinEvents = playState.players.map(player => {
+      const message = player.id === winner.id
+        ? winnerMessage
+        : loserMessage
+      return addPlayerEvent({
+        container: player,
+        message,
+        playerId: player.id,
+        round: playState.game.round
+      })
+    })
+    addPlayerWinEvents({
+      playState,
+      observerEvent: observerWinEvent,
+      playerEvents: playerWinEvents
     })
     return setPlayState({ playState, transaction })
   }
+  playState.players.forEach(player => {
+    player.playReady = false
+  })
+  playState.game.profiles.forEach(profile => {
+    profile.playReady = false
+  })
+  playState.game.phase = 'auction'
   const leftmostMessage = `${leftmost.rank} is up for auction`
   const courtMessage = playState.game.court.length > 0
     ? ` with ${getJoined(playState.game.court.map(scheme => scheme.rank))} in the court`
@@ -142,6 +186,5 @@ export default function drawUpToThree ({
     game: playState.game,
     message
   })
-  console.log('drawUptoThree players', playState.players)
   setPlayState({ playState, transaction })
 }

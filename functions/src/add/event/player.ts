@@ -1,23 +1,23 @@
-import { HistoryEvent, PlayerEvent } from '../../types'
+import { EventContainer, PlayerEvent } from '../../types'
 import createPlayerEvent from '../../create/event/player'
 
 export default function addPlayerEvent ({
   children = [],
-  events,
+  container,
   message,
   playerId,
   round,
   debug = false
 }: {
   children?: PlayerEvent[]
-  events: HistoryEvent[]
+  container: EventContainer
   message: string
   playerId: string
   round?: number | undefined
   debug?: boolean
 }): PlayerEvent {
   if (debug) {
-    console.debug('events before', events)
+    console.debug('events before', container.events)
   }
   const event = createPlayerEvent({
     children,
@@ -28,9 +28,9 @@ export default function addPlayerEvent ({
   if (debug) {
     console.debug('event', event)
   }
-  events.push(event)
+  container.events.push(event)
   if (debug) {
-    console.debug('events after', events)
+    console.debug('events after', container.events)
   }
   return event
 }

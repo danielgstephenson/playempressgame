@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import playContext from '../context/play'
-import TableauView from './Tableau'
+import SchemeAreaView from './SchemeAreaView'
 
 export default function PlayAreaView (): JSX.Element {
   const playState = useContext(playContext)
@@ -8,7 +8,7 @@ export default function PlayAreaView (): JSX.Element {
     playState.emptyPlay?.()
   }
   return (
-    <TableauView
+    <SchemeAreaView
       onReturn={handleReturn}
       label='Play'
       scheme={playState.playScheme}

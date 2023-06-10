@@ -1,10 +1,11 @@
 import { Transaction } from 'firelord'
-import endPlay from './endPlay'
+import summonOrImprison from './summonOrImprison'
 import { Choice, HistoryEvent, PlayState, Player, PublicEvents, Result } from './types'
 import setPlayState from './setPlayState'
 import applyEffects from './effects/apply'
 import guardDefined from './guard/defined'
 import drawUpToThree from './drawUpToThree'
+import addPlayerChoiceEvents from './add/events/player/choice'
 
 export default function onChoiceComplete ({
   choice,
@@ -39,11 +40,12 @@ export default function onChoiceComplete ({
     .filter(c => c.id !== choice.id)
   if (playState.game.choices.length === 0) {
     if (choice.threat == null) {
-      endPlay({ playState, transaction })
+      summonOrImprison({ playState, transaction })
     } else {
       drawUpToThree({ playState, transaction })
     }
   } else {
+    addPlayerChoiceEvents({ playState, player: currentPlayer })
     setPlayState({ playState, transaction })
   }
 }
