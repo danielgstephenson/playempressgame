@@ -291,3 +291,8 @@ export interface PlayerState {
   playerEvents: PlayerEvent[]
   playState: PlayState
 }
+
+export interface Messages {
+  publicMessage: string
+  privateMessage: string
+}

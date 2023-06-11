@@ -6,12 +6,13 @@ import { arrayUnion } from 'firelord'
 import createEventUpdate from '../create/eventUpdate'
 import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
-import playLastReady from '../playLastReady'
+import playLastReady from '../ready/last/play'
 import guardString from '../guard/string'
-import getOtherPlayers from '../get/otherPlayers'
 import getJoinedRanks from '../get/joined/ranks'
 import filterPlaySchemes from '../filterPlaySchemes'
 import addEvent from '../add/event'
+import setPlayState from '../setPlayState'
+import createPlayState from '../create/playState'
 
 const playReady = createCloudFunction<PlayReadyProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -82,23 +83,18 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     return
   }
   console.info('not waiting...')
-  const otherPlayers = await getOtherPlayers({
-    currentUid,
-    gameId,
+  const playState = await createPlayState({
+    currentGame,
+    currentPlayer,
     transaction
   })
-  const readyPlayer = {
-    ...currentPlayer,
+  playLastReady({
+    playState,
+    currentPlayer,
     trashScheme,
-    playScheme,
-    playReady: true
-  }
-  const readiedPlayers = [readyPlayer, ...otherPlayers]
-  const playState = {
-    game: currentGame,
-    players: readiedPlayers
-  }
-  playLastReady({ playState, currentPlayer: readyPlayer, transaction })
+    playScheme
+  })
+  setPlayState({ playState, transaction })
   console.info(`${currentUid} was the last to ready!`)
 })
 export default playReady

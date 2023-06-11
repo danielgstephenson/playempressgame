@@ -1,21 +1,29 @@
-import getJoinedRanksGrammar from '../get/joined/ranks/grammar'
-import { Result, Player, PlayState } from '../types'
-import addPlayerEvent from '../add/event/player'
-import addEvent from '../add/event'
-import { Transaction } from 'firelord'
-import discardTableau from '../discardTableau'
-import setPlayState from '../setPlayState'
-import getJoinedRanks from '../get/joined/ranks'
+import getJoinedRanksGrammar from '../../get/joined/ranks/grammar'
+import { Result, Player, PlayState } from '../../types'
+import addPlayerEvent from '../../add/event/player'
+import addEvent from '../../add/event'
+import discardTableau from '../../discardTableau'
+import getJoinedRanks from '../../get/joined/ranks'
+import getImprisonMessages from '../../get/imprisonMessages'
 
-export default async function updateImprison ({
+export default function imprisonLastReady ({
   currentPlayer,
-  playState,
-  transaction
+  playState
 }: {
   currentPlayer: Result<Player>
   playState: PlayState
-  transaction: Transaction
-}): Promise<void> {
+}): void {
+  console.log('last timeline', playState.game.timeline)
+  const imprisonMessages = getImprisonMessages({
+    game: playState.game,
+    currentPlayer
+  })
+  addEvent(currentPlayer, imprisonMessages.privateMessage)
+  playState.players.forEach(player => {
+    if (player.id !== currentPlayer.id) {
+      addEvent(player, imprisonMessages.publicMessage)
+    }
+  })
   const imprisoned = [...playState.game.court]
   const beforeDungeon = [...playState.game.dungeon]
   const beforeDungeonJoined = getJoinedRanks(beforeDungeon)
@@ -57,9 +65,5 @@ export default async function updateImprison ({
   })
   discardTableau({
     playState
-  })
-  setPlayState({
-    playState,
-    transaction
   })
 }

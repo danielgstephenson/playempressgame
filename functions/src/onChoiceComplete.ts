@@ -40,9 +40,11 @@ export default function onChoiceComplete ({
     .filter(c => c.id !== choice.id)
   if (playState.game.choices.length === 0) {
     if (choice.threat == null) {
-      summonOrImprison({ playState, transaction })
+      summonOrImprison({ playState })
+      setPlayState({ playState, transaction })
     } else {
-      drawUpToThree({ playState, transaction })
+      drawUpToThree({ playState })
+      setPlayState({ playState, transaction })
     }
   } else {
     addPlayerChoiceEvents({ playState, player: currentPlayer })

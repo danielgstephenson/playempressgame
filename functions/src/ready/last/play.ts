@@ -1,27 +1,30 @@
-import createEvent from './create/event'
-import { PlayState, Player, Result } from './types'
-import passTime from './passTime'
-import playEffects from './effects/play'
-import guardDefined from './guard/defined'
-import playerSort from './sort/player'
-import filterIds from './filterIds'
-import clone from './clone'
-import { Transaction } from 'firelord'
-import setPlayState from './setPlayState'
-import summonOrImprison from './summonOrImprison'
-import addChoiceEvents from './add/events/choice'
-import getJoinedRanks from './get/joined/ranks'
-import addEvent from './add/event'
+import createEvent from '../../create/event'
+import { PlayState, Player, Result, Scheme } from '../../types'
+import passTime from '../../passTime'
+import playEffects from '../../effects/play'
+import guardDefined from '../../guard/defined'
+import playerSort from '../../sort/player'
+import filterIds from '../../filterIds'
+import clone from '../../clone'
+import summonOrImprison from '../../summonOrImprison'
+import addChoiceEvents from '../../add/events/choice'
+import getJoinedRanks from '../../get/joined/ranks'
+import addEvent from '../../add/event'
 
 export default function playLastReady ({
-  playState,
   currentPlayer,
-  transaction
+  playScheme,
+  playState,
+  trashScheme
 }: {
-  playState: PlayState
   currentPlayer: Result<Player>
-  transaction: Transaction
+  playScheme: Scheme
+  playState: PlayState
+  trashScheme: Scheme
 }): void {
+  currentPlayer.playScheme = playScheme
+  currentPlayer.trashScheme = trashScheme
+  currentPlayer.playReady = true
   const joinedBefore = getJoinedRanks(currentPlayer.hand)
   playState.players.forEach(player => {
     player.hand = player
@@ -66,15 +69,8 @@ export default function playLastReady ({
   })
   const effectsChoices = filterIds(playState.game.choices, playStateClone.game.choices)
   if (effectsChoices.length === 0) {
-    summonOrImprison({
-      playState,
-      transaction
-    })
+    summonOrImprison({ playState })
   } else {
     addChoiceEvents(playState)
-    setPlayState({
-      playState,
-      transaction
-    })
   }
 }

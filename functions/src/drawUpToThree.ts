@@ -1,8 +1,6 @@
-import { Transaction } from 'firelord'
 import { PlayState, Player, Result } from './types'
 import draw from './draw'
 import addBroadcastEvent from './add/event/broadcast'
-import setPlayState from './setPlayState'
 import createEvent from './create/event'
 import addPlayerEvent from './add/event/player'
 import addEvent from './add/event'
@@ -16,11 +14,9 @@ import guardPlayScheme from './guard/playScheme'
 import addPlayerWinEvents from './add/events/player/win'
 
 export default function drawUpToThree ({
-  playState,
-  transaction
+  playState
 }: {
   playState: PlayState
-  transaction: Transaction
 }): void {
   const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
   const notHighPlayers = playState
@@ -145,7 +141,7 @@ export default function drawUpToThree ({
         observerEvent: observerWinEvent,
         playerEvents: playerWinEvents
       })
-      return setPlayState({ playState, transaction })
+      return
     }
     const winner = guardFirst(winners, 'Winner')
     const winnerMessage = 'You win.'
@@ -167,7 +163,7 @@ export default function drawUpToThree ({
       observerEvent: observerWinEvent,
       playerEvents: playerWinEvents
     })
-    return setPlayState({ playState, transaction })
+    return
   }
   playState.players.forEach(player => {
     player.playReady = false
@@ -186,5 +182,4 @@ export default function drawUpToThree ({
     game: playState.game,
     message
   })
-  setPlayState({ playState, transaction })
 }

@@ -1,9 +1,7 @@
-import { Transaction } from 'firelord'
 import createEvent from './create/event'
 import getJoined from './get/joined'
 import guardFirst from './guard/first'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
-import setPlayState from './setPlayState'
 import { PlayState } from './types'
 import addBroadcastEvent from './add/event/broadcast'
 import addEvent from './add/event'
@@ -16,11 +14,9 @@ import addPublicEvent from './add/event/public'
 import addChoiceEvents from './add/events/choice'
 
 export default function summonOrImprison ({
-  playState,
-  transaction
+  playState
 }: {
   playState: PlayState
-  transaction: Transaction
 }): void {
   const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
   addBroadcastEvent({
@@ -77,7 +73,8 @@ export default function summonOrImprison ({
       const playScheme = guardPlayScheme(highPlayer)
       highPlayer.discard = [...highPlayer.discard, playScheme]
     })
-    return drawUpToThree({ playState, transaction })
+    drawUpToThree({ playState })
+    return
   } else {
     const eightPlayers = playState
       .players
@@ -159,7 +156,7 @@ export default function summonOrImprison ({
       })
       if (choices.length > 0) {
         addChoiceEvents(playState)
-        return setPlayState({ playState, transaction })
+        return
       }
     }
   } else {
@@ -231,5 +228,5 @@ export default function summonOrImprison ({
       event.events.push(highestChild)
     }
   }
-  drawUpToThree({ playState, transaction })
+  drawUpToThree({ playState })
 }

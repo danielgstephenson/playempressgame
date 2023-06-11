@@ -5,13 +5,14 @@ import guardCurrentBidding from '../guard/current/bidding'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
 import { arrayUnion, increment } from 'firelord'
-import updateImprison from '../update/imprison'
+import imprisonLastReady from '../ready/last/imprison'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import getGrammar from '../get/grammar'
 import { playersRef } from '../db'
 import getOtherPlayers from '../get/otherPlayers'
 import getJoinedRanks from '../get/joined/ranks'
 import addEvent from '../add/event'
+import setPlayState from '../setPlayState'
 
 const withdraw = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -105,9 +106,12 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
       game: currentGame,
       players
     }
-    await updateImprison({
+    imprisonLastReady({
       playState,
-      currentPlayer,
+      currentPlayer
+    })
+    setPlayState({
+      playState,
       transaction
     })
     console.info(`${currentUid} withdrew!`)
