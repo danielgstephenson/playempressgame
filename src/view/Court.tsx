@@ -8,6 +8,7 @@ import Curtain from './Curtain'
 
 export default function CourtView (): JSX.Element {
   const playState = useContext(playContext)
+  console.log('playState', playState)
   const gameState = useContext(gameContext)
   const full = gameState.court != null && gameState.court.length > 0
   const group = gameState
@@ -45,7 +46,7 @@ export default function CourtView (): JSX.Element {
       <Cloud
         fn='court'
         label='Ready'
-        props={{ gameId: gameState.id, schemes: playState.taken }}
+        props={{ gameId: gameState.id, schemeIds: playState.taken }}
       />
     </>
   )

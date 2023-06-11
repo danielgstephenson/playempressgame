@@ -1,5 +1,4 @@
 import createCloudFunction from '../create/cloudFunction'
-import { AuctionProps } from '../types'
 import guardString from '../guard/string'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
@@ -10,9 +9,11 @@ import updateAuctionWaiting from '../update/auctionWaiting'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import getGrammar from '../get/grammar'
 import { playersRef } from '../db'
-import { END_AUCTION, END_AUCTION_PLAYER } from '../constants'
+import { GameProps } from '../types'
+import getJoinedRanks from '../get/joined/ranks'
+import addEvent from '../add/event'
 
-const concede = createCloudFunction<AuctionProps>(async (props, context, transaction) => {
+const concede = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
   const {
     currentGame,
@@ -53,17 +54,27 @@ const concede = createCloudFunction<AuctionProps>(async (props, context, transac
     console.info(`${currentUid} is ready to concede!`)
     return
   }
-  const leftmost = currentGame.timeline[0]
+  const beforeTimeline = [...currentGame.timeline].reverse()
+  const beforeJoined = getJoinedRanks(beforeTimeline)
+  const beforeMessage = `The timeline was ${beforeJoined}.`
+  const leftmost = currentGame.timeline.shift()
+  const afterTimeline = [...currentGame.timeline].reverse()
+  const afterJoined = getJoinedRanks(afterTimeline)
+  const afterMessage = `The timeline becomes ${afterJoined}.`
   const endMessage = 'Everyone is ready, so'
   const { spelled } = getGrammar(highestUntiedProfile.bid)
   const buyerEndSuffix = leftmost == null
     ? 'the auction ends'
     : `you pay ${spelled} gold and take ${leftmost.rank} into your tableau`
   const buyerEndEvent = createEvent(`${endMessage} ${buyerEndSuffix}.`)
+  addEvent(buyerEndEvent, beforeMessage)
+  addEvent(buyerEndEvent, afterMessage)
   const publicEndSuffix = leftmost == null
     ? 'the auction ends'
     : `${highestUntiedProfile.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
   const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
+  addEvent(publicEndEvent, beforeMessage)
+  addEvent(publicEndEvent, afterMessage)
   const buyerPlayerId = `${highestUntiedProfile.userId}_${gameId}`
   const buyerRef = playersRef.doc(buyerPlayerId)
   const tableauUpdate = leftmost == null
@@ -72,29 +83,32 @@ const concede = createCloudFunction<AuctionProps>(async (props, context, transac
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
     events: arrayUnion(publicReadyEvent, buyerEndEvent),
-    ...END_AUCTION_PLAYER,
     ...tableauUpdate
   })
   transaction.update(currentPlayerRef, {
     events: arrayUnion(privateReadyEvent, publicEndEvent),
-    ...END_AUCTION_PLAYER
+    auctionReady: true
   })
   const profiles = currentGame.profiles.map(profile => {
     const tableauUpdate = leftmost == null
       ? {}
       : { tableau: [...profile.tableau, leftmost] }
     const buyerChanges = profile.userId === highestUntiedProfile.userId
-      ? { gold: profile.gold - highestUntiedProfile.bid, tableauUpdate }
+      ? { gold: profile.gold - highestUntiedProfile.bid, ...tableauUpdate }
+      : {}
+    const currentPlayerChanges = profile.userId === currentPlayer.userId
+      ? { auctionReady: true }
       : {}
     return {
       ...profile,
-      ...END_AUCTION,
-      ...buyerChanges
+      ...buyerChanges,
+      ...currentPlayerChanges
     }
   })
   transaction.update(currentGameRef, {
     profiles,
-    events: arrayUnion(publicReadyEvent, publicEndEvent)
+    events: arrayUnion(publicReadyEvent, publicEndEvent),
+    timeline: currentGame.timeline
   })
   currentGame.profiles.forEach(profile => {
     if (
@@ -106,8 +120,7 @@ const concede = createCloudFunction<AuctionProps>(async (props, context, transac
     const playerId = `${profile.userId}_${currentGame.id}`
     const playerRef = playersRef.doc(playerId)
     transaction.update(playerRef, {
-      events: arrayUnion(publicReadyEvent, publicEndEvent),
-      ...END_AUCTION_PLAYER
+      events: arrayUnion(publicReadyEvent, publicEndEvent)
     })
   })
   console.info(`${currentUid} conceded!`)

@@ -9,6 +9,8 @@ import discardTableau from '../discardTableau'
 import addEvent from '../add/event'
 import getOtherPlayers from '../get/otherPlayers'
 import setPlayState from '../setPlayState'
+import getJoinedRanks from '../get/joined/ranks'
+import getLowestRankScheme from '../get/lowestRankScheme'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
   const {
@@ -28,7 +30,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     const { toBe } = getGrammar(unready.length)
     throw new https.HttpsError(
       'failed-precondition',
-      `${joined} ${toBe} are not ready.`
+      `${joined} ${toBe} not ready.`
     )
   }
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
@@ -47,12 +49,11 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       `${joined} ${grammar.toBe} not in the court.`
     )
   }
-  const otherPlayers = await getOtherPlayers({
-    currentUid,
-    transaction,
-    gameId: props.gameId
-  })
-  const joined = getJoined(props.schemeIds)
+  const taken = currentGame.court.filter(scheme => props.schemeIds.includes(scheme.id))
+  currentPlayer.tableau.push(...taken)
+  currentGame.court = currentGame.court.filter(scheme => !props.schemeIds.includes(scheme.id))
+  const lowest = getLowestRankScheme(currentGame.court)
+  const joined = getJoinedRanks(taken)
   const privateMessage = props.schemeIds.length === 0
     ? 'You took no schemes from the court.'
     : `You took ${joined} from the court.`
@@ -60,11 +61,36 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const publicMessage = props.schemeIds.length === 0
     ? `${currentPlayer.displayName} took no schemes from the court.`
     : `${currentPlayer.displayName} took ${joined} from the court.`
+
   addEvent(currentGame, publicMessage)
+  const otherPlayers = await getOtherPlayers({
+    currentUid,
+    transaction,
+    gameId: props.gameId
+  })
   otherPlayers.forEach(player => {
     addEvent(player, publicMessage)
   })
   const players = [currentPlayer, ...otherPlayers]
+  if (lowest != null) {
+    const beforeDungeon = [...currentGame.dungeon]
+    const beforeDungeonJoined = getJoinedRanks(beforeDungeon)
+    const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
+    currentGame.court = currentGame.court.filter(scheme => scheme.id !== lowest.id)
+    currentGame.dungeon.push(lowest)
+    const afterDungeon = [...currentGame.dungeon]
+    const afterDungeonJoined = getJoinedRanks(afterDungeon)
+    const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
+    const message = `The lowest remaining court scheme, ${lowest.rank}, was imprisoned in the dungeon.`
+    const observerEvent = addEvent(currentGame, message)
+    addEvent(observerEvent, beforeDungeonMessage)
+    addEvent(observerEvent, afterDungeonMessage)
+    players.forEach(player => {
+      const playerEvent = addEvent(player, message)
+      addEvent(playerEvent, beforeDungeonMessage)
+      addEvent(playerEvent, afterDungeonMessage)
+    })
+  }
   const playState = {
     game: currentGame,
     players

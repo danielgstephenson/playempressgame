@@ -121,10 +121,6 @@ export interface GameProps {
   gameId: string
 }
 
-export interface AuctionProps extends GameProps {
-  discard: Scheme[]
-}
-
 export interface BidProps extends GameProps {
   bid: number
 }

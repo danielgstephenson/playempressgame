@@ -6,7 +6,9 @@ import guardCurrentBidding from '../guard/current/bidding'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
 import { arrayUnion } from 'firelord'
-import updateOtherPlayers from '../update/otherPlayers'
+import getHighestUntiedProfile from '../get/highestUntiedProfile'
+import { playersRef } from '../db'
+import getGrammar from '../get/grammar'
 
 const bid = createCloudFunction<BidProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -16,13 +18,20 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     currentGameRef,
     currentUid,
     currentPlayer,
-    currentPlayerRef
+    currentPlayerRef,
+    currentProfile
   } = await guardCurrentBidding({
     gameId,
     transaction,
     context
   })
   console.info(`Bidding ${bid} for ${currentUid}...`)
+  if (currentPlayer.auctionReady) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      'You are ready to end the auction.'
+    )
+  }
   if (currentPlayer.gold < bid) {
     throw new https.HttpsError(
       'out-of-range',
@@ -47,37 +56,70 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
       'You may only bid gold.'
     )
   }
-  const currentPlayerEvent = createEvent(`You bid ${bid}.`)
+  const oldHighestUntiedProfile = getHighestUntiedProfile(currentGame)
+  const tying = oldHighestUntiedProfile?.bid === bid
+  console.log('tying', tying)
+  currentProfile.bid = props.bid
+  const highestUntiedProfile = getHighestUntiedProfile(currentGame)
+  const winning = highestUntiedProfile?.userId === currentUid
+  const { spelled } = getGrammar(bid)
+  const privateBidMessage = `You bid ${spelled}`
+  const publicBidMessage = `${currentPlayer.displayName} bid ${spelled}`
+  const highestMessage = 'the highest untied bidder'
+  const privateMessage = winning
+    ? `${privateBidMessage}, making you ${highestMessage}.`
+    : `${privateBidMessage}.`
+  const currentPlayerEvent = createEvent(privateMessage)
   transaction.update(currentPlayerRef, {
     bid,
     events: arrayUnion(currentPlayerEvent),
     lastBidder: true,
-    auctionReady: false
+    auctionReady: winning
   })
+  console.log('bid', bid)
+  console.log('highestUntiedProfile', highestUntiedProfile)
+  console.log('winning', winning)
+  const pivotal = winning || tying
+  console.log('pivotal', pivotal)
   const profiles = currentGame.profiles.map(profile => {
-    if (profile.userId === currentUid) {
-      return { ...profile, auctionReady: false, bid, lastBidder: true }
+    if (profile.withdrawn) {
+      return profile
     }
-    return { ...profile, auctionReady: false, lastBidder: false }
+    if (profile.userId === currentUid) {
+      return { ...profile, auctionReady: winning, bid, lastBidder: true }
+    }
+    const pivotalUpdate = pivotal
+      ? { auctionReady: false }
+      : {}
+    return { ...profile, lastBidder: false, ...pivotalUpdate }
   })
-  const publicMessage = `${currentPlayer.displayName} bid ${bid}.`
+  const publicMessage = winning
+    ? `${publicBidMessage}, making them ${highestMessage}.`
+    : `${publicBidMessage}.`
   const observerEvent = createEvent(publicMessage)
   transaction.update(currentGameRef, {
     profiles,
     events: arrayUnion(observerEvent)
   })
-  const userIds = currentGame.profiles.map(profile => profile.userId)
-  updateOtherPlayers({
-    currentUid,
-    gameId,
-    transaction,
-    userIds,
-    update: {
+  currentGame.profiles.forEach((profile) => {
+    if (profile.userId === currentUid) return
+    const playerId = `${profile.userId}_${gameId}`
+    const playerRef = playersRef.doc(playerId)
+    if (profile.withdrawn) {
+      transaction.update(playerRef, {
+        events: arrayUnion(observerEvent)
+      })
+      return
+    }
+    const pivotalUpdate = pivotal
+      ? { auctionReady: false }
+      : {}
+    transaction.update(playerRef, {
       events: arrayUnion(observerEvent),
       lastBidder: false,
-      auctionReady: false
-    }
+      ...pivotalUpdate
+    })
   })
-  console.info(`${currentPlayer.id} bid ${bid}!`)
+  console.info(`${currentPlayer.id} bid ${spelled}!`)
 })
 export default bid

@@ -1,5 +1,4 @@
 import createCloudFunction from '../create/cloudFunction'
-import { AuctionProps } from '../types'
 import guardString from '../guard/string'
 import { https } from 'firebase-functions/v1'
 import createEvent from '../create/event'
@@ -10,8 +9,9 @@ import updateAuctionWaiting from '../update/auctionWaiting'
 import updateImprison from '../update/imprison'
 import getJoined from '../get/joined'
 import getOtherPlayers from '../get/otherPlayers'
+import { GameProps } from '../types'
 
-const imprison = createCloudFunction<AuctionProps>(async (props, context, transaction) => {
+const imprison = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
   const {
     currentGame,
@@ -23,25 +23,21 @@ const imprison = createCloudFunction<AuctionProps>(async (props, context, transa
     context
   })
   console.info(`Readying ${currentPlayer.id} to imprison...`)
+  console.log('currentGame.profiles', currentGame.profiles)
   const tiers = currentGame
     .profiles
     .filter(profile => currentGame
       .profiles
-      .some(otherProfile => otherProfile.bid === profile.bid)
+      .some(otherProfile => otherProfile.userId !== profile.userId && otherProfile.bid === profile.bid)
     )
+  console.log('tiers', tiers)
   if (tiers.length !== currentGame.profiles.length) {
     throw new https.HttpsError(
       'failed-precondition',
       'Everyone is not tied.'
     )
   }
-  if (currentPlayer.lastBidder) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'You are the last bidder.'
-    )
-  }
-  const leftmostTimeline = currentGame.timeline[0]
+  const leftmostTimeline = currentGame.timeline.shift()
   const joinedCourt = getJoinedRanksGrammar(currentGame.court)
   const readyMessage = 'ready to imprison'
   const schemeMessages = []

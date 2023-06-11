@@ -8,9 +8,10 @@ import { arrayUnion, increment } from 'firelord'
 import updateImprison from '../update/imprison'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import getGrammar from '../get/grammar'
-import { END_AUCTION, END_AUCTION_PLAYER } from '../constants'
 import { playersRef } from '../db'
-import gameToPlayerState from '../gameToPlayerState'
+import getOtherPlayers from '../get/otherPlayers'
+import getJoinedRanks from '../get/joined/ranks'
+import addEvent from '../add/event'
 
 const withdraw = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -19,13 +20,20 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     currentGameRef,
     currentUid,
     currentPlayer,
-    currentPlayerRef
+    currentPlayerRef,
+    currentProfile
   } = await guardCurrentBidding({
     gameId,
     transaction,
     context
   })
   console.info(`${currentPlayer.id} withdrawing...`)
+  if (currentPlayer.auctionReady) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      'You are already ready to end the auction.'
+    )
+  }
   const tiers = currentGame.profiles.filter(profile => profile.bid === currentPlayer.bid)
   if (tiers.length < 2) {
     throw new https.HttpsError(
@@ -79,34 +87,54 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     console.info(`${currentUid} is ready to withdraw!`)
     return
   }
+  currentProfile.withdrawn = true
+  currentProfile.auctionReady = true
+  currentPlayer.withdrawn = true
+  currentPlayer.auctionReady = true
+  console.log('currentGame.profiles', currentGame.profiles)
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
+  console.log('highestUntiedProfile', highestUntiedProfile)
   if (highestUntiedProfile == null) {
-    const playerState = gameToPlayerState({
+    const otherPlayers = await getOtherPlayers({
       currentUid,
-      discard: currentPlayer.discard,
-      game: currentGame,
-      privateMessage,
-      publicMessage
+      gameId: props.gameId,
+      transaction
     })
+    const players = [currentPlayer, ...otherPlayers]
+    const playState = {
+      game: currentGame,
+      players
+    }
     await updateImprison({
-      playState: playerState.playState,
-      currentPlayer: playerState.currentPlayer,
+      playState,
+      currentPlayer,
       transaction
     })
     console.info(`${currentUid} withdrew!`)
     return
   }
-  const leftmost = currentGame.timeline[0]
+  const beforeTimeline = [...currentGame.timeline].reverse()
+  const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
+  const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
+
+  const leftmost = currentGame.timeline.shift()
+  const afterTimeline = [...currentGame.timeline].reverse()
+  const afterTimelineJoined = getJoinedRanks(afterTimeline)
+  const afterTimelineMessage = `The timeline becomes ${afterTimelineJoined}.`
   const endMessage = 'Everyone is ready, so'
-  const { spelled } = getGrammar(currentPlayer.bid)
+  const { spelled } = getGrammar(highestUntiedProfile.bid)
   const buyerEndSuffix = leftmost == null
     ? 'the auction ends'
     : `you pay ${spelled} gold and take ${leftmost.rank} into your tableau`
   const buyerEndEvent = createEvent(`${endMessage} ${buyerEndSuffix}.`)
+  addEvent(buyerEndEvent, beforeTimelineMessage)
+  addEvent(buyerEndEvent, afterTimelineMessage)
   const publicEndSuffix = leftmost == null
     ? 'the auction ends'
-    : `${currentPlayer.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
+    : `${highestUntiedProfile.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
   const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
+  addEvent(publicEndEvent, beforeTimelineMessage)
+  addEvent(publicEndEvent, afterTimelineMessage)
   const buyerPlayerId = `${highestUntiedProfile.userId}_${gameId}`
   const buyerRef = playersRef.doc(buyerPlayerId)
   const tableauUpdate = leftmost == null
@@ -115,12 +143,12 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
     events: arrayUnion(publicReadyEvent, buyerEndEvent),
-    ...END_AUCTION_PLAYER,
+    auctionReady: true,
     ...tableauUpdate
   })
   transaction.update(currentPlayerRef, {
     events: arrayUnion(privateReadyEvent, publicEndEvent),
-    ...END_AUCTION_PLAYER
+    auctionReady: true
   })
   const profiles = currentGame.profiles.map(profile => {
     const tableauUpdate = leftmost == null
@@ -131,8 +159,8 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
       : {}
     return {
       ...profile,
-      ...END_AUCTION,
-      ...buyerChanges
+      ...buyerChanges,
+      auctionReady: true
     }
   })
   transaction.update(currentGameRef, {
@@ -150,7 +178,7 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     const playerRef = playersRef.doc(playerId)
     transaction.update(playerRef, {
       events: arrayUnion(publicReadyEvent, publicEndEvent),
-      ...END_AUCTION_PLAYER
+      auctionReady: true
     })
   })
   console.info(`${currentUid} withdrew!`)
