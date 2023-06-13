@@ -6,11 +6,10 @@ export default function createWriter ({
   WriteConsumer
 }: {
   WriteConsumer: FC
-}): <Props extends {}>({ fn, functions, label, onCall, props }: CreatedWriterProps<Props>) => JSX.Element {
+}): <Props extends {}>({ fn, functions, onCall, props }: CreatedWriterProps<Props>) => JSX.Element {
   return function CreatedWriter <Props extends {}> ({
     fn,
     functions,
-    label,
     onCall,
     props,
     ...viewProps
@@ -19,7 +18,6 @@ export default function createWriter ({
       <Writer
         fn={fn}
         WriteConsumer={WriteConsumer}
-        label={label}
         onCall={onCall}
         functions={functions}
         props={props}

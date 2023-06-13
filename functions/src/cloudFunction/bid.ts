@@ -9,6 +9,11 @@ import { arrayUnion } from 'firelord'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import { playersRef } from '../db'
 import getGrammar from '../get/grammar'
+import createPlayState from '../create/playState'
+import setPlayState from '../setPlayState'
+import skipCourt from '../skipCourt'
+import buy from '../buy'
+import addCourtEvents from '../add/events/court'
 
 const bid = createCloudFunction<BidProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -61,6 +66,64 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   console.log('tying', tying)
   currentProfile.bid = props.bid
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
+  const highestOtherGold = currentGame.profiles.reduce((highest, profile) => {
+    if (profile.withdrawn) {
+      return highest
+    }
+    if (profile.userId === currentUid) {
+      return highest
+    }
+    if (profile.gold > highest) {
+      return profile.gold
+    }
+    return highest
+  }, 0)
+  if (bid > highestOtherGold) {
+    currentPlayer.bid = props.bid
+    const playState = await createPlayState({
+      currentGame,
+      currentPlayer,
+      transaction
+    })
+    const { spelled } = getGrammar(bid)
+    const privateBidMessage = `You bid ${spelled}, more gold than anyone else has`
+    const publicBidMessage = `${currentPlayer.displayName} bid ${spelled}, more gold than anyone else has`
+    if (currentGame.court.length === 0) {
+      skipCourt({
+        bid: props.bid,
+        buyerId: currentPlayer.id,
+        buyerName: currentPlayer.displayName,
+        loserMessage: publicBidMessage,
+        buyerMessage: privateBidMessage,
+        playState
+      })
+      setPlayState({
+        playState,
+        transaction
+      })
+      console.info(`${currentUid} conceded!`)
+      return
+    }
+    buy({
+      bid: props.bid,
+      buyerId: currentPlayer.id,
+      loserMessage: publicBidMessage,
+      buyerMessage: privateBidMessage,
+      name: currentPlayer.displayName,
+      playState
+    })
+    addCourtEvents({
+      playState,
+      buyerId: currentPlayer.id,
+      buyerName: currentPlayer.displayName
+    })
+    setPlayState({
+      playState,
+      transaction
+    })
+    console.info(`${currentUid} conceded!`)
+    return
+  }
   const winning = highestUntiedProfile?.userId === currentUid
   const { spelled } = getGrammar(bid)
   const privateBidMessage = `You bid ${spelled}`

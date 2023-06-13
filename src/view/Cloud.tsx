@@ -6,7 +6,6 @@ import { ButtonProps } from '@chakra-ui/react'
 
 export default function Cloud <Props extends {}> ({
   fn,
-  label,
   onCall,
   props,
   ...buttonProps
@@ -16,7 +15,6 @@ export default function Cloud <Props extends {}> ({
     <ChakraWriter
       functions={functionsState.functions}
       fn={fn}
-      label={label}
       onCall={onCall}
       props={props}
       {...buttonProps}

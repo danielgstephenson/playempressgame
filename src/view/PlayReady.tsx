@@ -19,9 +19,10 @@ export default function PlayReadyView (): JSX.Element {
     <Curtain open={showReady}>
       <Cloud
         fn='playReady'
-        label='Ready'
         props={props}
-      />
+      >
+        Ready
+      </Cloud>
     </Curtain>
   )
 }

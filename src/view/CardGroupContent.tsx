@@ -6,7 +6,6 @@ export default function CardGroupContentView ({
 }: {
   cardGroup?: Scheme[]
 }): JSX.Element {
-  // console.log('cardGroup', cardGroup)
   if (cardGroup == null || cardGroup.length === 0) {
     return <Text>Empty</Text>
   }

@@ -33,29 +33,28 @@ export default function BidView (): JSX.Element {
       </NumberInput>
       <Cloud
         fn='bid'
-        label='Bid'
         props={{ bid, gameId: gameState.id }}
-      />
+      >
+        Bid
+      </Cloud>
       <Cloud
         fn='imprison'
-        label='Imprison'
         props={{ gameId: gameState.id }}
-      />
-      <Cloud
-        fn='buy'
-        label='Buy'
-        props={{ gameId: gameState.id }}
-      />
+      >
+        Imprison
+      </Cloud>
       <Cloud
         fn='concede'
-        label='Concede'
         props={{ gameId: gameState.id }}
-      />
+      >
+        Concede
+      </Cloud>
       <Cloud
         fn='withdraw'
-        label='Withdraw'
         props={{ gameId: gameState.id }}
-      />
+      >
+        Withdraw
+      </Cloud>
     </>
   )
 }

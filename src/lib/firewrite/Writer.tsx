@@ -3,7 +3,6 @@ import WriteProvider from './WriteProvider'
 
 export default function Writer <Props extends {}> ({
   fn,
-  label,
   onCall,
   functions,
   props,
@@ -17,7 +16,6 @@ export default function Writer <Props extends {}> ({
     <WriteProvider
       fn={fn}
       WriteConsumer={WriteConsumer}
-      label={label}
       onCall={onCall}
       functions={functions}
       props={props}

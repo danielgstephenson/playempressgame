@@ -25,10 +25,7 @@ export default function SchemeAreaView ({
         value={scheme?.rank}
       />
       <Curtain open={showAction}>
-        <ChakraButton
-          label='Return to hand'
-          onClick={onReturn}
-        />
+        <ChakraButton onClick={onReturn}>Return to hand</ChakraButton>
       </Curtain>
     </>
   )

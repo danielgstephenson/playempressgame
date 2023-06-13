@@ -1,3 +1,4 @@
+import { Spinner } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authContext from '../context/auth'
@@ -11,14 +12,16 @@ export default function SignOutView (): JSX.Element {
     await authState.unauth?.()
     navigate('/')
   }
-  const displayName = String(authState.displayName)
-  const label = `Sign Out (${displayName})`
+  const rightIcon = authState.named === true ? undefined : <Spinner />
+  const suffix = authState.displayName == null ? <></> : <>({authState.displayName})</>
   return (
     <ChakraButton
-      label={label}
       onClick={signOutToHome}
-      loading={authState.unauthLoading}
+      loading={authState.signOutLoading}
       errorMessage={authState.signOutErrorMessage}
-    />
+      rightIcon={rightIcon}
+    >
+      Sign Out {suffix}
+    </ChakraButton>
   )
 }

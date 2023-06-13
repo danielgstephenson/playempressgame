@@ -14,27 +14,23 @@ export default function useDisplayName (auth: Auth): DisplayNameState {
     }
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser == null) {
+        console.warn('There is no authenticated user.')
+        return
+      }
+      if (authUser.displayName != null) {
+        setDisplayName(authUser.displayName)
         return
       }
       async function reload (): Promise<void> {
-        console.info('Reloading user without display name...')
-        await authUser?.reload()
-        if (authUser?.displayName == null) {
-          console.warn('Reloading user without display name...')
-          await wait(5000)
-          console.log('reloading...')
+        while (authUser?.displayName == null) {
+          console.info('Reloading user without display name...')
           await authUser?.reload()
-          console.log('authUser', authUser)
+          await wait(3000)
           if (authUser?.displayName == null) {
-            console.log('before signout')
-            await unauth?.()
-            console.log('after signout')
             setSignOutErrorMessage?.('This user has no display name.')
           } else {
             setDisplayName(authUser.displayName)
           }
-        } else {
-          setDisplayName(authUser.displayName)
         }
       }
       void reload()

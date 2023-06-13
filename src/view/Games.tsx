@@ -16,7 +16,9 @@ export default function GamesView (): JSX.Element {
         Games
         {' '}
         <Curtain open={authState.authed}>
-          <Cloud label='Add Game' fn='addGame' />
+          <Cloud fn='addGame'>
+            Create
+          </Cloud>
         </Curtain>
       </Heading>
       <Curtain open={authState.authed} hider={warning}>

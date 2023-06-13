@@ -26,16 +26,18 @@ export default function GameActions (): JSX.Element {
       <Curtain open={showJoin}>
         <Cloud
           fn='joinGame'
-          label='Join Game'
           props={{ gameId: gameState.id }}
-        />
+        >
+          Join Game
+        </Cloud>
       </Curtain>
       <Curtain open={showStart}>
         <Cloud
           fn='startGame'
-          label='Start Game'
           props={{ gameId: gameState.id }}
-        />
+        >
+          Start Game
+        </Cloud>
       </Curtain>
     </Box>
   )

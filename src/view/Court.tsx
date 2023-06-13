@@ -8,7 +8,6 @@ import Curtain from './Curtain'
 
 export default function CourtView (): JSX.Element {
   const playState = useContext(playContext)
-  console.log('playState', playState)
   const gameState = useContext(gameContext)
   const full = gameState.court != null && gameState.court.length > 0
   const group = gameState
@@ -28,10 +27,14 @@ export default function CourtView (): JSX.Element {
         <Box key={scheme.id}>
           <Text>{scheme.rank}</Text>
           <Curtain open={!taken}>
-            <ChakraButton label='Take' onClick={handleTake} />
+            <ChakraButton onClick={handleTake}>
+              Take
+            </ChakraButton>
           </Curtain>
           <Curtain open={taken}>
-            <ChakraButton label='Leave' onClick={handleLeave} />
+            <ChakraButton onClick={handleLeave}>
+              Leave
+            </ChakraButton>
           </Curtain>
         </Box>
       )
@@ -45,9 +48,10 @@ export default function CourtView (): JSX.Element {
       </Curtain>
       <Cloud
         fn='court'
-        label='Ready'
         props={{ gameId: gameState.id, schemeIds: playState.taken }}
-      />
+      >
+        Ready
+      </Cloud>
     </>
   )
 }

@@ -8,7 +8,7 @@ export default function CreateAccountView (): JSX.Element {
   const [createAccountLoading, setCreateAccountLoading] = useState(false)
   const [createAccountError, setCreateAccountError] = useState<Error>()
   if (authState.auth == null || authState.currentUserLoading === true) {
-    return <ChakraButton label='New Account' loading />
+    return <ChakraButton loading>New Account</ChakraButton>
   }
   async function createAccount (): Promise<void> {
     if (authState.auth == null) {
@@ -24,10 +24,11 @@ export default function CreateAccountView (): JSX.Element {
   }
   return (
     <ChakraButton
-      label='New Account'
       onClick={createAccount}
       loading={createAccountLoading}
       error={createAccountError}
-    />
+    >
+      New Account
+    </ChakraButton>
   )
 }

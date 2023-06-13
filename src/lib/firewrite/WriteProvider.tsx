@@ -5,7 +5,6 @@ import { WriteProviderProps, WriteState } from './types'
 export default function WriteProvider <Props extends {}> ({
   fn,
   WriteConsumer,
-  label,
   onCall,
   functions,
   props,
@@ -24,8 +23,7 @@ export default function WriteProvider <Props extends {}> ({
   const writeState: WriteState = {
     write,
     loading,
-    error,
-    label
+    error
   }
   return (
     <writeContext.Provider value={writeState}>

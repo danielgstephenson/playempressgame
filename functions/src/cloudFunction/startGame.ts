@@ -124,8 +124,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   hand[0] = 1
   hand[1] = 8
   hand[2] = 11
-  hand[3] = 15
-  hand[4] = 16
+  hand[3] = 14
+  hand[4] = 15
   addEvent(startEvent, `The hand is ${getJoined(hand)}.`)
   const timeline = empressLeft.slice(1)
   const timelineRanks = getJoined(timeline)

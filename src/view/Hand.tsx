@@ -37,30 +37,26 @@ export default function HandView (): JSX.Element {
       <VStack key={scheme.id} spacing='0'>
         <Text>{scheme.rank}</Text>
         <Curtain open={showPlay}>
-          <ChakraButton
-            label='Trash'
-            onClick={handleTrash}
-          />
+          <ChakraButton onClick={handleTrash}>Trash</ChakraButton>
         </Curtain>
         <Curtain open={showPlay}>
-          <ChakraButton
-            label='Play'
-            onClick={handlePlay}
-          />
+          <ChakraButton onClick={handlePlay}>Play</ChakraButton>
         </Curtain>
         <Curtain open={deckChoice}>
           <Cloud
             fn='deckChoose'
-            label='Put on deck'
             props={{ schemeId: scheme.id, gameId: gameState.id }}
-          />
+          >
+            Put on deck
+          </Cloud>
         </Curtain>
         <Curtain open={trashChoice}>
           <Cloud
             fn='trashChoose'
-            label='Trash'
             props={{ schemeId: scheme.id, gameId: gameState.id }}
-          />
+          >
+            Trash
+          </Cloud>
         </Curtain>
       </VStack>
     )

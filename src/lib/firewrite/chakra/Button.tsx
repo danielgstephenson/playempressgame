@@ -3,8 +3,8 @@ import { WriterComponentProps } from '../types'
 import ChakraIcon from './Icon'
 
 export default function ChakraButton ({
+  children,
   onClick,
-  label,
   loading,
   error,
   errorMessage,
@@ -12,7 +12,7 @@ export default function ChakraButton ({
 }: WriterComponentProps & ButtonProps): JSX.Element {
   return (
     <Button onClick={onClick} isLoading={loading} {...buttonProps}>
-      {label}
+      {children}
       <ChakraIcon loading={loading} error={error} errorMessage={errorMessage} />
     </Button>
   )

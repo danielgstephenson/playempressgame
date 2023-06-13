@@ -252,6 +252,14 @@ export interface PlayerPublicEvents extends PublicEvents {
   otherPlayerEvents: PlayerEvent[]
 }
 
+export interface TargetEvents {
+  events: HistoryEvent[]
+  observerEvent: HistoryEvent
+  targetEvents: Record<string, HistoryEvent>
+  otherPlayerEvents: HistoryEvent[]
+  playerEvents: HistoryEvent[]
+}
+
 export interface PlayEvents {
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
@@ -296,3 +304,26 @@ export interface Messages {
   publicMessage: string
   privateMessage: string
 }
+
+export interface BuySuffixes {
+  buyer: string
+  loser: string
+}
+
+export type BuyerLoserMessages = ({
+  buyerMessage: string
+  loserMessage: string
+  message?: undefined
+} | {
+  buyerMessage: string
+  loserMessage?: undefined
+  message: string
+} | {
+  buyerMessage?: undefined
+  loserMessage: string
+  message: string
+} | {
+  buyerMessage?: undefined
+  loserMessage?: undefined
+  message: string
+})

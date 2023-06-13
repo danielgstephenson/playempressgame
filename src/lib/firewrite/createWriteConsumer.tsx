@@ -2,12 +2,12 @@ import { FC, useContext } from 'react'
 import { writeContext } from './context'
 import { WriterComponent } from './types'
 
-export default function CreateWriteConsumer <ViewProps> ({ WriterView }: {
+export default function createWriteConsumer <ViewProps> ({ WriterView }: {
   WriterView: WriterComponent
 }): FC<ViewProps> {
   return function WriteConsumer (viewProps: ViewProps): JSX.Element {
     const writeState = useContext(writeContext)
-    if (writeState.write == null || writeState.label == null || writeState.loading == null) {
+    if (writeState.write == null || writeState.loading == null) {
       return <></>
     }
     async function handleClick (): Promise<void> {
@@ -17,7 +17,6 @@ export default function CreateWriteConsumer <ViewProps> ({ WriterView }: {
       <WriterView
         onClick={handleClick}
         loading={writeState.loading}
-        label={writeState.label}
         error={writeState.error}
         {...viewProps}
       />

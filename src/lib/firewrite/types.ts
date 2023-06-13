@@ -5,7 +5,6 @@ export type CloudCaller = <Props> (props?: Props) => Promise<HttpsCallableResult
 
 export interface ConsumerWriterProps <Props extends {}> {
   fn: string
-  label: string
   onCall?: (caller: CloudCaller, props: Props) => Promise<void>
   props?: Props
 }
@@ -31,7 +30,6 @@ export interface WriteState {
 
 export interface WriterComponentProps {
   onClick?: () => void
-  label: string
   loading?: boolean
   error?: Error
   errorMessage?: string

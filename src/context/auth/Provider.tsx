@@ -1,5 +1,5 @@
 import { Auth } from 'firebase/auth'
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthState, useSignOut } from 'react-firebase-hooks/auth'
 
 import authContext from '.'
@@ -18,14 +18,17 @@ export default function AuthProvider ({
   ] = useAuthState(auth)
   const [signOutErrorMessage, setSignOutErrorMessage] = useState<string>()
   const [signOut, signOutLoading, signOutError] = useSignOut(auth)
-  useEffect(() => {
-    setSignOutErrorMessage(signOutError?.message)
+  const message = useMemo(() => {
+    return signOutError?.message
   }, [signOutError])
+  useEffect(() => {
+    setSignOutErrorMessage(message)
+  }, [message])
   const { displayName, setDisplayName } = useDisplayName(auth)
-  const unauthLoading = signOutLoading
+  const named = displayName != null
   const authed = currentUser != null &&
     currentUserError == null &&
-    !unauthLoading
+    named
 
   const unauth = useCallback(async () => {
     const result = await signOut()
@@ -43,10 +46,11 @@ export default function AuthProvider ({
     currentUserLoading,
     currentUserError,
     displayName,
+    named,
     setSignOutErrorMessage,
     signOutErrorMessage,
-    unauth,
-    unauthLoading
+    signOutLoading,
+    unauth
   }
   return (
     <authContext.Provider value={state}>

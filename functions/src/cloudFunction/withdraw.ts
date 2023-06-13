@@ -13,6 +13,9 @@ import getOtherPlayers from '../get/otherPlayers'
 import getJoinedRanks from '../get/joined/ranks'
 import addEvent from '../add/event'
 import setPlayState from '../setPlayState'
+import createPlayState from '../create/playState'
+import skipCourt from '../skipCourt'
+import addTargetEvents from '../add/events/target'
 
 const withdraw = createCloudFunction<GameProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -48,10 +51,10 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
       'You are the last bidder.'
     )
   }
-  const privateMessage = 'You withdraw.'
-  const publicMessage = `${currentPlayer.displayName} withdrew.`
-  const privateReadyEvent = createEvent(privateMessage)
-  const publicReadyEvent = createEvent(publicMessage)
+  const privateReadyMessage = 'You withdraw.'
+  const publicReadyMessage = `${currentPlayer.displayName} withdrew.`
+  const privateReadyEvent = createEvent(privateReadyMessage)
+  const publicReadyEvent = createEvent(publicReadyMessage)
   const unwithdrawnProfiles = currentGame.profiles.filter(profile => !profile.withdrawn)
   const auctionWaiting = unwithdrawnProfiles.length > 2
   if (auctionWaiting) {
@@ -117,10 +120,39 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     console.info(`${currentUid} withdrew!`)
     return
   }
+  const buyerPlayerId = `${highestUntiedProfile.userId}_${gameId}`
+  if (currentGame.court.length === 0) {
+    const playState = await createPlayState({
+      currentGame,
+      currentPlayer,
+      transaction
+    })
+    const privateReadyMessage = 'You withdraw.'
+    const publicReadyMessage = `${currentPlayer.displayName} withdrew.`
+    addTargetEvents({
+      playState,
+      message: publicReadyMessage,
+      targetMessages: {
+        [currentPlayer.id]: privateReadyMessage
+      }
+    })
+    skipCourt({
+      bid: highestUntiedProfile.bid,
+      buyerId: buyerPlayerId,
+      buyerName: highestUntiedProfile.displayName,
+      message: 'Everyone is ready',
+      playState
+    })
+    setPlayState({
+      playState,
+      transaction
+    })
+    console.info(`${currentUid} withdrew!`)
+    return
+  }
   const beforeTimeline = [...currentGame.timeline].reverse()
   const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
-
   const leftmost = currentGame.timeline.shift()
   const afterTimeline = [...currentGame.timeline].reverse()
   const afterTimelineJoined = getJoinedRanks(afterTimeline)
@@ -130,28 +162,34 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
   const buyerEndSuffix = leftmost == null
     ? 'the auction ends'
     : `you pay ${spelled} gold and take ${leftmost.rank} into your tableau`
-  const buyerEndEvent = createEvent(`${endMessage} ${buyerEndSuffix}.`)
-  addEvent(buyerEndEvent, beforeTimelineMessage)
-  addEvent(buyerEndEvent, afterTimelineMessage)
-  const publicEndSuffix = leftmost == null
+  const buyerEndMessage = `${endMessage} ${buyerEndSuffix}.`
+  const loserEndSuffix = leftmost == null
     ? 'the auction ends'
     : `${highestUntiedProfile.displayName} pays ${spelled} gold and takes ${leftmost.rank} into their tableau`
-  const publicEndEvent = createEvent(`${endMessage} ${publicEndSuffix}.`)
+  const loserEndMessage = `${endMessage} ${loserEndSuffix}.`
+  const buyerEndEvent = createEvent(buyerEndMessage)
+  addEvent(buyerEndEvent, beforeTimelineMessage)
+  addEvent(buyerEndEvent, afterTimelineMessage)
+  const publicEndEvent = createEvent(loserEndMessage)
   addEvent(publicEndEvent, beforeTimelineMessage)
   addEvent(publicEndEvent, afterTimelineMessage)
-  const buyerPlayerId = `${highestUntiedProfile.userId}_${gameId}`
   const buyerRef = playersRef.doc(buyerPlayerId)
   const tableauUpdate = leftmost == null
     ? {}
     : { tableau: arrayUnion(leftmost) }
+  const courtJoined = getJoinedRanks(currentGame.court)
+  const buyerCourtMessage = `Choose which of ${courtJoined} to take from the court.`
+  const loserCourtMessage = `${highestUntiedProfile.displayName} is choosing which of ${courtJoined} to take from the court.`
+  const buyerCourtEvent = createEvent(buyerCourtMessage)
+  const loserCourtEvent = createEvent(loserCourtMessage)
   transaction.update(buyerRef, {
     gold: increment(-highestUntiedProfile.bid),
-    events: arrayUnion(publicReadyEvent, buyerEndEvent),
+    events: arrayUnion(publicReadyEvent, buyerEndEvent, buyerCourtEvent),
     auctionReady: true,
     ...tableauUpdate
   })
   transaction.update(currentPlayerRef, {
-    events: arrayUnion(privateReadyEvent, publicEndEvent),
+    events: arrayUnion(privateReadyEvent, publicEndEvent, loserCourtEvent),
     auctionReady: true
   })
   const profiles = currentGame.profiles.map(profile => {
