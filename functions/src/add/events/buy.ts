@@ -20,10 +20,10 @@ export default function addBuyEvents ({
   playState: PlayState
   rank?: number | undefined
 } & BuyerLoserMessages): TargetEvents {
-  const beforeTimeline = [...playState.game.timeline].reverse()
+  const beforeTimeline = [...playState.game.timeline]
   const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
-  const afterTimeline = [...playState.game.timeline].reverse()
+  const afterTimeline = [...playState.game.timeline]
   const afterTimelineJoined = getJoinedRanks(afterTimeline)
   const afterTimelineMessage = `The timeline becomes ${afterTimelineJoined}.`
   const buyerPrefix = buyerMessage ?? message

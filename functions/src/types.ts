@@ -60,7 +60,7 @@ export type Game = MetaTypeCreator<{
   dungeon: Scheme[]
   events: HistoryEvent[]
   name: string
-  phase: string
+  phase: 'join' | 'play' | 'auction'
   round: number
   profiles: Profile[]
   timeline: Scheme[]

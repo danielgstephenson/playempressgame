@@ -11,7 +11,7 @@ import CourtView from './Court'
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const showContent = gameState.phase !== 'join'
-  const timeline = gameState.timeline?.slice()?.reverse()
+  const timeline = gameState.timeline?.slice()
   return (
     <PlayProvider>
       <Status label='Phase' value={gameState.phase} />

@@ -1,6 +1,6 @@
 import createScheme from '../create/scheme'
 import guardDefined from '../guard/defined'
-import { PlayState, Player, Result, DrawState } from '../types'
+import { Player, Result, DrawState } from '../types'
 
 export default function drawOne ({
   drawState,
@@ -31,8 +31,8 @@ export default function drawOne ({
       player
     })
   }
-  const popScheme = player.deck.pop()
-  const topScheme = guardDefined(popScheme, 'Draw one top scheme')
+  const shiftScheme = player.deck.shift()
+  const topScheme = guardDefined(shiftScheme, 'Draw one top scheme')
   player.hand.push(topScheme)
   drawState.allDrawn.push(topScheme)
   if (drawState.discardFlipped) {

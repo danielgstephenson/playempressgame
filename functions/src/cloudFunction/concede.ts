@@ -88,11 +88,11 @@ const concede = createCloudFunction<GameProps>(async (props, context, transactio
     console.info(`${currentUid} conceded!`)
     return
   }
-  const beforeTimeline = [...currentGame.timeline].reverse()
+  const beforeTimeline = [...currentGame.timeline]
   const beforeJoined = getJoinedRanks(beforeTimeline)
   const beforeMessage = `The timeline was ${beforeJoined}.`
   const leftmost = currentGame.timeline.shift()
-  const afterTimeline = [...currentGame.timeline].reverse()
+  const afterTimeline = [...currentGame.timeline]
   const afterJoined = getJoinedRanks(afterTimeline)
   const afterMessage = `The timeline becomes ${afterJoined}.`
   const endMessage = 'Everyone is ready, so'

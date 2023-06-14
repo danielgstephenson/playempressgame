@@ -8,7 +8,9 @@ import Curtain from './Curtain'
 
 export default function CourtView (): JSX.Element {
   const playState = useContext(playContext)
+  console.log('playState', playState)
   const gameState = useContext(gameContext)
+  console.log('gameState', gameState)
   const full = gameState.court != null && gameState.court.length > 0
   const group = gameState
     .court

@@ -150,11 +150,11 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     console.info(`${currentUid} withdrew!`)
     return
   }
-  const beforeTimeline = [...currentGame.timeline].reverse()
+  const beforeTimeline = [...currentGame.timeline]
   const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
   const leftmost = currentGame.timeline.shift()
-  const afterTimeline = [...currentGame.timeline].reverse()
+  const afterTimeline = [...currentGame.timeline]
   const afterTimelineJoined = getJoinedRanks(afterTimeline)
   const afterTimelineMessage = `The timeline becomes ${afterTimelineJoined}.`
   const endMessage = 'Everyone is ready, so'

@@ -11,14 +11,24 @@ import BidView from './Bid'
 import { useContext, useEffect } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
+import { playerContext } from '../reader/player'
 
 export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
-  const { trash, play } = useContext(playContext)
+  const { reorder, trash, play } = useContext(playContext)
+  const { deck } = useContext(playerContext)
+  console.log('deck', deck)
   useEffect(() => {
     trash?.(undefined)
     play?.(undefined)
   }, [round, trash, play])
+  useEffect(() => {
+    if (deck == null) {
+      return
+    }
+    reorder?.(deck)
+  }, [deck])
+
   return (
     <>
       <PlayerHistoryView />

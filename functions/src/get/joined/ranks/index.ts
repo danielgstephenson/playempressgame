@@ -5,7 +5,7 @@ export default function getJoinedRanks (schemes: Scheme[], empty: string = 'empt
   if (schemes.length === 0) {
     return empty
   }
-  const copy = [...schemes].reverse()
+  const copy = [...schemes]
   const ranks = copy.map(scheme => scheme.rank)
   return getJoined(ranks)
 }

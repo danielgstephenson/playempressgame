@@ -7,6 +7,7 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@hello-pangea/dnd": "^16.2.0",
     "clink-react": "^0.1.7",
     "firebase": "^9.15.0",
     "firebase-functions": "^4.2.1",

@@ -5,7 +5,7 @@ import getJoined from '../get/joined'
 import guardCurrentBidding from '../guard/current/bidding'
 import getGrammar from '../get/grammar'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
-import discardTableau from '../discardTableau'
+import carryOutFourteen from '../carryOut/fourteen'
 import addEvent from '../add/event'
 import getOtherPlayers from '../get/otherPlayers'
 import setPlayState from '../setPlayState'
@@ -95,7 +95,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     game: currentGame,
     players
   }
-  discardTableau({ playState })
+  carryOutFourteen({ playState })
   setPlayState({
     playState,
     transaction

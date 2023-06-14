@@ -22,7 +22,6 @@ export default function HandView (): JSX.Element {
       scheme.id !== playState.trashScheme?.id &&
       scheme.id !== playState.playScheme?.id
     )
-    ?.reverse()
   const schemeViews = unplayed?.map(scheme => {
     if (scheme.id === playerState.trashScheme?.id || scheme.id === playerState.playScheme?.id) {
       return <Fragment key={scheme.id} />

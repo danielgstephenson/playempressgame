@@ -32,15 +32,15 @@ export default function passTime ({ playState }: {
       return playState
     }
     const [passed, ...remaining] = playState.game.timeline
-    const beforeReversed = [...playState.game.timeline].reverse()
-    const beforeJoined = getJoinedRanks(beforeReversed)
+    const beforeTimeline = [...playState.game.timeline]
+    const beforeJoined = getJoinedRanks(beforeTimeline)
     const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
     playState.game.timeline = remaining
     const defined = guardDefined(passed, 'Passed scheme')
     const timeMessage = `${moreMessage}, so ${defined.rank} is removed from the timeline.`
     const observerEvent = createEvent(timeMessage)
-    const afterReversed = [...remaining].reverse()
-    const afterJoined = getJoinedRanks(afterReversed)
+    const afterTimeline = [...remaining]
+    const afterJoined = getJoinedRanks(afterTimeline)
     const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
       const observerChild = guardTimeEvent({ player })

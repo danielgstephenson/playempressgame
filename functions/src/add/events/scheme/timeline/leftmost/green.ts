@@ -18,6 +18,7 @@ export default function addLeftmostGreenTimelineSchemeEvents ({
     privateEvent,
     publicEvents
   })
+  console.log('schemes.length', schemes?.length)
   if (schemes?.length === 0) return { playEvents: areEvents }
   const greenScheme = schemes?.[0]
   const scheme = guardDefined(greenScheme, 'Leftmost green timeline scheme')

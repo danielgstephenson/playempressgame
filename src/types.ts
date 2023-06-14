@@ -113,10 +113,12 @@ export type FunctionCaller = (data?: unknown) =>
 Promise<HttpsCallableResult<unknown> | undefined>
 
 export interface Play {
+  deck?: Scheme[]
   emptyPlay?: () => void
   emptyTrash?: () => void
   play?: (scheme: Scheme | undefined) => void
   playScheme?: Scheme
+  reorder?: (schemes: Scheme[]) => void
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void

@@ -2,7 +2,7 @@ import getJoinedRanksGrammar from '../../get/joined/ranks/grammar'
 import { Result, Player, PlayState } from '../../types'
 import addPlayerEvent from '../../add/event/player'
 import addEvent from '../../add/event'
-import discardTableau from '../../discardTableau'
+import carryOutFourteen from '../../carryOut/fourteen'
 import getJoinedRanks from '../../get/joined/ranks'
 import getImprisonMessages from '../../get/imprisonMessages'
 
@@ -28,11 +28,11 @@ export default function imprisonLastReady ({
   const beforeDungeon = [...playState.game.dungeon]
   const beforeDungeonJoined = getJoinedRanks(beforeDungeon)
   const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
-  const beforeTimeline = [...playState.game.timeline].reverse()
+  const beforeTimeline = [...playState.game.timeline]
   const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
   const leftmost = playState.game.timeline.shift()
-  const afterTimeline = [...playState.game.timeline].reverse()
+  const afterTimeline = [...playState.game.timeline]
   const afterTimelineJoined = getJoinedRanks(afterTimeline)
   const afterTimelineMessage = `The timeline is now ${afterTimelineJoined}.`
   if (leftmost != null) {
@@ -63,7 +63,7 @@ export default function imprisonLastReady ({
     addEvent(playerEndEvent, afterDungeonMessage)
     return playerEndEvent
   })
-  discardTableau({
+  carryOutFourteen({
     playState
   })
 }

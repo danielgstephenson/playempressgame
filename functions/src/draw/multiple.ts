@@ -1,4 +1,4 @@
-import { PlayState, Player, Result, DrawState } from '../types'
+import { Player, Result, DrawState } from '../types'
 import drawOne from './one'
 
 export default function drawMultiple ({

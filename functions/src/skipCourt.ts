@@ -1,6 +1,6 @@
 import addTargetEvents from './add/events/target'
 import buy from './buy'
-import discardTableau from './discardTableau'
+import carryOutFourteen from './carryOut/fourteen'
 import { BuyerLoserMessages, PlayState } from './types'
 
 export default function skipCourt ({
@@ -31,7 +31,7 @@ export default function skipCourt ({
       [buyerId]: buyerCourtMessage
     }
   })
-  discardTableau({
+  carryOutFourteen({
     playState
   })
 }

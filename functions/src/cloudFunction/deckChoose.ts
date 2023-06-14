@@ -36,7 +36,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     return scheme.id !== props.schemeId
   })
   const before = getJoinedRanks(currentPlayer.deck)
-  currentPlayer.deck = [...currentPlayer.deck, scheme]
+  currentPlayer.deck = [scheme, ...currentPlayer.deck]
   const after = getJoinedRanks(currentPlayer.deck)
   const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put face down on your deck.`)
   addEvent(privateChoiceEvent, `Your deck was ${before}.`)
