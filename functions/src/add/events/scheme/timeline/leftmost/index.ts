@@ -20,7 +20,7 @@ export default function addLeftmostTimelineSchemeEvents ({
     privateEvent,
     publicEvents
   })
-  if (schemes?.length === 0) return { playEvents: areEvents }
+  if (schemes.length === 0) return { playEvents: areEvents }
   const leftmostScheme = schemes?.[0]
   const scheme = guardDefined(leftmostScheme, 'Leftmost timeline scheme')
   const leftmostMessage = `The leftmost timeline scheme is ${scheme.rank}`

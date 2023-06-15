@@ -15,6 +15,7 @@ import createPlayState from '../create/playState'
 import addTargetEvents from '../add/events/target'
 import discardTableau from '../discardTableau'
 import setPlayState from '../setPlayState'
+import guardDefined from '../guard/defined'
 
 const reorder = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Reorder game id')
@@ -103,10 +104,10 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
         [currentPlayerId]: privateReorderMessage
       }
     })
-    reorderEvents.events.forEach(event => {
-      addEvent(event, beforeMessage)
-      addEvent(event, afterMessage)
-    })
+    const privateEvent = reorderEvents.targetEvents[currentPlayerId]
+    const privateReorderEvent = guardDefined(privateEvent, 'Private reorder event')
+    addEvent(privateReorderEvent, beforeMessage)
+    addEvent(privateReorderEvent, afterMessage)
     discardTableau({ playState })
     setPlayState({ playState, transaction })
     console.info(`Reordered ${currentPlayer.displayName}'s deck.`)

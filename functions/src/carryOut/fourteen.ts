@@ -43,7 +43,25 @@ export default function carryOutFourteen ({
     playState.players.forEach(player => {
       const fourteen = fourteenPlayers.some(fourteenPlayer => fourteenPlayer.id === player.id)
       if (fourteen) {
-        if (player.deck.length > 1) {
+        const publicNot = 'so they can not reorder it.'
+        const privateNot = 'so you can not reorder it.'
+        if (player.deck.length === 0) {
+          addTargetEvents({
+            playState,
+            message: `${player.displayName}'s deck is empty, so ${publicNot}`,
+            targetMessages: {
+              [player.id]: `Your deck is empty, so ${privateNot}.`
+            }
+          })
+        } else if (player.deck.length === 1) {
+          addTargetEvents({
+            playState,
+            message: `${player.displayName}'s deck has only one scheme, so ${publicNot}`,
+            targetMessages: {
+              [player.id]: `Your deck has only one scheme, so ${privateNot}.`
+            }
+          })
+        } else {
           playState.game.choices.push({
             id: createId(),
             playerId: player.id,
@@ -54,17 +72,6 @@ export default function carryOutFourteen ({
             message: `${player.displayName} is reordering their deck.`,
             targetMessages: {
               [player.id]: 'Reorder your deck.'
-            }
-          })
-        } else {
-          const reason = player.deck.length === 0
-            ? 'is empty'
-            : 'has only one scheme'
-          addTargetEvents({
-            playState,
-            message: `${player.displayName}'s deck ${reason}, so they can not reorder.`,
-            targetMessages: {
-              [player.id]: 'Your deck is empty, so you can not reorder.'
             }
           })
         }

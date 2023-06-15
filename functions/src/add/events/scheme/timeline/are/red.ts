@@ -20,7 +20,7 @@ export default function addAreRedTimelineSchemeEvents ({
       publicEvents,
       message: 'The timeline is empty.'
     })
-    return { playEvents }
+    return { playEvents, schemes: [] }
   }
   const schemes = playState.game.timeline.filter(isRed)
   if (schemes.length === 0) {
@@ -33,7 +33,7 @@ export default function addAreRedTimelineSchemeEvents ({
       playEvents,
       timeline: playState.game.timeline
     })
-    return { playEvents }
+    return { playEvents, schemes: [] }
   } else {
     const joined = getJoinedRanks(schemes)
     const grammar = getGrammar(schemes.length)

@@ -1,5 +1,6 @@
 import { HistoryEvent, PlayState, TargetEvents } from '../../types'
 import addEvent from '../event'
+import addPlayerEvent from '../event/player'
 
 export default function addTargetEvents ({
   message,
@@ -32,6 +33,7 @@ export default function addTargetEvents ({
     throw new Error('Some message for observers is required.')
   }
   const observerEvent = addEvent(playState.game, publicMessage)
+  const publicEvents: HistoryEvent[] = []
   const targetEvents: Record<string, HistoryEvent> = {}
   const otherPlayerEvents: HistoryEvent[] = []
   const playerEvents = playState.players.map(player => {
@@ -40,9 +42,15 @@ export default function addTargetEvents ({
     if (privateMessage == null) {
       throw new Error('Some message for players is required.')
     }
-    const event = addEvent(player, privateMessage)
+    const event = addPlayerEvent({
+      container: player,
+      message: privateMessage,
+      playerId: player.id,
+      round: playState.game.round
+    })
     if (targetMessage == null) {
       otherPlayerEvents.push(event)
+      publicEvents.push(event)
     } else {
       targetEvents[player.id] = event
     }
@@ -53,6 +61,7 @@ export default function addTargetEvents ({
     events,
     observerEvent,
     targetEvents,
+    publicEvents,
     otherPlayerEvents,
     playerEvents
   }

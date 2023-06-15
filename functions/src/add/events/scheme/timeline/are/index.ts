@@ -16,7 +16,7 @@ export default function addAreTimelineSchemeEvents ({
       publicEvents,
       message: 'The timeline is empty.'
     })
-    return { playEvents }
+    return { playEvents, schemes: [] }
   }
   const playEvents = { privateEvent, publicEvents }
   return { schemes: playState.game.timeline, playEvents }

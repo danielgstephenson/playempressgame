@@ -22,7 +22,7 @@ export default function addAreGreenTimelineSchemeEvents ({
       publicEvents,
       message: 'The timeline is empty.'
     })
-    return { playEvents }
+    return { playEvents, schemes: [] }
   }
   const schemes = playState.game.timeline.filter(isGreen)
   if (schemes.length === 0) {
@@ -35,7 +35,7 @@ export default function addAreGreenTimelineSchemeEvents ({
       playEvents,
       timeline: playState.game.timeline
     })
-    return { playEvents }
+    return { playEvents, schemes: [] }
   } else if (addList) {
     const joined = getJoinedRanks(schemes)
     const grammar = getGrammar(schemes.length)

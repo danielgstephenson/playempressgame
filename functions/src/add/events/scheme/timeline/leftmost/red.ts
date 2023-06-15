@@ -18,7 +18,7 @@ export default function addLeftmostRedTimelineSchemeEvents ({
     privateEvent,
     publicEvents
   })
-  if (schemes?.length === 0) return { playEvents: areEvents }
+  if (schemes.length === 0) return { playEvents: areEvents }
   const redScheme = schemes?.[0]
   const scheme = guardDefined(redScheme, 'Leftmost red timeline scheme')
   const playEvents = addEventsEverywhere({

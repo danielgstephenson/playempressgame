@@ -1,6 +1,6 @@
 import { Result, Game, Profile } from '../types'
 
-export default function getTiers ({
+export default function getTyingProfiles ({
   bid,
   game
 }: {

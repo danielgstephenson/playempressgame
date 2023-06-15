@@ -122,8 +122,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   addEvent(startEvent, `The top discard scheme is ${topDiscard}.`)
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
   hand[0] = 1
-  hand[1] = 5
-  hand[2] = 14
+  hand[1] = 9
+  hand[2] = 10
   hand[3] = 14
   hand[4] = 15
   addEvent(startEvent, `The hand is ${getJoined(hand)}.`)

@@ -18,7 +18,7 @@ export default function addLeftmostYellowTimelineSchemeEvents ({
     privateEvent,
     publicEvents
   })
-  if (schemes?.length === 0) return { playEvents: areEvents }
+  if (schemes.length === 0) return { playEvents: areEvents }
   const yellowScheme = schemes?.[0]
   const scheme = guardDefined(yellowScheme, 'Leftmost yellow timeline scheme')
   const playEvents = addEventsEverywhere({

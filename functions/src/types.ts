@@ -258,6 +258,7 @@ export interface TargetEvents {
   targetEvents: Record<string, HistoryEvent>
   otherPlayerEvents: HistoryEvent[]
   playerEvents: HistoryEvent[]
+  publicEvents: HistoryEvent[]
 }
 
 export interface PlayEvents {
@@ -281,7 +282,7 @@ export interface MaybeSchemePlayEvents {
 }
 
 export interface MaybeSchemesPlayEvents {
-  schemes?: Scheme[] | undefined
+  schemes: Scheme[]
   playEvents?: PlayEvents | undefined
 }
 
@@ -295,8 +296,6 @@ export type CloudCallback <Props> = TransactionCallback<Props> | Array<Transacti
 
 export interface PlayerState {
   currentPlayer: Result<Player>
-  observerEvent: HistoryEvent
-  playerEvents: PlayerEvent[]
   playState: PlayState
 }
 

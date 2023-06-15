@@ -1,5 +1,5 @@
 import { Game, Profile, Result } from '../types'
-import getTiers from './tiers'
+import getTyingProfiles from './tyingProfiles'
 
 export default function getHighestUntiedProfile (
   game: Result<Game>
@@ -11,12 +11,12 @@ export default function getHighestUntiedProfile (
       return highest
     }
     if (highest != null && highest.bid > profile.bid) {
-      const highestTiers = getTiers({ game, bid: highest.bid })
+      const highestTiers = getTyingProfiles({ game, bid: highest.bid })
       if (highestTiers.length === 1) {
         return highest
       }
     }
-    const profileTiers = getTiers({ game, bid: profile.bid })
+    const profileTiers = getTyingProfiles({ game, bid: profile.bid })
     if (profileTiers.length === 1) {
       return profile
     }

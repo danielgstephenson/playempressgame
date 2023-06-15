@@ -22,7 +22,7 @@ export default function setPlayState ({
     const profile = guardProfile(playState, player.userId)
     profile.gold = player.gold
     profile.silver = player.silver
-    profile.topDiscardScheme = player.discard[player.discard.length - 1]
+    profile.topDiscardScheme = player.discard[0]
     profile.deckEmpty = player.deck.length === 0
     profile.auctionReady = player.auctionReady
     profile.bid = player.bid
