@@ -12,6 +12,9 @@ import addTargetEvents from '../add/events/target'
 import guardDefined from '../guard/defined'
 import addEvent from '../add/event'
 import getHighestUntiedPlayer from '../get/highestUntiedPlayer'
+import getJoined from '../get/joined'
+import getHighestBid from '../get/highestBid'
+import isCarryingOutEleven from '../is/carryingOutEleven'
 
 const bid = createCloudFunction<BidProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -33,12 +36,6 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
       'You are ready to end the auction.'
     )
   }
-  if (currentPlayer.gold < bid) {
-    throw new https.HttpsError(
-      'out-of-range',
-      'You do not have enough gold.'
-    )
-  }
   if (currentPlayer.bid >= bid) {
     throw new https.HttpsError(
       'out-of-range',
@@ -52,19 +49,93 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     )
   }
   if (bid % 5 !== 0) {
-    throw new https.HttpsError(
-      'invalid-argument',
-      'You may only bid gold.'
-    )
+    const eleven = isCarryingOutEleven({
+      game: currentGame,
+      player: currentPlayer
+    })
+    if (!eleven) {
+      throw new https.HttpsError(
+        'invalid-argument',
+        'You may only bid gold.'
+      )
+    }
+    const minimumSilver = currentPlayer.bid % 5
+    if (currentPlayer.silver < minimumSilver) {
+      throw new https.HttpsError(
+        'out-of-range',
+        `You do not have enough silver. You need at least ${minimumSilver}.`
+      )
+    }
+    const treasure = currentPlayer.gold + currentPlayer.silver
+    if (treasure < bid) {
+      throw new https.HttpsError(
+        'out-of-range',
+        'You do not have enough gold and silver.'
+      )
+    }
+  } else {
+    if (currentPlayer.gold < bid) {
+      throw new https.HttpsError(
+        'out-of-range',
+        'You do not have enough gold.'
+      )
+    }
   }
   const playState = await createPlayState({
     currentGame,
     currentPlayer,
     transaction
   })
-  const threshold = currentPlayer.bid < 10 && bid >= 10
+  const highestBid = getHighestBid(playState.players)
+  const fiveThreshold = highestBid < 5 && bid >= 5
+  const tenThreshold = currentPlayer.bid < 10 && bid >= 10
   currentPlayer.bid = bid
-  if (threshold) {
+  if (fiveThreshold) {
+    const elevens = playState
+      .players
+      .filter(player => player
+        .tableau
+        .some(scheme => scheme.rank === 11 && !player.withdrawn && player.userId !== currentUid)
+      )
+    if (elevens.length > 0) {
+      const elevenNames = elevens.map(player => player.displayName)
+      const joined = getJoined(elevenNames)
+      const grammar = getGrammar(elevenNames.length, '11', '11s')
+      const publicElevenMessage = `${currentPlayer.displayName} bid ${grammar.spelled}, so ${joined} carry out the threat on their ${grammar.noun}.`
+      const observerEvent = addEvent(playState.game, publicElevenMessage)
+      playState.players.forEach(player => {
+        const bidder = player.userId === currentUid
+        const bidderName = bidder ? 'You' : currentPlayer.displayName
+        const playedEleven = elevens.some(elevenPlayer => elevenPlayer.userId === player.userId)
+        if (playedEleven) {
+          const otherElevens = elevens.filter(otherPlayer => otherPlayer.userId !== player.userId)
+          const otherNames = otherElevens.map(otherPlayer => otherPlayer.displayName)
+          const names = ['You', ...otherNames]
+          const joined = getJoined(names)
+          add `${currentPlayer.displayName} bid ${bid}, five or more, so ${joined} carry out the threat on your ${grammar.noun}.`
+        const possessive = playedEleven ? 'your' : 'their'
+        const bidderMessage = `${bidderName} bid ${grammar.spelled}, so ${joined} carry out the threat on ${possessive} ${grammar.noun}.`
+      const targetMessages = elevens.reduce<Record<string, string>>((targetMessages, player) => {
+
+        return targetMessages
+      }, {})
+      const elevenEvents = addTargetEvents({
+        playState,
+        message: publicElevenMessage,
+        targetMessages
+      })
+      const publicChildMessage = `${joined} may bid silver this auction.`
+      elevenEvents.publicEvents.forEach(event => {
+        addEvent(event, publicChildMessage)
+      })
+      const privateChildMessage = 'You may bid silver this auction.'
+      Object.values(elevenEvents.targetEvents).forEach(event => {
+        addEvent(event, privateChildMessage)
+      })
+    }
+  }
+
+  if (tenThreshold) {
     const hasTen = currentPlayer.tableau.some(scheme => scheme.rank === 10)
     if (hasTen) {
       currentPlayer.bid += 10
