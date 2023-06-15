@@ -1,8 +1,8 @@
 import addEvent from './add/event'
 import addPlayerEvent from './add/event/player'
 import { PLAYER_CHOOSE_MESSAGE, END_AUCTION_PLAYER, OBSERVER_CHOOSE_MESSAGE } from './constants'
-import getJoinedRanks from './get/joined/ranks'
-import getJoinedRanksGrammar from './get/joined/ranks/grammar'
+import joinRanks from './join/ranks'
+import joinRanksGrammar from './join/ranks/grammar'
 import { PlayState } from './types'
 
 export default function discardTableau ({
@@ -13,7 +13,7 @@ export default function discardTableau ({
   playState.players.forEach(player => {
     if (player.tableau.length > 0) {
       player.tableau.sort((a, b) => b.rank - a.rank)
-      const joined = getJoinedRanksGrammar(player.tableau)
+      const joined = joinRanksGrammar(player.tableau)
       const discardBefore = [...player.discard]
       player.discard.push(...player.tableau)
       player.tableau = []
@@ -28,9 +28,9 @@ export default function discardTableau ({
             round: playState.game.round,
             playerId: player.id
           })
-          const before = getJoinedRanks(discardBefore)
+          const before = joinRanks(discardBefore)
           addEvent(event, `Your discard was ${before}.`)
-          const after = getJoinedRanks(player.discard)
+          const after = joinRanks(player.discard)
           addEvent(event, `Your discard becomes ${after}.`)
         } else {
           addPlayerEvent({

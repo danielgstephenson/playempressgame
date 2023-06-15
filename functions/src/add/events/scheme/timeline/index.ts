@@ -1,5 +1,5 @@
 import getGrammar from '../../../../get/grammar'
-import getJoinedRanks from '../../../../get/joined/ranks'
+import joinRanks from '../../../../join/ranks'
 import guardDefined from '../../../../guard/defined'
 import { PlayEvents, HistoryEvent, PublicEvents, Scheme } from '../../../../types'
 import addEventsEverywhere from '../../everywhere'
@@ -22,7 +22,7 @@ export default function addTimelineEvents ({
 })): void {
   const publicProp = playEvents == null ? publicEvents : playEvents.publicEvents
   const privateProp = playEvents == null ? privateEvent : playEvents.privateEvent
-  const joined = getJoinedRanks(timeline)
+  const joined = joinRanks(timeline)
   const { toBe: verb, noun } = getGrammar(timeline.length)
   addEventsEverywhere({
     publicEvents: publicProp,

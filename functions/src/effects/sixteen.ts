@@ -4,7 +4,7 @@ import addEventsEverywhere from '../add/events/everywhere'
 import createChoice from '../create/choice'
 import earn from '../earn'
 import getGrammar from '../get/grammar'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsSixteen ({
@@ -21,7 +21,7 @@ export default function effectsSixteen ({
   const firstPublicChildren = addPublicEvent(publicEvents, `First, if  ${effectPlayer.displayName} has five or less schemes in hand, they earn twenty five gold.`)
   const less = effectPlayer.hand.length < 6
   const { count } = getGrammar(effectPlayer.hand.length)
-  const joined = getJoinedRanks(effectPlayer.hand)
+  const joined = joinRanks(effectPlayer.hand)
   const privateMessage = `You have ${count} in hand, ${joined}.`
   addEvent(firstPrivateChild, privateMessage)
   const lessMessage = less ? 'five or less schemes' : 'more than five schemes'

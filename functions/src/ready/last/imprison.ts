@@ -1,9 +1,9 @@
-import getJoinedRanksGrammar from '../../get/joined/ranks/grammar'
+import joinRanksGrammar from '../../join/ranks/grammar'
 import { Result, Player, PlayState } from '../../types'
 import addPlayerEvent from '../../add/event/player'
 import addEvent from '../../add/event'
 import carryOutFourteen from '../../carryOut/fourteen'
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import getImprisonMessages from '../../get/imprisonMessages'
 
 export default function imprisonLastReady ({
@@ -26,14 +26,14 @@ export default function imprisonLastReady ({
   })
   const imprisoned = [...playState.game.court]
   const beforeDungeon = [...playState.game.dungeon]
-  const beforeDungeonJoined = getJoinedRanks(beforeDungeon)
+  const beforeDungeonJoined = joinRanks(beforeDungeon)
   const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
   const beforeTimeline = [...playState.game.timeline]
-  const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
+  const beforeTimelineJoined = joinRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
   const leftmost = playState.game.timeline.shift()
   const afterTimeline = [...playState.game.timeline]
-  const afterTimelineJoined = getJoinedRanks(afterTimeline)
+  const afterTimelineJoined = joinRanks(afterTimeline)
   const afterTimelineMessage = `The timeline is now ${afterTimelineJoined}.`
   if (leftmost != null) {
     imprisoned.push(leftmost)
@@ -41,9 +41,9 @@ export default function imprisonLastReady ({
   playState.game.court = []
   playState.game.dungeon.push(...imprisoned)
   const afterDungeon = [...playState.game.dungeon]
-  const afterDungeonJoined = getJoinedRanks(afterDungeon)
+  const afterDungeonJoined = joinRanks(afterDungeon)
   const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
-  const { grammar, joinedRanks } = getJoinedRanksGrammar(imprisoned)
+  const { grammar, joinedRanks } = joinRanksGrammar(imprisoned)
   const imprisonMessage = `Everyone is ready, so ${joinedRanks} ${grammar.toBe} imprisoned in the dungeon.`
   const observerEvent = addEvent(playState.game, imprisonMessage)
   addEvent(observerEvent, beforeTimelineMessage)

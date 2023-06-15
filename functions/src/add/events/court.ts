@@ -1,4 +1,4 @@
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import { PlayState, TargetEvents } from '../../types'
 import addTargetEvents from './target'
 
@@ -11,7 +11,7 @@ export default function addCourtEvents ({
   buyerName: string
   playState: PlayState
 }): TargetEvents {
-  const courtJoined = getJoinedRanks(playState.game.court)
+  const courtJoined = joinRanks(playState.game.court)
   const buyerCourtMessage = `Choose which of ${courtJoined} to take from the court.`
   const loserCourtMessage = `${buyerName} is choosing which of ${courtJoined} to take from the court.`
   return addTargetEvents({

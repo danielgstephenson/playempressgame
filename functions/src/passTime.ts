@@ -1,6 +1,6 @@
 import createEvent from './create/event'
 import guardTime from './guard/time'
-import getJoinedRanks from './get/joined/ranks'
+import joinRanks from './join/ranks'
 import { PlayState } from './types'
 import guardTimeEvent from './guard/timeEvent'
 import playerSort from './sort/player'
@@ -33,14 +33,14 @@ export default function passTime ({ playState }: {
     }
     const [passed, ...remaining] = playState.game.timeline
     const beforeTimeline = [...playState.game.timeline]
-    const beforeJoined = getJoinedRanks(beforeTimeline)
+    const beforeJoined = joinRanks(beforeTimeline)
     const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
     playState.game.timeline = remaining
     const defined = guardDefined(passed, 'Passed scheme')
     const timeMessage = `${moreMessage}, so ${defined.rank} is removed from the timeline.`
     const observerEvent = createEvent(timeMessage)
     const afterTimeline = [...remaining]
-    const afterJoined = getJoinedRanks(afterTimeline)
+    const afterJoined = joinRanks(afterTimeline)
     const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
       const observerChild = guardTimeEvent({ player })

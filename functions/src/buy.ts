@@ -6,8 +6,8 @@ import carryOutFourteen from './carryOut/fourteen'
 import createAfterMessage from './create/message/after'
 import createBeforeMessage from './create/message/before'
 import getGrammar from './get/grammar'
-import getJoined from './get/joined'
-import getJoinedRanksGrammar from './get/joined/ranks/grammar'
+import join from './join'
+import joinRanksGrammar from './join/ranks/grammar'
 import guardDefined from './guard/defined'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import { PlayState, BuyerLoserMessages } from './types'
@@ -41,7 +41,10 @@ export default function buy ({
   if (leftmost != null) {
     buyer.tableau.push(leftmost)
   }
-  buyer.gold -= bid
+  const silver = bid % 5
+  buyer.silver -= silver
+  const gold = bid - silver
+  buyer.gold -= gold
   buyer.auctionReady = true
   if (buyer.tableau.some(scheme => scheme.rank === 9)) {
     addTargetEvents({
@@ -61,7 +64,7 @@ export default function buy ({
     const highLosers = highPlayers.filter(player => player.id !== buyerId)
     if (highLosers.length > 0) {
       const names = highLosers.map(player => player.displayName)
-      const joined = getJoined(names)
+      const joined = join(names)
       const grammar = getGrammar(highLosers.length, '9', '9s')
       const threat = highLosers.length === 1
         ? 'threat'
@@ -74,7 +77,7 @@ export default function buy ({
         const otherLosers = highLosers.filter(player => player.id !== loser.id)
         const otherNames = otherLosers.map(player => player.displayName)
         const privateNames = ['You', ...otherNames]
-        const privateJoined = getJoined(privateNames)
+        const privateJoined = join(privateNames)
         const privateMessage = `${privateJoined} did not win the auction, but you do not carry out the ${threat} on your ${grammar.noun} because ${reason}.`
         targetMessages[loser.id] = privateMessage
         return targetMessages
@@ -91,7 +94,7 @@ export default function buy ({
     .filter(player => player.tableau.some(scheme => scheme.rank === 9) && player.id !== buyerId)
   if (nines.length > 0) {
     const nineNames = nines.map(nine => nine.displayName)
-    const joined = getJoined(nineNames)
+    const joined = join(nineNames)
     const grammar = getGrammar(nines.length, '9', '9s')
     const threat = nines.length === 1
       ? 'threat'
@@ -106,7 +109,7 @@ export default function buy ({
       message: `${joined} did not win the auction, so they carry out the ${threat} on their ${grammar.noun}.`,
       targetMessages
     })
-    const beforeDiscard = getJoinedRanksGrammar(buyer.discard)
+    const beforeDiscard = joinRanksGrammar(buyer.discard)
     const beforeDiscardMessage = `Your discard was ${beforeDiscard.joinedRanks}.`
     const topDiscard = buyer.discard.shift()
     if (topDiscard == null) {
@@ -129,7 +132,7 @@ export default function buy ({
         schemes: playState.game.dungeon
       })
       playState.game.dungeon.unshift(topDiscard)
-      const afterDungeon = getJoinedRanksGrammar(playState.game.dungeon)
+      const afterDungeon = joinRanksGrammar(playState.game.dungeon)
       const afterDungeonMessage = `The dungeon becomes ${afterDungeon.joinedRanks}.`
       const publicDungeonMessage = `${buyer.displayName} imprisons their top discard scheme, ${topDiscard.rank}.`
       const privateDungeonMessage = `You imprison your top discard scheme, ${topDiscard.rank}.`

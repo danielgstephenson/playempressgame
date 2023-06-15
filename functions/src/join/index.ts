@@ -1,4 +1,4 @@
-export default function getJoined (values: string[] | number[]): string {
+export default function join (values: string[] | number[]): string {
   if (values.length === 0) {
     return ''
   }

@@ -2,7 +2,7 @@ import { HistoryEvent, MaybeSchemesPlayEvents, PlayState, PublicEvents } from '.
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
 import isRed from '../../../../../is/red'
-import getJoinedRanks from '../../../../../get/joined/ranks'
+import joinRanks from '../../../../../join/ranks'
 import getGrammar from '../../../../../get/grammar'
 
 export default function addAreRedTimelineSchemeEvents ({
@@ -35,7 +35,7 @@ export default function addAreRedTimelineSchemeEvents ({
     })
     return { playEvents, schemes: [] }
   } else {
-    const joined = getJoinedRanks(schemes)
+    const joined = joinRanks(schemes)
     const grammar = getGrammar(schemes.length)
     const playEvents = addEventsEverywhere({
       privateEvent,

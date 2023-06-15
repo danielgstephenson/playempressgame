@@ -1,4 +1,4 @@
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import { Scheme } from '../../types'
 
 export default function createBeforeMessage ({
@@ -8,7 +8,7 @@ export default function createBeforeMessage ({
   prefix: string
   schemes: Scheme[]
 }): string {
-  const joined = getJoinedRanks(schemes)
+  const joined = joinRanks(schemes)
   const message = `${prefix} was ${joined}.`
   return message
 }

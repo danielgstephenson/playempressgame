@@ -1,12 +1,12 @@
 import createCloudFunction from '../create/cloudFunction'
 import { SchemesProps } from '../types'
 import { https } from 'firebase-functions/v1'
-import getJoined from '../get/joined'
+import join from '../join'
 import getGrammar from '../get/grammar'
 import addEvent from '../add/event'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 import guardCurrentReordering from '../guard/current/reordering'
-import getJoinedRanksGrammar from '../get/joined/ranks/grammar'
+import joinRanksGrammar from '../join/ranks/grammar'
 import { arrayRemove, arrayUnion } from 'firelord'
 import createEvent from '../create/event'
 import { playersRef } from '../db'
@@ -50,7 +50,7 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
       .every(scheme => scheme.id !== id)
     )
   if (extra.length > 0) {
-    const joined = getJoined(extra)
+    const joined = join(extra)
     const grammar = getGrammar(extra.length)
     throw new https.HttpsError(
       'failed-precondition',
@@ -64,14 +64,14 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
       .every(id => scheme.id !== id)
     )
   if (missing.length > 0) {
-    const joined = getJoinedRanks(missing)
+    const joined = joinRanks(missing)
     const grammar = getGrammar(missing.length)
     throw new https.HttpsError(
       'failed-precondition',
       `${joined} ${grammar.toBe} missing from your deck.`
     )
   }
-  const before = getJoinedRanksGrammar(currentPlayer.deck)
+  const before = joinRanksGrammar(currentPlayer.deck)
   const beforeMessage = `Your deck was ${before.joinedRanks}.`
   const schemes = props.schemeIds.map(id => {
     const scheme = currentPlayer
@@ -85,7 +85,7 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     }
     return scheme
   })
-  const joined = getJoinedRanksGrammar(schemes)
+  const joined = joinRanksGrammar(schemes)
   const afterMessage = `Your deck becomes ${joined.joinedRanks}.`
   const privateReorderMessage = `You reorder your deck to ${joined.joinedRanks}.`
   const publicReorderMessage = `${currentPlayer.displayName} reorders their deck.`

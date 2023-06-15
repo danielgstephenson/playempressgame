@@ -3,7 +3,7 @@ import addPlayerEvent from '../add/event/player'
 import addTargetEvents from '../add/events/target'
 import createId from '../create/id'
 import discardTableau from '../discardTableau'
-import getJoined from '../get/joined'
+import join from '../join'
 import { PlayState } from '../types'
 
 export default function carryOutFourteen ({
@@ -17,7 +17,7 @@ export default function carryOutFourteen ({
   console.log('fourteenPlayers.length', fourteenPlayers.length)
   if (fourteenPlayers.length > 0) {
     const names = fourteenPlayers.map(player => player.displayName)
-    const publicNames = getJoined(names)
+    const publicNames = join(names)
     const publicMessage = `${publicNames} made no trades, so they carry out the threat on their 14s.`
     addEvent(playState.game, publicMessage)
     playState.players.forEach(player => {
@@ -25,7 +25,7 @@ export default function carryOutFourteen ({
       if (fourteen) {
         const otherNames = names.filter(name => name !== player.displayName)
         const playerNames = ['You', ...otherNames]
-        const privateNames = getJoined(playerNames)
+        const privateNames = join(playerNames)
         return addPlayerEvent({
           container: player,
           message: `${privateNames} made no trades, so you carry out the threat on your 14s.`,

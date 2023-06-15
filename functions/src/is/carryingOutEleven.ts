@@ -7,9 +7,11 @@ export default function isCarryingOutEleven ({ game, player }: {
 }): boolean {
   const eleven = player.tableau.some(scheme => scheme.rank === 11)
   if (eleven) {
+    console.log('is eleven')
     const otherProfiles = game.profiles.filter(profile => profile.userId !== player.userId)
     const highestBid = getHighestBid(otherProfiles)
-    if (highestBid > 5) {
+    console.log('highestBid', highestBid)
+    if (highestBid >= 5) {
       return true
     }
     return false

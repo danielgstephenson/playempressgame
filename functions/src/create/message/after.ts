@@ -1,4 +1,4 @@
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import { Scheme } from '../../types'
 
 export default function createAfterMessage ({
@@ -8,7 +8,7 @@ export default function createAfterMessage ({
   prefix: string
   schemes: Scheme[]
 }): string {
-  const joined = getJoinedRanks(schemes)
+  const joined = joinRanks(schemes)
   const message = `${prefix} becomes ${joined}.`
   return message
 }

@@ -2,7 +2,7 @@ import addEvent from '../add/event'
 import addEventsEverywhere from '../add/events/everywhere'
 import clone from '../clone'
 import getGrammar from '../get/grammar'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 import { HistoryEvent, PlayState, Player, PublicEvents, Result, DrawState } from '../types'
 import drawMultiple from './multiple'
 
@@ -23,9 +23,9 @@ export default function draw ({
     return
   }
   const playerClone = clone(player)
-  const handBefore = getJoinedRanks(playerClone.hand)
+  const handBefore = joinRanks(playerClone.hand)
   const originalHandMessage = `Your hand was ${handBefore}.`
-  const deckBefore = getJoinedRanks(playerClone.deck)
+  const deckBefore = joinRanks(playerClone.deck)
   const originalDeckMessage = `Your deck was ${deckBefore}.`
   const drawState: DrawState = {
     allDrawn: [],
@@ -46,13 +46,13 @@ export default function draw ({
     drawState,
     player
   })
-  const deckDrawnJoined = getJoinedRanks(drawState.deckDrawnHand)
+  const deckDrawnJoined = joinRanks(drawState.deckDrawnHand)
   const afterDeckMessage = `Your hand becomes ${deckDrawnJoined}.`
-  const deckDrawnDeckJoined = getJoinedRanks(
+  const deckDrawnDeckJoined = joinRanks(
     drawState.deckDrawnDeck
   )
   const deckDeckDrawnMessage = `Your deck becomes ${deckDrawnDeckJoined}.`
-  const deckDrawnRanks = getJoinedRanks(drawState.deckDrawn)
+  const deckDrawnRanks = joinRanks(drawState.deckDrawn)
   const { count, all } = getGrammar(
     drawState.deckDrawn.length, 'scheme', 'schemes'
   )
@@ -91,24 +91,24 @@ export default function draw ({
       privateMessage: 'You flip your discard pile to refresh your deck.',
       publicMessage: `${player.displayName} flips their discard pile to refresh their deck.`
     })
-    const discardBefore = getJoinedRanks(playerClone.discard)
+    const discardBefore = joinRanks(playerClone.discard)
     const originalDiscardMessage = `Your discard pile was ${discardBefore}.`
     addEvent(events.privateEvent, originalDiscardMessage)
-    const flippedDeckJoined = getJoinedRanks(drawState.flippedDeck)
+    const flippedDeckJoined = joinRanks(drawState.flippedDeck)
     const flippedDeckMessage = `Your deck becomes ${flippedDeckJoined}.`
     addEvent(events.privateEvent, flippedDeckMessage)
     const deckBeforeDiscardMessage = `Your deck was ${flippedDeckJoined}.`
     const beforeDiscardHandMessage = `Your hand was ${deckDrawnJoined}.`
-    const discardDrawnHandJoined = getJoinedRanks(
+    const discardDrawnHandJoined = joinRanks(
       drawState.discardDrawnHand
     )
     const handAfterDiscardMessage = `Your hand becomes ${discardDrawnHandJoined}.`
-    const discardDrawnDeckJoined = getJoinedRanks(player.deck)
+    const discardDrawnDeckJoined = joinRanks(player.deck)
     const discardDrawnDeckMessage = `Your deck becomes ${discardDrawnDeckJoined}.`
     const { count, all } = getGrammar(
       drawState.discardDrawn.length, 'scheme', 'schemes'
     )
-    const discardDrawnRanks = getJoinedRanks(drawState.discardDrawn)
+    const discardDrawnRanks = joinRanks(drawState.discardDrawn)
     const allDiscardDrawn = drawState.discardDrawn.length === playerClone.discard.length
     if (allDiscardDrawn) {
       const privateMessage = `Your refreshed deck only has ${count}, ${discardDrawnRanks}, so you draw ${all}.`
@@ -147,11 +147,11 @@ export default function draw ({
       privateMessage,
       publicMessage
     })
-    const beforePrivilegeJoined = getJoinedRanks(
+    const beforePrivilegeJoined = joinRanks(
       drawState.beforePrivilegeHand
     )
     const beforePrivilegeMessage = `Your hand was ${beforePrivilegeJoined}.`
-    const afterPrivilegeJoined = getJoinedRanks(player.hand)
+    const afterPrivilegeJoined = joinRanks(player.hand)
     const afterPrivilegeMessage = `Your hand becomes ${afterPrivilegeJoined}.`
     addEvent(events.privateEvent, beforePrivilegeMessage)
     addEvent(events.privateEvent, afterPrivilegeMessage)

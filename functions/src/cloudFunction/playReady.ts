@@ -8,7 +8,7 @@ import guardHandScheme from '../guard/handScheme'
 import updateOtherPlayers from '../update/otherPlayers'
 import playLastReady from '../ready/last/play'
 import guardString from '../guard/string'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 import filterPlaySchemes from '../filterPlaySchemes'
 import addEvent from '../add/event'
 import setPlayState from '../setPlayState'
@@ -67,10 +67,10 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
       update: publicUpdate
     })
     const youEvent = createEvent('You are ready.')
-    const joinedBefore = getJoinedRanks(currentPlayer.hand)
+    const joinedBefore = joinRanks(currentPlayer.hand)
     addEvent(youEvent, `Your hand was ${joinedBefore}.`)
     const handAfter = filterPlaySchemes(currentPlayer)
-    const joinedAfter = getJoinedRanks(handAfter)
+    const joinedAfter = joinRanks(handAfter)
     addEvent(youEvent, `Your hand becomes ${joinedAfter}.`)
     const youUpdate = {
       events: arrayUnion(youEvent),

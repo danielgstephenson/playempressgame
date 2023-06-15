@@ -3,7 +3,7 @@ import addPublicEvent from '../add/event/public'
 import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
-import getJoined from '../get/joined'
+import join from '../join'
 import revive from '../revive'
 import { PlayState, SchemeEffectProps } from '../types'
 
@@ -35,7 +35,7 @@ export default function effectsTwo ({
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws the number of schemes in the dungeon.`)
   const { toBeCount: phrase } = getGrammar(playState.game.dungeon.length)
   const dungeonRanks = playState.game.dungeon.map(scheme => scheme.rank)
-  const dungeonJoined = getJoined(dungeonRanks)
+  const dungeonJoined = join(dungeonRanks)
   const dungeonMessage = `There ${phrase} in the dungeon, ${dungeonJoined}.`
   addEvent(secondPublicChildren.observerEvent, dungeonMessage)
   secondPublicChildren.otherPlayerEvents.forEach(otherPlayerEvent => {

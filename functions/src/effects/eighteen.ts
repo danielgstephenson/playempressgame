@@ -3,7 +3,7 @@ import addPublicEvent from '../add/event/public'
 import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
 import createPrivilege from '../create/privilege'
 import earn from '../earn'
-import getJoinedRanksGrammar from '../get/joined/ranks/grammar'
+import joinRanksGrammar from '../join/ranks/grammar'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsEighteen ({
@@ -23,7 +23,7 @@ export default function effectsEighteen ({
     addEvent(firstPrivateChild, 'Your deck is empty.')
   } else {
     addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is not empty.`)
-    const { joinedCount } = getJoinedRanksGrammar(effectPlayer.deck)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.deck)
     addEvent(firstPrivateChild, `Your deck has ${joinedCount}.`)
   }
   const discardEmpty = effectPlayer.discard.length === 0
@@ -32,7 +32,7 @@ export default function effectsEighteen ({
     addEvent(firstPrivateChild, 'Your discard is empty.')
   } else {
     addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is not empty.`)
-    const { joinedCount } = getJoinedRanksGrammar(effectPlayer.discard)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.discard)
     addEvent(firstPrivateChild, `Your discard has ${joinedCount}.`)
   }
   if (deckEmpty || discardEmpty) {

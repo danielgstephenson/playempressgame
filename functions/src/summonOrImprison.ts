@@ -1,5 +1,5 @@
 import createEvent from './create/event'
-import getJoined from './get/joined'
+import join from './join'
 import guardFirst from './guard/first'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import { PlayState } from './types'
@@ -7,7 +7,7 @@ import addBroadcastEvent from './add/event/broadcast'
 import addEvent from './add/event'
 import addPublicEvents from './add/events/public'
 import copyEffects from './effects/copy'
-import getJoinedPossessive from './get/joined/possessive'
+import joinPossessive from './join/possessive'
 import guardPlayScheme from './guard/playScheme'
 import drawUpToThree from './drawUpToThree'
 import addPublicEvent from './add/event/public'
@@ -50,22 +50,22 @@ export default function summonOrImprison ({
         const otherHighPlayers = highPlayers.filter(player => player.id !== highPlayer.id)
         const otherHighDisplayNames = otherHighPlayers.map(p => p.displayName)
         const displayNames = ['You', ...otherHighDisplayNames]
-        const joinedPossessive = getJoinedPossessive(displayNames)
+        const joinedPossessive = joinPossessive(displayNames)
         const privateMessage = `${joinedPossessive} 8s are the highest rank in play, so you carry out your threats.`
         const privateEvent = createEvent(privateMessage)
         highPlayer.events.push(privateEvent)
-        const joined = getJoined(displayNames)
+        const joined = join(displayNames)
         const privateChildMessage = `${joined} put your 8s on your discards instead of imprisoning them in the dungeon.`
         addEvent(privateEvent, privateChildMessage)
       })
       const highDisplayNames = highPlayers.map(p => p.displayName)
-      const joinedHighDisplayNamesPossessive = getJoinedPossessive(highDisplayNames)
+      const joinedHighDisplayNamesPossessive = joinPossessive(highDisplayNames)
       const broadcastEvent = addBroadcastEvent({
         players: notHighPlayers,
         game: playState.game,
         message: `${joinedHighDisplayNamesPossessive} 8s are the highest rank in play, so they carry out their threats.`
       })
-      const joinedHighDisplayNames = getJoined(highDisplayNames)
+      const joinedHighDisplayNames = join(highDisplayNames)
       const childMessage = `${joinedHighDisplayNames} put their 8s on their discards instead of imprisoning them in the dungeon.`
       addEvent(broadcastEvent, childMessage)
     }
@@ -101,14 +101,14 @@ export default function summonOrImprison ({
           .filter(player => player.id !== eightPlayer.id)
         const otherDisplayNames = otherEightPlayers.map(p => p.displayName)
         const displayNames = ['You', ...otherDisplayNames]
-        const joined = getJoined(displayNames)
+        const joined = join(displayNames)
         const message = `${joined} do not carry out the threats on their 8s.`
         const event = createEvent(message)
         eightPlayer.events.push(event)
         event.events.push(eightChild)
       })
       const displayNames = eightPlayers.map(p => p.displayName)
-      const joined = getJoinedPossessive(displayNames)
+      const joined = joinPossessive(displayNames)
       const notEightPlayers = playState
         .players
         .filter(player => player.playScheme?.rank !== 8)
@@ -164,13 +164,13 @@ export default function summonOrImprison ({
       const otherHighPlayers = highPlayers.filter(player => player.id !== highPlayer.id)
       const otherHighDisplayNames = otherHighPlayers.map(p => p.displayName)
       const displayNames = ['You', ...otherHighDisplayNames]
-      const joinedDisplayNames = getJoined(displayNames)
+      const joinedDisplayNames = join(displayNames)
       const privateEvent = createEvent(`${joinedDisplayNames} imprison your ${highestPlayScheme.rank}s in the dungeon.`)
       highPlayer.events.push(privateEvent)
       playState.game.dungeon.push(guardPlayScheme(highPlayer))
     })
     const highDisplayNames = highPlayers.map(p => p.displayName)
-    const joinedHighDisplayNames = getJoined(highDisplayNames)
+    const joinedHighDisplayNames = join(highDisplayNames)
     addBroadcastEvent({
       players: notHighPlayers,
       game: playState.game,
@@ -184,7 +184,7 @@ export default function summonOrImprison ({
       .players
       .filter(player => player.playScheme?.rank === 15)
     const fifteenDisplayNames = fifteenPlayers.map(p => p.displayName)
-    const joined = getJoined(fifteenDisplayNames)
+    const joined = join(fifteenDisplayNames)
     const childMessage = notFifteen
       ? `The highest rank scheme in play is ${highestPlayScheme.rank}, not 15.`
       : `${joined} all played 15, so they are imprisoned in the dungeon, not summoned to the court.`
@@ -210,13 +210,13 @@ export default function summonOrImprison ({
           .filter(player => player.id !== fifteenPlayer.id)
         const otherDisplayNames = otherFifteenPlayers.map(p => p.displayName)
         const displayNames = ['You', ...otherDisplayNames]
-        const joined = getJoined(displayNames)
+        const joined = join(displayNames)
         const message = `${joined} do not carry out the threats on their 15s.`
         const event = createEvent(message, [highestChild])
         fifteenPlayer.events.push(event)
       })
       const displayNames = fifteenPlayers.map(p => p.displayName)
-      const joined = getJoined(displayNames)
+      const joined = join(displayNames)
       const notFifteenPlayers = playState
         .players
         .filter(player => player.playScheme?.rank !== 15)

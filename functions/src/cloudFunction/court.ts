@@ -1,7 +1,7 @@
 import createCloudFunction from '../create/cloudFunction'
 import { SchemesProps } from '../types'
 import { https } from 'firebase-functions/v1'
-import getJoined from '../get/joined'
+import join from '../join'
 import guardCurrentBidding from '../guard/current/bidding'
 import getGrammar from '../get/grammar'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
@@ -9,7 +9,7 @@ import carryOutFourteen from '../carryOut/fourteen'
 import addEvent from '../add/event'
 import getOtherPlayers from '../get/otherPlayers'
 import setPlayState from '../setPlayState'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 import getLowestRankScheme from '../get/lowestRankScheme'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
@@ -26,7 +26,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const unready = currentGame.profiles.filter(profile => !profile.auctionReady)
   if (unready.length > 0) {
     const displayNames = unready.map(profile => profile.displayName)
-    const joined = getJoined(displayNames)
+    const joined = join(displayNames)
     const { toBe } = getGrammar(unready.length)
     throw new https.HttpsError(
       'failed-precondition',
@@ -42,7 +42,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   }
   const missing = props.schemeIds.filter(id => currentGame.court.find(scheme => scheme.id === id) == null)
   if (missing.length > 0) {
-    const joined = getJoined(missing)
+    const joined = join(missing)
     const grammar = getGrammar(missing.length)
     throw new https.HttpsError(
       'failed-precondition',
@@ -53,7 +53,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   currentPlayer.tableau.push(...taken)
   currentGame.court = currentGame.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const lowest = getLowestRankScheme(currentGame.court)
-  const joined = getJoinedRanks(taken)
+  const joined = joinRanks(taken)
   const privateMessage = props.schemeIds.length === 0
     ? 'You took no schemes from the court.'
     : `You took ${joined} from the court.`
@@ -74,12 +74,12 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const players = [currentPlayer, ...otherPlayers]
   if (lowest != null) {
     const beforeDungeon = [...currentGame.dungeon]
-    const beforeDungeonJoined = getJoinedRanks(beforeDungeon)
+    const beforeDungeonJoined = joinRanks(beforeDungeon)
     const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
     currentGame.court = currentGame.court.filter(scheme => scheme.id !== lowest.id)
     currentGame.dungeon.push(lowest)
     const afterDungeon = [...currentGame.dungeon]
-    const afterDungeonJoined = getJoinedRanks(afterDungeon)
+    const afterDungeonJoined = joinRanks(afterDungeon)
     const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
     const message = `The lowest remaining court scheme, ${lowest.rank}, was imprisoned in the dungeon.`
     const observerEvent = addEvent(currentGame, message)

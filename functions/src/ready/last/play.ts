@@ -8,7 +8,7 @@ import filterIds from '../../filterIds'
 import clone from '../../clone'
 import summonOrImprison from '../../summonOrImprison'
 import addChoiceEvents from '../../add/events/choice'
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import addEvent from '../../add/event'
 
 export default function playLastReady ({
@@ -25,7 +25,7 @@ export default function playLastReady ({
   currentPlayer.playScheme = playScheme
   currentPlayer.trashScheme = trashScheme
   currentPlayer.playReady = true
-  const joinedBefore = getJoinedRanks(currentPlayer.hand)
+  const joinedBefore = joinRanks(currentPlayer.hand)
   playState.players.forEach(player => {
     player.hand = player
       .hand
@@ -33,7 +33,7 @@ export default function playLastReady ({
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
   })
-  const joinedAfter = getJoinedRanks(currentPlayer.hand)
+  const joinedAfter = joinRanks(currentPlayer.hand)
   const publicReadyEvent = createEvent(`${currentPlayer.displayName} is ready.`)
   const privateReadyEvent = createEvent('You are ready.')
   addEvent(privateReadyEvent, `Your hand was ${joinedBefore}`)

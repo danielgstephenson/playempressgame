@@ -13,7 +13,7 @@ import isGreen from '../is/green'
 import isRed from '../is/red'
 import isYellow from '../is/yellow'
 import { GameProps } from '../types'
-import getJoined from '../get/joined'
+import join from '../join'
 import guardString from '../guard/string'
 import addEvent from '../add/event'
 import { OBSERVER_CHOOSE_MESSAGE, PLAYER_CHOOSE_MESSAGE } from '../constants'
@@ -48,7 +48,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const randomB = randomRange[bRank] as number
     return randomA - randomB
   })
-  const shuffledRanks = getJoined(shuffled)
+  const shuffledRanks = join(shuffled)
   addEvent(startEvent, `Shuffled schemes 0 and 2 through 25: ${shuffledRanks}`)
   const empressSize = 13 + currentGameData.profiles.length
   addEvent(startEvent, `The empress size is ${empressSize}, 13 plus the ${currentGameData.profiles.length} players.`)
@@ -56,7 +56,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const sorted = [...empressSlice].sort((aRank, bRank) => {
     return aRank - bRank
   })
-  const sortedRanks = getJoined(sorted)
+  const sortedRanks = join(sorted)
   addEvent(startEvent, `Dealt and sorted ${empressSize} schemes in a row: ${sortedRanks}.`)
   const court = guardDefined(sorted[0], 'Court')
   addEvent(startEvent, `The lowest rank scheme, ${court}, is summoned to the court.`)
@@ -64,13 +64,13 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   addEvent(startEvent, `The next lowest rank scheme, ${dungeon}, is imprisoned in the dungeon.`)
   const palaceSlice = sorted.slice(2)
   const empressGreen = palaceSlice.filter(rank => isGreen(guardSchemeData(rank)))
-  const empressGreenRanks = getJoined(empressGreen)
+  const empressGreenRanks = join(empressGreen)
   addEvent(startEvent, `The remaining green schemes are ${empressGreenRanks}.`)
   const empressRed = palaceSlice.filter(rank => isRed(guardSchemeData(rank)))
-  const empressRedRanks = getJoined(empressRed)
+  const empressRedRanks = join(empressRed)
   addEvent(startEvent, `The remaining red schemes are ${empressRedRanks}.`)
   const empressYellow = palaceSlice.filter(rank => isYellow(guardSchemeData(rank)))
-  const empressYellowRanks = getJoined(empressYellow)
+  const empressYellowRanks = join(empressYellow)
   addEvent(startEvent, `The remaining yellow schemes are ${empressYellowRanks}.`)
   const lowYellow = empressYellow.slice(0, 1)
   const lowestYellow = lowYellow[0]
@@ -86,7 +86,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const lowRank = String(lowGreen[0])
     addEvent(startEvent, `The only remaining green scheme is ${lowRank}.`)
   } else {
-    const lowRanks = getJoined(lowGreen)
+    const lowRanks = join(lowGreen)
     addEvent(startEvent, `The two lowest remaining green schemes are ${lowRanks}.`)
   }
   const lowRed = empressRed.slice(0, 2)
@@ -96,7 +96,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const lowRank = String(lowRed[0])
     addEvent(startEvent, `The only remaining red scheme is ${lowRank}.`)
   } else {
-    const lowRanks = getJoined(lowRed)
+    const lowRanks = join(lowRed)
     addEvent(startEvent, `The two lowest remaining red schemes are ${lowRanks}.`)
   }
   const basePortfolio = [7, ...lowGreen, ...lowRed]
@@ -110,7 +110,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const sortedPortfolio = [...portfolio].sort((aRank, bRank) => {
     return aRank - bRank
   })
-  const portfolioRanks = getJoined(sortedPortfolio)
+  const portfolioRanks = join(sortedPortfolio)
   addEvent(startEvent, `The portfolio is ${portfolioRanks}.`)
   const courtScheme = createScheme(court)
   const dungeonScheme = createScheme(dungeon)
@@ -126,9 +126,9 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   hand[2] = 12
   hand[3] = 13
   hand[4] = 25
-  addEvent(startEvent, `The hand is ${getJoined(hand)}.`)
+  addEvent(startEvent, `The hand is ${join(hand)}.`)
   const timeline = empressLeft.slice(1)
-  const timelineRanks = getJoined(timeline)
+  const timelineRanks = join(timeline)
   addEvent(startEvent, `The timeline is ${timelineRanks}.`)
   const timelineSchemes = timeline.map(rank => createScheme(rank))
   const startedProfiles = currentGameData.profiles.map((profile) => {
@@ -150,7 +150,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       hand: handSchemes,
       lastBidder: false,
       playReady: false,
-      silver: 0,
+      silver: 3,
       tableau: [],
       trashHistory: [],
       userId: profile.userId,

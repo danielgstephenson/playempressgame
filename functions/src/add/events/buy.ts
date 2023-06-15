@@ -1,5 +1,5 @@
 import createBuySuffixes from '../../create/buySuffixes'
-import getJoinedRanks from '../../get/joined/ranks'
+import joinRanks from '../../join/ranks'
 import { BuyerLoserMessages, PlayState, TargetEvents } from '../../types'
 import addEvent from '../event'
 import addTargetEvents from './target'
@@ -21,10 +21,10 @@ export default function addBuyEvents ({
   rank?: number | undefined
 } & BuyerLoserMessages): TargetEvents {
   const beforeTimeline = [...playState.game.timeline]
-  const beforeTimelineJoined = getJoinedRanks(beforeTimeline)
+  const beforeTimelineJoined = joinRanks(beforeTimeline)
   const beforeTimelineMessage = `The timeline was ${beforeTimelineJoined}.`
   const afterTimeline = [...playState.game.timeline]
-  const afterTimelineJoined = getJoinedRanks(afterTimeline)
+  const afterTimelineJoined = joinRanks(afterTimeline)
   const afterTimelineMessage = `The timeline becomes ${afterTimelineJoined}.`
   const buyerPrefix = buyerMessage ?? message
   const loserPrefix = loserMessage ?? message

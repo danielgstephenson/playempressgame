@@ -12,9 +12,12 @@ import addTargetEvents from '../add/events/target'
 import guardDefined from '../guard/defined'
 import addEvent from '../add/event'
 import getHighestUntiedPlayer from '../get/highestUntiedPlayer'
-import getJoined from '../get/joined'
+import join from '../join'
 import getHighestBid from '../get/highestBid'
 import isCarryingOutEleven from '../is/carryingOutEleven'
+import joinPrivateNames from '../join/privateNames'
+import guardHighestRankPlayScheme from '../guard/highestRankPlayScheme'
+import guardFirst from '../guard/first'
 
 const bid = createCloudFunction<BidProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -53,13 +56,14 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
       game: currentGame,
       player: currentPlayer
     })
+    console.log('isCarryingOutEleven', eleven)
     if (!eleven) {
       throw new https.HttpsError(
         'invalid-argument',
         'You may only bid gold.'
       )
     }
-    const minimumSilver = currentPlayer.bid % 5
+    const minimumSilver = bid % 5
     if (currentPlayer.silver < minimumSilver) {
       throw new https.HttpsError(
         'out-of-range',
@@ -86,55 +90,90 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     currentPlayer,
     transaction
   })
+  const bidGrammar = getGrammar(bid)
   const highestBid = getHighestBid(playState.players)
   const fiveThreshold = highestBid < 5 && bid >= 5
   const tenThreshold = currentPlayer.bid < 10 && bid >= 10
   currentPlayer.bid = bid
   if (fiveThreshold) {
-    const elevens = playState
+    const hasElevens = playState
       .players
       .filter(player => player
         .tableau
         .some(scheme => scheme.rank === 11 && !player.withdrawn && player.userId !== currentUid)
       )
-    if (elevens.length > 0) {
-      const elevenNames = elevens.map(player => player.displayName)
-      const joined = getJoined(elevenNames)
+    if (hasElevens.length > 0) {
+      const elevenNames = hasElevens.map(player => player.displayName)
+      const joined = join(elevenNames)
       const grammar = getGrammar(elevenNames.length, '11', '11s')
-      const publicElevenMessage = `${currentPlayer.displayName} bid ${grammar.spelled}, so ${joined} carry out the threat on their ${grammar.noun}.`
+      const publicElevenMessage = `${currentPlayer.displayName} bid ${bidGrammar.spelled}, so ${joined} carry out the threat on their ${grammar.noun}.`
       const observerEvent = addEvent(playState.game, publicElevenMessage)
+      const privateChildMessage = 'You may bid silver this auction.'
+      const publicChildMessage = `${joined} may bid silver this auction.`
+      addEvent(observerEvent, publicChildMessage)
       playState.players.forEach(player => {
         const bidder = player.userId === currentUid
         const bidderName = bidder ? 'You' : currentPlayer.displayName
-        const playedEleven = elevens.some(elevenPlayer => elevenPlayer.userId === player.userId)
-        if (playedEleven) {
-          const otherElevens = elevens.filter(otherPlayer => otherPlayer.userId !== player.userId)
-          const otherNames = otherElevens.map(otherPlayer => otherPlayer.displayName)
-          const names = ['You', ...otherNames]
-          const joined = getJoined(names)
-          add `${currentPlayer.displayName} bid ${bid}, five or more, so ${joined} carry out the threat on your ${grammar.noun}.`
+        const playedEleven = hasElevens.some(elevenPlayer => elevenPlayer.userId === player.userId)
         const possessive = playedEleven ? 'your' : 'their'
-        const bidderMessage = `${bidderName} bid ${grammar.spelled}, so ${joined} carry out the threat on ${possessive} ${grammar.noun}.`
-      const targetMessages = elevens.reduce<Record<string, string>>((targetMessages, player) => {
-
-        return targetMessages
-      }, {})
-      const elevenEvents = addTargetEvents({
-        playState,
-        message: publicElevenMessage,
-        targetMessages
-      })
-      const publicChildMessage = `${joined} may bid silver this auction.`
-      elevenEvents.publicEvents.forEach(event => {
-        addEvent(event, publicChildMessage)
-      })
-      const privateChildMessage = 'You may bid silver this auction.'
-      Object.values(elevenEvents.targetEvents).forEach(event => {
-        addEvent(event, privateChildMessage)
+        const names = playedEleven ? joinPrivateNames({ name: 'you', players: hasElevens, userId: player.userId }) : joined
+        const verb = playedEleven
+          ? 'carry'
+          : 'carries'
+        const bidderMessage = `${bidderName} bid ${bidGrammar.spelled}, so ${names} ${verb} out the threat on ${possessive} ${grammar.noun}.`
+        const playerEvent = addEvent(player, bidderMessage)
+        if (playedEleven) {
+          addEvent(playerEvent, privateChildMessage)
+        } else {
+          addEvent(playerEvent, publicChildMessage)
+        }
       })
     }
+    const playedElevens = playState
+      .players
+      .filter(player => player.playScheme?.rank === 11)
+    const highestRankPlayScheme = guardHighestRankPlayScheme(playState.players)
+    if (highestRankPlayScheme.rank === 11) {
+      if (playedElevens.length === 1) {
+        const elevenPlayer = guardFirst(playedElevens, 'Eleven player')
+        const publicMessage = `${currentPlayer.displayName} bid ${bidGrammar.spelled}, but they do not carry out the threat on their 11 because it was summoned to the court.`
+        addEvent(playState.game, publicMessage)
+        playState.players.forEach(player => {
+          console.log('player', player)
+          const bidder = player.userId === currentUid
+          const bidderName = bidder ? 'You' : currentPlayer.displayName
+          const playedEleven = elevenPlayer.userId === player.userId
+          console.log('playedEleven', playedEleven)
+          const possessive = playedEleven ? 'your' : 'their'
+          console.log('possessive', possessive)
+          const owner = playedEleven ? 'you' : elevenPlayer.displayName
+          const verb = playedEleven
+            ? 'do not'
+            : 'does not'
+          const bidderMessage = `${bidderName} bid ${bidGrammar.spelled}, but ${owner} ${verb} carry out the threat from ${possessive} 11 because it was summoned the court.`
+          addEvent(player, bidderMessage)
+        })
+      } else {
+        const elevenNames = playedElevens.map(player => player.displayName)
+        const joined = join(elevenNames)
+        const grammar = getGrammar(elevenNames.length, '11', '11s')
+        const publicMessage = `${currentPlayer.displayName} bid ${bidGrammar.spelled}, but ${joined} do not carry out the threat on their ${grammar.noun} because they were imprisoned in the dugeon.`
+        addEvent(playState.game, publicMessage)
+        playState.players.forEach(player => {
+          const bidder = player.userId === currentUid
+          const bidderName = bidder ? 'You' : currentPlayer.displayName
+          const playedEleven = playedElevens.some(elevenPlayer => elevenPlayer.userId === player.userId)
+          const possessive = playedEleven ? 'your' : 'their'
+          const names = playedEleven ? joinPrivateNames({ name: 'you', players: playedElevens, userId: player.userId }) : joined
+          const verb = playedEleven
+            ? 'do not'
+            : 'does not'
+          const bidderMessage = `${bidderName} bid ${bidGrammar.spelled}, but ${names} ${verb} carry out the threat on ${possessive} ${grammar.noun} because they were imprisoned in the dugeon.`
+          addEvent(player, bidderMessage)
+        })
+      }
+    }
   }
-
   if (tenThreshold) {
     const hasTen = currentPlayer.tableau.some(scheme => scheme.rank === 10)
     if (hasTen) {
@@ -158,9 +197,9 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
         : 'imprisoned in the dungeon'
       addTargetEvents({
         playState,
-        message: `${currentPlayer.displayName} bid ${bid}, ten or more, but they do not carry out the threat from their 10, because it was ${reason}.`,
+        message: `${currentPlayer.displayName} bid ${bid}, but ${currentPlayer.displayName} does not carry out the threat from their 10, because it was ${reason}.`,
         targetMessages: {
-          [currentPlayerId]: `You bid ${bid}, ten or more, but you do not carry out the threat from your 10, because it was ${reason}.`
+          [currentPlayerId]: `You bid ${bid}, but you do not carry out the threat from your 10, because it was ${reason}.`
         }
       })
     }
@@ -179,9 +218,8 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   }, 0)
   if (currentPlayer.bid > highestOtherGold) {
     currentPlayer.bid = props.bid
-    const { spelled } = getGrammar(currentPlayer.bid)
-    const privateBidMessage = `You bid ${spelled}, more gold than anyone else has`
-    const publicBidMessage = `${currentPlayer.displayName} bid ${spelled}, more gold than anyone else has`
+    const privateBidMessage = `You bid ${bidGrammar.spelled}, more gold than anyone else has`
+    const publicBidMessage = `${currentPlayer.displayName} bid ${bidGrammar.spelled}, more gold than anyone else has`
     buy({
       bid: props.bid,
       buyerId: currentPlayer.id,

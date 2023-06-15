@@ -8,7 +8,7 @@ import getGrammar from './get/grammar'
 import guardPlayerEvent from './guard/playerEvent'
 import guardFirst from './guard/first'
 import getScore from './get/score'
-import getJoined from './get/joined'
+import join from './join'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import guardPlayScheme from './guard/playScheme'
 import addPlayerWinEvents from './add/events/player/win'
@@ -111,7 +111,7 @@ export default function drawUpToThree ({
     }, [])
     if (winners.length > 1) {
       const winnerNames = winners.map(winner => winner.displayName)
-      const joined = getJoined(winnerNames)
+      const joined = join(winnerNames)
       const loserMessage = `${joined} tie for the win.`
       const observerWinEvent = addEvent(playState.game, loserMessage)
       const playerWinEvents = playState.players.map(player => {
@@ -127,7 +127,7 @@ export default function drawUpToThree ({
         const otherWinners = winners.filter(winner => winner.id !== player.id)
         const otherWinnerNames = otherWinners.map(winner => winner.displayName)
         const names = ['You', ...otherWinnerNames]
-        const joined = getJoined(names)
+        const joined = join(names)
         const message = `${joined} tie for the win.`
         return addPlayerEvent({
           container: player,
@@ -174,7 +174,7 @@ export default function drawUpToThree ({
   playState.game.phase = 'auction'
   const leftmostMessage = `${leftmost.rank} is up for auction`
   const courtMessage = playState.game.court.length > 0
-    ? ` with ${getJoined(playState.game.court.map(scheme => scheme.rank))} in the court`
+    ? ` with ${join(playState.game.court.map(scheme => scheme.rank))} in the court`
     : ''
   const message = `${leftmostMessage}${courtMessage}.`
   addBroadcastEvent({

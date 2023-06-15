@@ -1,7 +1,7 @@
 import { HistoryEvent, MaybeSchemesPlayEvents, PlayState, PublicEvents } from '../../../../../types'
 import addEventsEverywhere from '../../../everywhere'
 import addTimelineEvents from '..'
-import getJoinedRanks from '../../../../../get/joined/ranks'
+import joinRanks from '../../../../../join/ranks'
 import getGrammar from '../../../../../get/grammar'
 import isGreen from '../../../../../is/green'
 
@@ -37,7 +37,7 @@ export default function addAreGreenTimelineSchemeEvents ({
     })
     return { playEvents, schemes: [] }
   } else if (addList) {
-    const joined = getJoinedRanks(schemes)
+    const joined = joinRanks(schemes)
     const grammar = getGrammar(schemes.length)
     const playEvents = addEventsEverywhere({
       privateEvent,

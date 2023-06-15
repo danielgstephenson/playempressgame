@@ -5,7 +5,7 @@ import guardChoice from '../guard/choice'
 import getOtherPlayers from '../get/otherPlayers'
 import onChoiceComplete from '../onChoiceComplete'
 import addEvent from '../add/event'
-import getJoinedRanks from '../get/joined/ranks'
+import joinRanks from '../join/ranks'
 
 const deckChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
   console.info(`Choosing scheme ${props.schemeId} to put on deck...`)
@@ -35,9 +35,9 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
   currentPlayer.hand = currentPlayer.hand.filter(scheme => {
     return scheme.id !== props.schemeId
   })
-  const before = getJoinedRanks(currentPlayer.deck)
+  const before = joinRanks(currentPlayer.deck)
   currentPlayer.deck = [scheme, ...currentPlayer.deck]
-  const after = getJoinedRanks(currentPlayer.deck)
+  const after = joinRanks(currentPlayer.deck)
   const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put face down on your deck.`)
   addEvent(privateChoiceEvent, `Your deck was ${before}.`)
   addEvent(privateChoiceEvent, `Your deck becomes ${after}.`)

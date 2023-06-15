@@ -1,4 +1,4 @@
-export default function getJoinedPossessive (values: string[] | number[]): string {
+export default function joinPossessive (values: string[] | number[]): string {
   const possessives = values.map(value => String(value).toLowerCase() === 'you' ? 'Your' : `${value}'s`)
   if (possessives.length === 0) {
     return ''
