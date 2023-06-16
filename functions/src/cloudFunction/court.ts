@@ -7,10 +7,11 @@ import getGrammar from '../get/grammar'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import carryOutFourteen from '../carryOut/fourteen'
 import addEvent from '../add/event'
-import getOtherPlayers from '../get/otherPlayers'
 import setPlayState from '../setPlayState'
 import joinRanks from '../join/ranks'
 import getLowestRankScheme from '../get/lowestRankScheme'
+import createPlayState from '../create/playState'
+import addTargetEvents from '../add/events/target'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
   const {
@@ -40,60 +41,98 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       'You are not the highest untied bidder.'
     )
   }
-  const missing = props.schemeIds.filter(id => currentGame.court.find(scheme => scheme.id === id) == null)
-  if (missing.length > 0) {
-    const joined = join(missing)
-    const grammar = getGrammar(missing.length)
-    throw new https.HttpsError(
-      'failed-precondition',
-      `${joined} ${grammar.toBe} not in the court.`
-    )
+  const twelve = currentPlayer.tableau.some(scheme => scheme.rank === 12)
+  if (twelve) {
+    const missing = props
+      .schemeIds
+      .filter(id => currentGame
+        .court
+        .every(scheme => scheme.id !== id) &&
+      currentGame
+        .dungeon
+        .every(scheme => scheme.id !== id))
+    if (missing.length > 0) {
+      const joined = join(missing)
+      const grammar = getGrammar(missing.length)
+      throw new https.HttpsError(
+        'failed-precondition',
+        `${joined} ${grammar.toBe} not in the court or dungeon.`
+      )
+    }
+  } else {
+    const missing = props
+      .schemeIds
+      .filter(id => currentGame.court.find(scheme => scheme.id === id) == null)
+    if (missing.length > 0) {
+      const joined = join(missing)
+      const grammar = getGrammar(missing.length)
+      throw new https.HttpsError(
+        'failed-precondition',
+        `${joined} ${grammar.toBe} not in the court.`
+      )
+    }
   }
-  const taken = currentGame.court.filter(scheme => props.schemeIds.includes(scheme.id))
-  currentPlayer.tableau.push(...taken)
-  currentGame.court = currentGame.court.filter(scheme => !props.schemeIds.includes(scheme.id))
-  const lowest = getLowestRankScheme(currentGame.court)
-  const joined = joinRanks(taken)
-  const privateMessage = props.schemeIds.length === 0
-    ? 'You took no schemes from the court.'
-    : `You took ${joined} from the court.`
-  addEvent(currentPlayer, privateMessage)
-  const publicMessage = props.schemeIds.length === 0
-    ? `${currentPlayer.displayName} took no schemes from the court.`
-    : `${currentPlayer.displayName} took ${joined} from the court.`
-
-  addEvent(currentGame, publicMessage)
-  const otherPlayers = await getOtherPlayers({
-    currentUid,
-    transaction,
-    gameId: props.gameId
+  const playState = await createPlayState({
+    currentGame,
+    currentPlayer,
+    transaction
   })
-  otherPlayers.forEach(player => {
-    addEvent(player, publicMessage)
-  })
-  const players = [currentPlayer, ...otherPlayers]
+  const courtTaken = playState.game.court.filter(scheme => props.schemeIds.includes(scheme.id))
+  currentPlayer.tableau.push(...courtTaken)
+  playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
+  const courtJoined = joinRanks(courtTaken)
+  const courtMessage = courtTaken.length === 0
+    ? 'no schemes from the court'
+    : `${courtJoined} from the court`
+  const privateCourtMessage = `You took ${courtMessage}.`
+  const publicCourtMessage = `${currentPlayer.displayName} took ${courtMessage}.`
+  if (twelve && playState.game.dungeon.length > 0) {
+    const dungeonTaken = playState.game.dungeon.filter(scheme => props.schemeIds.includes(scheme.id))
+    currentPlayer.tableau.push(...dungeonTaken)
+    playState.game.dungeon = playState.game.dungeon.filter(scheme => !props.schemeIds.includes(scheme.id))
+    const dungeonJoined = joinRanks(dungeonTaken)
+    const dungeonMessage = props.schemeIds.length === 0
+      ? 'no schemes from the dungeon'
+      : `${dungeonJoined} from the dungeon`
+    const privateDungeonMessage = `${privateCourtMessage} and ${dungeonMessage}.`
+    const publicDungeonMessage = `${publicCourtMessage} and ${dungeonMessage}.`
+    addTargetEvents({
+      playState,
+      message: publicDungeonMessage,
+      targetMessages: {
+        [currentPlayer.id]: privateDungeonMessage
+      }
+    })
+  } else {
+    const privateMessage = `You took ${courtMessage}.`
+    const publicMessage = `${currentPlayer.displayName} took ${courtMessage}.`
+    addTargetEvents({
+      playState,
+      message: publicMessage,
+      targetMessages: {
+        [currentPlayer.id]: privateMessage
+      }
+    })
+  }
+  const lowest = getLowestRankScheme(playState.game.court)
   if (lowest != null) {
-    const beforeDungeon = [...currentGame.dungeon]
+    const beforeDungeon = [...playState.game.dungeon]
     const beforeDungeonJoined = joinRanks(beforeDungeon)
     const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
-    currentGame.court = currentGame.court.filter(scheme => scheme.id !== lowest.id)
-    currentGame.dungeon.push(lowest)
-    const afterDungeon = [...currentGame.dungeon]
+    playState.game.court = playState.game.court.filter(scheme => scheme.id !== lowest.id)
+    playState.game.dungeon.push(lowest)
+    const afterDungeon = [...playState.game.dungeon]
     const afterDungeonJoined = joinRanks(afterDungeon)
     const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
     const message = `The lowest remaining court scheme, ${lowest.rank}, was imprisoned in the dungeon.`
     const observerEvent = addEvent(currentGame, message)
     addEvent(observerEvent, beforeDungeonMessage)
     addEvent(observerEvent, afterDungeonMessage)
-    players.forEach(player => {
+    playState.players.forEach(player => {
       const playerEvent = addEvent(player, message)
       addEvent(playerEvent, beforeDungeonMessage)
       addEvent(playerEvent, afterDungeonMessage)
     })
-  }
-  const playState = {
-    game: currentGame,
-    players
   }
   carryOutFourteen({ playState })
   setPlayState({

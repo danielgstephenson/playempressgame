@@ -14,11 +14,11 @@ export default function createBuySuffixes ({
   const buyerEndSuffix = rank == null
     ? ''
     : ` and take ${rank} into your tableau`
-  const buyer = `you pay ${spelled}${buyerEndSuffix}.`
+  const buyer = `you pay ${spelled}${buyerEndSuffix}`
   const loserEndSuffix = rank == null
     ? ''
     : ` and takes ${rank} into their tableau`
-  const loser = `${name} pays ${spelled}${loserEndSuffix}.`
+  const loser = `${name} pays ${spelled}${loserEndSuffix}`
   return {
     buyer,
     loser

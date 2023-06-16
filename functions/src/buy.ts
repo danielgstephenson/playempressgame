@@ -11,6 +11,7 @@ import joinRanksGrammar from './join/ranks/grammar'
 import guardDefined from './guard/defined'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import { PlayState, BuyerLoserMessages } from './types'
+import guardFirst from './guard/first'
 
 export default function buy ({
   bid,
@@ -56,12 +57,50 @@ export default function buy ({
     })
   }
   const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
+  const highPlayers = playState
+    .players
+    .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
+  const summoned = highPlayers.length === 1
+  const highLosers = highPlayers.filter(player => player.id !== buyerId)
+  if (buyer.tableau.some(scheme => scheme.rank === 12)) {
+    const {
+      publicEvents,
+      targetEvents
+    } = addTargetEvents({
+      playState,
+      message: `${buyer.displayName} won the auction, so they carry out the threat on their 12.`,
+      targetMessages: {
+        [buyer.id]: 'You won the auction, so you carry out the threat on your 12.'
+      }
+    })
+    const publicChildMessage = `${buyer.displayName} may take schemes from the dungeon.`
+    const privateChildMessage = 'You may take schemes from the dungeon.'
+    const buyerEvent = guardDefined(targetEvents[buyer.id], 'Buyer event')
+    addEvent(buyerEvent, privateChildMessage)
+    publicEvents.forEach(publicEvent => {
+      addEvent(publicEvent, publicChildMessage)
+    })
+  } else if (buyer.playScheme?.rank === 12) {
+    if (summoned) {
+      addTargetEvents({
+        playState,
+        message: `${buyer.displayName} won the auction, but they do not carry out the threat on their 12 because it was summoned.`,
+        targetMessages: {
+          [buyer.id]: 'You won the auction, but you do not carry out the threat on your 12 because it was summoned.'
+        }
+      })
+    } else {
+      addTargetEvents({
+        playState,
+        message: `${buyer.displayName} won the auction, but they do not carry out the threat on their 12 because it was imprisoned.`,
+        targetMessages: {
+          [buyer.id]: 'You won the auction, but you do not carry out the threat on your 12 because it was imprisoned.'
+        }
+      })
+    }
+  }
 
   if (highestPlayScheme.rank === 9) {
-    const highPlayers = playState
-      .players
-      .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
-    const highLosers = highPlayers.filter(player => player.id !== buyerId)
     if (highLosers.length > 0) {
       const names = highLosers.map(player => player.displayName)
       const joined = join(names)
@@ -151,6 +190,79 @@ export default function buy ({
         }
       })
     }
+  }
+  const playedThirteens = playState
+    .players
+    .filter(player => player.playScheme?.rank === 13)
+  const thirteens = playState
+    .players
+    .filter(player => player.tableau.some(scheme => scheme.rank === 13) && player.id !== buyerId)
+  const thirteen = thirteens.length > 0
+  if (thirteen) {
+    const thirteenNames = thirteens.map(thirteen => thirteen.displayName)
+    const joined = join(thirteenNames)
+    const grammar = getGrammar(thirteens.length, '13', '13s')
+    const threat = thirteens.length === 1
+      ? 'threat'
+      : 'threats'
+    const publicThirteenMessage = `${joined} did not win the auction, so they carry out the ${threat} on their ${grammar.noun}.`
+    const thirteenTargetMessages = thirteens.reduce<Record<string, string>>((targetMessages, thirteen) => {
+      const otherThirteens = thirteens.filter(player => player.id !== thirteen.id)
+      const otherNames = otherThirteens.map(player => player.displayName)
+      const privateNames = ['You', ...otherNames]
+      const privateJoined = join(privateNames)
+      const privateMessage = `${privateJoined} did not win the auction, so you carry out the ${threat} on your ${grammar.noun}.`
+      targetMessages[thirteen.id] = privateMessage
+      return targetMessages
+    }, {})
+    const thirteenEvents = addTargetEvents({
+      playState,
+      message: publicThirteenMessage,
+      targetMessages: thirteenTargetMessages
+    })
+    const loserThirteenMessage = `${buyer.displayName} may not take schemes from the court.`
+    const buyerThirteenMessage = 'You may not take schemes from the court.'
+    thirteenEvents.events.forEach(event => {
+      if (event.playerId === buyerId) {
+        addEvent(event, buyerThirteenMessage)
+      }
+      addEvent(event, loserThirteenMessage)
+    })
+    carryOutFourteen({
+      playState
+    })
+    return
+  } else if (playedThirteens.length === 1) {
+    const player = guardFirst(playedThirteens, 'Thirteen player')
+    addTargetEvents({
+      playState,
+      message: `${player.displayName} did not win the auction, but they do not carry out the threat on their 13 because it was summoned.`,
+      targetMessages: {
+        [player.id]: 'You did not win the auction, but you do not carry out the threat on your 13 because it was summoned.'
+      }
+    })
+  } else if (playedThirteens.length > 1) {
+    const names = playedThirteens.map(player => player.displayName)
+    const joined = join(names)
+    const grammar = getGrammar(playedThirteens.length, '13', '13s')
+    const threat = playedThirteens.length === 1
+      ? 'threat'
+      : 'threats'
+    const publicThirteenMessage = `${joined} did not win the auction, but they do not carry out the ${threat} on their ${grammar.noun} because they were imprisoned.`
+    const thirteenTargetMessages = playedThirteens.reduce<Record<string, string>>((targetMessages, player) => {
+      const otherThirteens = playedThirteens.filter(otherPlayer => otherPlayer.id !== player.id)
+      const otherNames = otherThirteens.map(player => player.displayName)
+      const privateNames = ['You', ...otherNames]
+      const privateJoined = join(privateNames)
+      const privateMessage = `${privateJoined} did not win the auction, but they do not you carry out the ${threat} on their ${grammar.noun} because they were imprisoned.`
+      targetMessages[player.id] = privateMessage
+      return targetMessages
+    }, {})
+    addTargetEvents({
+      playState,
+      message: publicThirteenMessage,
+      targetMessages: thirteenTargetMessages
+    })
   }
   if (playState.game.court.length === 0) {
     const buyerCourtMessage = 'There are no schemes in the court for you to take.'

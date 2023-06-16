@@ -6,7 +6,7 @@ import Curtain from './Curtain'
 import Status from './Status'
 import GameHistoryView from './GameHistory'
 import PlayProvider from '../context/play/Provider'
-import CourtView from './Court'
+import PalaceView from './Palace'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -19,8 +19,7 @@ export default function GameContentView (): JSX.Element {
       <Status label='Ready Count' value={gameState.readyCount} />
       <Curtain open={showContent}>
         <CardStackView label='Timeline' cardGroup={timeline} />
-        <CourtView />
-        <CardStackView label='Dungeon' cardGroup={gameState.dungeon} />
+        <PalaceView />
       </Curtain>
       <ProfilesView />
       <GameHistoryView />

@@ -139,13 +139,10 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
         const publicMessage = `${currentPlayer.displayName} bid ${bidGrammar.spelled}, but they do not carry out the threat on their 11 because it was summoned to the court.`
         addEvent(playState.game, publicMessage)
         playState.players.forEach(player => {
-          console.log('player', player)
           const bidder = player.userId === currentUid
           const bidderName = bidder ? 'You' : currentPlayer.displayName
           const playedEleven = elevenPlayer.userId === player.userId
-          console.log('playedEleven', playedEleven)
           const possessive = playedEleven ? 'your' : 'their'
-          console.log('possessive', possessive)
           const owner = playedEleven ? 'you' : elevenPlayer.displayName
           const verb = playedEleven
             ? 'do not'
