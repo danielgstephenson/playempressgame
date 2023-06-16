@@ -1,5 +1,6 @@
 
 import addEvent from '../add/event'
+import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
 import clone from '../clone'
 import getGrammar from '../get/grammar'
@@ -62,16 +63,11 @@ export default function revive ({
     addEvent(events.privateEvent, discardBeforeMessage)
     addEvent(events.privateEvent, afterDiscardMessage)
   } else {
-    const events = addEventsEverywhere({
-      privateEvent,
-      publicEvents,
-      possessive: false,
-      suffix: `revive ${listRanks}`,
-      displayName: player.displayName
-    })
-    addEvent(events.privateEvent, handBeforeMessage)
-    addEvent(events.privateEvent, afterHandMessage)
-    addEvent(events.privateEvent, discardBeforeMessage)
-    addEvent(events.privateEvent, afterDiscardMessage)
+    const privateReviveEvent = addEvent(privateEvent, `You revive ${listRanks}.`)
+    addEvent(privateReviveEvent, handBeforeMessage)
+    addEvent(privateReviveEvent, afterHandMessage)
+    addEvent(privateReviveEvent, discardBeforeMessage)
+    addEvent(privateReviveEvent, afterDiscardMessage)
+    addPublicEvent(publicEvents, `${player.displayName} revives ${listRanks}.`)
   }
 }
