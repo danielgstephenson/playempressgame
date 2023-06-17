@@ -1,6 +1,7 @@
 import { Auth, User } from 'firebase/auth'
 import { HttpsCallableResult } from 'firebase/functions'
 import { Timestamp } from 'firebase/firestore'
+import React from 'react'
 
 export interface AuthState {
   auth?: Auth
@@ -118,7 +119,7 @@ export interface Play {
   emptyTrash?: () => void
   play?: (scheme: Scheme | undefined) => void
   playScheme?: Scheme
-  reorder?: (schemes: Scheme[]) => void
+  setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void

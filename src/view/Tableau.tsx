@@ -1,10 +1,12 @@
 import { useContext } from 'react'
 import profileContext from '../context/profile'
-import CardStackView from './CardStack'
+import StaticAreaView from './StaticArea'
 
 export default function TableauView (): JSX.Element {
   const profileState = useContext(profileContext)
   return (
-    <CardStackView label='Tableau' cardGroup={profileState.tableau} />
+    <StaticAreaView
+      label='Tableau' schemes={profileState.tableau}
+    />
   )
 }

@@ -130,7 +130,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const chooseEvent = createEvent(PLAYER_CHOOSE_MESSAGE)
     const topDeckScheme = createScheme(topDeck)
     const topDiscardScheme = createScheme(topDiscard)
-    const deck = [topDeckScheme, createScheme(14), createScheme(14), createScheme(14), createScheme(14)]
+    const deck = [topDeckScheme, createScheme(5), createScheme(10), createScheme(15), createScheme(20)]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {

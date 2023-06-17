@@ -1,4 +1,4 @@
-import { ButtonGroup, Heading, Stack } from '@chakra-ui/react'
+import { ButtonGroup, Heading } from '@chakra-ui/react'
 import { Fragment, useContext } from 'react'
 import playContext from '../context/play'
 import ChakraButton from '../lib/firewrite/chakra/Button'
@@ -7,6 +7,7 @@ import { playerContext } from '../reader/player'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
 import SchemeView from './Scheme'
+import SchemesContainer from './SchemesContainer'
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
@@ -34,7 +35,7 @@ export default function HandView (): JSX.Element {
       playState.play?.(scheme)
     }
     return (
-      <SchemeView key={scheme.id} rank={scheme.rank} minW='100%'>
+      <SchemeView key={scheme.id} rank={scheme.rank}>
         <ButtonGroup>
           <Curtain open={showPlay}>
             <ChakraButton color='black' onClick={handleTrash}>Trash</ChakraButton>
@@ -67,9 +68,9 @@ export default function HandView (): JSX.Element {
   return (
     <>
       <Heading size='sm'>Hand</Heading>
-      <Stack>
+      <SchemesContainer>
         {schemeViews}
-      </Stack>
+      </SchemesContainer>
     </>
   )
 }

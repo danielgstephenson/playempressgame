@@ -1,21 +1,21 @@
 import { Heading } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import { Scheme } from '../types'
-import CardGroupContentView from './CardGroupContent'
+import StaticSchemesView from './StaticSchemes'
 
-export default function CardGroupView ({
+export default function StaticAreaView ({
   label,
   children,
-  cardGroup
+  schemes
 }: {
   label: string
   children?: ReactNode
-  cardGroup?: Scheme[]
+  schemes?: Scheme[]
 }): JSX.Element {
   return (
     <>
       <Heading size='sm'>{label}: {children}</Heading>
-      <CardGroupContentView cardGroup={cardGroup} />
+      <StaticSchemesView schemes={schemes} />
     </>
   )
 }

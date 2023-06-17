@@ -1,29 +1,30 @@
 import { Card, CardProps } from '@chakra-ui/react'
-import { DraggableProvidedDraggableProps, DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 import { forwardRef } from 'react'
+import getBg from '../service/getBg'
 import SchemeContentView from './SchemeContent'
-import schemes from '../schemes.json'
 
 function View ({
   children,
+  isDragging,
   rank,
   ...otherProps
 }: {
   children?: React.ReactNode
+  isDragging?: boolean
   rank: number
 } &
-Partial<DraggableProvidedDragHandleProps> &
-Partial<DraggableProvidedDraggableProps> &
 CardProps,
 ref: React.Ref<HTMLDivElement>
 ): JSX.Element {
-  const scheme = schemes[rank]
-  const bg = `${scheme.color.toLowerCase()}.100`
+  const weight = isDragging === true ? 200 : 100
+  const bg = getBg({ rank, weight })
+  const height = children == null ? '370px' : '400px'
   return (
     <Card
       bg={bg}
       ref={ref}
-      w='48%'
+      w='230px'
+      height={height}
       {...otherProps}
     >
       <SchemeContentView rank={rank}>

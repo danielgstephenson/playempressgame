@@ -1,12 +1,12 @@
 import { useContext } from 'react'
 import ProfilesView from './Profiles'
 import { gameContext } from '../reader/game'
-import CardStackView from './CardStack'
 import Curtain from './Curtain'
 import Status from './Status'
 import GameHistoryView from './GameHistory'
 import PlayProvider from '../context/play/Provider'
 import PalaceView from './Palace'
+import StaticAreaView from './StaticArea'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -18,7 +18,7 @@ export default function GameContentView (): JSX.Element {
       <Status label='Player Count' value={gameState.profiles?.length} />
       <Status label='Ready Count' value={gameState.readyCount} />
       <Curtain open={showContent}>
-        <CardStackView label='Timeline' cardGroup={timeline} />
+        <StaticAreaView label='Timeline' schemes={timeline} />
         <PalaceView />
       </Curtain>
       <ProfilesView />

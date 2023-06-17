@@ -15,7 +15,7 @@ import { playerContext } from '../reader/player'
 
 export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
-  const { reorder, trash, play } = useContext(playContext)
+  const { setDeck, trash, play } = useContext(playContext)
   const { deck } = useContext(playerContext)
   useEffect(() => {
     trash?.(undefined)
@@ -25,8 +25,8 @@ export default function PlayerView (): JSX.Element {
     if (deck == null) {
       return
     }
-    reorder?.(deck)
-  }, [deck])
+    setDeck?.(deck)
+  }, [deck, setDeck])
 
   return (
     <>

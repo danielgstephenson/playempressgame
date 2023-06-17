@@ -1,6 +1,6 @@
 import { Alert, Box, Heading } from '@chakra-ui/react'
 import PlayerReader from '../reader/player'
-import { Fragment, useContext } from 'react'
+import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PlayerView from './Player'
@@ -16,10 +16,10 @@ export default function ProfileView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playing = gameState.phase !== 'join'
   const showPlayer = authState.currentUser?.uid === profileState.userId
-  const Container = showPlayer ? Alert : Fragment
+  const ProfileContainer = showPlayer ? Alert : Box
   const deckEmpty = profileState.deckEmpty === true
   return (
-    <Container>
+    <ProfileContainer bg='gray.50'>
       <Box width='100%'>
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>
@@ -37,6 +37,6 @@ export default function ProfileView (): JSX.Element {
           </Curtain>
         </Curtain>
       </Box>
-    </Container>
+    </ProfileContainer>
   )
 }

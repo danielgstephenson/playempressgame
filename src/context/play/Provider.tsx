@@ -27,9 +27,6 @@ export default function PlayProvider ({ children }: {
   const emptyPlay = useCallback(() => {
     setPlayScheme(undefined)
   }, [])
-  const reorder = useCallback((deck: Scheme[]) => {
-    setDeck(deck)
-  }, [])
   const state = {
     deck,
     emptyPlay,
@@ -37,7 +34,7 @@ export default function PlayProvider ({ children }: {
     leave,
     play,
     playScheme,
-    reorder,
+    setDeck,
     take,
     taken,
     trash,

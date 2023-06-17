@@ -1,9 +1,11 @@
-import { Box, Heading, HStack, Text } from '@chakra-ui/layout'
+import { Heading, HStack, Text } from '@chakra-ui/layout'
 import { Checkbox } from '@chakra-ui/react'
 import { Fragment, ReactNode, useContext } from 'react'
 import playContext from '../context/play'
+import getBg from '../service/getBg'
 import { Scheme } from '../types'
 import Curtain from './Curtain'
+import SchemeView from './Scheme'
 
 export default function PalaceAreaView ({
   children,
@@ -32,11 +34,15 @@ export default function PalaceAreaView ({
         handleLeave()
       }
     }
+    const color = getBg({ rank: scheme.rank, weight: 800 })
     return (
-      <Box key={scheme.id}>
-        <Text>{scheme.rank}</Text>
-        <Checkbox isChecked={taken} onChange={handleCheck} />
-      </Box>
+      <SchemeView rank={scheme.rank} key={scheme.id}>
+        <Checkbox
+          borderColor={color}
+          isChecked={taken}
+          onChange={handleCheck}
+        />
+      </SchemeView>
     )
   })
   const heading = children != null && <Heading size='sm'>{children}</Heading>
@@ -44,7 +50,7 @@ export default function PalaceAreaView ({
     <>
       {heading}
       <Curtain open={full} hider={<Text>Empty</Text>}>
-        <HStack flexWrap='wrap'>x{group}</HStack>
+        <HStack flexWrap='wrap'>{group}</HStack>
       </Curtain>
     </>
   )
