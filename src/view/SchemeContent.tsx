@@ -31,7 +31,7 @@ export default function SchemeContentView ({
           </HStack>
           <Heading size='sm'>{scheme.title}</Heading>
           <Flex direction='column' height='100%' gap='10px'>
-            <Text display='contents' minHeight='72px'>{scheme.beginning}</Text>
+            <Text minHeight='72px'>{scheme.beginning}</Text>
             <Text>{scheme.end}</Text>
             <Flex direction='column' height='100%'>
               <Spacer />
