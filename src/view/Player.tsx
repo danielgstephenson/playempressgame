@@ -17,7 +17,6 @@ export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
   const { reorder, trash, play } = useContext(playContext)
   const { deck } = useContext(playerContext)
-  console.log('deck', deck)
   useEffect(() => {
     trash?.(undefined)
     play?.(undefined)

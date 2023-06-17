@@ -15,7 +15,7 @@ export default function HistoryEventView ({
           const items = isExpanded && event.events?.map((event, index) => (
             <HistoryEventView key={index} event={event} />
           ))
-          const panel = hasChildren && <AccordionPanel>{items}</AccordionPanel>
+          const panel = hasChildren && <AccordionPanel pb='0'>{items}</AccordionPanel>
           return (
             <>
               <Heading size='sm'>
