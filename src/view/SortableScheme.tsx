@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import SchemeView from './Scheme'
 
-export default function SortableScheme ({
+export default function SortableSchemeView ({
   children,
   id,
   index,

@@ -15,18 +15,30 @@ import { playerContext } from '../reader/player'
 
 export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
-  const { setDeck, trash, play } = useContext(playContext)
-  const { deck } = useContext(playerContext)
+  const { resetTaken, setDeck, setHand, trash, play } = useContext(playContext)
+  const { deck, hand } = useContext(playerContext)
   useEffect(() => {
     trash?.(undefined)
     play?.(undefined)
-  }, [round, trash, play])
+    resetTaken?.()
+  }, [resetTaken, round, trash, play])
   useEffect(() => {
     if (deck == null) {
       return
     }
     setDeck?.(deck)
   }, [deck, setDeck])
+  useEffect(() => {
+    if (hand == null) {
+      return
+    }
+    setHand?.(current => {
+      const already = current?.filter(scheme => hand.some(handScheme => handScheme.id === scheme.id))
+
+      const newSchemes = hand.filter(scheme => !current.some(currentScheme => currentScheme.id === scheme.id))
+      return [...newSchemes, ...already]
+    })
+  }, [hand, setHand])
 
   return (
     <>

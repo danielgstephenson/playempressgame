@@ -1,6 +1,5 @@
 import addEvent from './add/event'
 import addBuyEvents from './add/events/buy'
-import addCourtEvents from './add/events/court'
 import addTargetEvents from './add/events/target'
 import carryOutFourteen from './carryOut/fourteen'
 import createAfterMessage from './create/message/after'
@@ -12,6 +11,7 @@ import guardDefined from './guard/defined'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import { PlayState, BuyerLoserMessages } from './types'
 import guardFirst from './guard/first'
+import joinRanks from './join/ranks'
 
 export default function buy ({
   bid,
@@ -62,7 +62,8 @@ export default function buy ({
     .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
   const summoned = highPlayers.length === 1
   const highLosers = highPlayers.filter(player => player.id !== buyerId)
-  if (buyer.tableau.some(scheme => scheme.rank === 12)) {
+  const twelve = buyer.tableau.some(scheme => scheme.rank === 12)
+  if (twelve) {
     const {
       publicEvents,
       targetEvents
@@ -99,7 +100,6 @@ export default function buy ({
       })
     }
   }
-
   if (highestPlayScheme.rank === 9) {
     if (highLosers.length > 0) {
       const names = highLosers.map(player => player.displayName)
@@ -264,7 +264,101 @@ export default function buy ({
       targetMessages: thirteenTargetMessages
     })
   }
-  if (playState.game.court.length === 0) {
+  const courtEmpty = playState.game.court.length === 0
+  const courtJoined = joinRanks(playState.game.court)
+  const singleCourt = playState.game.court.length === 1
+  if (twelve) {
+    const dungeonEmpty = playState.game.dungeon.length === 0
+    const singleDungeon = playState.game.dungeon.length === 1
+    const dungeonJoined = joinRanks(playState.game.dungeon)
+    if (courtEmpty) {
+      if (dungeonEmpty) {
+        const buyerMessage = 'There are no schemes in the court or dungeon for you to take.'
+        const loserMessage = `There are no schemes in the court or dungeon for ${buyer.displayName} to take.`
+        addTargetEvents({
+          playState,
+          message: loserMessage,
+          targetMessages: {
+            [buyerId]: buyerMessage
+          }
+        })
+        carryOutFourteen({ playState })
+        return
+      }
+      if (singleDungeon) {
+        const single = guardFirst(playState.game.dungeon, 'Single dungeon scheme')
+        addTargetEvents({
+          playState,
+          message: `${buyer.displayName} is choosing whether to take ${single.rank} from the dungeon.`,
+          targetMessages: {
+            [buyerId]: `Choose whether to take ${single.rank} from the dungeon.`
+          }
+        })
+        return
+      }
+      addTargetEvents({
+        playState,
+        message: `${buyer.displayName} is choosing which of ${dungeonJoined} to take from the dungeon.`,
+        targetMessages: {
+          [buyerId]: `Choose which of ${dungeonJoined} to take from the dungeon.`
+        }
+      })
+      return
+    }
+    if (dungeonEmpty) {
+      if (courtEmpty) {
+        const buyerMessage = 'There are no schemes in the court or dungeon for you to take.'
+        const loserMessage = `There are no schemes in the court or dungeon for ${buyer.displayName} to take.`
+        addTargetEvents({
+          playState,
+          message: loserMessage,
+          targetMessages: {
+            [buyerId]: buyerMessage
+          }
+        })
+        carryOutFourteen({ playState })
+        return
+      }
+      if (singleCourt) {
+        const single = guardFirst(playState.game.court, 'Single court scheme')
+        addTargetEvents({
+          playState,
+          message: `${buyer.displayName} is choosing whether to take ${single.rank} from the court.`,
+          targetMessages: {
+            [buyerId]: `Choose whether to take ${single.rank} from the court.`
+          }
+        })
+        return
+      }
+      addTargetEvents({
+        playState,
+        message: `${buyer.displayName} is choosing whether to take ${courtJoined} from the court.`,
+        targetMessages: {
+          [buyerId]: `Choose whether to take ${courtJoined} from the court.`
+        }
+      })
+      return
+    }
+    if (singleCourt) {
+      addTargetEvents({
+        playState,
+        message: `${buyer.displayName} is choosing whether to take ${courtJoined} from the court and ${dungeonJoined} from the dungeon.`,
+        targetMessages: {
+          [buyerId]: `Choose whether to take ${courtJoined} from the court and ${dungeonJoined} from the dungeon.`
+        }
+      })
+      return
+    }
+    addTargetEvents({
+      playState,
+      message: `${buyer.displayName} is choosing which of ${courtJoined} from the court and ${dungeonJoined} from the dungeon to take.`,
+      targetMessages: {
+        [buyerId]: `Choose which of ${courtJoined} from the court and ${dungeonJoined} from the dungeon to take.`
+      }
+    })
+    return
+  }
+  if (courtEmpty) {
     const buyerCourtMessage = 'There are no schemes in the court for you to take.'
     const loserCourtMessage = `There are no schemes in the court for ${buyer.displayName} to take.`
     addTargetEvents({
@@ -278,10 +372,19 @@ export default function buy ({
       playState
     })
   } else {
-    addCourtEvents({
-      buyerId,
-      buyerName: buyer.displayName,
-      playState
+    const courtJoined = joinRanks(playState.game.court)
+    const multipleCourt = playState.game.court.length > 1
+    const courtMessage = multipleCourt
+      ? `which of ${courtJoined} to take`
+      : `whether to take ${courtJoined}`
+    const buyerCourtMessage = `Choose ${courtMessage} from the court.`
+    const loserCourtMessage = `${buyer.displayName} is choosing ${courtMessage} from the court.`
+    addTargetEvents({
+      playState,
+      message: loserCourtMessage,
+      targetMessages: {
+        [buyerId]: buyerCourtMessage
+      }
     })
   }
 }

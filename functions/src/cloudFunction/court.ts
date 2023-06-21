@@ -119,8 +119,9 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     const beforeDungeon = [...playState.game.dungeon]
     const beforeDungeonJoined = joinRanks(beforeDungeon)
     const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
+    const imprisoned = playState.game.court.filter(scheme => scheme.id === lowest.id)
+    playState.game.dungeon.push(...imprisoned)
     playState.game.court = playState.game.court.filter(scheme => scheme.id !== lowest.id)
-    playState.game.dungeon.push(lowest)
     const afterDungeon = [...playState.game.dungeon]
     const afterDungeonJoined = joinRanks(afterDungeon)
     const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`

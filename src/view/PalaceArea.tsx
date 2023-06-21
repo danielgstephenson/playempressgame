@@ -1,4 +1,4 @@
-import { Heading, HStack, Text } from '@chakra-ui/layout'
+import { Heading, Text } from '@chakra-ui/layout'
 import { Checkbox } from '@chakra-ui/react'
 import { Fragment, ReactNode, useContext } from 'react'
 import playContext from '../context/play'
@@ -6,6 +6,7 @@ import getBg from '../service/getBg'
 import { Scheme } from '../types'
 import Curtain from './Curtain'
 import SchemeView from './Scheme'
+import SchemesContainerView from './SchemesContainer'
 
 export default function PalaceAreaView ({
   children,
@@ -16,7 +17,8 @@ export default function PalaceAreaView ({
 }): JSX.Element {
   const playState = useContext(playContext)
   const full = schemes != null && schemes.length > 0
-  const group = schemes?.map(scheme => {
+  const sorted = schemes?.sort((a, b) => a.rank - b.rank)
+  const group = sorted?.map(scheme => {
     if (playState.taken == null) {
       return <Fragment key={scheme.id} />
     }
@@ -50,7 +52,7 @@ export default function PalaceAreaView ({
     <>
       {heading}
       <Curtain open={full} hider={<Text>Empty</Text>}>
-        <HStack flexWrap='wrap'>{group}</HStack>
+        <SchemesContainerView>{group}</SchemesContainerView>
       </Curtain>
     </>
   )

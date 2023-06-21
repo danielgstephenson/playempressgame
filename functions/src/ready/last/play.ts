@@ -5,6 +5,7 @@ import playEffects from '../../effects/play'
 import guardDefined from '../../guard/defined'
 import playerSort from '../../sort/player'
 import filterIds from '../../filterIds'
+import filterPlaySchemes from '../../filterPlaySchemes'
 import clone from '../../clone'
 import summonOrImprison from '../../summonOrImprison'
 import addChoiceEvents from '../../add/events/choice'
@@ -27,9 +28,7 @@ export default function playLastReady ({
   currentPlayer.playReady = true
   const joinedBefore = joinRanks(currentPlayer.hand)
   playState.players.forEach(player => {
-    player.hand = player
-      .hand
-      .filter(scheme => scheme.id !== player.trashScheme?.id && scheme.id !== player.playScheme?.id)
+    player.hand = filterPlaySchemes(player)
     const trashScheme = guardDefined(player.trashScheme, 'Trash scheme')
     player.trashHistory.push({ scheme: trashScheme, round: playState.game.round })
   })

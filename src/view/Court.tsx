@@ -4,6 +4,7 @@ import PalaceAreaView from './PalaceArea'
 
 export default function CourtView (): JSX.Element {
   const gameState = useContext(gameContext)
+  console.log('gameState', gameState)
   return (
     <PalaceAreaView schemes={gameState.court}>
       Court:

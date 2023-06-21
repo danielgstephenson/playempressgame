@@ -18,6 +18,7 @@ import isCarryingOutEleven from '../is/carryingOutEleven'
 import joinPrivateNames from '../join/privateNames'
 import guardHighestRankPlayScheme from '../guard/highestRankPlayScheme'
 import guardFirst from '../guard/first'
+import createBidSuffixes from '../create/bidSuffixes'
 
 const bid = createCloudFunction<BidProps>(async (props, context, transaction) => {
   const gameId = guardString(props.gameId, 'Play ready game id')
@@ -94,6 +95,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   const highestBid = getHighestBid(playState.players)
   const fiveThreshold = highestBid < 5 && bid >= 5
   const tenThreshold = currentPlayer.bid < 10 && bid >= 10
+  const oldHighestUntiedPlayer = getHighestUntiedPlayer(playState.players)
   currentPlayer.bid = bid
   if (fiveThreshold) {
     const hasElevens = playState
@@ -232,18 +234,15 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     console.info(`${currentUid} bid enough to buy!`)
     return
   }
-  const highestUntiedPlayer = getHighestUntiedPlayer(playState.players)
-  const winning = highestUntiedPlayer?.userId === currentUid
+  const newHighestUntiedPlayer = getHighestUntiedPlayer(playState.players)
+  const winning = newHighestUntiedPlayer?.userId === currentUid
   const { spelled } = getGrammar(currentPlayer.bid)
+  const tying = oldHighestUntiedPlayer?.bid === currentPlayer.bid
   const privateBidMessage = `You bid ${spelled}`
   const publicBidMessage = `${currentPlayer.displayName} bid ${spelled}`
-  const highestMessage = 'the highest untied bidder'
-  const privateMessage = winning
-    ? `${privateBidMessage}, making you ${highestMessage}.`
-    : `${privateBidMessage}.`
-  const publicMessage = winning
-    ? `${publicBidMessage}, making them ${highestMessage}.`
-    : `${publicBidMessage}.`
+  const bidSuffixes = createBidSuffixes({ name: currentPlayer.displayName, tying, winning })
+  const privateMessage = `${privateBidMessage}${bidSuffixes?.private}.`
+  const publicMessage = `${publicBidMessage}${bidSuffixes?.public}.`
   addTargetEvents({
     playState,
     message: publicMessage,
@@ -254,9 +253,9 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   currentPlayer.lastBidder = true
   currentPlayer.auctionReady = winning
   console.log('bid', bid)
-  console.log('highestUntiedProfile', highestUntiedPlayer)
+  console.log('highestUntiedPlayer', newHighestUntiedPlayer)
   console.log('winning', winning)
-  const tying = highestUntiedPlayer?.bid === currentPlayer.bid
+  console.log('currentPlayer.bid', currentPlayer.bid)
   const pivotal = winning || tying
   console.log('pivotal', pivotal)
   playState.players.forEach(player => {

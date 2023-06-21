@@ -2,7 +2,7 @@ import { closestCenter, DndContext, MouseSensor, TouchSensor, useSensor, useSens
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-export default function Sortables <Item extends { id: string }> ({
+export default function SortablesView <Item extends { id: string }> ({
   children,
   items,
   setItems

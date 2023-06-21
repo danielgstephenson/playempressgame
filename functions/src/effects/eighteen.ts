@@ -41,22 +41,7 @@ export default function effectsEighteen ({
       player: effectPlayer,
       playState,
       privateEvent: firstPrivateChild,
-      publicEvents: firstPublicChildren
-    })
-  }
-  const scheme = addTopDiscardSchemeYellowEvents({
-    discard: effectPlayer.discard,
-    displayName: effectPlayer.displayName,
-    privateEvent: firstPrivateChild,
-    publicEvents: firstPublicChildren
-  })
-  if (scheme != null) {
-    earn({
-      amount: scheme.rank * 2,
-      player: effectPlayer,
-      playState,
-      privateEvent: firstPrivateChild,
-      publicEvents: firstPublicChildren
+     publicEvents: firstPublicChildren
     })
   }
   addEvent(privateEvent, 'Second, one Privilege is summoned to the court')

@@ -79,8 +79,8 @@ export default function effectsSeven ({
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if the lowest rank scheme in play is green, you earn 10 gold.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns 10 gold.`)
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if the lowest rank scheme in play is green, you earn ten gold.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns ten gold.`)
   const { scheme } = addLowestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

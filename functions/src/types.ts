@@ -304,6 +304,11 @@ export interface Messages {
   privateMessage: string
 }
 
+export interface Suffixes {
+  private: string
+  public: string
+}
+
 export interface BuySuffixes {
   buyer: string
   loser: string

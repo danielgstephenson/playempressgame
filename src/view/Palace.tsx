@@ -11,13 +11,13 @@ export default function PalaceView (): JSX.Element {
   return (
     <>
       <CourtView />
-      <DungeonView />
       <Cloud
         fn='court'
         props={{ gameId: gameState.id, schemeIds: playState.taken }}
       >
         Ready
       </Cloud>
+      <DungeonView />
     </>
   )
 }

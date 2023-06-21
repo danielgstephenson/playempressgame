@@ -117,9 +117,12 @@ export interface Play {
   deck?: Scheme[]
   emptyPlay?: () => void
   emptyTrash?: () => void
+  hand?: Scheme[]
   play?: (scheme: Scheme | undefined) => void
   playScheme?: Scheme
+  resetTaken?: () => void
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void

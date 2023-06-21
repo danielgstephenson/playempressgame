@@ -18,8 +18,9 @@ export default function ProfileView (): JSX.Element {
   const showPlayer = authState.currentUser?.uid === profileState.userId
   const ProfileContainer = showPlayer ? Alert : Box
   const deckEmpty = profileState.deckEmpty === true
+  const bg = showPlayer ? 'gray.50' : undefined
   return (
-    <ProfileContainer bg='gray.50'>
+    <ProfileContainer bg={bg}>
       <Box width='100%'>
         <Heading size='md'>Profile: {profileState.displayName}</Heading>
         <Curtain open={playing}>

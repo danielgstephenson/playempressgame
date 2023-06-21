@@ -69,7 +69,10 @@ const playReady = createCloudFunction<PlayReadyProps>(async (props, context, tra
     const youEvent = createEvent('You are ready.')
     const joinedBefore = joinRanks(currentPlayer.hand)
     addEvent(youEvent, `Your hand was ${joinedBefore}.`)
+    currentPlayer.playScheme = playScheme
+    currentPlayer.trashScheme = trashScheme
     const handAfter = filterPlaySchemes(currentPlayer)
+    console.log('handAfter', handAfter)
     const joinedAfter = joinRanks(handAfter)
     addEvent(youEvent, `Your hand becomes ${joinedAfter}.`)
     const youUpdate = {

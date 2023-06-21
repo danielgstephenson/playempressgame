@@ -15,7 +15,7 @@ export default function discardTableau ({
       player.tableau.sort((a, b) => b.rank - a.rank)
       const joined = joinRanksGrammar(player.tableau)
       const discardBefore = [...player.discard]
-      player.discard.push(...player.tableau)
+      player.discard.unshift(...player.tableau)
       player.tableau = []
       const privateMessage = `You put ${joined.joinedRanks} from your tableau on your discard.`
       const publicMessage = `${player.displayName} puts ${joined.joinedRanks} from their tableau on their discard.`

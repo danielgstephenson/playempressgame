@@ -1,31 +1,35 @@
 import { ButtonGroup, Heading } from '@chakra-ui/react'
-import { Fragment, useContext } from 'react'
+import { MouseEvent, Fragment, useContext } from 'react'
 import playContext from '../context/play'
 import ChakraButton from '../lib/firewrite/chakra/Button'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
-import SchemeView from './Scheme'
-import SchemesContainer from './SchemesContainer'
+import SchemesContainerView from './SchemesContainer'
+import SortablesView from './Sortables'
+import SortableSchemeView from './SortableScheme'
+
+function stop (event: MouseEvent<HTMLButtonElement>): void {
+  console.log('stop')
+  event.preventDefault()
+  event.stopPropagation()
+}
 
 export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
   const playState = useContext(playContext)
+  if (playState.hand == null) {
+    return <></>
+  }
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   const deckChoice = choice?.type === 'deck'
   const trashChoice = choice?.type === 'trash'
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const showPlay = noChoice && gameState.phase === 'play' && playerState.playReady !== true
-  const unplayed = playerState
-    .hand
-    ?.filter(scheme =>
-      scheme.id !== playState.trashScheme?.id &&
-      scheme.id !== playState.playScheme?.id
-    )
-  const schemeViews = unplayed?.map(scheme => {
-    if (scheme.id === playerState.trashScheme?.id || scheme.id === playerState.playScheme?.id) {
+  const schemeViews = playState.hand?.map((scheme, index) => {
+    if (scheme.id === playState.trashScheme?.id || scheme.id === playState.playScheme?.id) {
       return <Fragment key={scheme.id} />
     }
     function handleTrash (): void {
@@ -35,17 +39,23 @@ export default function HandView (): JSX.Element {
       playState.play?.(scheme)
     }
     return (
-      <SchemeView key={scheme.id} rank={scheme.rank}>
+      <SortableSchemeView
+        key={scheme.id}
+        id={scheme.id}
+        rank={scheme.rank}
+        index={index}
+      >
         <ButtonGroup>
           <Curtain open={showPlay}>
-            <ChakraButton color='black' onClick={handleTrash}>Trash</ChakraButton>
+            <ChakraButton onMouseDown={stop} color='black' onClick={handleTrash}>Trash</ChakraButton>
           </Curtain>
           <Curtain open={showPlay}>
-            <ChakraButton color='black' onClick={handlePlay}>Play</ChakraButton>
+            <ChakraButton onMouseDown={stop} color='black' onClick={handlePlay}>Play</ChakraButton>
           </Curtain>
           <Curtain open={deckChoice}>
             <Cloud
               fn='deckChoose'
+              onMouseDown={stop}
               props={{ schemeId: scheme.id, gameId: gameState.id }}
               color='black'
             >
@@ -55,6 +65,7 @@ export default function HandView (): JSX.Element {
           <Curtain open={trashChoice}>
             <Cloud
               fn='trashChoose'
+              onMouseDown={stop}
               props={{ schemeId: scheme.id, gameId: gameState.id }}
               color='black'
             >
@@ -62,15 +73,20 @@ export default function HandView (): JSX.Element {
             </Cloud>
           </Curtain>
         </ButtonGroup>
-      </SchemeView>
+      </SortableSchemeView>
     )
   })
   return (
     <>
       <Heading size='sm'>Hand</Heading>
-      <SchemesContainer>
-        {schemeViews}
-      </SchemesContainer>
+      <SortablesView
+        items={playState.hand}
+        setItems={playState.setHand}
+      >
+        <SchemesContainerView>
+          {schemeViews}
+        </SchemesContainerView>
+      </SortablesView>
     </>
   )
 }

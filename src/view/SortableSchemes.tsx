@@ -1,15 +1,13 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { Scheme } from '../types'
-import SchemesContainer from './SchemesContainer'
-import Sortables from './Sortables'
+import SchemesContainerView from './SchemesContainer'
+import SortablesView from './Sortables'
 import SortableScheme from './SortableScheme'
 
-export default function SortableSchemes ({
-  children,
+export default function SortableSchemesView ({
   schemes,
   setSchemes
 }: {
-  children?: ReactNode
   schemes: Scheme[]
   setSchemes?: Dispatch<SetStateAction<Scheme[]>>
 }): JSX.Element {
@@ -20,19 +18,17 @@ export default function SortableSchemes ({
         id={scheme.id}
         rank={scheme.rank}
         index={index}
-      >
-        {children}
-      </SortableScheme>
+      />
     )
   })
   return (
-    <Sortables
+    <SortablesView
       items={schemes}
       setItems={setSchemes}
     >
-      <SchemesContainer>
+      <SchemesContainerView>
         {sortableSchemes}
-      </SchemesContainer>
-    </Sortables>
+      </SchemesContainerView>
+    </SortablesView>
   )
 }

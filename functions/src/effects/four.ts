@@ -15,7 +15,7 @@ export default function effectsFour ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  addEvent(
+  const firstPrivateEvent = addEvent(
     privateEvent,
     'First, you take one Privilege into your hand.'
   )
@@ -24,10 +24,10 @@ export default function effectsFour ({
     `First, ${effectPlayer.displayName} takes one Privilege into their hand.`
   )
   const before = joinRanks(effectPlayer.hand)
-  addPublicEvent(firstPublicEvents, `Your hand was ${before}.`)
+  addEvent(firstPrivateEvent, `Your hand was ${before}.`)
   effectPlayer.hand.push(...createPrivilege(1))
   const after = joinRanks(effectPlayer.hand)
-  addPublicEvent(firstPublicEvents, `Your hand becomes ${after}.`)
+  addEvent(firstPrivateEvent, `Your hand becomes ${after}.`)
   const secondPrivateChild = addEvent(
     privateEvent,
     'Second, you draw the lowest time in play.'

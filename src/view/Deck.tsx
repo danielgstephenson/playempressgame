@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import Cloud from './Cloud'
-import SortableSchemes from './SortableSchemes'
+import SortableSchemesView from './SortableSchemes'
 
 export default function DeckView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -15,7 +15,7 @@ export default function DeckView (): JSX.Element {
   return (
     <>
       <Heading size='sm'>Deck</Heading>
-      <SortableSchemes schemes={deck} setSchemes={setDeck} />
+      <SortableSchemesView schemes={deck} setSchemes={setDeck} />
       <Cloud
         fn='reorder'
         props={{ gameId: gameState.id, schemeIds }}

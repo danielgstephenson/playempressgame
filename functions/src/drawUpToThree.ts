@@ -175,7 +175,7 @@ export default function drawUpToThree ({
   const leftmostMessage = `${leftmost.rank} is up for auction`
   const courtMessage = playState.game.court.length > 0
     ? ` with ${join(playState.game.court.map(scheme => scheme.rank))} in the court`
-    : ''
+    : ' and the court is empty'
   const message = `${leftmostMessage}${courtMessage}.`
   addBroadcastEvent({
     players: playState.players,

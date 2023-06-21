@@ -2,6 +2,7 @@ import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
 import addEvent from '../../../event'
 import addPublicEvent from '../../../event/public'
 import addTopDiscardSchemeEvents from '.'
+import getGrammar from '../../../../get/grammar'
 
 export default function addTopDiscardSchemeTimeEvents ({
   discard,
@@ -23,7 +24,8 @@ export default function addTopDiscardSchemeTimeEvents ({
   if (scheme == null) {
     return 0
   }
-  addPublicEvent(publicEvents, `${displayName}'s top discard scheme is ${scheme.rank} with ${scheme.time} time.`)
+  const { spelled } = getGrammar(scheme.time)
+  addPublicEvent(publicEvents, `${displayName}'s top discard scheme is ${scheme.rank} with ${spelled} time.`)
   addEvent(privateEvent, `Your top discard scheme, ${scheme.rank}, has ${scheme.time} time.`)
   return scheme.time
 }

@@ -23,7 +23,7 @@ ref: React.Ref<HTMLDivElement>
     <Card
       bg={bg}
       ref={ref}
-      w='230px'
+      w='222px'
       height={height}
       {...otherProps}
     >

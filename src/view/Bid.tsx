@@ -1,4 +1,14 @@
-import { NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from '@chakra-ui/number-input'
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  RangeSlider,
+  RangeSliderThumb,
+  RangeSliderTrack,
+  RangeSliderFilledTrack
+} from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
@@ -14,6 +24,14 @@ export default function BidView (): JSX.Element {
   }, [playerState.bid])
   function handleChange (value: string): void {
     setBid(Number(value))
+  }
+  function handleSliderChange (
+    values: number[]
+  ): void {
+    setBid(values[0])
+  }
+  if (bid == null) {
+    return <></>
   }
   return (
     <>
@@ -31,6 +49,18 @@ export default function BidView (): JSX.Element {
           <NumberDecrementStepper />
         </NumberInputStepper>
       </NumberInput>
+      <RangeSlider
+        onChange={handleSliderChange}
+        value={[bid]}
+        min={0}
+        max={playerState.gold}
+        step={5}
+      >
+        <RangeSliderTrack>
+          <RangeSliderFilledTrack />
+        </RangeSliderTrack>
+        <RangeSliderThumb boxSize={6} index={0} />
+      </RangeSlider>
       <Cloud
         fn='bid'
         props={{ bid, gameId: gameState.id }}
