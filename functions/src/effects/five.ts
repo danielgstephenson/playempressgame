@@ -1,5 +1,6 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addSortedPlayerEvents from '../add/events/player/sorted'
 import addTopDiscardSchemeTimeEvents from '../add/events/scheme/topDiscard/time'
 import draw from '../draw'
@@ -33,18 +34,21 @@ export default function effectsFive ({
     publicEvents: firstPublicChildren
   })
   const secondPrivateChild = addEvent(privateEvent, 'Second, draw twice the number of colors in play.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws twice the number of colors in play.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, ${effectPlayer.displayName} draws twice the number of colors in play.`
+  })
   const uniqueColors = playState.players.reduce<string[]>((uniqueColors, player) => {
     const playScheme = guardPlayScheme(player)
     if (uniqueColors.includes(playScheme.color)) return uniqueColors
     return [...uniqueColors, playScheme.color]
   }, [])
   const doubleColors = uniqueColors.length * 2
-  const { toBeCount: phrase } = getGrammar(uniqueColors.length, 'color', 'colors')
-  const publicMessage = `There ${phrase} in play, so ${effectPlayer.displayName} draws ${doubleColors}`
-  const privateMessage = `There ${phrase} in play, so you draw ${doubleColors}`
+  const { toBeCount } = getGrammar(uniqueColors.length, 'color', 'colors')
+  const publicMessage = `There ${toBeCount} in play, so ${effectPlayer.displayName} draws ${doubleColors}`
+  const privateMessage = `There ${toBeCount} in play, so you draw ${doubleColors}`
   function templateCallback (scheme: Scheme): string {
-    return `which is ${scheme.color}.`
+    return `which is ${scheme.color}`
   }
   addSortedPlayerEvents({
     publicEvents: secondPublicChildren,

@@ -1,5 +1,6 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
@@ -17,7 +18,10 @@ export default function effectsTwo ({
   resume
 }: SchemeEffectProps): PlayState {
   const firstPrivateChild = addEvent(privateEvent, 'First, you revive the lowest time in play.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the lowest time in play.`)
+  const firstPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `First, ${effectPlayer.displayName} revives the lowest time in play.`
+  })
   const lowest = addLowestPlayTimeEvents({
     playState,
     privateEvent: firstPrivateChild,

@@ -1,4 +1,4 @@
-import { HistoryEvent, PlayState, PlayEvents, PublicEvents, Scheme } from '../../../../../types'
+import { HistoryEvent, PlayState, PlayEvents, Scheme, PlayerPublicEvents } from '../../../../../types'
 import addSortedPlayerEvents from '../../../player/sorted'
 
 export default function addPlayTimeEvents ({
@@ -9,7 +9,7 @@ export default function addPlayTimeEvents ({
   timeMessage
 }: {
   privateEvent: HistoryEvent
-  publicEvents: PublicEvents
+  publicEvents: PlayerPublicEvents
   playerId: string
   playState: PlayState
   timeMessage: string

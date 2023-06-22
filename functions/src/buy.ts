@@ -25,8 +25,10 @@ export default function buy ({
   name: string
   playState: PlayState
 } & BuyerLoserMessages): void {
+  const beforeTimeline = [...playState.game.timeline]
   const leftmost = playState.game.timeline.shift()
-  addBuyEvents({
+  const buyEvents = addBuyEvents({
+    beforeTimeline,
     bid,
     buyerId,
     ...buyerLoserMessages,
@@ -43,9 +45,38 @@ export default function buy ({
     buyer.tableau.push(leftmost)
   }
   const silver = bid % 5
-  buyer.silver -= silver
   const gold = bid - silver
-  buyer.gold -= gold
+  const buyerEvents = Object.values(buyEvents.targetEvents)
+  if (gold > 0) {
+    buyEvents.publicEvents.forEach(event => {
+      addEvent(event, `${buyer.displayName} had ${buyer.gold} gold.`)
+    })
+    buyerEvents.forEach(event => {
+      addEvent(event, `You had ${buyer.gold} gold.`)
+    })
+    buyer.gold -= gold
+    buyEvents.publicEvents.forEach(event => {
+      addEvent(event, `${buyer.displayName} then has ${buyer.gold} gold.`)
+    })
+    buyerEvents.forEach(event => {
+      addEvent(event, `You then have ${buyer.gold} gold.`)
+    })
+  }
+  if (silver > 0) {
+    buyEvents.publicEvents.forEach(event => {
+      addEvent(event, `${buyer.displayName} had ${buyer.silver} silver.`)
+    })
+    buyerEvents.forEach(event => {
+      addEvent(event, `You had ${buyer.silver} silver.`)
+    })
+    buyer.silver -= silver
+    buyEvents.publicEvents.forEach(event => {
+      addEvent(event, `${buyer.displayName} then has ${buyer.silver} silver.`)
+    })
+    buyerEvents.forEach(event => {
+      addEvent(event, `You then have ${buyer.silver} silver.`)
+    })
+  }
   buyer.auctionReady = true
   if (buyer.tableau.some(scheme => scheme.rank === 9)) {
     addTargetEvents({

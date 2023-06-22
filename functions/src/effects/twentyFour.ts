@@ -1,5 +1,6 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addLowestRankGreenPlaySchemeEvents from '../add/events/scheme/play/rank/lowest/green'
 import earn from '../earn'
 import revive from '../revive'
@@ -15,7 +16,10 @@ export default function effectsTwentyFour ({
   resume
 }: SchemeEffectProps): PlayState {
   const firstPrivateChild = addEvent(privateEvent, 'First, earn the lowest green rank in play.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the lowest green rank in play.`)
+  const firstPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `First, ${effectPlayer.displayName} earns the lowest green rank in play.`
+  })
   const { scheme: playScheme } = addLowestRankGreenPlaySchemeEvents({
     playState,
     privateEvent: firstPrivateChild,

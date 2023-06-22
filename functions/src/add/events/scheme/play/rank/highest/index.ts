@@ -1,5 +1,5 @@
 import guardHighestRankPlayScheme from '../../../../../../guard/highestRankPlayScheme'
-import { HistoryEvent, PlayState, PublicEvents, SchemePlayEvents } from '../../../../../../types'
+import { HistoryEvent, PlayState, PlayerPublicEvents, SchemePlayEvents } from '../../../../../../types'
 import addSortedPlayerEvents from '../../../../player/sorted'
 
 export default function addHighestRankPlaySchemeEvents ({
@@ -10,7 +10,7 @@ export default function addHighestRankPlaySchemeEvents ({
 }: {
   playState: PlayState
   privateEvent: HistoryEvent
-  publicEvents: PublicEvents
+  publicEvents: PlayerPublicEvents
   playerId: string
 }): SchemePlayEvents {
   const scheme = guardHighestRankPlayScheme(playState.players)

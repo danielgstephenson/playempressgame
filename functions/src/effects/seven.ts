@@ -1,6 +1,7 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addLowestRankPlaySchemeEvents from '../add/events/scheme/play/rank/lowest'
 import earn from '../earn'
 import guardDefined from '../guard/defined'
@@ -80,7 +81,10 @@ export default function effectsSeven ({
     publicEvents: firstPublicChildren
   })
   const secondPrivateChild = addEvent(privateEvent, 'Second, if the lowest rank scheme in play is green, you earn ten gold.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns ten gold.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns ten gold.`
+  })
   const { scheme } = addLowestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

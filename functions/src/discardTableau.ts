@@ -1,5 +1,6 @@
 import addEvent from './add/event'
 import addPlayerEvent from './add/event/player'
+import addTargetEvents from './add/events/target'
 import { PLAYER_CHOOSE_MESSAGE, END_AUCTION_PLAYER, OBSERVER_CHOOSE_MESSAGE } from './constants'
 import joinRanks from './join/ranks'
 import joinRanksGrammar from './join/ranks/grammar'
@@ -43,11 +44,29 @@ export default function discardTableau ({
       })
     }
   })
+  if (playState.game.timeline.length === 0) {
+    addTargetEvents({
+      playState,
+      message: 'The timeline is empty, so this the final play phase.'
+    })
+    playState.game.final = true
+    const playerMessage = 'Choose one final scheme to trash and one final scheme to play.'
+    const observerMessage = 'Everyone is choosing one final scheme to trash and one final scheme to play.'
+    addTargetEvents({
+      playState,
+      observerMessage,
+      playerMessage
+    })
+  } else {
+    addTargetEvents({
+      playState,
+      observerMessage: OBSERVER_CHOOSE_MESSAGE,
+      playerMessage: PLAYER_CHOOSE_MESSAGE
+    })
+  }
   playState.players.forEach(player => {
     Object.assign(player, END_AUCTION_PLAYER)
-    addEvent(player, PLAYER_CHOOSE_MESSAGE)
   })
   playState.game.round = playState.game.round + 1
   playState.game.phase = 'play'
-  addEvent(playState.game, OBSERVER_CHOOSE_MESSAGE)
 }

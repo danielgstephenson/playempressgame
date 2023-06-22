@@ -1,5 +1,6 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addLowestPlayTimeEvents from '../add/events/scheme/play/time/lowest'
 import createPrivilege from '../create/privilege'
 import draw from '../draw'
@@ -19,7 +20,7 @@ export default function effectsFour ({
     privateEvent,
     'First, you take one Privilege into your hand.'
   )
-  const firstPublicEvents = addPublicEvent(
+  addPublicEvent(
     publicEvents,
     `First, ${effectPlayer.displayName} takes one Privilege into their hand.`
   )
@@ -32,10 +33,10 @@ export default function effectsFour ({
     privateEvent,
     'Second, you draw the lowest time in play.'
   )
-  const secondPublicChildren = addPublicEvent(
-    publicEvents,
-    `Second, ${effectPlayer.displayName} draws the lowest time in play.`
-  )
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, ${effectPlayer.displayName} draws the lowest time in play.`
+  })
   const lowest = addLowestPlayTimeEvents({
     playState,
     privateEvent: secondPrivateChild,

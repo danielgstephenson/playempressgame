@@ -1,6 +1,7 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestRankPlaySchemeEvents from '../add/events/scheme/play/rank/highest'
 import addLowestRankPlaySchemeEvents from '../add/events/scheme/play/rank/lowest'
 import addTopDiscardSchemeGreenEvents from '../add/events/scheme/topDiscard/green'
@@ -36,7 +37,10 @@ export default function effectsTwentyThree ({
     })
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, if the highest or lowest rank scheme in play is green, draw 5.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if the highest or lowest rank scheme in play is green, ${effectPlayer.displayName} they draw 5.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, if the highest or lowest rank scheme in play is green, ${effectPlayer.displayName} they draw 5.`
+  })
   const { scheme: highScheme } = addHighestRankPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

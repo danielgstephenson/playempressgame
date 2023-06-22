@@ -1,5 +1,5 @@
 import guardLowestRankPlayScheme from '../../../../../../guard/lowestRankPlayScheme'
-import { HistoryEvent, PlayState, PublicEvents, SchemePlayEvents } from '../../../../../../types'
+import { HistoryEvent, PlayState, PlayerPublicEvents, SchemePlayEvents } from '../../../../../../types'
 import addSortedPlayerEvents from '../../../../player/sorted'
 
 export default function addLowestRankPlaySchemeEvents ({
@@ -10,7 +10,7 @@ export default function addLowestRankPlaySchemeEvents ({
 }: {
   playState: PlayState
   privateEvent: HistoryEvent
-  publicEvents: PublicEvents
+  publicEvents: PlayerPublicEvents
   playerId: string
 }): SchemePlayEvents {
   const scheme = guardLowestRankPlayScheme(playState.players)

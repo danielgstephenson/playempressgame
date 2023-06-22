@@ -12,6 +12,8 @@ import join from './join'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import guardPlayScheme from './guard/playScheme'
 import addPlayerWinEvents from './add/events/player/win'
+import addTargetEvents from './add/events/target'
+import joinRanksGrammar from './join/ranks/grammar'
 
 export default function drawUpToThree ({
   playState
@@ -76,8 +78,7 @@ export default function drawUpToThree ({
       }
     })
   }
-  const leftmost = playState.game.timeline[0]
-  if (leftmost == null) {
+  if (playState.game.final) {
     const winners = playState.players.reduce<Array<Result<Player>>>((winners, player) => {
       if (winners.length === 0) {
         return [player]
@@ -172,14 +173,21 @@ export default function drawUpToThree ({
     profile.playReady = false
   })
   playState.game.phase = 'auction'
-  const leftmostMessage = `${leftmost.rank} is up for auction`
-  const courtMessage = playState.game.court.length > 0
-    ? ` with ${join(playState.game.court.map(scheme => scheme.rank))} in the court`
-    : ' and the court is empty'
-  const message = `${leftmostMessage}${courtMessage}.`
-  addBroadcastEvent({
-    players: playState.players,
-    game: playState.game,
-    message
-  })
+  const leftmost = playState.game.timeline[0]
+  const courtJoined = joinRanksGrammar(playState.game.court)
+  if (leftmost != null) {
+    const leftmostMessage = `${leftmost.rank} is up for auction`
+    const courtMessage = playState.game.court.length > 0
+      ? ` with ${courtJoined.joinedRanks} in the court`
+      : ' and the court is empty'
+    const message = `${leftmostMessage}${courtMessage}.`
+    addBroadcastEvent({
+      players: playState.players,
+      game: playState.game,
+      message
+    })
+  } else {
+    const message = `The timline is empty, but ${courtJoined.joinedRanks} from the court ${courtJoined.joinedToBe} up for auction.`
+    addTargetEvents({ playState, message })
+  }
 }

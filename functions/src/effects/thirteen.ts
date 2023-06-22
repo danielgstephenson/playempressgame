@@ -1,5 +1,5 @@
 import addEvent from '../add/event'
-import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestRankGreenOrYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/greenOrYellow'
 import addAreRedTimelineSchemeEvents from '../add/events/scheme/timeline/are/red'
 import addLeftmostTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost'
@@ -17,7 +17,10 @@ export default function effectsThirteen ({
 }: SchemeEffectProps): PlayState {
   if (!resume) {
     const firstPrivateChild = addEvent(privateEvent, 'First, if there are no red timeline schemes, you copy the leftmost timeline scheme.')
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, if there are no red timeline schemes, ${effectPlayer.displayName} copies the leftmost timeline scheme.`)
+    const firstPublicChildren = addPlayerPublicEvents({
+      events: publicEvents,
+      message: `First, if there are no red timeline schemes, ${effectPlayer.displayName} copies the leftmost timeline scheme.`
+    })
     const { schemes } = addAreRedTimelineSchemeEvents({
       playState,
       privateEvent: firstPrivateChild,
@@ -46,7 +49,10 @@ export default function effectsThirteen ({
     }
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank green or yellow scheme in play.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the highest rank green or yellow scheme in play.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, ${effectPlayer.displayName} copies the highest rank green or yellow scheme in play.`
+  })
   const { scheme } = addHighestRankGreenOrYellowPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

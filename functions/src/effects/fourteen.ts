@@ -1,5 +1,5 @@
 import addEvent from '../add/event'
-import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestRankGreenOrYellowDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/highest/greenOrYellow'
 import addLowerRankPlaySchemeEvents from '../add/events/scheme/play/rank/lower'
 import addRightmostYellowTimelineSchemeEvents from '../add/events/scheme/timeline/rightmost/yellow'
@@ -17,7 +17,10 @@ export default function effectsFourteen ({
 }: SchemeEffectProps): PlayState {
   if (!resume) {
     const firstPrivateChild = addEvent(privateEvent, 'First, if there is a lower rank scheme in play, you copy the rightmost yellow timeline scheme.')
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, if there is a lower rank scheme in play, ${effectPlayer.displayName} copies the rightmost yellow timeline scheme.`)
+    const firstPublicChildren = addPlayerPublicEvents({
+      events: publicEvents,
+      message: `First, if there is a lower rank scheme in play, ${effectPlayer.displayName} copies the rightmost yellow timeline scheme.`
+    })
     const { scheme } = addLowerRankPlaySchemeEvents({
       playState,
       privateEvent: firstPrivateChild,
@@ -48,7 +51,10 @@ export default function effectsFourteen ({
     }
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank green or yellow dungeon scheme.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the highest rank green or yellow dungeon scheme.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, ${effectPlayer.displayName} copies the highest rank green or yellow dungeon scheme.`
+  })
   const { scheme } = addHighestRankGreenOrYellowDungeonSchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

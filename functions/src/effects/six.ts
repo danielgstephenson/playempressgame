@@ -1,6 +1,7 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestPlayTimeEvents from '../add/events/scheme/play/time/highest'
 import draw from '../draw'
 import getLowestRankScheme from '../get/lowestRankScheme'
@@ -17,7 +18,10 @@ export default function effectsSix ({
   resume
 }: SchemeEffectProps): PlayState {
   const firstPrivateChild = addEvent(privateEvent, 'First, you revive the highest time in play.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives the highest time in play.`)
+  const firstPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `First, ${effectPlayer.displayName} revives the highest time in play.`
+  })
   const highest = addHighestPlayTimeEvents({
     playState,
     privateEvent: firstPrivateChild,

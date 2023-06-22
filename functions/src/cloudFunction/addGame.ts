@@ -13,6 +13,7 @@ const addGame = createCloudFunction(async (props, context, transaction) => {
     name: id,
     createdAt: serverTimestamp(),
     choices: [],
+    final: false,
     phase: 'join' as const,
     profiles: [],
     court: [],

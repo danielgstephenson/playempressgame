@@ -1,5 +1,4 @@
 import addEventsEverywhere from './add/events/everywhere'
-import guardProfile from './guard/profile'
 import {
   HistoryEvent, PlayState, Player, PublicEvents, Result
 } from './types'
@@ -29,16 +28,37 @@ export default function earn ({
       ? `${remainder} silver`
       : '0'
   const suffix = `earn ${amountMessage}`
-  addEventsEverywhere({
+  const playEvents = addEventsEverywhere({
     possessive: false,
     suffix,
     displayName: player.displayName,
     privateEvent,
     publicEvents
   })
-  const profile = guardProfile(playState, player.userId)
-  player.gold += earnedGold
-  player.silver += remainder
-  profile.gold += earnedGold
-  profile.silver += remainder
+  if (earnedGold > 0) {
+    addEventsEverywhere({
+      playEvents,
+      publicMessage: `${player.displayName} had ${player.gold} gold.`,
+      privateMessage: `You had ${player.gold} gold.`
+    })
+    player.gold += earnedGold
+    addEventsEverywhere({
+      playEvents,
+      publicMessage: `${player.displayName} then has ${player.gold} gold.`,
+      privateMessage: `You then have ${player.gold} gold.`
+    })
+  }
+  if (remainder > 0) {
+    addEventsEverywhere({
+      playEvents,
+      publicMessage: `${player.displayName} had ${player.silver} silver.`,
+      privateMessage: `You had ${player.silver} silver.`
+    })
+    player.silver += remainder
+    addEventsEverywhere({
+      playEvents,
+      publicMessage: `${player.displayName} then has ${player.silver} silver.`,
+      privateMessage: `You then have ${player.silver} silver.`
+    })
+  }
 }

@@ -1,5 +1,5 @@
 import addEvent from '../add/event'
-import addPublicEvent from '../add/event/public'
+import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/yellow'
 import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
 import { PlayState, SchemeEffectProps } from '../types'
@@ -16,7 +16,10 @@ export default function effectsTen ({
 }: SchemeEffectProps): PlayState {
   if (!resume) {
     const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is yellow, you copy it.')
-    const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they copy it.`)
+    const firstPublicChildren = addPlayerPublicEvents({
+      events: publicEvents,
+      message: `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they copy it.`
+    })
     const scheme = addTopDiscardSchemeYellowEvents({
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren,
@@ -39,7 +42,10 @@ export default function effectsTen ({
     }
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank yellow scheme in play.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} copies the highest rank yellow scheme in play.`)
+  const secondPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `Second, ${effectPlayer.displayName} copies the highest rank yellow scheme in play.`
+  })
   const { scheme } = addHighestRankYellowPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,

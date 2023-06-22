@@ -1,6 +1,6 @@
 import { Transaction } from 'firelord'
 import summonOrImprison from './summonOrImprison'
-import { Choice, HistoryEvent, PlayState, Player, PublicEvents, Result } from './types'
+import { Choice, HistoryEvent, PlayState, Player, PlayerPublicEvents, Result } from './types'
 import setPlayState from './setPlayState'
 import applyEffects from './effects/apply'
 import guardDefined from './guard/defined'
@@ -19,7 +19,7 @@ export default function onChoiceComplete ({
   currentPlayer: Result<Player>
   playState: PlayState
   privateEvent: HistoryEvent
-  publicEvents: PublicEvents
+  publicEvents: PlayerPublicEvents
   transaction: Transaction
 }): void {
   if (choice.first != null) {

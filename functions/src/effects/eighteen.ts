@@ -1,6 +1,5 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
-import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
 import createPrivilege from '../create/privilege'
 import earn from '../earn'
 import joinRanksGrammar from '../join/ranks/grammar'
@@ -41,7 +40,7 @@ export default function effectsEighteen ({
       player: effectPlayer,
       playState,
       privateEvent: firstPrivateChild,
-     publicEvents: firstPublicChildren
+      publicEvents: firstPublicChildren
     })
   }
   addEvent(privateEvent, 'Second, one Privilege is summoned to the court')

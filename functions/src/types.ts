@@ -58,6 +58,7 @@ export type Game = MetaTypeCreator<{
   createdAt: ServerTimestamp
   court: Scheme[]
   dungeon: Scheme[]
+  final: boolean
   events: HistoryEvent[]
   name: string
   phase: 'join' | 'play' | 'auction'
@@ -163,7 +164,7 @@ export interface SchemeEffectProps {
   effectScheme: Scheme
   playState: PlayState
   privateEvent: HistoryEvent
-  publicEvents: PublicEvents
+  publicEvents: PlayerPublicEvents
   resume: boolean
   threat?: Scheme | undefined
 }
