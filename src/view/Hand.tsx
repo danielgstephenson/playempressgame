@@ -1,5 +1,5 @@
 import { ButtonGroup, Heading } from '@chakra-ui/react'
-import { MouseEvent, Fragment, useContext } from 'react'
+import { MouseEvent, Fragment, useContext, useState } from 'react'
 import playContext from '../context/play'
 import ChakraButton from '../lib/firewrite/chakra/Button'
 import { gameContext } from '../reader/game'
@@ -7,6 +7,7 @@ import { playerContext } from '../reader/player'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
 import SchemesContainerView from './SchemesContainer'
+import { SortableList } from './SortableList'
 import SortablesView from './Sortables'
 import SortableSchemeView from './SortableScheme'
 
@@ -20,6 +21,18 @@ export default function HandView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
   const playState = useContext(playContext)
+  const [items, setItems] = useState([
+    { id: 1 },
+    { id: 2 },
+    { id: 3 },
+    { id: 4 },
+    { id: 5 },
+    { id: 6 },
+    { id: 7 },
+    { id: 8 },
+    { id: 9 },
+    { id: 10 }
+  ])
   if (playState.hand == null) {
     return <></>
   }
@@ -89,6 +102,10 @@ export default function HandView (): JSX.Element {
           {schemeViews}
         </SchemesContainerView>
       </SortablesView>
+      <SortableList
+        items={items}
+        onChange={setItems}
+      />
     </>
   )
 }
