@@ -38,7 +38,7 @@ export default function App (): JSX.Element {
       <AuthProvider auth={auth}>
         <DbProvider db={db}>
           <FunctionsProvider functions={functions}>
-            <Container>
+            <Container p='5px'>
               <HeaderView />
               <Router />
             </Container>

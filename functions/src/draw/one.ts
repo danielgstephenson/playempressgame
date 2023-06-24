@@ -17,7 +17,7 @@ export default function drawOne ({
       const privilege = createScheme(1)
       drawState.privilegeTaken.push(privilege)
       drawState.allDrawn.push(privilege)
-      player.hand.push(privilege)
+      player.hand.unshift(privilege)
       return drawState
     }
     const copy = [...player.discard]
@@ -42,7 +42,7 @@ export default function drawOne ({
   } else {
     drawState.deckDrawnHand = [...player.hand]
     drawState.deckDrawnDeck = [...player.deck]
-    drawState.deckDrawn.push(topScheme)
+    drawState.deckDrawn.unshift(topScheme)
   }
   return drawState
 }

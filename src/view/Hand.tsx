@@ -47,10 +47,10 @@ export default function HandView (): JSX.Element {
       >
         <ButtonGroup>
           <Curtain open={showPlay}>
-            <ChakraButton onMouseDown={stop} color='black' onClick={handleTrash}>Trash</ChakraButton>
+            <ChakraButton size='xs' onMouseDown={stop} color='black' onClick={handleTrash}>Trash</ChakraButton>
           </Curtain>
           <Curtain open={showPlay}>
-            <ChakraButton onMouseDown={stop} color='black' onClick={handlePlay}>Play</ChakraButton>
+            <ChakraButton size='xs' onMouseDown={stop} color='black' onClick={handlePlay}>Play</ChakraButton>
           </Curtain>
           <Curtain open={deckChoice}>
             <Cloud
@@ -58,6 +58,7 @@ export default function HandView (): JSX.Element {
               onMouseDown={stop}
               props={{ schemeId: scheme.id, gameId: gameState.id }}
               color='black'
+              size='xs'
             >
               Put on deck
             </Cloud>
@@ -68,6 +69,7 @@ export default function HandView (): JSX.Element {
               onMouseDown={stop}
               props={{ schemeId: scheme.id, gameId: gameState.id }}
               color='black'
+              size='xs'
             >
               Trash
             </Cloud>

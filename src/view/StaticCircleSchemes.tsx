@@ -1,9 +1,9 @@
 import { Text } from '@chakra-ui/react'
 import { Scheme } from '../types'
-import ExpandableSchemeView from './ExpandableScheme'
+import CircleSchemeView from './CircleScheme'
 import SchemesContainerView from './SchemesContainer'
 
-export default function StaticSchemesView ({
+export default function StaticCircleSchemesView ({
   schemes
 }: {
   schemes?: Scheme[]
@@ -12,7 +12,7 @@ export default function StaticSchemesView ({
     return <Text>Empty</Text>
   }
   const views = schemes?.map(scheme =>
-    <ExpandableSchemeView rank={scheme.rank} key={scheme.id} />
+    <CircleSchemeView rank={scheme.rank} key={scheme.id} />
   )
   return <SchemesContainerView>{views}</SchemesContainerView>
 }

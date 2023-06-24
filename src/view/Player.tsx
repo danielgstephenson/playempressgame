@@ -12,11 +12,13 @@ import { useContext, useEffect } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
+import Status from './Status'
+import PublicTableauView from './PublicTableau'
 
 export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
   const { resetTaken, setDeck, setHand, trash, play } = useContext(playContext)
-  const { deck, hand } = useContext(playerContext)
+  const { deck, gold, hand, silver } = useContext(playerContext)
   useEffect(() => {
     trash?.(undefined)
     play?.(undefined)
@@ -43,6 +45,9 @@ export default function PlayerView (): JSX.Element {
   return (
     <>
       <PlayerHistoryView />
+      <Status label='Gold' value={gold} />
+      <Status label='Silver' value={silver} />
+      <PublicTableauView />
       <BidView />
       <PlayReadyView />
       <PlayAreaView />

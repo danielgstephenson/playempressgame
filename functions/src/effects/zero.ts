@@ -20,7 +20,7 @@ export default function effectsZero ({
     publicEvents,
     `First, ${effectPlayer.displayName} takes 8 Privilege into their hand.`
   )
-  effectPlayer.hand.push(...createPrivilege(8))
+  effectPlayer.hand.unshift(...createPrivilege(8))
   addEvent(
     privateEvent,
     'Second, you put 2 Privilege on your deck.'

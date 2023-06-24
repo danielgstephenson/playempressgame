@@ -241,8 +241,8 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   const privateBidMessage = `You bid ${spelled}`
   const publicBidMessage = `${currentPlayer.displayName} bid ${spelled}`
   const bidSuffixes = createBidSuffixes({ name: currentPlayer.displayName, tying, winning })
-  const privateMessage = `${privateBidMessage}${bidSuffixes?.private}.`
-  const publicMessage = `${publicBidMessage}${bidSuffixes?.public}.`
+  const privateMessage = `${privateBidMessage}, ${bidSuffixes?.private}.`
+  const publicMessage = `${publicBidMessage}, ${bidSuffixes?.public}.`
   addTargetEvents({
     playState,
     message: publicMessage,
@@ -252,12 +252,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
   })
   currentPlayer.lastBidder = true
   currentPlayer.auctionReady = winning
-  console.log('bid', bid)
-  console.log('highestUntiedPlayer', newHighestUntiedPlayer)
-  console.log('winning', winning)
-  console.log('currentPlayer.bid', currentPlayer.bid)
   const pivotal = winning || tying
-  console.log('pivotal', pivotal)
   playState.players.forEach(player => {
     if (player.withdrawn || player.userId === currentUid) {
       return

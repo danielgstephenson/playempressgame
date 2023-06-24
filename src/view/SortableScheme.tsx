@@ -1,7 +1,7 @@
 import { CardProps } from '@chakra-ui/card'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import SchemeView from './Scheme'
+import ExpandableSchemeView from './ExpandableScheme'
 
 export default function SortableSchemeView ({
   children,
@@ -25,7 +25,7 @@ export default function SortableSchemeView ({
   } = useSortable({ id })
 
   return (
-    <SchemeView
+    <ExpandableSchemeView
       isDragging={isDragging}
       rank={rank}
       ref={setNodeRef}
@@ -36,6 +36,6 @@ export default function SortableSchemeView ({
       {...listeners}
     >
       {children}
-    </SchemeView>
+    </ExpandableSchemeView>
   )
 };

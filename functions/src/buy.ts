@@ -48,33 +48,23 @@ export default function buy ({
   const gold = bid - silver
   const buyerEvents = Object.values(buyEvents.targetEvents)
   if (gold > 0) {
-    buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} had ${buyer.gold} gold.`)
-    })
-    buyerEvents.forEach(event => {
-      addEvent(event, `You had ${buyer.gold} gold.`)
-    })
+    const before = buyer.gold
     buyer.gold -= gold
     buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} then has ${buyer.gold} gold.`)
+      addEvent(event, `${buyer.displayName} went from ${before} gold to ${buyer.gold} gold.`)
     })
     buyerEvents.forEach(event => {
-      addEvent(event, `You then have ${buyer.gold} gold.`)
+      addEvent(event, `You went from ${before} gold to ${buyer.gold} gold.`)
     })
   }
   if (silver > 0) {
-    buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} had ${buyer.silver} silver.`)
-    })
-    buyerEvents.forEach(event => {
-      addEvent(event, `You had ${buyer.silver} silver.`)
-    })
+    const before = buyer.silver
     buyer.silver -= silver
     buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} then has ${buyer.silver} silver.`)
+      addEvent(event, `${buyer.displayName} went from ${before} silver to ${buyer.silver} silver.`)
     })
     buyerEvents.forEach(event => {
-      addEvent(event, `You then have ${buyer.silver} silver.`)
+      addEvent(event, `You went from ${before} silver to  ${buyer.silver} silver.`)
     })
   }
   buyer.auctionReady = true

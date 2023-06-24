@@ -1,4 +1,4 @@
-import { closestCenter, DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
@@ -11,9 +11,22 @@ export default function SortablesView <Item extends { id: string }> ({
   items: Item[]
   setItems?: Dispatch<SetStateAction<Item[]>>
 }): JSX.Element {
-  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 5
+    }
+  })
+  const sensors = useSensors(pointerSensor)
   function handleDragEnd (event: any): void {
     const { active, over } = event
+    if (active == null) {
+      console.warn('No active end')
+      return
+    }
+    if (over == null) {
+      console.warn('No over end')
+      return
+    }
     if (active.id !== over.id) {
       setItems?.((currentItems) => {
         const oldIndex = currentItems.findIndex(item => item.id === active.id)

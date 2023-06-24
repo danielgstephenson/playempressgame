@@ -15,7 +15,7 @@ export default function reviveOne ({
   const profile = guardProfile(playState, player.userId)
   const shiftScheme = player.discard.shift()
   const topScheme = guardDefined(shiftScheme, 'Revive one top scheme')
-  player.hand.push(topScheme)
+  player.hand.unshift(topScheme)
   const topDiscardScheme = player.discard[player.discard.length - 1]
   profile.topDiscardScheme = topDiscardScheme
   return playState

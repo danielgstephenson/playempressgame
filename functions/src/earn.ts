@@ -36,29 +36,21 @@ export default function earn ({
     publicEvents
   })
   if (earnedGold > 0) {
-    addEventsEverywhere({
-      playEvents,
-      publicMessage: `${player.displayName} had ${player.gold} gold.`,
-      privateMessage: `You had ${player.gold} gold.`
-    })
+    const before = player.gold
     player.gold += earnedGold
     addEventsEverywhere({
       playEvents,
-      publicMessage: `${player.displayName} then has ${player.gold} gold.`,
-      privateMessage: `You then have ${player.gold} gold.`
+      publicMessage: `${player.displayName} went from ${before} gold to ${player.gold} gold.`,
+      privateMessage: `You went from ${before} gold to ${player.gold} gold.`
     })
   }
   if (remainder > 0) {
-    addEventsEverywhere({
-      playEvents,
-      publicMessage: `${player.displayName} had ${player.silver} silver.`,
-      privateMessage: `You had ${player.silver} silver.`
-    })
+    const before = player.silver
     player.silver += remainder
     addEventsEverywhere({
       playEvents,
-      publicMessage: `${player.displayName} then has ${player.silver} silver.`,
-      privateMessage: `You then have ${player.silver} silver.`
+      publicMessage: `${player.displayName} went from ${before} silver to ${player.silver} silver.`,
+      privateMessage: `You went from ${before} silver to ${player.silver} silver.`
     })
   }
 }

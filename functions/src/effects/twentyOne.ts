@@ -1,3 +1,4 @@
+import addWentEvents from '../add/effects/went'
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
@@ -22,7 +23,7 @@ export default function effectsTwentyOne ({
     publicEvents: firstPublicChildren,
     templateCallback: (scheme) => {
       const { time } = scheme
-      return `with ${time} time.`
+      return `with ${time} time`
     }
   })
   if (scheme != null && scheme.time > 0) {
@@ -45,16 +46,11 @@ export default function effectsTwentyOne ({
         publicMessage,
         privateMessage
       })
-      addEvent(privateEvent, `You had ${effectPlayer.silver} silver.`)
-      const publicSilverBeforeMessage = `${effectPlayer.displayName} had ${effectPlayer.silver} silver.`
-      addEvent(publicEvents.observerEvent, publicSilverBeforeMessage)
-      publicEvents.otherPlayerEvents.forEach((publicEvent) => {
-        addEvent(publicEvent, `${effectPlayer.displayName} had ${effectPlayer.silver} silver.`)
-      })
+      const beforeSilver = effectPlayer.silver
       effectPlayer.silver -= silverCost
       if (!allSilver) {
-        addEvent(privateEvent, `You then have ${effectPlayer.silver} silver.`)
-        const publicSilverAfterMessage = `${effectPlayer.displayName} then has ${effectPlayer.silver} silver.`
+        addEvent(privateEvent, `You went from ${beforeSilver} to ${effectPlayer.silver} silver.`)
+        const publicSilverAfterMessage = `${effectPlayer.displayName} went from ${beforeSilver} to ${effectPlayer.silver} silver.`
         addEvent(publicEvents.observerEvent, publicSilverAfterMessage)
         publicEvents.otherPlayerEvents.forEach((publicEvent) => {
           addEvent(publicEvent, publicSilverAfterMessage)
@@ -69,25 +65,22 @@ export default function effectsTwentyOne ({
       const privateMessage = allGold
         ? `You pay ${goldCost} gold, all you have.`
         : `You pay ${goldCost} gold.`
-      const { privateEvent, publicEvents: { observerEvent, otherPlayerEvents } } = addEventsEverywhere({
+      const { privateEvent, publicEvents } = addEventsEverywhere({
         publicEvents: firstPublicChildren,
         privateEvent: firstPrivateChild,
         publicMessage,
         privateMessage
       })
-      addEvent(privateEvent, `You had ${effectPlayer.gold} gold.`)
-      const publicGoldBeforeMessage = `${effectPlayer.displayName} had ${effectPlayer.gold} gold.`
-      addEvent(observerEvent, publicGoldBeforeMessage)
-      otherPlayerEvents.forEach((publicEvent) => {
-        addEvent(publicEvent, publicGoldBeforeMessage)
-      })
+      const beforeGold = effectPlayer.gold
       effectPlayer.gold -= goldCost
       if (!allGold) {
-        addEvent(privateEvent, `You then have ${effectPlayer.gold} gold.`)
-        const publicGoldAfterMessage = `${effectPlayer.displayName} then has ${effectPlayer.gold} gold.`
-        addEvent(observerEvent, publicGoldAfterMessage)
-        otherPlayerEvents.forEach((publicEvent) => {
-          addEvent(publicEvent, publicGoldAfterMessage)
+        addWentEvents({
+          after: effectPlayer.gold,
+          before: beforeGold,
+          name: effectPlayer.displayName,
+          privateEvent,
+          publicEvents,
+          type: 'gold'
         })
       }
     }
@@ -96,29 +89,31 @@ export default function effectsTwentyOne ({
     if (change > 0) {
       const publicMessage = `${effectPlayer.displayName} takes ${change} silver in change.`
       const privateMessage = `You take ${change} silver in change.`
-      const { privateEvent, publicEvents: { observerEvent, otherPlayerEvents } } = addEventsEverywhere({
+      const { privateEvent, publicEvents } = addEventsEverywhere({
         publicEvents: firstPublicChildren,
         privateEvent: firstPrivateChild,
         publicMessage,
         privateMessage
       })
-      addEvent(privateEvent, `You had ${effectPlayer.silver} silver.`)
-      const publicSilverBeforeMessage = `${effectPlayer.displayName} had ${effectPlayer.silver} silver.`
-      addEvent(observerEvent, publicSilverBeforeMessage)
-      otherPlayerEvents.forEach((publicEvent) => {
-        addEvent(publicEvent, publicSilverBeforeMessage)
-      })
+      const beforeSilver = effectPlayer.silver
       effectPlayer.silver += change
-      addEvent(privateEvent, `You then have ${effectPlayer.silver} silver.`)
-      const publicSilverAfterMessage = `${effectPlayer.displayName} then has ${effectPlayer.silver} silver.`
-      addEvent(observerEvent, publicSilverAfterMessage)
-      otherPlayerEvents.forEach((publicEvent) => {
-        addEvent(publicEvent, publicSilverAfterMessage)
+      addWentEvents({
+        after: effectPlayer.silver,
+        before: beforeSilver,
+        name: effectPlayer.displayName,
+        privateEvent,
+        publicEvents,
+        type: 'silver'
       })
     }
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, earn twice the left timeline scheme\'s rank.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns twice the left timeline scheme's rank.`)
+  addLeftmostTimelineSchemeEvents({
+    playState,
+    privateEvent: secondPrivateChild,
+    publicEvents: secondPublicChildren
+  })
   if (scheme == null) {
     addEventsEverywhere({
       publicEvents: secondPublicChildren,

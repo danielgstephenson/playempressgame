@@ -43,8 +43,21 @@ export default function effectsTwenty ({
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren
   })
-  const topDiscardYellow = topDiscardScheme != null && !isYellow(topDiscardScheme)
-  if (topDiscardYellow) {
+  if (topDiscardScheme == null) {
+    addEventsEverywhere({
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren,
+      suffix: 'discard is empty',
+      displayName: effectPlayer.displayName
+    })
+  } else if (isYellow(topDiscardScheme)) {
+    addEventsEverywhere({
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren,
+      suffix: `top discard scheme, ${topDiscardScheme.rank}, is yellow`,
+      displayName: effectPlayer.displayName
+    })
+  } else {
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,

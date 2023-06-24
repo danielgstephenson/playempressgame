@@ -1,4 +1,4 @@
-import { Suffixes } from "../types"
+import { Suffixes } from '../types'
 
 export default function createBidSuffixes ({
   name,
@@ -10,17 +10,15 @@ export default function createBidSuffixes ({
   winning: boolean
 }): Suffixes {
   if (winning) {
-    const prefix = ', making'
-    const suffix = 'the highest untied bidder'
     return {
-      private: `${prefix} you ${suffix}`,
-      public: `${prefix} ${name} ${suffix}`
+      private: 'the highest untied bid',
+      public: 'the highest untied bid'
     }
   }
   if (tying) {
     return {
-      private: ', tying the highest untied bid',
-      public: ', tying the highest untied bid'
+      private: 'tying the highest untied bid',
+      public: 'tying the highest untied bid'
     }
   }
   return {

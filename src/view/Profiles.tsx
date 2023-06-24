@@ -11,7 +11,7 @@ export default function ProfilesView (): JSX.Element {
     return <></>
   }
   const copy = [...gameState.profiles]
-  copy.sort((a, b) => a.userId === authState.currentUser?.uid ? -1 : 1)
+  copy.sort((a, b) => a.userId === authState.currentUser?.uid ? 1 : -1)
   const items = copy.map((profile) => (
     <ProfileProvider key={profile.userId} profile={profile}>
       <ProfileView key={profile.userId} />

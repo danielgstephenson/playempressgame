@@ -9,8 +9,8 @@ export default function SchemesContainerView ({
   return (
     <Flex
       flexWrap='wrap'
-      gap='9px'
-      rowGap='10px'
+      gap='2px'
+      rowGap='2px'
     >
       {children}
     </Flex>

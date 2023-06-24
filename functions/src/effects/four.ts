@@ -26,7 +26,7 @@ export default function effectsFour ({
   )
   const before = joinRanks(effectPlayer.hand)
   addEvent(firstPrivateEvent, `Your hand was ${before}.`)
-  effectPlayer.hand.push(...createPrivilege(1))
+  effectPlayer.hand.unshift(...createPrivilege(1))
   const after = joinRanks(effectPlayer.hand)
   addEvent(firstPrivateEvent, `Your hand becomes ${after}.`)
   const secondPrivateChild = addEvent(

@@ -88,11 +88,11 @@ export default function draw ({
     const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      privateMessage: 'You flip your discard pile to refresh your deck.',
-      publicMessage: `${player.displayName} flips their discard pile to refresh their deck.`
+      privateMessage: 'You flip your discard to refresh your deck.',
+      publicMessage: `${player.displayName} flips their discard to refresh their deck.`
     })
     const discardBefore = joinRanks(playerClone.discard)
-    const originalDiscardMessage = `Your discard pile was ${discardBefore}.`
+    const originalDiscardMessage = `Your discard was ${discardBefore}.`
     addEvent(events.privateEvent, originalDiscardMessage)
     const flippedDeckJoined = joinRanks(drawState.flippedDeck)
     const flippedDeckMessage = `Your deck becomes ${flippedDeckJoined}.`
