@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -8,27 +8,24 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
-import type { Active, UniqueIdentifier } from '@dnd-kit/core'
+import type { Active } from '@dnd-kit/core'
 import {
   SortableContext,
   arrayMove
 } from '@dnd-kit/sortable'
 
-import { SortableItem } from './SortableItem'
-
-interface BaseItem {
-  id: UniqueIdentifier
-}
-
-interface Props<T extends BaseItem> {
-  items: T[]
-  onChange: (items: T[]) => void
-}
+import SchemesContainerView from './SchemesContainer'
+import { BaseItem } from '../types'
 
 export function SortableList<T extends BaseItem> ({
+  ItemView,
   items,
-  onChange
-}: Props<T>): JSX.Element {
+  setItems
+}: {
+  ItemView: FC<{ id: string }>
+  items: T[]
+  setItems: (items: T[]) => void
+}): JSX.Element {
   const [active, setActive] = useState<Active | null>(null)
   const activeItem = useMemo(
     () => items.find((item) => item.id === active?.id),
@@ -50,6 +47,13 @@ export function SortableList<T extends BaseItem> ({
       }
     })
   }
+  const sortableItems = items.map((item) => (
+    <ItemView key={item.id} id={item.id} />
+  ))
+
+  const sortableActiveItem = (activeItem != null)
+    ? <ItemView id={activeItem.id} />
+    : null
 
   return (
     <DndContext
@@ -62,7 +66,7 @@ export function SortableList<T extends BaseItem> ({
           const activeIndex = items.findIndex(({ id }) => id === active.id)
           const overIndex = items.findIndex(({ id }) => id === over.id)
 
-          onChange(arrayMove(items, activeIndex, overIndex))
+          setItems(arrayMove(items, activeIndex, overIndex))
         }
         setActive(null)
       }}
@@ -71,23 +75,12 @@ export function SortableList<T extends BaseItem> ({
       }}
     >
       <SortableContext items={items}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: '10px',
-            padding: '0',
-            listStyle: 'none'
-          }}
-        >
-          {items.map((item) => (
-            <SortableItem key={item.id} id={item.id} />
-          ))}
-        </div>
+        <SchemesContainerView>
+          {sortableItems}
+        </SchemesContainerView>
       </SortableContext>
       <DragOverlay dropAnimation={dropAnimationConfig}>
-        {(activeItem != null) ? <SortableItem id={activeItem.id} /> : null}
+        {sortableActiveItem}
       </DragOverlay>
     </DndContext>
   )

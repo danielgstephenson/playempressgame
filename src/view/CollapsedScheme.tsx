@@ -7,12 +7,10 @@ import RankCircleView from './RankCircle'
 
 function View ({
   children,
-  isDragging,
   rank,
   ...cardProps
 }: {
   children?: ReactNode
-  isDragging?: boolean
   rank: number
 } & CardProps,
 ref: Ref<HTMLDivElement>): JSX.Element {
@@ -24,8 +22,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
     { length: scheme.time },
     (_, index) => <Heading key={index} size='sm' m='0'>X</Heading>
   )
-  const weight = isDragging === true ? 800 : 700
-  const cardBg = getBg({ rank, weight })
+  const cardBg = getBg({ rank, weight: 700 })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
   return (
     <SmallScheme

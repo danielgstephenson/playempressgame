@@ -1,7 +1,8 @@
 import { Auth, User } from 'firebase/auth'
 import { HttpsCallableResult } from 'firebase/functions'
 import { Timestamp } from 'firebase/firestore'
-import React from 'react'
+import React, { CSSProperties } from 'react'
+import { useSortable } from '@dnd-kit/sortable'
 
 export interface AuthState {
   auth?: Auth
@@ -133,4 +134,10 @@ export interface Play {
 export interface DisplayNameState {
   displayName?: string
   setDisplayName: (displayName: string | undefined) => void
+}
+export interface BaseItem {
+  id: string
+}
+export type DndSortable = ReturnType<typeof useSortable> & {
+  style: CSSProperties
 }
