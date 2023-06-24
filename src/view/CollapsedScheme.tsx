@@ -6,10 +6,12 @@ import { ReactNode, Ref } from 'react'
 import RankCircleView from './RankCircle'
 
 function View ({
+  active,
   children,
   rank,
   ...cardProps
 }: {
+  active?: boolean
   children?: ReactNode
   rank: number
 } & CardProps,
@@ -18,24 +20,29 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   if (scheme == null) {
     return <></>
   }
-  const mediumTime = Array.from(
+  const time = Array.from(
     { length: scheme.time },
-    (_, index) => <Heading key={index} size='sm' m='0'>X</Heading>
+    (_, index) => (
+      <Heading key={index} color='white' size='sm' m='0'>X</Heading>
+    )
   )
   const cardBg = getBg({ rank, weight: 700 })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
   return (
     <SmallScheme
+      active={active}
       bg={cardBg}
       ref={ref}
       {...cardProps}
     >
-      <Stack height='100%' spacing='2px'>
-        <HStack color={circleBg} spacing='2px'>
-          <RankCircleView bg={circleBg} rank={scheme.rank} />
-          {mediumTime}
-        </HStack>
-        <Heading size='xs'>{scheme.title}</Heading>
+      <Stack height='100%' justifyContent='space-between'>
+        <Stack spacing='5px'>
+          <HStack color={circleBg} spacing='2px'>
+            <RankCircleView bg={circleBg} rank={scheme.rank} />
+            {time}
+          </HStack>
+          <Heading size='xs'>{scheme.title}</Heading>
+        </Stack>
         {children}
       </Stack>
     </SmallScheme>

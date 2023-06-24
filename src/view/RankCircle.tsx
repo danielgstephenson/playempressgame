@@ -10,10 +10,11 @@ function View ({
   rank: number
 } & SquareProps,
 ref: Ref<HTMLDivElement>): JSX.Element {
-  const color = getBg({ rank, weight: 600 })
+  const bg = getBg({ rank, weight: 600 })
   return (
     <CircleView
-      bg={color}
+      bg={bg}
+      color='white'
       ref={ref}
       {...circleProps}
     >

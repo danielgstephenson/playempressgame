@@ -11,5 +11,8 @@ export default function useDnd ({ id }: { id: string }): DndSortable {
     transition: sortable.transition,
     touchAction: 'none'
   }
+  if (style.transform != null) {
+    console.log('transform test:', style.transform)
+  }
   return { style, ...sortable }
 }

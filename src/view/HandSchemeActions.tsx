@@ -23,12 +23,10 @@ export default function HandSchemeActions ({ id }: {
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const showPlay = noChoice && gameState.phase === 'play' && playerState.playReady !== true
   function handleTrash (event: MouseEvent<HTMLButtonElement>): void {
-    console.log('handleTrash', event.target)
     handleStop(event)
     playState.trash?.(id)
   }
   function handlePlay (event: MouseEvent<HTMLButtonElement>): void {
-    console.log('handlePlay', event.target)
     handleStop(event)
     playState.play?.(id)
   }

@@ -7,9 +7,13 @@ import ExpandedSchemeView from './ExpandedScheme'
 import HandSchemeActions from './HandSchemeActions'
 
 export default function HandSchemeView ({
+  active,
   id,
   ...cardProps
-}: { id: string } & CardProps
+}: {
+  active?: boolean
+  id: string
+} & CardProps
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hand } = useContext(playerContext)
@@ -19,6 +23,7 @@ export default function HandSchemeView ({
     setNodeRef,
     style
   } = useDnd({ id })
+  // console.log('attributes', attributes)
   const scheme = hand?.find(scheme => scheme.id === id)
   if (scheme == null) {
     throw new Error(`Scheme with id ${id} not found in hand`)
@@ -26,6 +31,7 @@ export default function HandSchemeView ({
   return (
     <>
       <CollapsedSchemeView
+        active={active}
         onClick={onOpen}
         rank={scheme.rank}
         size='sm'
