@@ -7,7 +7,8 @@ import {
   RangeSlider,
   RangeSliderThumb,
   RangeSliderTrack,
-  RangeSliderFilledTrack
+  RangeSliderFilledTrack,
+  HStack
 } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
@@ -22,45 +23,58 @@ export default function BidView (): JSX.Element {
   useEffect(() => {
     setBid(playerState.bid)
   }, [playerState.bid])
+  if (playerState.bid == null) {
+    return <></>
+  }
   function handleChange (value: string): void {
     setBid(Number(value))
   }
   function handleSliderChange (
     values: number[]
   ): void {
-    setBid(values[0])
+    if (playerState.bid == null) {
+      return
+    }
+    const bid = values[0]
+    if (bid >= playerState.bid) {
+      setBid(bid)
+    }
   }
   if (bid == null) {
     return <></>
   }
   return (
     <>
-      <Status label='Bid' value={playerState.bid} />
-      <NumberInput
-        // step={5}
-        // min={playerState.bid}
-        // max={playerState.gold}
-        value={bid}
-        onChange={handleChange}
-      >
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
-      <RangeSlider
-        onChange={handleSliderChange}
-        value={[bid]}
-        min={0}
-        max={playerState.gold}
-        step={5}
-      >
-        <RangeSliderTrack>
-          <RangeSliderFilledTrack />
-        </RangeSliderTrack>
-        <RangeSliderThumb boxSize={6} index={0} />
-      </RangeSlider>
+      <HStack spacing='20px'>
+        <Status label='Bid' value={playerState.bid} />
+        <RangeSlider
+          onChange={handleSliderChange}
+          value={[bid]}
+          min={0}
+          max={playerState.gold}
+          step={5}
+        >
+          <RangeSliderTrack>
+            <RangeSliderFilledTrack />
+          </RangeSliderTrack>
+          <RangeSliderThumb boxSize={6} index={0} />
+        </RangeSlider>
+        <NumberInput
+          step={5}
+          min={playerState.bid}
+          max={playerState.gold}
+          value={bid}
+          onChange={handleChange}
+          width='100px'
+          size='xs'
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </HStack>
       <Cloud
         fn='bid'
         props={{ bid, gameId: gameState.id }}

@@ -14,6 +14,7 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import Status from './Status'
 import PublicTableauView from './PublicTableau'
+import { HStack } from '@chakra-ui/react'
 
 export default function PlayerView (): JSX.Element {
   const { round } = useContext(gameContext)
@@ -44,9 +45,10 @@ export default function PlayerView (): JSX.Element {
 
   return (
     <>
-      <PlayerHistoryView />
-      <Status label='Gold' value={gold} />
-      <Status label='Silver' value={silver} />
+      <HStack>
+        <Status label='Gold' value={gold} />
+        <Status label='Silver' value={silver} />
+      </HStack>
       <PublicTableauView />
       <BidView />
       <PlayReadyView />
@@ -57,6 +59,7 @@ export default function PlayerView (): JSX.Element {
       <DeckView />
       <DiscardView />
       <PrivateTrashView />
+      <PlayerHistoryView />
     </>
   )
 }

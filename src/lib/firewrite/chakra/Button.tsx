@@ -11,7 +11,7 @@ export default function ChakraButton ({
   ...buttonProps
 }: WriterComponentProps & ButtonProps): JSX.Element {
   return (
-    <Button onClick={onClick} isLoading={loading} {...buttonProps}>
+    <Button size='sm' onClick={onClick} isLoading={loading} {...buttonProps}>
       {children}
       <ChakraIcon loading={loading} error={error} errorMessage={errorMessage} />
     </Button>

@@ -1,5 +1,5 @@
 import { Heading, Text } from '@chakra-ui/layout'
-import { Checkbox } from '@chakra-ui/react'
+import { Box, Checkbox } from '@chakra-ui/react'
 import { Fragment, ReactNode, useContext } from 'react'
 import playContext from '../context/play'
 import getBg from '../service/getBg'
@@ -49,11 +49,11 @@ export default function PalaceAreaView ({
   })
   const heading = children != null && <Heading size='sm'>{children}</Heading>
   return (
-    <>
+    <Box>
       {heading}
       <Curtain open={full} hider={<Text>Empty</Text>}>
         <SchemesContainerView>{group}</SchemesContainerView>
       </Curtain>
-    </>
+    </Box>
   )
 }

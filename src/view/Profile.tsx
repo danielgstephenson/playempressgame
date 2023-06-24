@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Modal, ModalContent, ModalOverlay, Stack, useDisclosure } from '@chakra-ui/react'
+import { Box, Heading, Modal, ModalContent, ModalOverlay, Stack, useDisclosure } from '@chakra-ui/react'
 import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
@@ -11,6 +11,7 @@ import PublicTrashView from './PublicTrash'
 import PublicTableauView from './PublicTableau'
 import ExpandedSchemeView from './ExpandedScheme'
 import SmallSchemeView from './SmallScheme'
+import ChakraButton from '../lib/firewrite/chakra/Button'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -26,11 +27,15 @@ export default function ProfileView (): JSX.Element {
     return <Heading size='md'>{profileState.displayName}</Heading>
   }
   const deckFull = profileState.deckEmpty !== true
+  const bidding = gameState.phase === 'auction'
+  const content = bidding ? <>({profileState.bid})</> : undefined
   return (
     <>
-      <Button onClick={onOpen}>
-        <Heading size='md'>{profileState.displayName}</Heading>
-      </Button>
+      <ChakraButton onClick={onOpen}>
+        {profileState.displayName}
+        {' '}
+        {content}
+      </ChakraButton>
       <Curtain open={playing}>
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
