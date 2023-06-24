@@ -11,7 +11,7 @@ export default function PlayAreaView (): JSX.Element {
     <SchemeAreaView
       onReturn={handleReturn}
       label='Play'
-      scheme={playState.playScheme}
+      schemeId={playState.playSchemeId}
     />
   )
 }

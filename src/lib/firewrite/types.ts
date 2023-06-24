@@ -1,5 +1,5 @@
 import { Functions, HttpsCallableResult } from 'firebase/functions'
-import { FC } from 'react'
+import { FC, MouseEvent } from 'react'
 
 export type CloudCaller = <Props> (props?: Props) => Promise<HttpsCallableResult<unknown> | undefined>
 
@@ -29,7 +29,7 @@ export interface WriteState {
 }
 
 export interface WriterComponentProps {
-  onClick?: () => void
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void
   loading?: boolean
   error?: Error
   errorMessage?: string

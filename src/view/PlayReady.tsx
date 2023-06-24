@@ -9,11 +9,14 @@ export default function PlayReadyView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
   const playState = useContext(playContext)
-  const showReady = gameState.phase === 'play' && playState.trashScheme != null && playState.playScheme != null && playerState.playReady !== true
+  const showReady = gameState.phase === 'play' &&
+    playState.trashSchemeId != null &&
+    playState.playSchemeId != null &&
+    playerState.playReady !== true
   const props = {
     gameId: gameState.id,
-    trashSchemeId: playState.trashScheme?.id,
-    playSchemeId: playState.playScheme?.id
+    trashSchemeId: playState.trashSchemeId,
+    playSchemeId: playState.playSchemeId
   }
   return (
     <Curtain open={showReady}>

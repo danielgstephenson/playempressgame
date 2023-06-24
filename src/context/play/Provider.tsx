@@ -5,8 +5,8 @@ import { Scheme } from '../../types'
 export default function PlayProvider ({ children }: {
   children: React.ReactNode
 }): JSX.Element {
-  const [trashScheme, setTrashScheme] = useState<Scheme>()
-  const [playScheme, setPlayScheme] = useState<Scheme>()
+  const [trashSchemeId, setTrashSchemeId] = useState<string>()
+  const [playSchemeId, setPlaySchemeId] = useState<string>()
   const [taken, setTaken] = useState<string[]>([])
   const [hand, setHand] = useState<Scheme[]>([])
   const [deck, setDeck] = useState<Scheme[]>([])
@@ -19,17 +19,17 @@ export default function PlayProvider ({ children }: {
   const take = useCallback((schemeId: string) => {
     setTaken(taken => [...taken, schemeId])
   }, [])
-  const trash = useCallback((scheme: Scheme | undefined) => {
-    setTrashScheme(scheme)
+  const trash = useCallback((schemeId: string | undefined) => {
+    setTrashSchemeId(schemeId)
   }, [])
-  const play = useCallback((scheme: Scheme | undefined) => {
-    setPlayScheme(scheme)
+  const play = useCallback((schemeId: string | undefined) => {
+    setPlaySchemeId(schemeId)
   }, [])
   const emptyTrash = useCallback(() => {
-    setTrashScheme(undefined)
+    setTrashSchemeId(undefined)
   }, [])
   const emptyPlay = useCallback(() => {
-    setPlayScheme(undefined)
+    setPlaySchemeId(undefined)
   }, [])
   const state = {
     deck,
@@ -38,14 +38,14 @@ export default function PlayProvider ({ children }: {
     hand,
     leave,
     play,
-    playScheme,
+    playSchemeId,
     resetTaken,
     setDeck,
     setHand,
     take,
     taken,
     trash,
-    trashScheme
+    trashSchemeId
   }
   return (
     <playContext.Provider value={state}>

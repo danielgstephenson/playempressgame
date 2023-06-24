@@ -1,20 +1,15 @@
 import { CardProps, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react'
-import { forwardRef, useContext } from 'react'
+import { useContext } from 'react'
 import { playerContext } from '../reader/player'
 import useDnd from '../use/Dnd'
 import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
+import HandSchemeActions from './HandSchemeActions'
 
-function View ({
-  children,
+export default function HandSchemeView ({
   id,
   ...cardProps
-}: {
-  children?: React.ReactNode
-  id: string
-} &
-CardProps,
-ref: React.Ref<HTMLDivElement>
+}: { id: string } & CardProps
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { hand } = useContext(playerContext)
@@ -40,7 +35,9 @@ ref: React.Ref<HTMLDivElement>
         {...attributes}
         {...listeners}
         {...cardProps}
-      />
+      >
+        <HandSchemeActions id={id} />
+      </CollapsedSchemeView>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
@@ -49,12 +46,10 @@ ref: React.Ref<HTMLDivElement>
             rank={scheme.rank}
             onClick={onOpen}
           >
-            {children}
+            <HandSchemeActions id={id} />
           </ExpandedSchemeView>
         </ModalContent>
       </Modal>
     </>
   )
 }
-const HandSchemeView = forwardRef(View)
-export default HandSchemeView

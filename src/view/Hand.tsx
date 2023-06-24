@@ -7,7 +7,6 @@ import { playerContext } from '../reader/player'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
 import SchemesContainerView from './SchemesContainer'
-import { SortableItem } from './SortableItem'
 import { SortableList } from './SortableList'
 import SortablesView from './Sortables'
 import SortableSchemeView from './SortableScheme'
@@ -31,14 +30,14 @@ export default function HandView (): JSX.Element {
   const noChoice = gameState.choices == null || gameState.choices.length === 0
   const showPlay = noChoice && gameState.phase === 'play' && playerState.playReady !== true
   const schemeViews = playState.hand?.map((scheme, index) => {
-    if (scheme.id === playState.trashScheme?.id || scheme.id === playState.playScheme?.id) {
+    if (scheme.id === playState.trashSchemeId || scheme.id === playState.playSchemeId) {
       return <Fragment key={scheme.id} />
     }
     function handleTrash (): void {
-      playState.trash?.(scheme)
+      playState.trash?.(scheme.id)
     }
     function handlePlay (): void {
-      playState.play?.(scheme)
+      playState.play?.(scheme.id)
     }
     return (
       <SortableSchemeView
@@ -91,11 +90,7 @@ export default function HandView (): JSX.Element {
           {schemeViews}
         </SchemesContainerView>
       </SortablesView>
-      <SortableList
-        items={playState.hand}
-        setItems={playState.setHand}
-        ItemView={SortableItem}
-      />
+      <SortableList />
     </>
   )
 }
