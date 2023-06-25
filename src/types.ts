@@ -121,6 +121,7 @@ export interface Play {
   hand?: Scheme[]
   play?: (schemeId: string | undefined) => void
   playSchemeId?: string
+  removeFromTrash?: (schemeId: string) => void
   resetTaken?: () => void
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>

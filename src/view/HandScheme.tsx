@@ -1,7 +1,7 @@
 import { CardProps, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react'
 import { useContext } from 'react'
-import { playerContext } from '../reader/player'
-import useDnd from '../use/Dnd'
+import playContext from '../context/play'
+import useDndSortable from '../use/Dnd'
 import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
 import HandSchemeActions from './HandSchemeActions'
@@ -16,16 +16,21 @@ export default function HandSchemeView ({
 } & CardProps
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { hand } = useContext(playerContext)
+  const { hand } = useContext(playContext)
   const {
     attributes,
     listeners,
     setNodeRef,
     style
-  } = useDnd({ id })
+  } = useDndSortable({ id })
+  if (hand == null) {
+    return <></>
+  }
   // console.log('attributes', attributes)
-  const scheme = hand?.find(scheme => scheme.id === id)
+  const scheme = hand.find(scheme => scheme.id === id)
   if (scheme == null) {
+    console.log('hand', hand)
+    console.log('id', id)
     throw new Error(`Scheme with id ${id} not found in hand`)
   }
   return (

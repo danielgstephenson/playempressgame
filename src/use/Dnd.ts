@@ -3,16 +3,13 @@ import { CSS } from '@dnd-kit/utilities'
 import { CSSProperties } from 'react'
 import { DndSortable } from '../types'
 
-export default function useDnd ({ id }: { id: string }): DndSortable {
+export default function useDndSortable ({ id }: { id: string }): DndSortable {
   const sortable = useSortable({ id })
   const style: CSSProperties = {
     opacity: sortable.isDragging ? 0.4 : undefined,
     transform: CSS.Translate.toString(sortable.transform),
     transition: sortable.transition,
     touchAction: 'none'
-  }
-  if (style.transform != null) {
-    console.log('transform test:', style.transform)
   }
   return { style, ...sortable }
 }
