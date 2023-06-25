@@ -1,32 +1,36 @@
+import { Box, Heading } from '@chakra-ui/react'
+import { useDroppable } from '@dnd-kit/core'
 import { useContext } from 'react'
-import ChakraButton from '../lib/firewrite/chakra/Button'
 import { gameContext } from '../reader/game'
-import { playerContext } from '../reader/player'
-import Curtain from './Curtain'
-import StatusView from './Status'
+import { Scheme } from '../types'
+import SchemeAreaContentView from './SchemeAreaContentView'
 
 export default function SchemeAreaView ({
+  scheme,
   schemeId,
-  onReturn,
+  areaId,
   label
 }: {
+  scheme?: Scheme
   schemeId?: string
-  onReturn?: () => void
+  areaId: string
   label: string
 }): JSX.Element {
   const gameState = useContext(gameContext)
-  const playerState = useContext(playerContext)
-  const showAction = schemeId != null && playerState.playReady !== true && gameState.phase === 'play'
-  const scheme = playerState.hand?.find(scheme => scheme.id === schemeId)
+  const { setNodeRef } = useDroppable({
+    id: areaId
+  })
+  if (gameState.phase !== 'play') {
+    return <></>
+  }
   return (
-    <>
-      <StatusView
-        label={label}
-        value={scheme?.rank}
+    <Box w='19%'>
+      <Heading size='sm'>{label}</Heading>
+      <SchemeAreaContentView
+        ref={setNodeRef}
+        scheme={scheme}
+        schemeId={schemeId}
       />
-      <Curtain open={showAction}>
-        <ChakraButton onClick={onReturn}>Return to hand</ChakraButton>
-      </Curtain>
-    </>
+    </Box>
   )
 }

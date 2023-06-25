@@ -19,23 +19,27 @@ export default function PlayProvider ({ children }: {
   const take = useCallback((schemeId: string) => {
     setTaken(taken => [...taken, schemeId])
   }, [])
-  const trash = useCallback((schemeId: string | undefined) => {
-    setTrashSchemeId(schemeId)
-  }, [])
-  const play = useCallback((schemeId: string | undefined) => {
-    setPlaySchemeId(schemeId)
-  }, [])
   const emptyTrash = useCallback(() => {
     setTrashSchemeId(undefined)
   }, [])
   const emptyPlay = useCallback(() => {
     setPlaySchemeId(undefined)
   }, [])
-  const removeFromTrash = useCallback((schemeId: string) => {
-    if (schemeId === trashSchemeId) {
-      setTrashSchemeId(undefined)
-    }
-  }, [trashSchemeId])
+  const removeFromTrash = useCallback((schemeId: string | undefined) => {
+    setTrashSchemeId(current => schemeId === current ? undefined : current)
+  }, [])
+  const removeFromPlay = useCallback((schemeId: string | undefined) => {
+    setPlaySchemeId(current => schemeId === current ? undefined : current)
+  }, [])
+  const trash = useCallback((schemeId: string | undefined) => {
+    setTrashSchemeId(schemeId)
+    removeFromPlay(schemeId)
+  }, [removeFromPlay])
+  const play = useCallback((schemeId: string | undefined) => {
+    console.log('play', schemeId)
+    setPlaySchemeId(schemeId)
+    removeFromTrash(schemeId)
+  }, [removeFromTrash])
   const state = {
     deck,
     emptyPlay,
@@ -44,6 +48,7 @@ export default function PlayProvider ({ children }: {
     leave,
     play,
     playSchemeId,
+    removeFromPlay,
     removeFromTrash,
     resetTaken,
     setDeck,

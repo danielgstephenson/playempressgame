@@ -187,7 +187,7 @@ export default function drawUpToThree ({
       message
     })
   } else {
-    const message = `The timline is empty, but ${courtJoined.joinedRanks} from the court ${courtJoined.joinedToBe} up for auction.`
+    const message = `The timeline is empty, but ${courtJoined.joinedRanks} from the court ${courtJoined.grammar.toBe} up for auction.`
     addTargetEvents({ playState, message })
   }
 }

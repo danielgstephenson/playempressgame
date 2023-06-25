@@ -26,12 +26,12 @@ export default function HandSchemeView ({
   if (hand == null) {
     return <></>
   }
-  // console.log('attributes', attributes)
   const scheme = hand.find(scheme => scheme.id === id)
   if (scheme == null) {
-    console.log('hand', hand)
-    console.log('id', id)
-    throw new Error(`Scheme with id ${id} not found in hand`)
+    console.error('hand', hand)
+    console.error('id', id)
+    return <>x</>
+    // throw new Error(`Scheme with id ${id} not found in hand`)
   }
   return (
     <>

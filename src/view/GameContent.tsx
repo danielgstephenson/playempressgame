@@ -15,7 +15,19 @@ export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const showContent = gameState.phase !== 'join'
   const timeline = gameState.timeline?.slice()
-  const { emptyTrash, hand, removeFromTrash, setHand, taken, trash, trashSchemeId } = useContext(playContext)
+  const {
+    emptyPlay,
+    emptyTrash,
+    hand,
+    play,
+    playSchemeId,
+    removeFromPlay,
+    removeFromTrash,
+    setHand,
+    taken,
+    trash,
+    trashSchemeId
+  } = useContext(playContext)
   const [active, setActive] = useState<Active | null>(null)
   const activeItem = useMemo(
     () => hand?.find((scheme) => scheme.id === active?.id),
@@ -52,33 +64,47 @@ export default function GameContentView (): JSX.Element {
         setActive(active)
       }}
       onDragOver={({ active, over }) => {
-        const activeTrash = active.id === trashSchemeId
         const overNothing = over?.id == null
-        const overTrash = over?.id === 'trashArea' || over?.id === trashSchemeId
-        if (activeTrash && !overNothing && !overTrash) {
-          emptyTrash?.()
+        if (overNothing) {
+          return
+        }
+        const activeTrash = active.id === trashSchemeId
+        const activePlay = active.id === playSchemeId
+        const overTrash = over.id === 'trashArea' || over.id === trashSchemeId
+        const overPlay = over.id === 'playArea' || over.id === playSchemeId
+        const overHand = !overTrash && !overPlay
+        if (overHand) {
+          if (activeTrash) {
+            emptyTrash?.()
+          }
+          if (activePlay) {
+            emptyPlay?.()
+          }
         }
         if (overTrash) {
-          console.log('over trash')
           trash?.(String(active.id))
         }
-        if (over?.id != null && !overTrash) {
-          // removeFromTrash?.(String(active.id))
+        if (overPlay) {
+          console.log('overPlay over.id', over.id)
+          console.log('overPlay active.id', active.id)
+          console.log('overPlay playSchemeId', playSchemeId)
+          play?.(String(active.id))
         }
       }}
       onDragEnd={({ active, over }) => {
         if (over != null && active.id !== over.id) {
           if (over.id === 'trashArea' || over.id === trashSchemeId) {
-            console.log('trash')
             trash?.(String(active.id))
             return
           }
-          console.log('not trash')
+          if (over.id === 'playArea' || over.id === playSchemeId) {
+            play?.(String(active.id))
+            return
+          }
           const activeIndex = hand.findIndex(({ id }) => id === active.id)
-          console.log('activeIndex', activeIndex)
           const overIndex = hand.findIndex(({ id }) => id === over.id)
-          console.log('overIndex', overIndex)
           removeFromTrash?.(String(active.id))
+          removeFromPlay?.(String(active.id))
           setHand(arrayMove(hand, activeIndex, overIndex))
         }
         setActive(null)

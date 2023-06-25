@@ -23,7 +23,7 @@ export default function BidView (): JSX.Element {
   useEffect(() => {
     setBid(playerState.bid)
   }, [playerState.bid])
-  if (playerState.bid == null) {
+  if (playerState.bid == null || bid == null || gameState.phase !== 'auction') {
     return <></>
   }
   function handleChange (value: string): void {
@@ -39,9 +39,6 @@ export default function BidView (): JSX.Element {
     if (bid >= playerState.bid) {
       setBid(bid)
     }
-  }
-  if (bid == null) {
-    return <></>
   }
   return (
     <>
