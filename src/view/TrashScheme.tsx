@@ -1,7 +1,7 @@
 import { CardProps, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
-import useDndSortable from '../use/Dnd'
+import useDndSortable from '../use/DndSortable'
 import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
 

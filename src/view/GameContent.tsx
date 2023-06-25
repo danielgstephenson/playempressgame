@@ -15,7 +15,7 @@ export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const showContent = gameState.phase !== 'join'
   const timeline = gameState.timeline?.slice()
-  const { hand, removeFromTrash, setHand, taken, trash, trashSchemeId } = useContext(playContext)
+  const { emptyTrash, hand, removeFromTrash, setHand, taken, trash, trashSchemeId } = useContext(playContext)
   const [active, setActive] = useState<Active | null>(null)
   const activeItem = useMemo(
     () => hand?.find((scheme) => scheme.id === active?.id),
@@ -50,6 +50,21 @@ export default function GameContentView (): JSX.Element {
       sensors={sensors}
       onDragStart={({ active }) => {
         setActive(active)
+      }}
+      onDragOver={({ active, over }) => {
+        const activeTrash = active.id === trashSchemeId
+        const overNothing = over?.id == null
+        const overTrash = over?.id === 'trashArea' || over?.id === trashSchemeId
+        if (activeTrash && !overNothing && !overTrash) {
+          emptyTrash?.()
+        }
+        if (overTrash) {
+          console.log('over trash')
+          trash?.(String(active.id))
+        }
+        if (over?.id != null && !overTrash) {
+          // removeFromTrash?.(String(active.id))
+        }
       }}
       onDragEnd={({ active, over }) => {
         if (over != null && active.id !== over.id) {
