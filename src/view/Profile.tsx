@@ -57,7 +57,6 @@ export default function ProfileView (): JSX.Element {
                 <Heading size='sm'>Discard</Heading>
                 <ExpandedSchemeView
                   rank={profileState.topDiscardScheme?.rank}
-                  onClick={onOpen}
                 />
               </Box>
             </Stack>

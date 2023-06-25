@@ -15,7 +15,7 @@ export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const showContent = gameState.phase !== 'join'
   const timeline = gameState.timeline?.slice()
-  const { hand, setHand, taken, trash, removeFromTrash } = useContext(playContext)
+  const { hand, removeFromTrash, setHand, taken, trash, trashSchemeId } = useContext(playContext)
   const [active, setActive] = useState<Active | null>(null)
   const activeItem = useMemo(
     () => hand?.find((scheme) => scheme.id === active?.id),
@@ -53,7 +53,7 @@ export default function GameContentView (): JSX.Element {
       }}
       onDragEnd={({ active, over }) => {
         if (over != null && active.id !== over.id) {
-          if (over.id === 'trashArea') {
+          if (over.id === 'trashArea' || over.id === trashSchemeId) {
             console.log('trash')
             trash?.(String(active.id))
             return
@@ -88,7 +88,6 @@ export default function GameContentView (): JSX.Element {
       </Cloud>
       <ProfilesView />
       <DragOverlay dropAnimation={dropAnimationConfig}>
-        xyz
         {sortableActiveItem}
       </DragOverlay>
     </DndContext>

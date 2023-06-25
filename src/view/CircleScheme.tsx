@@ -29,8 +29,6 @@ ref: React.Ref<HTMLDivElement>
         <ModalContent width='auto' onClick={onClose}>
           <ExpandedSchemeView
             rank={rank}
-            ref={ref}
-            onClick={onOpen}
           >
             {children}
           </ExpandedSchemeView>

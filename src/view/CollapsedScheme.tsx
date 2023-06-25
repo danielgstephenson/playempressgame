@@ -41,7 +41,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
             <RankCircleView bg={circleBg} rank={scheme.rank} />
             {time}
           </HStack>
-          <Heading size='xs'>{scheme.title}</Heading>
+          <Heading size='xs' fontSize='xs'>{scheme.title}</Heading>
         </Stack>
         {children}
       </Stack>

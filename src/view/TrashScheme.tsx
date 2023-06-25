@@ -4,9 +4,8 @@ import playContext from '../context/play'
 import useDndSortable from '../use/Dnd'
 import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
-import HandSchemeActions from './HandSchemeActions'
 
-export default function HandSchemeView ({
+export default function TrashSchemeView ({
   active,
   id,
   ...cardProps
@@ -51,9 +50,9 @@ export default function HandSchemeView ({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent width='auto' onClick={onClose}>
-          <ExpandedSchemeView rank={scheme.rank}>
-            <HandSchemeActions id={id} />
-          </ExpandedSchemeView>
+          <ExpandedSchemeView
+            rank={scheme.rank}
+          />
         </ModalContent>
       </Modal>
     </>

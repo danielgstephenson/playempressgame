@@ -2,8 +2,8 @@ import { Button, Heading } from '@chakra-ui/react'
 import { useDroppable } from '@dnd-kit/core'
 import { useContext } from 'react'
 import playContext from '../context/play'
-import HandSchemeView from './HandScheme'
 import SmallSchemeView from './SmallScheme'
+import TrashSchemeView from './TrashScheme'
 
 export default function TrashAreaView (): JSX.Element {
   const playState = useContext(playContext)
@@ -15,7 +15,7 @@ export default function TrashAreaView (): JSX.Element {
   }
   const scheme = playState.trashSchemeId == null
     ? <SmallSchemeView ref={setNodeRef} />
-    : <HandSchemeView id={playState.trashSchemeId} />
+    : <TrashSchemeView id={playState.trashSchemeId} />
   return (
     <>
       <Heading size='sm'>Trash</Heading>

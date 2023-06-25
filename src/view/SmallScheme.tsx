@@ -11,12 +11,10 @@ function View ({
 } & CardProps,
 ref: Ref<HTMLDivElement>
 ): JSX.Element {
-  const minHeight = children == null ? undefined : '135px'
-  const sx = active === true
-    ? undefined
-    : children == null
-      ? { aspectRatio: '3 / 4 !important' }
-      : { aspectRatio: '1 / 1.35 !important' }
+  console.log('children', children)
+  const minHeight = undefined
+  const sx = { aspectRatio: '3 / 4 !important' }
+  console.log('sx', sx)
   const minW = 'min(19vw, 69px)'
   const w = active === true ? undefined : '19%'
   return (
