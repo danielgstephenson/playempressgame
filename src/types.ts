@@ -119,6 +119,7 @@ export interface Play {
   emptyPlay?: () => void
   emptyTrash?: () => void
   hand?: Scheme[]
+  handClone?: Scheme[]
   play?: (schemeId: string | undefined) => void
   playSchemeId?: string
   removeFromPlay?: (schemeId: string) => void
@@ -126,6 +127,9 @@ export interface Play {
   resetTaken?: () => void
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setHandClone?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setPlaySchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  setTrashSchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void

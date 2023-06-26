@@ -10,7 +10,7 @@ import { Heading } from '@chakra-ui/react'
 
 export default function HandView (): JSX.Element {
   const {
-    hand, trashSchemeId, playSchemeId, setHand
+    hand, trashSchemeId, playSchemeId
   } = useContext(playContext)
   const sortableItems = hand?.map((scheme) => {
     if (scheme.id === trashSchemeId || scheme.id === playSchemeId) {
@@ -21,7 +21,7 @@ export default function HandView (): JSX.Element {
     )
   })
 
-  if (hand == null || setHand == null) {
+  if (hand == null) {
     return <></>
   }
 

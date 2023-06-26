@@ -16,21 +16,20 @@ export default function GameContentView (): JSX.Element {
   const showContent = gameState.phase !== 'join'
   const timeline = gameState.timeline?.slice()
   const {
-    emptyPlay,
-    emptyTrash,
     hand,
+    handClone,
     play,
     playSchemeId,
-    removeFromPlay,
-    removeFromTrash,
     setHand,
+    setPlaySchemeId,
+    setTrashSchemeId,
     taken,
     trash,
     trashSchemeId
   } = useContext(playContext)
   const [active, setActive] = useState<Active | null>(null)
-  const activeItem = useMemo(
-    () => hand?.find((scheme) => scheme.id === active?.id),
+  const activeScheme = useMemo(
+    () => handClone?.find((scheme) => scheme.id === active?.id),
     [active, hand]
   )
   const sensors = useSensors(
@@ -50,9 +49,10 @@ export default function GameContentView (): JSX.Element {
     })
   }
 
-  const sortableActiveItem = (activeItem != null)
-    ? <HandSchemeView active id={activeItem.id} />
+  const sortableActiveItem = (activeScheme != null)
+    ? <HandSchemeView active id={activeScheme.id} />
     : null
+  console.log('sortableActiveItem', sortableActiveItem)
 
   if (hand == null || setHand == null) {
     return <></>
@@ -74,38 +74,69 @@ export default function GameContentView (): JSX.Element {
         const overPlay = over.id === 'playArea' || over.id === playSchemeId
         const overHand = !overTrash && !overPlay
         if (overHand) {
+          if (activeScheme == null) {
+            throw new Error('Active scheme is not in hand')
+          }
+
+          setHand(current => {
+            if (current.every((scheme) => scheme.id !== active.id)) {
+              const overIndex = current.findIndex((scheme) => scheme.id === over.id)
+              const beforeIndex = current.slice(0, overIndex)
+              const afterIndex = current.slice(overIndex)
+              const newHand = [...beforeIndex, activeScheme, ...afterIndex]
+              return newHand
+            }
+            return current
+          })
           if (activeTrash) {
-            emptyTrash?.()
+            setTrashSchemeId?.(undefined)
           }
           if (activePlay) {
-            emptyPlay?.()
+            setPlaySchemeId?.(undefined)
           }
         }
         if (overTrash) {
           trash?.(String(active.id))
+          setHand(current => current.filter((scheme) => scheme.id !== active.id))
         }
         if (overPlay) {
           console.log('overPlay over.id', over.id)
           console.log('overPlay active.id', active.id)
           console.log('overPlay playSchemeId', playSchemeId)
           play?.(String(active.id))
+          setHand(current => current.filter((scheme) => scheme.id !== active.id))
         }
       }}
       onDragEnd={({ active, over }) => {
         if (over != null && active.id !== over.id) {
           if (over.id === 'trashArea' || over.id === trashSchemeId) {
             trash?.(String(active.id))
+            setHand(current => current.filter((scheme) => scheme.id !== active.id))
             return
           }
           if (over.id === 'playArea' || over.id === playSchemeId) {
             play?.(String(active.id))
+            setHand(current => current.filter((scheme) => scheme.id !== active.id))
             return
+          }
+          if (activeScheme == null) {
+            throw new Error('Active scheme is not in hand')
           }
           const activeIndex = hand.findIndex(({ id }) => id === active.id)
           const overIndex = hand.findIndex(({ id }) => id === over.id)
-          removeFromTrash?.(String(active.id))
-          removeFromPlay?.(String(active.id))
-          setHand(arrayMove(hand, activeIndex, overIndex))
+          setPlaySchemeId?.(current => active.id === current ? undefined : current)
+          setTrashSchemeId?.(current => active.id === current ? undefined : current)
+          setHand(current => {
+            if (current.some(scheme => scheme.id === active.id)) {
+              return arrayMove(hand, activeIndex, overIndex)
+            } else {
+              const overIndex = current.findIndex((scheme) => scheme.id === over.id)
+              const beforeIndex = current.slice(0, overIndex)
+              const afterIndex = current.slice(overIndex)
+              const newHand = [...beforeIndex, activeScheme, ...afterIndex]
+              return newHand
+            }
+          })
         }
         setActive(null)
       }}

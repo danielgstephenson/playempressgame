@@ -18,7 +18,7 @@ function View ({
 ref: Ref<HTMLDivElement>): JSX.Element {
   const scheme = schemes[rank]
   if (scheme == null) {
-    return <></>
+    return <>CollapsedScheme</>
   }
   const time = Array.from(
     { length: scheme.time },

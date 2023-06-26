@@ -8,6 +8,7 @@ export default function PlayProvider ({ children }: {
   const [trashSchemeId, setTrashSchemeId] = useState<string>()
   const [playSchemeId, setPlaySchemeId] = useState<string>()
   const [taken, setTaken] = useState<string[]>([])
+  const [handClone, setHandClone] = useState<Scheme[]>([])
   const [hand, setHand] = useState<Scheme[]>([])
   const [deck, setDeck] = useState<Scheme[]>([])
   const leave = useCallback((schemeId: string) => {
@@ -36,15 +37,14 @@ export default function PlayProvider ({ children }: {
     removeFromPlay(schemeId)
   }, [removeFromPlay])
   const play = useCallback((schemeId: string | undefined) => {
-    console.log('play', schemeId)
     setPlaySchemeId(schemeId)
-    removeFromTrash(schemeId)
   }, [removeFromTrash])
   const state = {
     deck,
     emptyPlay,
     emptyTrash,
     hand,
+    handClone,
     leave,
     play,
     playSchemeId,
@@ -53,6 +53,9 @@ export default function PlayProvider ({ children }: {
     resetTaken,
     setDeck,
     setHand,
+    setHandClone,
+    setTrashSchemeId,
+    setPlaySchemeId,
     take,
     taken,
     trash,

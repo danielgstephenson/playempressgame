@@ -18,7 +18,7 @@ import PrivateTableauView from './PrivateTableau'
 
 export default function PlayerView (): JSX.Element {
   const { round, phase } = useContext(gameContext)
-  const { resetTaken, setDeck, setHand, trash, play, emptyPlay, emptyTrash } = useContext(playContext)
+  const { resetTaken, setDeck, setHand, setHandClone, setPlaySchemeId, setTrashSchemeId, trash, play } = useContext(playContext)
   const { deck, gold, hand, silver } = useContext(playerContext)
   useEffect(() => {
     trash?.(undefined)
@@ -40,15 +40,17 @@ export default function PlayerView (): JSX.Element {
       const already = current?.filter(scheme => hand.some(handScheme => handScheme.id === scheme.id))
 
       const newSchemes = hand.filter(scheme => !current.some(currentScheme => currentScheme.id === scheme.id))
-      return [...newSchemes, ...already]
+      const newHand = [...newSchemes, ...already]
+      setHandClone?.(newHand)
+      return newHand
     })
-  }, [hand, setHand])
+  }, [hand, setHand, setHandClone])
   useEffect(() => {
     if (phase !== 'play') {
-      emptyPlay?.()
-      emptyTrash?.()
+      setPlaySchemeId?.(undefined)
+      setTrashSchemeId?.(undefined)
     }
-  }, [emptyPlay, emptyTrash, phase])
+  }, [setPlaySchemeId, setTrashSchemeId, phase])
 
   return (
     <>

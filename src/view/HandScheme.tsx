@@ -16,22 +16,24 @@ export default function HandSchemeView ({
 } & CardProps
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { hand } = useContext(playContext)
+  const { handClone } = useContext(playContext)
   const {
     attributes,
     listeners,
     setNodeRef,
     style
   } = useDndSortable({ id })
-  if (hand == null) {
-    return <></>
+  if (handClone == null) {
+    return <>HandScheme no handClone</>
   }
-  const scheme = hand.find(scheme => scheme.id === id)
+  const scheme = handClone.find(scheme => scheme.id === id)
   if (scheme == null) {
-    console.error('hand', hand)
     console.error('id', id)
-    return <>x</>
+    return <>HandScheme no scheme</>
     // throw new Error(`Scheme with id ${id} not found in hand`)
+  }
+  if (active === true) {
+    console.log('active scheme', scheme)
   }
   return (
     <>

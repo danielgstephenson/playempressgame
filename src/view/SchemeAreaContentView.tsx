@@ -1,5 +1,4 @@
 import { forwardRef, ReactNode, Ref, useContext } from 'react'
-import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import { Scheme } from '../types'
 import HandSchemeView from './HandScheme'
