@@ -2,9 +2,9 @@ import { forwardRef, ReactNode, Ref, useContext } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import { Scheme } from '../types'
-import ExpandableSchemeView from './ExpandableScheme'
 import HandSchemeView from './HandScheme'
 import SmallSchemeView from './SmallScheme'
+import TinySchemeView from './TinyScheme'
 
 function View ({
   children,
@@ -16,27 +16,21 @@ function View ({
   scheme?: Scheme
 },
 ref: Ref<HTMLDivElement>): JSX.Element {
-  const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
-
   const handScheme = playerState.hand?.find(s => s.id === schemeId)
   const inHand = handScheme != null
   const ready = playerState.playReady === true
-  const choosing = gameState.choices != null && gameState.choices.length > 0
-  if (choosing) {
-    if (scheme == null) {
-      throw new Error('Choosing without scheme')
-    }
-    return <ExpandableSchemeView rank={scheme.rank} w='100%' />
-  }
   if (ready) {
-    if (inHand) {
-      return <ExpandableSchemeView rank={handScheme.rank} w='100%' />
+    const rank = handScheme?.rank ?? scheme?.rank
+    if (rank == null) {
+      throw new Error('Ready without rank')
     }
-    if (scheme == null) {
-      throw new Error('Ready without scheme')
-    }
-    return <ExpandableSchemeView rank={scheme.rank} w='100%' />
+    return (
+      <>
+        {children}
+        <TinySchemeView rank={rank} />
+      </>
+    )
   }
   if (schemeId == null) {
     return (

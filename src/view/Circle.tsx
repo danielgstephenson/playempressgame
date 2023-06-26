@@ -13,6 +13,7 @@ ref: React.Ref<HTMLDivElement>
     <Circle
       ref={ref}
       size='25px'
+      color='white'
       {...circleProps}
     >
       {children}

@@ -4,7 +4,7 @@ import { Fragment, ReactNode, useContext } from 'react'
 import playContext from '../context/play'
 import getBg from '../service/getBg'
 import { Scheme } from '../types'
-import CircleSchemeView from './CircleScheme'
+import TinySchemeView from './TinyScheme'
 import Curtain from './Curtain'
 import SchemesContainerView from './SchemesContainer'
 
@@ -38,13 +38,13 @@ export default function PalaceAreaView ({
     }
     const color = getBg({ rank: scheme.rank, weight: 800 })
     return (
-      <CircleSchemeView rank={scheme.rank} key={scheme.id}>
+      <TinySchemeView rank={scheme.rank} key={scheme.id}>
         <Checkbox
           borderColor={color}
           isChecked={taken}
           onChange={handleCheck}
         />
-      </CircleSchemeView>
+      </TinySchemeView>
     )
   })
   const heading = children != null && <Heading size='sm'>{children}</Heading>

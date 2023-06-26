@@ -3,7 +3,7 @@ import SmallScheme from './SmallScheme'
 import schemes from '../schemes.json'
 import getBg from '../service/getBg'
 import { ReactNode, Ref } from 'react'
-import RankCircleView from './RankCircle'
+import CircleView from './Circle'
 
 function View ({
   active,
@@ -38,7 +38,11 @@ ref: Ref<HTMLDivElement>): JSX.Element {
       <Stack height='100%' justifyContent='space-between'>
         <Stack spacing='5px'>
           <HStack color={circleBg} spacing='2px'>
-            <RankCircleView bg={circleBg} rank={scheme.rank} />
+            <CircleView bg={circleBg}>
+              <Heading size='sm'>
+                {scheme.rank}
+              </Heading>
+            </CircleView>
             {time}
           </HStack>
           <Heading size='xs' fontSize='xs'>{scheme.title}</Heading>

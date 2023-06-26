@@ -1,7 +1,7 @@
-import { Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
+import { Card, CardBody, Center, Heading, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
 import { forwardRef } from 'react'
+import getBg from '../service/getBg'
 import ExpandedSchemeView from './ExpandedScheme'
-import RankCircleView from './RankCircle'
 
 function View ({
   children,
@@ -13,14 +13,21 @@ function View ({
 ref: React.Ref<HTMLDivElement>
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const bg = getBg({ rank })
   return (
     <>
       <VStack direction='column'>
-        <RankCircleView
+        <Card
+          bg={bg}
           onClick={onOpen}
-          rank={rank}
           ref={ref}
-        />
+        >
+          <CardBody p='0' w='18px'>
+            <Center minH='24px'>
+              <Heading size='xs' fontSize='xs'>{rank}</Heading>
+            </Center>
+          </CardBody>
+        </Card>
         {children}
       </VStack>
 
@@ -37,5 +44,5 @@ ref: React.Ref<HTMLDivElement>
     </>
   )
 }
-const CircleSchemeView = forwardRef(View)
-export default CircleSchemeView
+const TinySchemeView = forwardRef(View)
+export default TinySchemeView
