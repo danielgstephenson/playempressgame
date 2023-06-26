@@ -1,4 +1,4 @@
-import { Box, Heading } from '@chakra-ui/react'
+import { Box, Center, Heading } from '@chakra-ui/react'
 import { useDroppable } from '@dnd-kit/core'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
@@ -25,12 +25,15 @@ export default function SchemeAreaView ({
   }
   return (
     <Box w='19%'>
-      <Heading size='sm'>{label}</Heading>
       <SchemeAreaContentView
         ref={setNodeRef}
         scheme={scheme}
         schemeId={schemeId}
-      />
+      >
+        <Center h='100%'>
+          <Heading size='xs'>{label}</Heading>
+        </Center>
+      </SchemeAreaContentView>
     </Box>
   )
 }

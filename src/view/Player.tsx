@@ -13,7 +13,7 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import Status from './Status'
-import { HStack } from '@chakra-ui/react'
+import { HStack, VStack } from '@chakra-ui/react'
 import PrivateTableauView from './PrivateTableau'
 
 export default function PlayerView (): JSX.Element {
@@ -52,15 +52,17 @@ export default function PlayerView (): JSX.Element {
 
   return (
     <>
-      <HStack>
+      <HStack alignItems='start'>
         <PlayAreaView />
-        <Status label='Gold' value={gold} />
-        <Status label='Silver' value={silver} />
+        <VStack direction='column' flexGrow='1'>
+          <Status label='Gold' value={gold} />
+          <Status label='Silver' value={silver} />
+          <PlayReadyView />
+        </VStack>
         <TrashAreaView />
       </HStack>
       <PrivateTableauView />
       <BidView />
-      <PlayReadyView />
       <ChoiceView />
       <HandView />
       <DeckView />
