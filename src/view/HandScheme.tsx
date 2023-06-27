@@ -32,9 +32,6 @@ export default function HandSchemeView ({
     return <>HandScheme no scheme</>
     // throw new Error(`Scheme with id ${id} not found in hand`)
   }
-  if (active === true) {
-    console.log('active scheme', scheme)
-  }
   return (
     <>
       <CollapsedSchemeView
