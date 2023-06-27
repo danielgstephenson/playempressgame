@@ -3,6 +3,7 @@ import { Active, defaultDropAnimationSideEffects, DndContext, DragOverlay, DropA
 import { arrayMove } from '@dnd-kit/sortable'
 import { useContext, useState, useMemo } from 'react'
 import playContext from '../context/play'
+import dragReturn from '../service/dragReturn'
 import ChoiceView from './Choice'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
@@ -49,7 +50,6 @@ export default function PlayPhaseView (): JSX.Element {
   const sortableActiveItem = (activeScheme != null)
     ? <HandSchemeView active id={activeScheme.id} />
     : null
-  console.log('sortableActiveItem', sortableActiveItem)
 
   if (hand == null || setHand == null) {
     return <></>
@@ -65,79 +65,26 @@ export default function PlayPhaseView (): JSX.Element {
         if (overNothing) {
           return
         }
+        if (activeScheme == null) {
+          throw new Error('Active scheme is not in hand')
+        }
         const activeTrash = active.id === trashSchemeId
         const activePlay = active.id === playSchemeId
-        const overTrash = over.id === 'trashArea' || over.id === trashSchemeId
-        const overPlay = over.id === 'playArea' || over.id === playSchemeId
+        const overTrashScheme = over.id === trashSchemeId
+        const overTrash = over.id === 'trashArea' || overTrashScheme
+        const overPlayScheme = over.id === playSchemeId
+        const overPlay = over.id === 'playArea' || overPlayScheme
         const overHand = !overTrash && !overPlay
         if (overHand) {
-          if (activeScheme == null) {
-            throw new Error('Active scheme is not in hand')
-          }
-
-          setHand(current => {
-            if (current.every((scheme) => scheme.id !== active.id)) {
-              const overIndex = current.findIndex((scheme) => scheme.id === over.id)
-              const beforeIndex = current.slice(0, overIndex)
-              const afterIndex = current.slice(overIndex)
-              const newHand = [...beforeIndex, activeScheme, ...afterIndex]
-              return newHand
-            }
-            return current
-          })
           if (activeTrash) {
             setTrashSchemeId?.(undefined)
           }
           if (activePlay) {
             setPlaySchemeId?.(undefined)
           }
-        }
-        if (overTrash) {
-          trash?.(String(active.id))
           setHand(current => {
-            const filtered = current.filter((scheme) => scheme.id !== active.id)
-            const trashScheme = handClone?.find((scheme) => scheme.id === active.id)
-            if (trashScheme == null) {
-              throw new Error('Trash scheme is not in hand')
-            }
-            return [...filtered, trashScheme]
-          })
-        }
-        if (overPlay) {
-          console.log('overPlay over.id', over.id)
-          console.log('overPlay active.id', active.id)
-          console.log('overPlay playSchemeId', playSchemeId)
-          play?.(String(active.id))
-          setHand(current => {
-            const filtered = current.filter((scheme) => scheme.id !== active.id)
-            const playScheme = handClone?.find((scheme) => scheme.id === active.id)
-            if (playScheme == null) {
-              throw new Error('Play scheme is not in hand')
-            }
-            return [...filtered, playScheme]
-          })
-        }
-      }}
-      onDragEnd={({ active, over }) => {
-        if (over != null && active.id !== over.id) {
-          if (over.id === 'trashArea' || over.id === trashSchemeId) {
-            trash?.(String(active.id))
-            setHand(current => current.filter((scheme) => scheme.id !== active.id))
-            return
-          }
-          if (over.id === 'playArea' || over.id === playSchemeId) {
-            play?.(String(active.id))
-            setHand(current => current.filter((scheme) => scheme.id !== active.id))
-            return
-          }
-          if (activeScheme == null) {
-            throw new Error('Active scheme is not in hand')
-          }
-          const activeIndex = hand.findIndex(({ id }) => id === active.id)
-          const overIndex = hand.findIndex(({ id }) => id === over.id)
-          setPlaySchemeId?.(current => active.id === current ? undefined : current)
-          setTrashSchemeId?.(current => active.id === current ? undefined : current)
-          setHand(current => {
+            const activeIndex = current.findIndex((scheme) => scheme.id === active.id)
+            const overIndex = current.findIndex((scheme) => scheme.id === over.id)
             if (current.some(scheme => scheme.id === active.id)) {
               return arrayMove(hand, activeIndex, overIndex)
             } else {
@@ -148,7 +95,67 @@ export default function PlayPhaseView (): JSX.Element {
               return newHand
             }
           })
+        } else if (overTrash) {
+          trash?.(String(active.id))
+          setPlaySchemeId?.(current => current === active.id ? undefined : current)
+          setHand(current => {
+            return dragReturn({
+              active,
+              over,
+              overScheme: overTrashScheme,
+              hand: current,
+              handClone
+            })
+          })
+        } else if (overPlay) {
+          console.log('overPlay over.id', over.id)
+          console.log('overPlay active.id', active.id)
+          console.log('overPlay playSchemeId', playSchemeId)
+          play?.(String(active.id))
+          setTrashSchemeId?.(current => current === active.id ? undefined : current)
+          setHand(current => {
+            return dragReturn({
+              active,
+              append: false,
+              over,
+              overScheme: overPlayScheme,
+              hand: current,
+              handClone
+            })
+          })
         }
+      }}
+      onDragEnd={({ active, over }) => {
+        // if (over != null && active.id !== over.id) {
+        //   if (over.id === 'trashArea' || over.id === trashSchemeId) {
+        //     trash?.(String(active.id))
+        //     setHand(current => current.filter((scheme) => scheme.id !== active.id))
+        //     return
+        //   }
+        //   if (over.id === 'playArea' || over.id === playSchemeId) {
+        //     play?.(String(active.id))
+        //     setHand(current => current.filter((scheme) => scheme.id !== active.id))
+        //     return
+        //   }
+        //   if (activeScheme == null) {
+        //     throw new Error('Active scheme is not in hand')
+        //   }
+        //   const activeIndex = hand.findIndex(({ id }) => id === active.id)
+        //   const overIndex = hand.findIndex(({ id }) => id === over.id)
+        //   setPlaySchemeId?.(current => active.id === current ? undefined : current)
+        //   setTrashSchemeId?.(current => active.id === current ? undefined : current)
+        //   setHand(current => {
+        //     if (current.some(scheme => scheme.id === active.id)) {
+        //       return arrayMove(hand, activeIndex, overIndex)
+        //     } else {
+        //       const overIndex = current.findIndex((scheme) => scheme.id === over.id)
+        //       const beforeIndex = current.slice(0, overIndex)
+        //       const afterIndex = current.slice(overIndex)
+        //       const newHand = [...beforeIndex, activeScheme, ...afterIndex]
+        //       return newHand
+        //     }
+        //   })
+        // }
         setActive(null)
       }}
       onDragCancel={() => {
