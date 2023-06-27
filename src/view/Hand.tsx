@@ -27,7 +27,7 @@ export default function HandView (): JSX.Element {
 
   return (
     <>
-      <Heading size='sm'>Hand</Heading>
+      <Heading size='sm' textAlign='center'>Hand</Heading>
       <SortableContext items={hand}>
         <SchemesContainerView justifyContent='center'>
           {sortableItems}

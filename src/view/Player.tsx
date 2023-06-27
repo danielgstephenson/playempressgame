@@ -1,25 +1,19 @@
 import DeckView from './Deck'
 import DiscardView from './Discard'
-import HandView from './Hand'
-import TrashAreaView from './TrashArea'
-import PlayAreaView from './PlayArea'
-import PlayReadyView from './PlayReady'
 import PlayerHistoryView from './PlayerHistory'
-import ChoiceView from './Choice'
 import PrivateTrashView from './PrivateTrash'
 import BidView from './Bid'
 import { useContext, useEffect } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
-import Status from './Status'
-import { HStack, VStack } from '@chakra-ui/react'
 import PrivateTableauView from './PrivateTableau'
+import PlayPhaseView from './PlayPhase'
 
 export default function PlayerView (): JSX.Element {
   const { round, phase } = useContext(gameContext)
   const { resetTaken, setDeck, setHand, setHandClone, setPlaySchemeId, setTrashSchemeId, trash, play } = useContext(playContext)
-  const { deck, gold, hand, silver } = useContext(playerContext)
+  const { deck, hand } = useContext(playerContext)
   useEffect(() => {
     trash?.(undefined)
     play?.(undefined)
@@ -54,19 +48,9 @@ export default function PlayerView (): JSX.Element {
 
   return (
     <>
-      <HStack alignItems='start'>
-        <PlayAreaView />
-        <VStack direction='column' flexGrow='1'>
-          <Status label='Gold' value={gold} />
-          <Status label='Silver' value={silver} />
-          <PlayReadyView />
-        </VStack>
-        <TrashAreaView />
-      </HStack>
       <PrivateTableauView />
       <BidView />
-      <ChoiceView />
-      <HandView />
+      <PlayPhaseView />
       <DeckView />
       <DiscardView />
       <PrivateTrashView />
