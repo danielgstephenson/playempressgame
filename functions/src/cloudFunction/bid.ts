@@ -57,7 +57,6 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
       game: currentGame,
       player: currentPlayer
     })
-    console.log('isCarryingOutEleven', eleven)
     if (!eleven) {
       throw new https.HttpsError(
         'invalid-argument',

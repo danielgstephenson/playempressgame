@@ -13,7 +13,6 @@ export default function imprisonLastReady ({
   currentPlayer: Result<Player>
   playState: PlayState
 }): void {
-  console.log('last timeline', playState.game.timeline)
   const imprisonMessages = getImprisonMessages({
     game: playState.game,
     currentPlayer

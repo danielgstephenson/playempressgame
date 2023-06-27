@@ -22,8 +22,8 @@ ref: React.Ref<HTMLDivElement>
           onClick={onOpen}
           ref={ref}
         >
-          <CardBody p='0' w='18px'>
-            <Center minH='24px'>
+          <CardBody p='.05vw' sx={{ aspectRatio: '3/4' }}>
+            <Center w='18px' minH='24px'>
               <Heading size='xs' fontSize='xs'>{rank}</Heading>
             </Center>
           </CardBody>

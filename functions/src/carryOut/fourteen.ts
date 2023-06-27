@@ -14,7 +14,6 @@ export default function carryOutFourteen ({
   const fourteenPlayers = playState
     .players
     .filter(player => player.tableau.some(scheme => scheme.rank === 14))
-  console.log('fourteenPlayers.length', fourteenPlayers.length)
   if (fourteenPlayers.length > 0) {
     const names = fourteenPlayers.map(player => player.displayName)
     const publicNames = join(names)

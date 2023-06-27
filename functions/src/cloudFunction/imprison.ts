@@ -58,7 +58,6 @@ const imprison = createCloudFunction<GameProps>(async (props, context, transacti
     currentPlayer,
     transaction
   })
-  console.log('timeline', playState.game.timeline)
   imprisonLastReady({
     currentPlayer,
     playState

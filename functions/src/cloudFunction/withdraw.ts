@@ -92,9 +92,7 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
   currentProfile.auctionReady = true
   currentPlayer.withdrawn = true
   currentPlayer.auctionReady = true
-  console.log('currentGame.profiles', currentGame.profiles)
   const highestUntiedProfile = getHighestUntiedProfile(currentGame)
-  console.log('highestUntiedProfile', highestUntiedProfile)
   if (highestUntiedProfile == null) {
     const otherPlayers = await getOtherPlayers({
       currentUid,
