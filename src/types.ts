@@ -120,6 +120,8 @@ export interface Play {
   emptyTrash?: () => void
   hand?: Scheme[]
   handClone?: Scheme[]
+  overPlay?: boolean
+  overTrash?: boolean
   play?: (schemeId: string | undefined) => void
   playSchemeId?: string
   removeFromPlay?: (schemeId: string) => void
@@ -128,6 +130,8 @@ export interface Play {
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHandClone?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setOverPlay?: React.Dispatch<React.SetStateAction<boolean>>
+  setOverTrash?: React.Dispatch<React.SetStateAction<boolean>>
   setPlaySchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setTrashSchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
   taken?: string[]

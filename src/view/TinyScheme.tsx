@@ -1,16 +1,14 @@
 import { Card, CardBody, Center, Heading, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
-import { forwardRef } from 'react'
 import getBg from '../service/getBg'
 import ExpandedSchemeView from './ExpandedScheme'
 
-function View ({
+export default function TinySchemeView ({
   children,
   rank
 }: {
   children?: React.ReactNode
   rank: number
-},
-ref: React.Ref<HTMLDivElement>
+}
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const bg = getBg({ rank })
@@ -20,7 +18,6 @@ ref: React.Ref<HTMLDivElement>
         <Card
           bg={bg}
           onClick={onOpen}
-          ref={ref}
         >
           <CardBody p='.05vw' sx={{ aspectRatio: '3/4' }}>
             <Center w='18px' minH='24px'>
@@ -44,5 +41,3 @@ ref: React.Ref<HTMLDivElement>
     </>
   )
 }
-const TinySchemeView = forwardRef(View)
-export default TinySchemeView

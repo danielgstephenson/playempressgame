@@ -1,9 +1,9 @@
 import { Box, Heading } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import { Scheme } from '../types'
-import StaticCircleSchemesView from './StaticCircleSchemes'
+import TinySchemesView from './TinySchemes'
 
-export default function StaticCircleAreaView ({
+export default function TinySchemeAreaView ({
   label,
   children,
   schemes
@@ -15,7 +15,7 @@ export default function StaticCircleAreaView ({
   return (
     <Box>
       <Heading size='sm'>{label}: {children}</Heading>
-      <StaticCircleSchemesView schemes={schemes} />
+      <TinySchemesView schemes={schemes} />
     </Box>
   )
 }

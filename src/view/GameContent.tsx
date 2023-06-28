@@ -3,7 +3,7 @@ import ProfilesView from './Profiles'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PalaceView from './Palace'
-import StaticCircleAreaView from './StaticCircleArea'
+import TinySchemeAreaView from './TinySchemeArea'
 import Cloud from './Cloud'
 import playContext from '../context/play'
 import { Box, Stack } from '@chakra-ui/react'
@@ -27,7 +27,7 @@ export default function GameContentView (): JSX.Element {
         <Stack direction='row'>
           <Curtain open={showContent}>
             <PalaceView />
-            <StaticCircleAreaView label='Timeline' schemes={timeline} />
+            <TinySchemeAreaView label='Timeline' schemes={timeline} />
           </Curtain>
         </Stack>
       </Box>

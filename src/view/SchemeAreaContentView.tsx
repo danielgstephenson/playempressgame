@@ -25,15 +25,12 @@ ref: Ref<HTMLDivElement>): JSX.Element {
       throw new Error('Ready without rank')
     }
     return (
-      <>
-        {children}
-        <TinySchemeView rank={rank} />
-      </>
+      <TinySchemeView rank={rank} />
     )
   }
   if (schemeId == null) {
     return (
-      <SmallSchemeView ref={ref} w='100%'>
+      <SmallSchemeView ref={ref}>
         {children}
       </SmallSchemeView>
     )
@@ -41,7 +38,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   if (!inHand) {
     throw new Error('Scheme not in hand')
   }
-  return <HandSchemeView id={schemeId} w='100%' />
+  return <HandSchemeView id={schemeId} />
 }
 
 const SchemeAreaContentView = forwardRef(View)

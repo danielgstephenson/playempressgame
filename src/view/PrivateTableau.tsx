@@ -1,21 +1,23 @@
-import { Heading } from '@chakra-ui/react'
+import { Box, HStack } from '@chakra-ui/react'
 import { useContext } from 'react'
-import { gameContext } from '../reader/game'
+import playContext from '../context/play'
 import { playerContext } from '../reader/player'
-import StaticSchemesView from './StaticSchemes'
+import ActiveHeading from './ActiveHeading'
+import PlayAreaView from './PlayArea'
+import TinySchemesView from './TinySchemes'
 
 export default function PrivateTableauView (): JSX.Element {
-  const gameState = useContext(gameContext)
+  const playState = useContext(playContext)
   const playerState = useContext(playerContext)
-  if (gameState.phase === 'play') {
-    return <></>
-  }
   return (
-    <>
-      <Heading size='sm'>Tableau:</Heading>
-      <StaticSchemesView
-        schemes={playerState.tableau}
-      />
-    </>
+    <Box>
+      <ActiveHeading active={playState.overPlay}>Tableau</ActiveHeading>
+      <HStack>
+        <PlayAreaView />
+        <TinySchemesView
+          schemes={playerState.tableau}
+        />
+      </HStack>
+    </Box>
   )
 }

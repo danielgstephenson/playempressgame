@@ -1,11 +1,11 @@
 import { useContext } from 'react'
 import profileContext from '../context/profile'
-import StaticCircleAreaView from './StaticCircleArea'
+import TinySchemeAreaView from './TinySchemeArea'
 
 export default function PublicTableauView (): JSX.Element {
   const profileState = useContext(profileContext)
   return (
-    <StaticCircleAreaView
+    <TinySchemeAreaView
       label='Tableau' schemes={profileState.tableau}
     />
   )

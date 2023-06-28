@@ -11,6 +11,8 @@ export default function PlayProvider ({ children }: {
   const [handClone, setHandClone] = useState<Scheme[]>([])
   const [hand, setHand] = useState<Scheme[]>([])
   const [deck, setDeck] = useState<Scheme[]>([])
+  const [overPlay, setOverPlay] = useState(false)
+  const [overTrash, setOverTrash] = useState(false)
   const leave = useCallback((schemeId: string) => {
     setTaken(taken => taken.filter(scheme => scheme !== schemeId))
   }, [])
@@ -34,7 +36,6 @@ export default function PlayProvider ({ children }: {
   }, [])
   const trash = useCallback((schemeId: string | undefined) => {
     setTrashSchemeId(schemeId)
-    removeFromPlay(schemeId)
   }, [removeFromPlay])
   const play = useCallback((schemeId: string | undefined) => {
     setPlaySchemeId(schemeId)
@@ -46,6 +47,8 @@ export default function PlayProvider ({ children }: {
     hand,
     handClone,
     leave,
+    overPlay,
+    overTrash,
     play,
     playSchemeId,
     removeFromPlay,
@@ -54,8 +57,10 @@ export default function PlayProvider ({ children }: {
     setDeck,
     setHand,
     setHandClone,
-    setTrashSchemeId,
+    setOverPlay,
+    setOverTrash,
     setPlaySchemeId,
+    setTrashSchemeId,
     take,
     taken,
     trash,

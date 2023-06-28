@@ -48,12 +48,10 @@ export default function PlayerView (): JSX.Element {
 
   return (
     <>
-      <PrivateTableauView />
       <BidView />
       <PlayPhaseView />
       <DeckView />
       <DiscardView />
-      <PrivateTrashView />
       <PlayerHistoryView />
     </>
   )

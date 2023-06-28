@@ -12,7 +12,9 @@ export default function PlayReadyView (): JSX.Element {
   const showReady = gameState.phase === 'play' &&
     playState.trashSchemeId != null &&
     playState.playSchemeId != null &&
-    playerState.playReady !== true
+    playerState.playReady !== true &&
+    playState.overPlay !== true &&
+    playState.overTrash !== true
   const props = {
     gameId: gameState.id,
     trashSchemeId: playState.trashSchemeId,

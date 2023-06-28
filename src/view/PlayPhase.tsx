@@ -7,11 +7,11 @@ import dragReturn from '../service/dragReturn'
 import ChoiceView from './Choice'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
-import PlayAreaView from './PlayArea'
 import PlayerGoldView from './PlayerGold'
 import PlayerSilverView from './PlayerSilver'
 import PlayReadyView from './PlayReady'
-import TrashAreaView from './TrashArea'
+import PrivateTableauView from './PrivateTableau'
+import PrivateTrashView from './PrivateTrash'
 
 export default function PlayPhaseView (): JSX.Element {
   const {
@@ -20,6 +20,8 @@ export default function PlayPhaseView (): JSX.Element {
     play,
     playSchemeId,
     setHand,
+    setOverPlay,
+    setOverTrash,
     setPlaySchemeId,
     setTrashSchemeId,
     trash,
@@ -71,11 +73,13 @@ export default function PlayPhaseView (): JSX.Element {
         const activeTrash = active.id === trashSchemeId
         const activePlay = active.id === playSchemeId
         const overTrashScheme = over.id === trashSchemeId
-        const overTrash = over.id === 'trashArea'
+        const overTrashArea = over.id === 'trashArea'
         const overPlayScheme = over.id === playSchemeId
-        const overPlay = over.id === 'playArea'
+        const overPlayArea = over.id === 'playArea'
         const overHand = hand.some((scheme) => scheme.id === over.id)
         if (overHand) {
+          setOverPlay?.(false)
+          setOverTrash?.(false)
           if (activeTrash) {
             setTrashSchemeId?.(undefined)
           }
@@ -95,34 +99,42 @@ export default function PlayPhaseView (): JSX.Element {
               return newHand
             }
           })
-        } else if (overTrash) {
+        } else if (overTrashArea) {
+          setOverPlay?.(false)
+          setOverTrash?.(true)
           trash?.(String(active.id))
           setPlaySchemeId?.(current => current === active.id ? undefined : current)
           setHand(current => {
             return dragReturn({
               active,
-              over,
-              overScheme: overTrashScheme,
-              hand: current,
-              handClone
+              hand: current
             })
           })
-        } else if (overPlay) {
+        } else if (overPlayArea) {
+          setOverPlay?.(true)
+          setOverTrash?.(false)
           play?.(String(active.id))
           setTrashSchemeId?.(current => current === active.id ? undefined : current)
           setHand(current => {
             return dragReturn({
               active,
-              append: false,
-              over,
-              overScheme: overPlayScheme,
-              hand: current,
-              handClone
+              hand: current
             })
           })
+        } else if (overPlayScheme) {
+          setOverPlay?.(true)
+          setOverTrash?.(false)
+        } else if (overTrashScheme) {
+          setOverPlay?.(false)
+          setOverTrash?.(true)
+        } else {
+          setOverPlay?.(false)
+          setOverTrash?.(false)
         }
       }}
       onDragEnd={({ active, over }) => {
+        setOverPlay?.(false)
+        setOverTrash?.(false)
         if (over != null && active.id !== over.id) {
           const overScheme = handClone?.find((scheme) => scheme.id === over?.id)
           if (over.id === trashSchemeId) {
@@ -161,14 +173,16 @@ export default function PlayPhaseView (): JSX.Element {
         setActive(null)
       }}
     >
-      <HStack alignItems='start'>
-        <PlayAreaView />
-        <VStack direction='column' flexGrow='1'>
-          <PlayerGoldView />
-          <PlayerSilverView />
+      <HStack alignItems='start' spacing='2px'>
+        <PrivateTableauView />
+        <VStack flexGrow='1'>
+          <HStack>
+            <PlayerGoldView />
+            <PlayerSilverView />
+          </HStack>
           <PlayReadyView />
         </VStack>
-        <TrashAreaView />
+        <PrivateTrashView />
       </HStack>
       <ChoiceView />
       <HandView />

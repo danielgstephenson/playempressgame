@@ -1,11 +1,11 @@
 import { useContext } from 'react'
 import { playerContext } from '../reader/player'
-import StaticCircleAreaView from './StaticCircleArea'
+import TinySchemeAreaView from './TinySchemeArea'
 
 export default function DiscardView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
-    <StaticCircleAreaView
+    <TinySchemeAreaView
       label='Discard'
       schemes={playerState.discard}
     />
