@@ -1,36 +1,32 @@
 import { CardProps } from '@chakra-ui/card'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import useDndSortable from '../use/DndSortable'
 import ExpandableSchemeView from './ExpandableScheme'
 
 export default function SortableSchemeView ({
+  active = false,
   children,
   id,
-  index,
   rank,
   ...styleProps
 }: {
+  active?: boolean
   children?: React.ReactNode
   id: string
-  index: number
   rank: number
 } & CardProps): JSX.Element {
   const {
     attributes,
-    isDragging,
     listeners,
     setNodeRef,
-    transform,
-    transition
-  } = useSortable({ id })
+    style
+  } = useDndSortable({ id })
 
   return (
     <ExpandableSchemeView
-      isDragging={isDragging}
+      active={active}
       rank={rank}
       ref={setNodeRef}
-      transform={CSS.Transform.toString(transform)}
-      transition={transition}
+      style={style}
       {...styleProps}
       {...attributes}
       {...listeners}

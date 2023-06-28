@@ -1,9 +1,11 @@
 import { HStack, VStack } from '@chakra-ui/react'
-import { Active, defaultDropAnimationSideEffects, DndContext, DragOverlay, DropAnimation, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { Active, DndContext, DragOverlay } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useContext, useState, useMemo } from 'react'
+import { DROP_ANIMATION } from '../constants'
 import playContext from '../context/play'
 import dragReturn from '../service/dragReturn'
+import usePointerSensor from '../use/pointerSensor'
 import ChoiceView from './Choice'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
@@ -25,32 +27,13 @@ export default function PlayPhaseView (): JSX.Element {
     setTrashSchemeId,
     trashSchemeId
   } = useContext(playContext)
+  const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
     () => handClone?.find((scheme) => scheme.id === active?.id),
     [active, handClone]
   )
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5
-      }
-    })
-  )
-  const dropAnimationConfig: DropAnimation = {
-    sideEffects: defaultDropAnimationSideEffects({
-      styles: {
-        active: {
-          opacity: '0.4'
-        }
-      }
-    })
-  }
-
-  const sortableActiveItem = (activeScheme != null)
-    ? <HandSchemeView active id={activeScheme.id} />
-    : null
-
+  const sortableActiveItem = (activeScheme != null) && <HandSchemeView active id={activeScheme.id} />
   if (hand == null || setHand == null) {
     return <></>
   }
@@ -184,7 +167,7 @@ export default function PlayPhaseView (): JSX.Element {
       </HStack>
       <ChoiceView />
       <HandView />
-      <DragOverlay dropAnimation={dropAnimationConfig}>
+      <DragOverlay dropAnimation={DROP_ANIMATION}>
         {sortableActiveItem}
       </DragOverlay>
     </DndContext>

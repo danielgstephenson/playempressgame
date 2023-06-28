@@ -7,6 +7,7 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import PlayPhaseView from './PlayPhase'
+import { Heading } from '@chakra-ui/react'
 
 export default function PlayerView (): JSX.Element {
   const { round, phase } = useContext(gameContext)
@@ -48,6 +49,7 @@ export default function PlayerView (): JSX.Element {
     <>
       <BidView />
       <PlayPhaseView />
+      <Heading size='sm'>Deck</Heading>
       <DeckView />
       <DiscardView />
       <PlayerHistoryView />

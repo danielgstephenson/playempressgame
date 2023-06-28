@@ -4,11 +4,13 @@ import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
 
 function View ({
+  active = false,
   children,
   isDragging,
   rank,
   ...cardProps
 }: {
+  active?: boolean
   children?: React.ReactNode
   isDragging?: boolean
   rank: number
@@ -20,6 +22,7 @@ ref: React.Ref<HTMLDivElement>
   return (
     <>
       <CollapsedSchemeView
+        active={active}
         ref={ref}
         onClick={onOpen}
         rank={rank}

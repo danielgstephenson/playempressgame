@@ -1,27 +1,37 @@
-import { Heading } from '@chakra-ui/react'
-import { useSensor, PointerSensor, useSensors, closestCenter, DndContext } from '@dnd-kit/core'
-import { arrayMove, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable'
-import { useContext } from 'react'
+import { DndContext, Active, DragOverlay } from '@dnd-kit/core'
+import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { useContext, useMemo, useState } from 'react'
+import { DROP_ANIMATION } from '../constants'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
+import { playerContext } from '../reader/player'
+import usePointerSensor from '../use/pointerSensor'
 import Cloud from './Cloud'
 import SchemesContainerView from './SchemesContainer'
-import SortableScheme from './SortableScheme'
+import SortableSchemeView from './SortableScheme'
+import TinySchemesView from './TinySchemes'
 
 export default function DeckView (): JSX.Element {
   const gameState = useContext(gameContext)
+  const playerState = useContext(playerContext)
   const { deck, setDeck } = useContext(playContext)
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 5
-    }
-  })
-  const sensors = useSensors(pointerSensor)
+  const sensors = usePointerSensor()
+  const [active, setActive] = useState<Active | null>(null)
+  const activeScheme = useMemo(
+    () => deck?.find((scheme) => scheme.id === active?.id),
+    [active, deck]
+  )
+  const sortableActiveItem = (activeScheme != null) && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
   if (deck == null) {
     return <></>
   }
   const schemeIds = deck.map(scheme => scheme.id)
+  const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
+  if (choice?.type !== 'deck') {
+    return <TinySchemesView schemes={deck} />
+  }
   function handleDragEnd (event: any): void {
+    setActive(null)
     const { active, over } = event
     if (active == null) {
       console.warn('No active end')
@@ -42,28 +52,33 @@ export default function DeckView (): JSX.Element {
   }
   const sortableSchemes = deck.map((scheme, index) => {
     return (
-      <SortableScheme
+      <SortableSchemeView
         key={scheme.id}
         id={scheme.id}
         rank={scheme.rank}
-        index={index}
       />
     )
   })
   return (
     <>
-      <Heading size='sm'>Deck</Heading>
       <DndContext
-        autoScroll={false}
         sensors={sensors}
-        collisionDetection={closestCenter}
+        onDragStart={({ active }) => {
+          setActive(active)
+        }}
         onDragEnd={handleDragEnd}
+        onDragCancel={() => {
+          setActive(null)
+        }}
       >
-        <SortableContext items={deck} strategy={rectSortingStrategy}>
+        <SortableContext items={deck}>
           <SchemesContainerView>
             {sortableSchemes}
           </SchemesContainerView>
         </SortableContext>
+        <DragOverlay dropAnimation={DROP_ANIMATION}>
+          {sortableActiveItem}
+        </DragOverlay>
       </DndContext>
       <Cloud
         fn='reorder'

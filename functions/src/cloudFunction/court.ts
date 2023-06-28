@@ -140,6 +140,6 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     playState,
     transaction
   })
-  console.info(`${currentUid} withdrew!`)
+  console.info(`${currentUid} took court scheme!`)
 })
 export default court

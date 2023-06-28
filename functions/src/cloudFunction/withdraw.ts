@@ -28,7 +28,7 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     transaction,
     context
   })
-  console.info(`${currentPlayer.id} withdrawing...`)
+  console.info(`${currentPlayer.id} is withdrawing...`)
   if (currentPlayer.auctionReady) {
     throw new https.HttpsError(
       'failed-precondition',
@@ -139,5 +139,6 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     playState,
     transaction
   })
+  console.info(`${currentUid} withdrew!`)
 })
 export default withdraw
