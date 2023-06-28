@@ -156,8 +156,8 @@ export default function PlayPhaseView (): JSX.Element {
     >
       <HStack alignItems='start' spacing='2px'>
         <PrivateTableauView />
-        <VStack flexGrow='1'>
-          <HStack>
+        <VStack flexGrow='1' w='0'>
+          <HStack justifyContent='center' flexWrap='wrap'>
             <PlayerGoldView />
             <PlayerSilverView />
           </HStack>

@@ -1,4 +1,5 @@
 import { forwardRef, ReactNode, Ref, useContext } from 'react'
+import { SCHEME_WIDTH } from '../constants'
 import { playerContext } from '../reader/player'
 import { Scheme } from '../types'
 import HandSchemeView from './HandScheme'
@@ -30,7 +31,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   }
   if (schemeId == null) {
     return (
-      <SmallSchemeView ref={ref}>
+      <SmallSchemeView ref={ref} minW={SCHEME_WIDTH}>
         {children}
       </SmallSchemeView>
     )
