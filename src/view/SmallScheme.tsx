@@ -1,6 +1,6 @@
 import { Card, CardBody, CardProps, forwardRef } from '@chakra-ui/react'
 import { ReactNode, Ref } from 'react'
-import { SCHEME_WIDTH } from '../constants'
+import { SCHEME_RATIO, SCHEME_WIDTH } from '../constants'
 
 function View ({
   active,
@@ -12,7 +12,7 @@ function View ({
 } & CardProps,
 ref: Ref<HTMLDivElement>
 ): JSX.Element {
-  const sx = { aspectRatio: '3/4' }
+  const sx = { aspectRatio: SCHEME_RATIO }
   return (
     <Card
       sx={sx}
@@ -20,7 +20,7 @@ ref: Ref<HTMLDivElement>
       w={SCHEME_WIDTH}
       {...cardProps}
     >
-      <CardBody px='3px' py='4px'>
+      <CardBody px='4px' py='5px'>
         {children}
       </CardBody>
     </Card>

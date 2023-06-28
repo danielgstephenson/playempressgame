@@ -11,7 +11,7 @@ export default function PrivateTableauView (): JSX.Element {
   const playerState = useContext(playerContext)
   return (
     <Box>
-      <ActiveHeading active={playState.overPlay}>Tableau</ActiveHeading>
+      <ActiveHeading active={playState.overPlay}>Play</ActiveHeading>
       <HStack>
         <PlayAreaView />
         <TinySchemesView

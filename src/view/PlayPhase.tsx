@@ -17,20 +17,18 @@ export default function PlayPhaseView (): JSX.Element {
   const {
     hand,
     handClone,
-    play,
     playSchemeId,
     setHand,
     setOverPlay,
     setOverTrash,
     setPlaySchemeId,
     setTrashSchemeId,
-    trash,
     trashSchemeId
   } = useContext(playContext)
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
     () => handClone?.find((scheme) => scheme.id === active?.id),
-    [active, hand]
+    [active, handClone]
   )
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -102,7 +100,7 @@ export default function PlayPhaseView (): JSX.Element {
         } else if (overTrashArea) {
           setOverPlay?.(false)
           setOverTrash?.(true)
-          trash?.(String(active.id))
+          setTrashSchemeId?.(String(active.id))
           setPlaySchemeId?.(current => current === active.id ? undefined : current)
           setHand(current => {
             return dragReturn({
@@ -113,7 +111,7 @@ export default function PlayPhaseView (): JSX.Element {
         } else if (overPlayArea) {
           setOverPlay?.(true)
           setOverTrash?.(false)
-          play?.(String(active.id))
+          setPlaySchemeId?.(String(active.id))
           setTrashSchemeId?.(current => current === active.id ? undefined : current)
           setHand(current => {
             return dragReturn({
@@ -138,7 +136,7 @@ export default function PlayPhaseView (): JSX.Element {
         if (over != null && active.id !== over.id) {
           const overScheme = handClone?.find((scheme) => scheme.id === over?.id)
           if (over.id === trashSchemeId) {
-            trash?.(String(active.id))
+            setTrashSchemeId?.(String(active.id))
             setPlaySchemeId?.(current => current === active.id ? undefined : current)
             setHand(current => {
               if (handClone == null || overScheme == null) {
@@ -151,7 +149,7 @@ export default function PlayPhaseView (): JSX.Element {
             return
           }
           if (over.id === playSchemeId) {
-            play?.(String(active.id))
+            setPlaySchemeId?.(String(active.id))
             setTrashSchemeId?.(current => current === active.id ? undefined : current)
             setHand(current => {
               if (handClone == null || overScheme == null) {

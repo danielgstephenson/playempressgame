@@ -6,7 +6,7 @@ export default function PublicTableauView (): JSX.Element {
   const profileState = useContext(profileContext)
   return (
     <TinySchemeAreaView
-      label='Tableau' schemes={profileState.tableau}
+      label='Play' schemes={profileState.tableau}
     />
   )
 }

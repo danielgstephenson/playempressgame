@@ -12,22 +12,22 @@ export default async function guardAuctionUnready ({
   transaction: Transaction
   context: https.CallableContext
 }): Promise<CurrentPlayerGuard> {
-  const currentPlayerGuard = await guardCurrentBidding({
+  const guard = await guardCurrentBidding({
     gameId,
     transaction,
     context
   })
-  if (currentPlayerGuard.currentPlayer.auctionReady) {
+  if (guard.currentPlayer.auctionReady) {
     throw new https.HttpsError(
       'failed-precondition',
       'You are already ready.'
     )
   }
-  if (currentPlayerGuard.currentPlayer.withdrawn) {
+  if (guard.currentPlayer.withdrawn) {
     throw new https.HttpsError(
       'failed-precondition',
       'You withdrew.'
     )
   }
-  return currentPlayerGuard
+  return guard
 }

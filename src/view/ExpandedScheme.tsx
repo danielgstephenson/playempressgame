@@ -1,6 +1,7 @@
 import { Box, Card, CardBody, Stack, HStack, Circle, Heading, Flex, Spacer, Text } from '@chakra-ui/react'
 import getBg from '../service/getBg'
 import schemes from '../schemes.json'
+import { SCHEME_RATIO } from '../constants'
 
 export default function ExpandedSchemeView ({
   children,
@@ -28,8 +29,8 @@ export default function ExpandedSchemeView ({
   return (
     <Card
       bg={cardBg}
-      w='222px'
       height={expandedHeight}
+      sx={{ aspectRatio: SCHEME_RATIO }}
     >
       <CardBody padding='10px'>
         <Stack height='100%'>

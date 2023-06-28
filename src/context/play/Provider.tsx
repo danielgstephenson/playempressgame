@@ -28,18 +28,6 @@ export default function PlayProvider ({ children }: {
   const emptyPlay = useCallback(() => {
     setPlaySchemeId(undefined)
   }, [])
-  const removeFromTrash = useCallback((schemeId: string | undefined) => {
-    setTrashSchemeId(current => schemeId === current ? undefined : current)
-  }, [])
-  const removeFromPlay = useCallback((schemeId: string | undefined) => {
-    setPlaySchemeId(current => schemeId === current ? undefined : current)
-  }, [])
-  const trash = useCallback((schemeId: string | undefined) => {
-    setTrashSchemeId(schemeId)
-  }, [removeFromPlay])
-  const play = useCallback((schemeId: string | undefined) => {
-    setPlaySchemeId(schemeId)
-  }, [removeFromTrash])
   const state = {
     deck,
     emptyPlay,
@@ -49,10 +37,7 @@ export default function PlayProvider ({ children }: {
     leave,
     overPlay,
     overTrash,
-    play,
     playSchemeId,
-    removeFromPlay,
-    removeFromTrash,
     resetTaken,
     setDeck,
     setHand,
@@ -63,7 +48,6 @@ export default function PlayProvider ({ children }: {
     setTrashSchemeId,
     take,
     taken,
-    trash,
     trashSchemeId
   }
   return (

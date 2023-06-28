@@ -1,24 +1,22 @@
 import DeckView from './Deck'
 import DiscardView from './Discard'
 import PlayerHistoryView from './PlayerHistory'
-import PrivateTrashView from './PrivateTrash'
 import BidView from './Bid'
 import { useContext, useEffect } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
-import PrivateTableauView from './PrivateTableau'
 import PlayPhaseView from './PlayPhase'
 
 export default function PlayerView (): JSX.Element {
   const { round, phase } = useContext(gameContext)
-  const { resetTaken, setDeck, setHand, setHandClone, setPlaySchemeId, setTrashSchemeId, trash, play } = useContext(playContext)
+  const { resetTaken, setDeck, setHand, setHandClone, setPlaySchemeId, setTrashSchemeId } = useContext(playContext)
   const { deck, hand } = useContext(playerContext)
   useEffect(() => {
-    trash?.(undefined)
-    play?.(undefined)
+    setTrashSchemeId?.(undefined)
+    setPlaySchemeId?.(undefined)
     resetTaken?.()
-  }, [resetTaken, round, trash, play])
+  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId])
   useEffect(() => {
     if (deck == null) {
       return

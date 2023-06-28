@@ -49,7 +49,7 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
     )
   }
   const privateReadyMessage = 'You withdraw.'
-  const publicReadyMessage = `${currentPlayer.displayName} withdrew.`
+  const publicReadyMessage = `${currentPlayer.displayName} withdraws.`
   const privateReadyEvent = createEvent(privateReadyMessage)
   const publicReadyEvent = createEvent(publicReadyMessage)
   const unwithdrawnProfiles = currentGame.profiles.filter(profile => !profile.withdrawn)

@@ -122,10 +122,7 @@ export interface Play {
   handClone?: Scheme[]
   overPlay?: boolean
   overTrash?: boolean
-  play?: (schemeId: string | undefined) => void
   playSchemeId?: string
-  removeFromPlay?: (schemeId: string) => void
-  removeFromTrash?: (schemeId: string) => void
   resetTaken?: () => void
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
@@ -137,7 +134,6 @@ export interface Play {
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void
-  trash?: (schemeid: string | undefined) => void
   trashSchemeId?: string
 }
 
