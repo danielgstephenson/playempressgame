@@ -33,7 +33,7 @@ export default function HistoryView ({
         <AccordionPanel>
           <Accordion
             ref={ref}
-            allowMultiple height='300px'
+            allowMultiple height='140px'
             overflowY='scroll'
           >
             {items}
