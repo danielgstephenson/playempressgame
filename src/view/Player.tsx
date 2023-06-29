@@ -10,9 +10,19 @@ import PlayPhaseView from './PlayPhase'
 import { Heading } from '@chakra-ui/react'
 
 export default function PlayerView (): JSX.Element {
-  const { round, phase } = useContext(gameContext)
-  const { resetTaken, setDeck, setHand, setHandClone, setPlaySchemeId, setTrashSchemeId } = useContext(playContext)
-  const { deck, hand } = useContext(playerContext)
+  const { court, dungeon, round, phase } = useContext(gameContext)
+  const {
+    resetTaken,
+    setCourt,
+    setDeck,
+    setDungeon,
+    setHand,
+    setHandClone,
+    setPlaySchemeId,
+    setTableau,
+    setTrashSchemeId
+  } = useContext(playContext)
+  const { deck, hand, tableau } = useContext(playerContext)
   useEffect(() => {
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
@@ -38,6 +48,24 @@ export default function PlayerView (): JSX.Element {
       return newHand
     })
   }, [hand, setHand, setHandClone])
+  useEffect(() => {
+    if (court == null) {
+      return
+    }
+    setCourt?.(court)
+  }, [court, setCourt])
+  useEffect(() => {
+    if (dungeon == null) {
+      return
+    }
+    setDungeon?.(dungeon)
+  }, [dungeon, setDungeon])
+  useEffect(() => {
+    if (tableau == null) {
+      return
+    }
+    setTableau?.(tableau)
+  }, [setTableau, tableau])
   useEffect(() => {
     if (phase !== 'play') {
       setPlaySchemeId?.(undefined)

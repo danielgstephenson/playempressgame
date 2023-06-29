@@ -14,7 +14,7 @@ export default function TinySchemeAreaView ({
 }): JSX.Element {
   return (
     <Box>
-      <Heading size='sm'>{label}: {children}</Heading>
+      <Heading size='sm'>{label} {children}</Heading>
       <TinySchemesView schemes={schemes} />
     </Box>
   )

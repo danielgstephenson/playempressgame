@@ -5,14 +5,17 @@ import { Scheme } from '../../types'
 export default function PlayProvider ({ children }: {
   children: React.ReactNode
 }): JSX.Element {
-  const [trashSchemeId, setTrashSchemeId] = useState<string>()
-  const [playSchemeId, setPlaySchemeId] = useState<string>()
-  const [taken, setTaken] = useState<string[]>([])
-  const [handClone, setHandClone] = useState<Scheme[]>([])
-  const [hand, setHand] = useState<Scheme[]>([])
+  const [court, setCourt] = useState<Scheme[]>([])
   const [deck, setDeck] = useState<Scheme[]>([])
+  const [dungeon, setDungeon] = useState<Scheme[]>([])
+  const [hand, setHand] = useState<Scheme[]>([])
+  const [handClone, setHandClone] = useState<Scheme[]>([])
   const [overPlay, setOverPlay] = useState(false)
   const [overTrash, setOverTrash] = useState(false)
+  const [playSchemeId, setPlaySchemeId] = useState<string>()
+  const [trashSchemeId, setTrashSchemeId] = useState<string>()
+  const [tableau, setTableau] = useState<Scheme[]>([])
+  const [taken, setTaken] = useState<string[]>([])
   const leave = useCallback((schemeId: string) => {
     setTaken(taken => taken.filter(scheme => scheme !== schemeId))
   }, [])
@@ -29,7 +32,9 @@ export default function PlayProvider ({ children }: {
     setPlaySchemeId(undefined)
   }, [])
   const state = {
+    court,
     deck,
+    dungeon,
     emptyPlay,
     emptyTrash,
     hand,
@@ -39,13 +44,17 @@ export default function PlayProvider ({ children }: {
     overTrash,
     playSchemeId,
     resetTaken,
+    setCourt,
     setDeck,
+    setDungeon,
     setHand,
     setHandClone,
     setOverPlay,
     setOverTrash,
     setPlaySchemeId,
+    setTableau,
     setTrashSchemeId,
+    tableau,
     take,
     taken,
     trashSchemeId

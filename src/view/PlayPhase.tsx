@@ -43,6 +43,9 @@ export default function PlayPhaseView (): JSX.Element {
       onDragStart={({ active }) => {
         setActive(active)
       }}
+      onDragCancel={() => {
+        setActive(null)
+      }}
       onDragOver={({ active, over }) => {
         const overNothing = over?.id == null
         if (overNothing) {
@@ -150,17 +153,12 @@ export default function PlayPhaseView (): JSX.Element {
         }
         setActive(null)
       }}
-      onDragCancel={() => {
-        setActive(null)
-      }}
     >
       <HStack alignItems='start' spacing='2px'>
         <PrivateTableauView />
-        <VStack flexGrow='1' w='0'>
-          <HStack justifyContent='center' flexWrap='wrap'>
-            <PlayerGoldView />
-            <PlayerSilverView />
-          </HStack>
+        <VStack>
+          <PlayerGoldView />
+          <PlayerSilverView />
           <PlayReadyView />
         </VStack>
         <PrivateTrashView />

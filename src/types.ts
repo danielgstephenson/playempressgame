@@ -3,6 +3,7 @@ import { HttpsCallableResult } from 'firebase/functions'
 import { Timestamp } from 'firebase/firestore'
 import React, { CSSProperties } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 export interface AuthState {
   auth?: Auth
@@ -115,7 +116,9 @@ export type FunctionCaller = (data?: unknown) =>
 Promise<HttpsCallableResult<unknown> | undefined>
 
 export interface Play {
+  court?: Scheme[]
   deck?: Scheme[]
+  dungeon?: Scheme[]
   emptyPlay?: () => void
   emptyTrash?: () => void
   hand?: Scheme[]
@@ -124,13 +127,17 @@ export interface Play {
   overTrash?: boolean
   playSchemeId?: string
   resetTaken?: () => void
+  setCourt?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setDungeon?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHandClone?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setOverPlay?: React.Dispatch<React.SetStateAction<boolean>>
   setOverTrash?: React.Dispatch<React.SetStateAction<boolean>>
   setPlaySchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  setTableau?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setTrashSchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  tableau?: Scheme[]
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void
@@ -141,8 +148,8 @@ export interface DisplayNameState {
   displayName?: string
   setDisplayName: (displayName: string | undefined) => void
 }
-export interface BaseItem {
-  id: string
+export interface Identified {
+  id: UniqueIdentifier
 }
 export type DndSortable = ReturnType<typeof useSortable> & {
   style: CSSProperties

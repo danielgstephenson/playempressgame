@@ -1,11 +1,11 @@
-import CourtView from './Court'
-import DungeonView from './Dungeon'
+import StaticCourtView from './StaticCourt'
+import StaticDungeonView from './Dungeon'
 
 export default function PalaceView (): JSX.Element {
   return (
     <>
-      <DungeonView />
-      <CourtView />
+      <StaticDungeonView />
+      <StaticCourtView />
     </>
   )
 }

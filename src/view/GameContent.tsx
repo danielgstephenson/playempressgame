@@ -4,9 +4,9 @@ import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PalaceView from './Palace'
 import TinySchemeAreaView from './TinySchemeArea'
-import Cloud from './Cloud'
 import playContext from '../context/play'
 import { Box, Stack } from '@chakra-ui/react'
+import CourtTakeView from './CourtTake'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -14,8 +14,7 @@ export default function GameContentView (): JSX.Element {
   const timeline = gameState.timeline?.slice()
   const {
     hand,
-    setHand,
-    taken
+    setHand
   } = useContext(playContext)
 
   if (hand == null || setHand == null) {
@@ -31,12 +30,7 @@ export default function GameContentView (): JSX.Element {
           </Curtain>
         </Stack>
       </Box>
-      <Cloud
-        fn='court'
-        props={{ gameId: gameState.id, schemeIds: taken }}
-      >
-        Ready
-      </Cloud>
+      <CourtTakeView />
       <ProfilesView />
     </>
   )

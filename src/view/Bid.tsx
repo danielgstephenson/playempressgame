@@ -23,7 +23,8 @@ export default function BidView (): JSX.Element {
   useEffect(() => {
     setBid(playerState.bid)
   }, [playerState.bid])
-  if (playerState.bid == null || bid == null || gameState.phase !== 'auction') {
+  const allReady = gameState.profiles?.every(profile => profile.auctionReady)
+  if (playerState.bid == null || bid == null || gameState.phase !== 'auction' || allReady === true) {
     return <></>
   }
   function handleChange (value: string): void {
