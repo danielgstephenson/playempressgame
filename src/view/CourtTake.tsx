@@ -17,7 +17,8 @@ import TakeTableauView from './TakeTableau'
 import TrashHistoryView from './TrashHistory'
 
 export default function CourtTakeView (): JSX.Element {
-  const { court: gameCourt, dungeon: gameDungeon, id: gameId } = useContext(gameContext)
+  const { court: gameCourt, dungeon: gameDungeon, id: gameId, profiles } = useContext(gameContext)
+  const allReady = profiles?.every(profile => profile.auctionReady)
   const { leave, tableau: playerTableau, take } = useContext(playContext)
   const playState = useContext(playContext)
   const sensors = usePointerSensor()
@@ -107,7 +108,12 @@ export default function CourtTakeView (): JSX.Element {
       }
     }
   }
-  if (playState.court == null || playState.dungeon == null || playState.tableau == null) {
+  if (
+    playState.court == null ||
+    playState.dungeon == null ||
+    playState.tableau == null ||
+    allReady !== true
+  ) {
     return <></>
   }
   return (

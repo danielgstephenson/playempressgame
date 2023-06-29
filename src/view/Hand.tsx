@@ -6,12 +6,16 @@ import {
 import SchemesContainerView from './SchemesContainer'
 import HandSchemeView from './HandScheme'
 import playContext from '../context/play'
-import { Heading } from '@chakra-ui/react'
+import { gameContext } from '../reader/game'
+import { playerContext } from '../reader/player'
+import TinySchemesView from './TinySchemes'
 
 export default function HandView (): JSX.Element {
   const {
     hand, trashSchemeId, playSchemeId
   } = useContext(playContext)
+  const { choices, phase } = useContext(gameContext)
+  const playerState = useContext(playerContext)
   const sortableItems = hand?.map((scheme) => {
     if (scheme.id === trashSchemeId || scheme.id === playSchemeId) {
       return <Fragment key={scheme.id} />
@@ -21,18 +25,21 @@ export default function HandView (): JSX.Element {
     )
   })
 
+  const playing = phase === 'play'
+  const choosing = choices?.some(choice => choice.playerId === playerState.id)
+  const chosen = !playing || playerState.playReady === true
+  if (choosing !== true && chosen) {
+    return <TinySchemesView schemes={hand} justifyContent='center' />
+  }
   if (hand == null) {
     return <></>
   }
 
   return (
-    <>
-      <Heading size='sm' textAlign='center'>Hand</Heading>
-      <SortableContext items={hand}>
-        <SchemesContainerView justifyContent='center'>
-          {sortableItems}
-        </SchemesContainerView>
-      </SortableContext>
-    </>
+    <SortableContext items={hand}>
+      <SchemesContainerView justifyContent='center'>
+        {sortableItems}
+      </SchemesContainerView>
+    </SortableContext>
   )
 }

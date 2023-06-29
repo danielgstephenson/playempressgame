@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/react'
+import { Heading, HStack } from '@chakra-ui/react'
 import { Active, DndContext, DragOverlay } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useContext, useState, useMemo } from 'react'
@@ -161,6 +161,7 @@ export default function PlayPhaseView (): JSX.Element {
         <PrivateTrashView />
       </HStack>
       <ChoiceView />
+      <Heading size='sm' textAlign='center'>Hand</Heading>
       <HandView />
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {sortableActiveItem}
