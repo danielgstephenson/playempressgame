@@ -1,16 +1,18 @@
 import { Flex, FlexProps } from '@chakra-ui/react'
-import { ReactNode } from 'react'
+import { forwardRef, ReactNode, Ref } from 'react'
 
-export default function SchemesContainerView ({
+function View ({
   children,
   ...otherProps
 }: {
   children: ReactNode
-} & FlexProps): JSX.Element {
+} & FlexProps,
+ref: Ref<HTMLDivElement>): JSX.Element {
   return (
     <Flex
       flexWrap='wrap'
       gap='2px'
+      ref={ref}
       rowGap='2px'
       {...otherProps}
     >
@@ -18,3 +20,6 @@ export default function SchemesContainerView ({
     </Flex>
   )
 }
+
+const SchemesContainerView = forwardRef(View)
+export default SchemesContainerView

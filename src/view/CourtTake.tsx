@@ -1,4 +1,4 @@
-import { Active, DndContext, DragEndEvent, DragOverEvent, DragOverlay } from '@dnd-kit/core'
+import { Active, DndContext, DragOverEvent, DragOverlay } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { useContext, useMemo, useState } from 'react'
 import { DROP_ANIMATION } from '../constants'
@@ -9,6 +9,7 @@ import usePointerSensor from '../use/pointerSensor'
 import Cloud from './Cloud'
 import SortableSchemeView from './SortableScheme'
 import SortableSchemesView from './SortableSchemes'
+import TakeTableauView from './TakeTableau'
 
 export default function CourtTakeView (): JSX.Element {
   const { court: gameCourt, dungeon: gameDungeon, id: gameId } = useContext(gameContext)
@@ -18,11 +19,9 @@ export default function CourtTakeView (): JSX.Element {
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
     () => {
-      console.log('active', active?.id)
       const courtScheme = gameCourt?.find((scheme) => scheme.id === active?.id)
       const dungeonScheme = courtScheme ?? gameDungeon?.find((scheme) => scheme.id === active?.id)
       const tableauScheme = dungeonScheme ?? playerTableau?.find((scheme) => scheme.id === active?.id)
-      console.log('scheme', tableauScheme)
       return tableauScheme
     },
     [active, gameCourt, gameDungeon, playerTableau]
@@ -30,20 +29,17 @@ export default function CourtTakeView (): JSX.Element {
   const activeSchemeView = activeScheme != null && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
   function handleDragOver (event: DragOverEvent): void {
     if (playState.court == null || playState.dungeon == null || playState.tableau == null) {
-      console.warn('No court, dungeon, or tableau')
       return
     }
     const { active, over } = event
     if (active == null) {
-      console.warn('No active end')
       return
     }
     if (over == null) {
-      console.warn('No over end')
       return
     }
+    console.log('over.id', over.id)
     if (active.id === over.id) {
-      console.warn('Over self')
       return
     }
     if (activeScheme == null) {
@@ -57,8 +53,16 @@ export default function CourtTakeView (): JSX.Element {
     console.log('overCourt', overCourt)
     const overDungeon = playState.dungeon.some((scheme) => scheme.id === over.id)
     const overTableau = playState.tableau.some((scheme) => scheme.id === over.id)
-    if (activeCourt && overCourt) {
-      playState.setCourt?.((current) => reorder({ a: active, b: over, current }))
+    const overTakeArea = over.id === 'takeArea'
+    if (activeCourt) {
+      if (overCourt) {
+        playState.setCourt?.((current) => reorder({ a: active, b: over, current }))
+      }
+
+      if (overTakeArea) {
+        playState.setCourt?.((current) => current.filter((scheme) => scheme.id !== active.id))
+        playState.setTableau?.([activeScheme])
+      }
     }
     if (activeDungeon && overDungeon) {
       playState.setDungeon?.((current) => reorder({ a: active, b: over, current }))
@@ -103,12 +107,10 @@ export default function CourtTakeView (): JSX.Element {
       <SortableContext items={playState.court}>
         <SortableSchemesView schemes={playState.court} />
       </SortableContext>
-      <SortableContext items={playState.dungeon}>
+      {/* <SortableContext items={playState.dungeon}>
         <SortableSchemesView schemes={playState.dungeon} />
-      </SortableContext>
-      <SortableContext items={playState.tableau}>
-        <SortableSchemesView schemes={playState.tableau} />
-      </SortableContext>
+      </SortableContext> */}
+      <TakeTableauView />
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {activeSchemeView}
       </DragOverlay>
