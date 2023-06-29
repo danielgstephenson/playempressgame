@@ -37,7 +37,8 @@ ref: Ref<HTMLDivElement>): JSX.Element {
     )
   }
   if (!inHand) {
-    throw new Error('Scheme not in hand')
+    return <>x</>
+    // throw new Error('Scheme not in hand')
   }
   return <HandSchemeView id={schemeId} />
 }

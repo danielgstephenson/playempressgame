@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@chakra-ui/react'
+import { HStack } from '@chakra-ui/react'
 import { Active, DndContext, DragOverlay } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useContext, useState, useMemo } from 'react'
@@ -9,11 +9,10 @@ import usePointerSensor from '../use/pointerSensor'
 import ChoiceView from './Choice'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
-import PlayerGoldView from './PlayerGold'
-import PlayerSilverView from './PlayerSilver'
 import PlayReadyView from './PlayReady'
 import PrivateTableauView from './PrivateTableau'
 import PrivateTrashView from './PrivateTrash'
+import ReadyContainerView from './ReadyContainer'
 
 export default function PlayPhaseView (): JSX.Element {
   const {
@@ -156,11 +155,9 @@ export default function PlayPhaseView (): JSX.Element {
     >
       <HStack alignItems='start' spacing='2px'>
         <PrivateTableauView />
-        <VStack>
-          <PlayerGoldView />
-          <PlayerSilverView />
+        <ReadyContainerView>
           <PlayReadyView />
-        </VStack>
+        </ReadyContainerView>
         <PrivateTrashView />
       </HStack>
       <ChoiceView />
