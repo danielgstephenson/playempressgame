@@ -42,7 +42,10 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     )
   }
   const twelve = currentPlayer.tableau.some(scheme => scheme.rank === 12)
-  if (twelve) {
+  const courtTaken = currentGame.court.filter(scheme => props.schemeIds.some(id => scheme.id === id))
+  const courtTwelve = courtTaken.some(scheme => scheme.rank === 12)
+  const someTwelve = twelve || courtTwelve
+  if (someTwelve) {
     const missing = props
       .schemeIds
       .filter(id => currentGame
@@ -77,25 +80,33 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     currentPlayer,
     transaction
   })
-  const courtTaken = playState.game.court.filter(scheme => props.schemeIds.includes(scheme.id))
   currentPlayer.tableau.push(...courtTaken)
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const courtJoined = joinRanks(courtTaken)
   const courtMessage = courtTaken.length === 0
     ? 'no schemes from the court'
     : `${courtJoined} from the court`
-  const privateCourtMessage = `You took ${courtMessage}.`
-  const publicCourtMessage = `${currentPlayer.displayName} took ${courtMessage}.`
-  if (twelve && playState.game.dungeon.length > 0) {
+  if (someTwelve && playState.game.dungeon.length > 0) {
     const dungeonTaken = playState.game.dungeon.filter(scheme => props.schemeIds.includes(scheme.id))
     currentPlayer.tableau.push(...dungeonTaken)
     playState.game.dungeon = playState.game.dungeon.filter(scheme => !props.schemeIds.includes(scheme.id))
     const dungeonJoined = joinRanks(dungeonTaken)
-    const dungeonMessage = props.schemeIds.length === 0
-      ? 'no schemes from the dungeon'
-      : `${dungeonJoined} from the dungeon`
-    const privateDungeonMessage = `${privateCourtMessage} and ${dungeonMessage}.`
-    const publicDungeonMessage = `${publicCourtMessage} and ${dungeonMessage}.`
+    const someDungeonTaken = dungeonTaken.length > 0
+    const publicDungeonSuffix = courtTwelve
+      ? someDungeonTaken
+        ? ', carrying out the threat on the 12 they took from the court'
+        : ', even though they can carry out the threat from the 12 they took from the court'
+      : ''
+    const privateDungeonSuffix = courtTwelve
+      ? someDungeonTaken
+        ? ', carrying out the threat on the 12 you took from the court'
+        : ', even though you can carry out the threat from the 12 you took from the court'
+      : ''
+    const dungeonMessage = dungeonTaken.length === 0
+      ? 'but no schemes from the dungeon'
+      : `as well as ${dungeonJoined} from the dungeon`
+    const privateDungeonMessage = `You took ${courtMessage} ${dungeonMessage}${privateDungeonSuffix}.`
+    const publicDungeonMessage = `${currentPlayer.displayName} took ${courtMessage} ${dungeonMessage}${publicDungeonSuffix}.`
     addTargetEvents({
       playState,
       message: publicDungeonMessage,

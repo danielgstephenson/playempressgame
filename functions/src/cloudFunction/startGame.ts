@@ -163,8 +163,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   })
   const observerChooseEvent = createEvent(OBSERVER_CHOOSE_MESSAGE)
   transaction.update(currentGameRef, {
-    court: [courtScheme, createScheme(1), createScheme(2), createScheme(3), createScheme(4)],
-    dungeon: [dungeonScheme, createScheme(5), createScheme(6), createScheme(7), createScheme(8)],
+    court: [courtScheme, createScheme(14), createScheme(12), createScheme(3), createScheme(4)],
+    dungeon: [dungeonScheme, createScheme(5), createScheme(6), createScheme(7), createScheme(14)],
     events: arrayUnion(startEvent, observerChooseEvent),
     phase: 'play',
     profiles: startedProfiles,

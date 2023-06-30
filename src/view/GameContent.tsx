@@ -6,7 +6,7 @@ import PalaceView from './Palace'
 import TinySchemeAreaView from './TinySchemeArea'
 import playContext from '../context/play'
 import { Box, Stack } from '@chakra-ui/react'
-import CourtTakeView from './CourtTake'
+import CourtTakeView from './Take'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)

@@ -9,7 +9,7 @@ export default function ReadyContainerView ({
   children?: ReactNode
 }): JSX.Element {
   return (
-    <VStack>
+    <VStack width='100%'>
       <PlayerGoldView />
       <PlayerSilverView />
       {children}

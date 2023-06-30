@@ -1,26 +1,31 @@
 import { Box, Heading, Stack } from '@chakra-ui/react'
 import { Active, DndContext, DragOverEvent, DragOverlay } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
 import { useContext, useMemo, useState } from 'react'
 import { DROP_ANIMATION } from '../constants'
+import authContext from '../context/auth'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import activeOver from '../service/activeOver'
+import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import move from '../service/move'
 import reorder from '../service/reorder'
 import usePointerSensor from '../use/pointerSensor'
 import Cloud from './Cloud'
 import ReadyContainerView from './ReadyContainer'
 import SortableSchemeView from './SortableScheme'
-import SortableSchemesView from './SortableSchemes'
+import TakeCourtView from './TakeCourt'
+import TakeDungeonView from './TakeDungeon'
 import TakeTableauView from './TakeTableau'
 import TrashHistoryView from './TrashHistory'
 
-export default function CourtTakeView (): JSX.Element {
-  const { court: gameCourt, dungeon: gameDungeon, id: gameId, profiles } = useContext(gameContext)
-  const allReady = profiles?.every(profile => profile.auctionReady)
-  const { leave, tableau: playerTableau, take } = useContext(playContext)
+export default function TakeView (): JSX.Element {
+  const gameState = useContext(gameContext)
   const playState = useContext(playContext)
+  const authState = useContext(authContext)
+  const { court: gameCourt, dungeon: gameDungeon, id: gameId } = gameState
+  const allReady = gameState.profiles?.every(profile => profile.auctionReady)
+  const highestUntiedBidder = isHighestUntiedBidder({ game: gameState, userId: authState.currentUser?.uid })
+  const { leave, tableau: playerTableau, take } = useContext(playContext)
   const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
@@ -34,17 +39,19 @@ export default function CourtTakeView (): JSX.Element {
   )
   const activeSchemeView = activeScheme != null && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
   function handleDragOver (event: DragOverEvent): void {
-    if (playState.court == null || playState.dungeon == null || playState.tableau == null || gameCourt == null || gameDungeon == null || playerTableau == null) {
-      return
-    }
     const { active, over } = event
-    if (active == null) {
+    if (
+      playState.court == null ||
+      playState.dungeon == null ||
+      playState.tableau == null ||
+      gameCourt == null ||
+      gameDungeon == null ||
+      playerTableau == null ||
+      active == null ||
+      over == null
+    ) {
       return
     }
-    if (over == null) {
-      return
-    }
-    console.log('over.id', over.id)
     if (active.id === over.id) {
       return
     }
@@ -112,7 +119,8 @@ export default function CourtTakeView (): JSX.Element {
     playState.court == null ||
     playState.dungeon == null ||
     playState.tableau == null ||
-    allReady !== true
+    allReady !== true ||
+    !highestUntiedBidder
   ) {
     return <></>
   }
@@ -130,14 +138,7 @@ export default function CourtTakeView (): JSX.Element {
       }}
       onDragOver={handleDragOver}
     >
-      <SortableContext items={playState.court}>
-        <Heading size='sm'>Court</Heading>
-        <SortableSchemesView schemes={playState.court} />
-      </SortableContext>
-      <SortableContext items={playState.dungeon}>
-        <Heading size='sm'>Dungeon</Heading>
-        <SortableSchemesView schemes={playState.dungeon} />
-      </SortableContext>
+      <TakeCourtView />
       <Stack direction='row' justifyContent='space-between'>
         <Box>
           <Heading size='sm'>Play</Heading>
@@ -156,6 +157,7 @@ export default function CourtTakeView (): JSX.Element {
           <TrashHistoryView />
         </Box>
       </Stack>
+      <TakeDungeonView />
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {activeSchemeView}
       </DragOverlay>

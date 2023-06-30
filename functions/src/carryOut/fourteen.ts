@@ -42,8 +42,8 @@ export default function carryOutFourteen ({
     playState.players.forEach(player => {
       const fourteen = fourteenPlayers.some(fourteenPlayer => fourteenPlayer.id === player.id)
       if (fourteen) {
-        const publicNot = 'so they can not reorder it.'
-        const privateNot = 'so you can not reorder it.'
+        const publicNot = 'so they can not reorder it'
+        const privateNot = 'so you can not reorder it'
         if (player.deck.length === 0) {
           addTargetEvents({
             playState,
