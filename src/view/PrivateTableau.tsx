@@ -12,7 +12,7 @@ export default function PrivateTableauView (): JSX.Element {
   return (
     <Box flexGrow='1'>
       <ActiveHeading active={playState.overPlay}>Play</ActiveHeading>
-      <HStack>
+      <HStack spacing='2px'>
         <PlayAreaView />
         <TinySchemesView schemes={playerState.tableau} />
       </HStack>

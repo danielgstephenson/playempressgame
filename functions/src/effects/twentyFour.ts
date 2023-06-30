@@ -5,6 +5,7 @@ import addLowestRankGreenPlaySchemeEvents from '../add/events/scheme/play/rank/l
 import earn from '../earn'
 import revive from '../revive'
 import { PlayState, SchemeEffectProps } from '../types'
+import joinRanksGrammar from '../join/ranks/grammar'
 
 export default function effectsTwentyFour ({
   copiedByFirstEffect,
@@ -37,6 +38,14 @@ export default function effectsTwentyFour ({
   }
   const secondPrivateChild = addEvent(privateEvent, 'Second, revive your entire discard.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} revives their entire discard.`)
+  const joined = joinRanksGrammar(effectPlayer.discard)
+  const discardMessage = effectPlayer.discard.length === 0
+    ? 'discard is empty'
+    : `discard has ${joined.grammar.spelled} ${joined.grammar.noun}, ${joined.joinedRanks}`
+  const privateDiscardMessage = `Your ${discardMessage}.`
+  const publicDiscardMessage = `${effectPlayer.displayName}'s ${discardMessage}.`
+  addEvent(secondPrivateChild, privateDiscardMessage)
+  addPublicEvent(secondPublicChildren, publicDiscardMessage)
   revive({
     depth: effectPlayer.discard.length,
     playState,

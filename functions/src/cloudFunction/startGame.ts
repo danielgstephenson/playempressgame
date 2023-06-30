@@ -121,6 +121,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   addEvent(startEvent, `The top discard scheme is ${topDiscard}.`)
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
+  hand[4] = 24
+  hand[3] = 24
   addEvent(startEvent, `The hand is ${join(hand)}.`)
   const timeline = empressLeft.slice(1)
   const timelineRanks = join(timeline)

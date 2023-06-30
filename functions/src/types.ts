@@ -205,7 +205,7 @@ export interface Grammar {
   possessiveThird: string
 }
 
-export interface GetJoinedRanksGrammar {
+export interface JoinedRanksGrammar {
   grammar: Grammar
   joinedCount: string
   joinedRanks: string
