@@ -6,7 +6,6 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import usePointerSensor from '../use/pointerSensor'
-import Cloud from './Cloud'
 import SchemesContainerView from './SchemesContainer'
 import SortableSchemeView from './SortableScheme'
 import TinySchemesView from './TinySchemes'
@@ -22,12 +21,11 @@ export default function DeckView (): JSX.Element {
     [active, deck]
   )
   const sortableActiveItem = (activeScheme != null) && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
-  if (deck == null) {
+  if (deck == null || deck.length === 0) {
     return <></>
   }
-  const schemeIds = deck.map(scheme => scheme.id)
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
-  if (choice?.type !== 'deck') {
+  if (gameState.phase === 'play' || choice?.type !== 'deck') {
     return <TinySchemesView schemes={deck} />
   }
   function handleDragEnd (event: any): void {
@@ -80,12 +78,6 @@ export default function DeckView (): JSX.Element {
           {sortableActiveItem}
         </DragOverlay>
       </DndContext>
-      <Cloud
-        fn='reorder'
-        props={{ gameId: gameState.id, schemeIds }}
-      >
-        Ready
-      </Cloud>
     </>
   )
 }

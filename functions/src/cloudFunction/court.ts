@@ -80,6 +80,22 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     currentPlayer,
     transaction
   })
+  if (currentGame.choices.length > 0) {
+    const playerIds = currentGame.choices.map(choice => choice.playerId)
+    const players = playerIds.map(id => playState.players.find(player => player.id === id))
+    const displayNames = players.map(player => {
+      if (player == null) {
+        throw new Error('Player not found.')
+      }
+      return player.displayName
+    })
+    const joined = join(displayNames)
+    const grammar = getGrammar(displayNames.length)
+    throw new https.HttpsError(
+      'failed-precondition',
+      `${joined} ${grammar.toBe} reordering.`
+    )
+  }
   currentPlayer.tableau.push(...courtTaken)
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const courtJoined = joinRanks(courtTaken)

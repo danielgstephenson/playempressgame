@@ -8,7 +8,7 @@ export default function GameView ({ gameId }: { gameId: string }): JSX.Element {
   return (
     <PlayProvider>
       <GameReader gameId={gameId} DocView={GameContentView}>
-        <Heading>
+        <Heading size='md' textAlign='center'>
           Game {gameId} <GameActions />
         </Heading>
       </GameReader>

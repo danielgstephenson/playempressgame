@@ -121,6 +121,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
   addEvent(startEvent, `The top discard scheme is ${topDiscard}.`)
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
+  hand[0] = 14
   hand[4] = 16
   hand[3] = 16
   addEvent(startEvent, `The hand is ${join(hand)}.`)
@@ -132,7 +133,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     const chooseEvent = createEvent(PLAYER_CHOOSE_MESSAGE)
     const topDeckScheme = createScheme(topDeck)
     const topDiscardScheme = createScheme(topDiscard)
-    const deck = [topDeckScheme]
+    const deck = [topDeckScheme, createScheme(14), createScheme(14), createScheme(15), createScheme(14), createScheme(14)]
     const discard = [topDiscardScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {

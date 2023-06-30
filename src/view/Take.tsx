@@ -116,6 +116,7 @@ export default function TakeView (): JSX.Element {
     }
   }
   if (
+    gameState.choices?.length !== 0 ||
     playState.court == null ||
     playState.dungeon == null ||
     playState.tableau == null ||

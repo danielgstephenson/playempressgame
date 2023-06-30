@@ -18,12 +18,14 @@ import PrivateTableauView from './PrivateTableau'
 import PrivateTrashView from './PrivateTrash'
 import ReadyContainerView from './ReadyContainer'
 import TrashChoiceReadyView from './TrashChoiceReady'
+import ReorderReadyView from './ReorderReady'
 
 export default function PlayPhaseView (): JSX.Element {
   const {
     deckChoiceId,
     hand,
     handClone,
+    overDeck,
     playSchemeId,
     setDeckChoiceId,
     setHand,
@@ -43,6 +45,8 @@ export default function PlayPhaseView (): JSX.Element {
     [active, handClone]
   )
   const sortableActiveItem = (activeScheme != null) && <HandSchemeView active id={activeScheme.id} />
+  console.log('overDeck', overDeck)
+  const fontWeight = overDeck === true ? '1000' : undefined
   if (hand == null || setHand == null) {
     return <></>
   }
@@ -69,13 +73,15 @@ export default function PlayPhaseView (): JSX.Element {
         const activePlay = active.id === playSchemeId
         const overTrashScheme = over.id === trashSchemeId
         const overTrashChoice = over.id === 'trashChoice'
-        console.log('over.id', over.id)
+        const overTrashChoiceScheme = over.id === trashChoiceId
         const overDeckChoice = over.id === 'deckChoice'
+        const overDeckChoiceScheme = over.id === deckChoiceId
         const overTrashArea = over.id === 'trashArea'
         const overPlayScheme = over.id === playSchemeId
         const overPlayArea = over.id === 'playArea'
         const overHand = hand.some((scheme) => scheme.id === over.id)
         if (overHand) {
+          setOverDeck?.(false)
           setOverPlay?.(false)
           setOverTrash?.(false)
           if (activeTrash) {
@@ -149,12 +155,18 @@ export default function PlayPhaseView (): JSX.Element {
         } else if (overTrashScheme) {
           setOverPlay?.(false)
           setOverTrash?.(true)
+        } else if (overDeckChoiceScheme) {
+          setOverDeck?.(true)
+        } else if (overTrashChoiceScheme) {
+          setOverTrash?.(true)
         } else {
+          setOverDeck?.(false)
           setOverPlay?.(false)
           setOverTrash?.(false)
         }
       }}
       onDragEnd={({ active, over }) => {
+        setOverDeck?.(false)
         setOverPlay?.(false)
         setOverTrash?.(false)
         if (over != null && active.id !== over.id) {
@@ -218,8 +230,9 @@ export default function PlayPhaseView (): JSX.Element {
         <PrivateTableauView />
         <ReadyContainerView>
           <PlayReadyView />
-          <TrashChoiceReadyView />
           <DeckChoiceReadyView />
+          <TrashChoiceReadyView />
+          <ReorderReadyView />
         </ReadyContainerView>
         <PrivateTrashView />
       </HStack>
@@ -228,10 +241,10 @@ export default function PlayPhaseView (): JSX.Element {
       <HandView />
       <HStack justifyContent='space-between' alignItems='start'>
         <Box>
-          <Heading size='sm'>Deck</Heading>
+          <Heading size='sm' fontWeight={fontWeight}>Deck</Heading>
           <HStack>
-            <DeckChoiceView />
             <DeckView />
+            <DeckChoiceView />
           </HStack>
         </Box>
         <Box><DiscardView /></Box>

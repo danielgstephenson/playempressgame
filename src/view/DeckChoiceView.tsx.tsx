@@ -12,7 +12,7 @@ export default function DeckChoiceView (): JSX.Element {
   const { setNodeRef } = useDroppable({ id: 'deckChoice' })
   const { deckChoiceId } = useContext(playContext)
   const choice = gameState.choices?.some(choice => choice.playerId === playerState.id && choice.type === 'deck')
-  if (choice !== true) {
+  if (gameState.phase !== 'play' || choice !== true) {
     return <></>
   }
   if (deckChoiceId == null) {

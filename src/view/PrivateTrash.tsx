@@ -1,4 +1,4 @@
-import { Box, HStack } from '@chakra-ui/react'
+import { Box, HStack, VStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import ActiveHeading from './ActiveHeading'
@@ -13,8 +13,10 @@ export default function PrivateTrashView (): JSX.Element {
       <ActiveHeading active={playState.overTrash}>Trash</ActiveHeading>
       <HStack spacing='2px' alignItems='start'>
         <TrashHistoryView />
-        <TrashAreaView />
-        <TrashChoiceView />
+        <VStack spacing='2px' alignItems='start'>
+          <TrashAreaView />
+          <TrashChoiceView />
+        </VStack>
       </HStack>
     </Box>
   )

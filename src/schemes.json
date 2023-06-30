@@ -150,7 +150,7 @@
     "title": "Storm the palace",
     "beginning": "If the leftmost timeline scheme is green or yellow, copy it",
     "end": "Copy the highest rank green scheme in play",
-    "threat": "If you win the auction, you may take cards from the dungeon as well as the court",
+    "threat": "If are the auction winner, you may take cards from the dungeon as well as the court",
     "time": 2,
     "link1": "https://en.wikipedia.org/wiki/Women%27s_March_on_Versailles",
     "link2": "https://en.wikipedia.org/wiki/Storming_of_the_Bastille"
@@ -197,7 +197,7 @@
     "rank": 16,
     "title": "Evict the tenants",
     "beginning": "If you have 5 or less schemes in hand, earn 25 gold",
-    "end": "If you earned gold, put 1 scheme from your hand face down on your deck",
+    "end": "If you earned gold, put 1 scheme from your hand on the bottom of your deck",
     "threat": "",
     "time": 1,
     "link1": "https://en.wikipedia.org/wiki/Star_Chamber",

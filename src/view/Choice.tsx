@@ -14,7 +14,7 @@ export default function ChoiceView (): JSX.Element {
     return <></>
   }
   const labels = {
-    deck: 'Put one scheme from your hand face down on your deck',
+    deck: 'Put one scheme from your hand on the bottom of your deck',
     trash: 'Trash one scheme from your hand'
   }
   const label = labels[choice.type]

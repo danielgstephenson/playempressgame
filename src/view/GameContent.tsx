@@ -14,7 +14,7 @@ export default function GameContentView (): JSX.Element {
   return (
     <>
       <Box>
-        <Stack direction='row'>
+        <Stack direction='row' justifyContent='space-between'>
           <Curtain open={showContent}>
             <PalaceView />
             <TinySchemeAreaView label='Timeline' schemes={timeline} />

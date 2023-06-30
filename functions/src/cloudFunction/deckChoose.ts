@@ -8,7 +8,7 @@ import addEvent from '../add/event'
 import joinRanks from '../join/ranks'
 
 const deckChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
-  console.info(`Choosing scheme ${props.schemeId} to put on deck...`)
+  console.info(`Choosing scheme ${props.schemeId} to put on the bottom of their deck...`)
   const {
     choice,
     currentUid,
@@ -36,14 +36,14 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     return scheme.id !== props.schemeId
   })
   const before = joinRanks(currentPlayer.deck)
-  currentPlayer.deck = [scheme, ...currentPlayer.deck]
+  currentPlayer.deck = [...currentPlayer.deck, scheme]
   const after = joinRanks(currentPlayer.deck)
-  const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put face down on your deck.`)
+  const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put on the bottom of your deck.`)
   addEvent(privateChoiceEvent, `Your deck was ${before}.`)
   addEvent(privateChoiceEvent, `Your deck becomes ${after}.`)
   const publicChoiceEvents = addPublicEvents({
     effectPlayer: currentPlayer,
-    message: `${currentPlayer.displayName} chose a scheme to put face down on their deck.`,
+    message: `${currentPlayer.displayName} chose a scheme to put on the bottom of their deck.`,
     playState
   })
   onChoiceComplete({
@@ -54,6 +54,6 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     publicEvents: publicChoiceEvents,
     transaction
   })
-  console.info(`Chose scheme with id ${props.schemeId} to put on deck!`)
+  console.info(`Chose scheme with id ${props.schemeId} to put on the bottom of their deck!`)
 })
 export default deckChoose
