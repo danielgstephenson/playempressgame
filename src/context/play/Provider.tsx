@@ -7,12 +7,15 @@ export default function PlayProvider ({ children }: {
 }): JSX.Element {
   const [court, setCourt] = useState<Scheme[]>([])
   const [deck, setDeck] = useState<Scheme[]>([])
+  const [deckChoiceId, setDeckChoiceId] = useState<string>()
   const [dungeon, setDungeon] = useState<Scheme[]>([])
   const [hand, setHand] = useState<Scheme[]>([])
   const [handClone, setHandClone] = useState<Scheme[]>([])
+  const [overDeck, setOverDeck] = useState(false)
   const [overPlay, setOverPlay] = useState(false)
   const [overTrash, setOverTrash] = useState(false)
   const [playSchemeId, setPlaySchemeId] = useState<string>()
+  const [trashChoiceId, setTrashChoiceId] = useState<string>()
   const [trashSchemeId, setTrashSchemeId] = useState<string>()
   const [tableau, setTableau] = useState<Scheme[]>([])
   const [taken, setTaken] = useState<string[]>([])
@@ -34,29 +37,35 @@ export default function PlayProvider ({ children }: {
   const state = {
     court,
     deck,
+    deckChoiceId,
     dungeon,
     emptyPlay,
     emptyTrash,
     hand,
     handClone,
     leave,
+    overDeck,
     overPlay,
     overTrash,
     playSchemeId,
     resetTaken,
     setCourt,
     setDeck,
+    setDeckChoiceId,
     setDungeon,
     setHand,
     setHandClone,
+    setOverDeck,
     setOverPlay,
     setOverTrash,
     setPlaySchemeId,
     setTableau,
+    setTrashChoiceId,
     setTrashSchemeId,
     tableau,
     take,
     taken,
+    trashChoiceId,
     trashSchemeId
   }
   return (

@@ -118,29 +118,35 @@ Promise<HttpsCallableResult<unknown> | undefined>
 export interface Play {
   court?: Scheme[]
   deck?: Scheme[]
+  deckChoiceId?: string
   dungeon?: Scheme[]
   emptyPlay?: () => void
   emptyTrash?: () => void
   hand?: Scheme[]
   handClone?: Scheme[]
+  overDeck?: boolean
   overPlay?: boolean
   overTrash?: boolean
   playSchemeId?: string
   resetTaken?: () => void
   setCourt?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setDeckChoiceId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setDungeon?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHandClone?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setOverDeck?: React.Dispatch<React.SetStateAction<boolean>>
   setOverPlay?: React.Dispatch<React.SetStateAction<boolean>>
   setOverTrash?: React.Dispatch<React.SetStateAction<boolean>>
   setPlaySchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setTableau?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setTrashChoiceId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setTrashSchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
   tableau?: Scheme[]
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void
+  trashChoiceId?: string
   trashSchemeId?: string
 }
 

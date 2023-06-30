@@ -10,7 +10,6 @@ export default function isHighestUntiedBidder ({
   userId?: string
 }): boolean {
   const profile = getHighestUntiedProfile(game)
-  console.log('profile', profile)
   if (profile == null) {
     return false
   }

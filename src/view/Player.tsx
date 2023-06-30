@@ -1,5 +1,3 @@
-import DeckView from './Deck'
-import DiscardView from './Discard'
 import PlayerHistoryView from './PlayerHistory'
 import BidView from './Bid'
 import { useContext, useEffect } from 'react'
@@ -7,7 +5,6 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import PlayPhaseView from './PlayPhase'
-import { Box, Heading, HStack } from '@chakra-ui/react'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, round, phase } = useContext(gameContext)
@@ -20,6 +17,7 @@ export default function PlayerView (): JSX.Element {
     setHandClone,
     setPlaySchemeId,
     setTableau,
+    setTrashChoiceId,
     setTrashSchemeId
   } = useContext(playContext)
   const { deck, hand, tableau } = useContext(playerContext)
@@ -70,6 +68,7 @@ export default function PlayerView (): JSX.Element {
     if (phase !== 'play') {
       setPlaySchemeId?.(undefined)
       setTrashSchemeId?.(undefined)
+      setTrashChoiceId?.(undefined)
     }
   }, [setPlaySchemeId, setTrashSchemeId, phase])
 
@@ -77,13 +76,6 @@ export default function PlayerView (): JSX.Element {
     <>
       <BidView />
       <PlayPhaseView />
-      <HStack justifyContent='space-between' alignItems='start'>
-        <Box>
-          <Heading size='sm'>Deck</Heading>
-          <DeckView />
-        </Box>
-        <Box><DiscardView /></Box>
-      </HStack>
       <PlayerHistoryView />
     </>
   )

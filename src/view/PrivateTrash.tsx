@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import playContext from '../context/play'
 import ActiveHeading from './ActiveHeading'
 import TrashAreaView from './TrashArea'
+import TrashChoiceView from './TrashChoiceView'
 import TrashHistoryView from './TrashHistory'
 
 export default function PrivateTrashView (): JSX.Element {
@@ -13,6 +14,7 @@ export default function PrivateTrashView (): JSX.Element {
       <HStack spacing='2px' alignItems='start'>
         <TrashHistoryView />
         <TrashAreaView />
+        <TrashChoiceView />
       </HStack>
     </Box>
   )

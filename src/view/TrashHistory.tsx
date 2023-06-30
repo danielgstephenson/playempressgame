@@ -11,11 +11,11 @@ export default function TrashHistoryView (): JSX.Element {
     return <></>
   }
   const eventRounds = eventsByRound.map((events, index) => {
-    const schemes = events?.map((trashEvent, index) => (
+    const schemes = events?.map((trashEvent) => (
       <TinySchemeView key={trashEvent.scheme.id} rank={trashEvent.scheme.rank} />
     ))
     return (
-      <VStack key={index}>
+      <VStack key={index} spacing='2px'>
         {schemes}
       </VStack>
     )

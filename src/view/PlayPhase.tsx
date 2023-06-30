@@ -1,4 +1,4 @@
-import { Heading, HStack } from '@chakra-ui/react'
+import { Box, Heading, HStack } from '@chakra-ui/react'
 import { Active, DndContext, DragOverlay } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useContext, useState, useMemo } from 'react'
@@ -7,23 +7,33 @@ import playContext from '../context/play'
 import dragReturn from '../service/dragReturn'
 import usePointerSensor from '../use/pointerSensor'
 import ChoiceView from './Choice'
+import DeckView from './Deck'
+import DeckChoiceReadyView from './DeckChoiceReady'
+import DeckChoiceView from './DeckChoiceView.tsx'
+import DiscardView from './Discard'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
 import PlayReadyView from './PlayReady'
 import PrivateTableauView from './PrivateTableau'
 import PrivateTrashView from './PrivateTrash'
 import ReadyContainerView from './ReadyContainer'
+import TrashChoiceReadyView from './TrashChoiceReady'
 
 export default function PlayPhaseView (): JSX.Element {
   const {
+    deckChoiceId,
     hand,
     handClone,
     playSchemeId,
+    setDeckChoiceId,
     setHand,
+    setOverDeck,
     setOverPlay,
     setOverTrash,
     setPlaySchemeId,
+    setTrashChoiceId,
     setTrashSchemeId,
+    trashChoiceId,
     trashSchemeId
   } = useContext(playContext)
   const sensors = usePointerSensor()
@@ -54,8 +64,13 @@ export default function PlayPhaseView (): JSX.Element {
           throw new Error('Active scheme is not in hand')
         }
         const activeTrash = active.id === trashSchemeId
+        const activeTrashChoice = active.id === trashChoiceId
+        const activeDeckChoice = active.id === deckChoiceId
         const activePlay = active.id === playSchemeId
         const overTrashScheme = over.id === trashSchemeId
+        const overTrashChoice = over.id === 'trashChoice'
+        console.log('over.id', over.id)
+        const overDeckChoice = over.id === 'deckChoice'
         const overTrashArea = over.id === 'trashArea'
         const overPlayScheme = over.id === playSchemeId
         const overPlayArea = over.id === 'playArea'
@@ -68,6 +83,12 @@ export default function PlayPhaseView (): JSX.Element {
           }
           if (activePlay) {
             setPlaySchemeId?.(undefined)
+          }
+          if (activeTrashChoice) {
+            setTrashChoiceId?.(undefined)
+          }
+          if (activeDeckChoice) {
+            setDeckChoiceId?.(undefined)
           }
           setHand(current => {
             const activeIndex = current.findIndex((scheme) => scheme.id === active.id)
@@ -87,6 +108,24 @@ export default function PlayPhaseView (): JSX.Element {
           setOverTrash?.(true)
           setTrashSchemeId?.(String(active.id))
           setPlaySchemeId?.(current => current === active.id ? undefined : current)
+          setHand(current => {
+            return dragReturn({
+              active,
+              hand: current
+            })
+          })
+        } else if (overTrashChoice) {
+          setOverTrash?.(true)
+          setTrashChoiceId?.(String(active.id))
+          setHand(current => {
+            return dragReturn({
+              active,
+              hand: current
+            })
+          })
+        } else if (overDeckChoice) {
+          setOverDeck?.(true)
+          setDeckChoiceId?.(String(active.id))
           setHand(current => {
             return dragReturn({
               active,
@@ -146,6 +185,28 @@ export default function PlayPhaseView (): JSX.Element {
             })
             return
           }
+          if (over.id === trashChoiceId) {
+            setTrashChoiceId?.(String(active.id))
+            setHand(current => {
+              if (handClone == null || overScheme == null) {
+                return current
+              }
+              const filtered = current.filter((scheme) => scheme.id !== active.id)
+              const newHand = [...filtered, overScheme]
+              return newHand
+            })
+          }
+          if (over.id === deckChoiceId) {
+            setDeckChoiceId?.(String(active.id))
+            setHand(current => {
+              if (handClone == null || overScheme == null) {
+                return current
+              }
+              const filtered = current.filter((scheme) => scheme.id !== active.id)
+              const newHand = [...filtered, overScheme]
+              return newHand
+            })
+          }
           if (activeScheme == null) {
             throw new Error('Active scheme is not in hand')
           }
@@ -157,12 +218,24 @@ export default function PlayPhaseView (): JSX.Element {
         <PrivateTableauView />
         <ReadyContainerView>
           <PlayReadyView />
+          <TrashChoiceReadyView />
+          <DeckChoiceReadyView />
         </ReadyContainerView>
         <PrivateTrashView />
       </HStack>
       <ChoiceView />
       <Heading size='sm' textAlign='center'>Hand</Heading>
       <HandView />
+      <HStack justifyContent='space-between' alignItems='start'>
+        <Box>
+          <Heading size='sm'>Deck</Heading>
+          <HStack>
+            <DeckChoiceView />
+            <DeckView />
+          </HStack>
+        </Box>
+        <Box><DiscardView /></Box>
+      </HStack>
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {sortableActiveItem}
       </DragOverlay>
