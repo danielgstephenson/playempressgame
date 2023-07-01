@@ -79,7 +79,7 @@
     "beginning": "Revive your top discard scheme's time",
     "end": "Draw twice the number of colors in play",
     "threat": "",
-    "time": 2,
+    "time": 1,
     "link1": "https://en.wikipedia.org/wiki/Illuminati#Origins",
     "link2": "https://www.sacred-texts.com/sro/mhj/mhj313.htm"
   },
@@ -89,7 +89,7 @@
     "rank": 7,
     "title": "Host a wedding",
     "beginning": "If the left 2 timeline schemes are the same color, earn the higher rank",
-    "end": "If the lowest rank scheme in play is green, earn 10 gold",
+    "end": "If the lowest rank scheme in play is green or yellow, earn 10 gold",
     "threat": "",
     "time": 1,
     "link1": "https://en.wikipedia.org/wiki/Margaret_of_Valois",
@@ -103,7 +103,7 @@
     "beginning": "Copy the lowest rank yellow scheme in play",
     "end": "Copy the lowest rank green or yellow dungeon scheme",
     "threat": "If this is the highest rank scheme in play, put it on your discard instead summoning or imprisoning",
-    "time": 0,
+    "time": 3,
     "link1": "https://en.wikipedia.org/wiki/Sayyida_al_Hurra",
     "link2": "https://www.thefreelibrary.com/Women+in+northern+Morocco%3A+between+the+documentary+and+the+imaginary-a0302403823"
   },
@@ -115,7 +115,7 @@
     "beginning": "Copy the leftmost yellow timeline scheme",
     "end": "Copy the highest rank green dungeon scheme",
     "threat": "If someone else wins the auction, they must imprison their top discard scheme",
-    "time": 3,
+    "time": 2,
     "link1": "https://en.wikipedia.org/wiki/Fredegund",
     "link2": "https://en.wikipedia.org/wiki/Brunhilda_of_Austrasia"
   },
@@ -175,7 +175,7 @@
     "beginning": "If there is a lower rank scheme in play, copy the rightmost yellow timeline scheme",
     "end": "Copy the highest rank green or yellow dungeon scheme",
     "threat": "If you make no trades, you may reorder the schemes in your deck at the end of the round",
-    "time": 0,
+    "time": 2,
     "link1": "https://en.wikipedia.org/wiki/Fourth_Crusade#Sack_of_Constantinople",
     "link2": "https://en.wikipedia.org/wiki/Latin_Empire#Economy"
   },

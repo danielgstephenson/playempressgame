@@ -11,9 +11,9 @@ export default function PrivateTrashView (): JSX.Element {
   return (
     <Box>
       <ActiveHeading active={playState.overTrash}>Trash</ActiveHeading>
-      <HStack spacing='2px' alignItems='start'>
+      <HStack spacing='2px' alignItems='center'>
         <TrashHistoryView />
-        <VStack spacing='2px' alignItems='start'>
+        <VStack spacing='2px' alignItems='start' height='100%' justifyContent='center'>
           <TrashAreaView />
           <TrashChoiceView />
         </VStack>

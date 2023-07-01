@@ -32,7 +32,7 @@
     {
         "rank": 6,
         "color": "green",
-        "time": 2
+        "time": 1
     },
     {
         "rank": 7,
@@ -42,12 +42,12 @@
     {
         "rank": 8,
         "color": "red",
-        "time": 0
+        "time": 3
     },
     {
         "rank": 9,
         "color": "red",
-        "time": 3
+        "time": 2
     },
     {
         "rank": 10,
@@ -72,7 +72,7 @@
     {
         "rank": 14,
         "color": "red",
-        "time": 0
+        "time": 2
     },
     {
         "rank": 15,

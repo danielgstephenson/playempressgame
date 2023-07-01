@@ -18,7 +18,7 @@ export default function createBuySuffixes ({
   const loserEndSuffix = rank == null
     ? ''
     : ` and takes ${rank} into their tableau`
-  const loser = `they pay ${spelled}${loserEndSuffix}`
+  const loser = `${name} pays ${spelled}${loserEndSuffix}`
   return {
     buyer,
     loser

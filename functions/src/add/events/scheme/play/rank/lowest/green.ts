@@ -19,12 +19,12 @@ export default function addLowestRankGreenPlaySchemeEvents ({
     const playEvents = addEventsEverywhere({
       publicEvents,
       privateEvent,
-      message: 'There are no yellow schemes in play.'
+      message: 'There are no green schemes in play.'
     })
     return { playEvents }
   }
   const rank = String(scheme.rank)
-  const message = `The lowest rank yellow scheme in play is ${rank}.`
+  const message = `The lowest rank green scheme in play is ${rank}.`
   const playRankEvents = addSortedPlayerEvents({
     publicEvents,
     privateEvent,

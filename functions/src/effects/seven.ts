@@ -6,7 +6,7 @@ import addLowestRankPlaySchemeEvents from '../add/events/scheme/play/rank/lowest
 import earn from '../earn'
 import guardDefined from '../guard/defined'
 import guardSchemeData from '../guard/schemeData'
-import isGreen from '../is/green'
+import isGreenOrYellow from '../is/greenOrYellow'
 import { PlayState, Scheme, SchemeEffectProps } from '../types'
 
 export default function effectsSeven ({
@@ -91,12 +91,12 @@ export default function effectsSeven ({
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  const green = isGreen(scheme)
-  if (green) {
+  const greenOrYellow = isGreenOrYellow(scheme)
+  if (greenOrYellow) {
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      message: `${scheme.rank} is green.`
+      message: `${scheme.rank} is ${scheme.color}.`
     })
     earn({
       amount: 10,
@@ -109,7 +109,7 @@ export default function effectsSeven ({
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      message: `${scheme.rank} is not green.`
+      message: `${scheme.rank} is red.`
     })
   }
   return playState

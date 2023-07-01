@@ -27,13 +27,15 @@ export default function earn ({
     : someSilver
       ? `${remainder} silver`
       : '0'
-  const suffix = `earn ${amountMessage}`
+  const privateSuffix = `earn ${amountMessage}`
+  const publicSuffix = `earn ${amountMessage}`
   const playEvents = addEventsEverywhere({
     possessive: false,
-    suffix,
     displayName: player.displayName,
     privateEvent,
-    publicEvents
+    publicEvents,
+    publicSuffix,
+    privateSuffix
   })
   if (earnedGold > 0) {
     const before = player.gold

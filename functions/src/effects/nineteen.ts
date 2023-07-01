@@ -47,8 +47,8 @@ export default function effectsNineteen ({
       amount: yellowScheme.rank,
       player: effectPlayer,
       playState,
-      privateEvent: firstPrivateChild,
-      publicEvents: firstPublicChildren
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren
     })
   }
   return playState

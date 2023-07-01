@@ -42,7 +42,8 @@ export default function effectsSixteen ({
     if (effectPlayer.hand.length === 0) {
       addEventsEverywhere({
         possessive: false,
-        suffix: `${justMessage}, but their hand is empty`,
+        publicSuffix: `${justMessage}, but their hand is empty`,
+        privateSuffix: `${justMessage}, but your hand is empty`,
         privateEvent: secondPrivateChild,
         publicEvents: secondPublicChildren,
         displayName: effectPlayer.displayName

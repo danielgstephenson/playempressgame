@@ -12,6 +12,7 @@ export default function PlayerView (): JSX.Element {
     resetTaken,
     setCourt,
     setDeck,
+    setDeckChoiceId,
     setDungeon,
     setHand,
     setHandClone,
@@ -69,8 +70,9 @@ export default function PlayerView (): JSX.Element {
       setPlaySchemeId?.(undefined)
       setTrashSchemeId?.(undefined)
       setTrashChoiceId?.(undefined)
+      setDeckChoiceId?.(undefined)
     }
-  }, [setPlaySchemeId, setTrashSchemeId, phase])
+  }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
 
   return (
     <>

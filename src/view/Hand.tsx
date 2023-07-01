@@ -29,7 +29,8 @@ export default function HandView (): JSX.Element {
   const choosing = playing && choices?.some(choice => choice.playerId === playerState.id)
   const chosen = !playing || playerState.playReady === true
   if (choosing !== true && chosen) {
-    return <TinySchemesView schemes={hand} justifyContent='center' />
+    const unchosen = hand?.filter(scheme => scheme.id !== trashSchemeId && scheme.id !== playSchemeId)
+    return <TinySchemesView schemes={unchosen} justifyContent='center' />
   }
   if (hand == null) {
     return <></>

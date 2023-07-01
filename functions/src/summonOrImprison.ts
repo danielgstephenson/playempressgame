@@ -71,7 +71,7 @@ export default function summonOrImprison ({
     }
     highPlayers.forEach(highPlayer => {
       const playScheme = guardPlayScheme(highPlayer)
-      highPlayer.discard = [...highPlayer.discard, playScheme]
+      highPlayer.discard.unshift(playScheme)
     })
     drawUpToThree({ playState })
     return
