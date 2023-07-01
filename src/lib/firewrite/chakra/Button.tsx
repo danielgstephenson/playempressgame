@@ -1,6 +1,6 @@
-import { Button, ButtonProps } from '@chakra-ui/react'
+import { Button, ButtonGroup, ButtonProps, IconButton, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger } from '@chakra-ui/react'
 import { WriterComponentProps } from '../types'
-import ChakraIcon from './Icon'
+import { WarningIcon } from '@chakra-ui/icons'
 
 export default function ChakraButton ({
   children,
@@ -10,10 +10,24 @@ export default function ChakraButton ({
   errorMessage,
   ...buttonProps
 }: WriterComponentProps & ButtonProps): JSX.Element {
+  const message = errorMessage ?? error?.message ?? 'Error'
+  const errorButton = error != null && (
+    <Popover>
+      <PopoverTrigger>
+        <IconButton aria-label={message} bg='red.800' color='white' icon={<WarningIcon />} />
+      </PopoverTrigger>
+      <PopoverContent>
+        <PopoverArrow />
+        <PopoverBody>{message}</PopoverBody>
+      </PopoverContent>
+    </Popover>
+  )
   return (
-    <Button size='sm' onClick={onClick} isLoading={loading} {...buttonProps}>
-      {children}
-      <ChakraIcon loading={loading} error={error} errorMessage={errorMessage} />
-    </Button>
+    <ButtonGroup size='sm' isAttached>
+      <Button onClick={onClick} isLoading={loading} {...buttonProps}>
+        {children}
+      </Button>
+      {errorButton}
+    </ButtonGroup>
   )
 }

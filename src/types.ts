@@ -160,3 +160,8 @@ export interface Identified {
 export type DndSortable = ReturnType<typeof useSortable> & {
   style: CSSProperties
 }
+export interface ButtonDetails {
+  bg: string
+  color: string
+  label: string
+}

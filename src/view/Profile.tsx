@@ -1,4 +1,4 @@
-import { Box, Button, Heading, HStack, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Heading, HStack, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
 import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
@@ -12,12 +12,19 @@ import PublicTableauView from './PublicTableau'
 import ExpandedSchemeView from './ExpandedScheme'
 import SmallSchemeView from './SmallScheme'
 import InPlaySchemeView from './InPlayScheme'
+import DiscardButtonView from './DiscardButton'
+import BidButtonView from './BidButton'
+import PopoverButtonView from './PopoverButton'
+import TopPopoverButtonView from './TopPopoverButton'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
   const authState = useContext(authContext)
   const gameState = useContext(gameContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  if (profileState.gold == null || profileState.silver == null || profileState.displayName == null || profileState.bid == null) {
+    return <></>
+  }
   const currentPlayer = authState.currentUser?.uid === profileState.userId
   const playing = gameState.phase !== 'join'
   if (currentPlayer) {
@@ -32,14 +39,32 @@ export default function ProfileView (): JSX.Element {
   const inPlay = profileState
     .tableau
     ?.map(scheme => <InPlaySchemeView key={scheme.id} rank={scheme.rank} />)
+  const deckButton = deckFull && (
+    <PopoverButtonView bg='gray'>
+      {profileState.displayName}'s deck is not empty
+    </PopoverButtonView>
+  )
   return (
     <>
       <VStack spacing='0'>
-        <Button size='sm' onClick={onOpen}>
-          {profileState.displayName}
-          {' '}
-          {content}
-        </Button>
+        <ButtonGroup size='xs' isAttached>
+          <BidButtonView />
+          <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
+            {profileState.displayName} has {profileState.gold} gold.
+          </TopPopoverButtonView>
+          <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
+            {profileState.displayName} has {profileState.silver} silver.
+          </TopPopoverButtonView>
+        </ButtonGroup>
+        <ButtonGroup size='xs' isAttached>
+          {deckButton}
+          <Button onClick={onOpen}>
+            {profileState.displayName}
+            {' '}
+            {content}
+          </Button>
+          <DiscardButtonView />
+        </ButtonGroup>
         <HStack borderBottomRadius='md' spacing='0' overflow='hidden'>
           {inPlay}
         </HStack>
