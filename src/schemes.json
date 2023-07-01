@@ -60,21 +60,9 @@
     "link2": "https://en.wikipedia.org/wiki/Tanukhids"
   },
   {
-    "position": "hand",
-    "color": "Green",
-    "rank": 5,
-    "title": "Found a secret order",
-    "beginning": "Revive your top discard scheme's time",
-    "end": "Draw twice the number of colors in play",
-    "threat": "",
-    "time": 0,
-    "link1": "https://en.wikipedia.org/wiki/Illuminati#Origins",
-    "link2": "https://www.sacred-texts.com/sro/mhj/mhj313.htm"
-  },
-  {
     "position": "timeline",
     "color": "Green",
-    "rank": 6,
+    "rank": 5,
     "title": "Frame the hostage",
     "beginning": "Revive the highest time in play",
     "end": "Draw the lowest rank in the dungeon",
@@ -82,6 +70,18 @@
     "time": 0,
     "link1": "https://en.wikipedia.org/wiki/Mary,_Queen_of_Scots",
     "link2": "https://en.wikipedia.org/wiki/Babington_Plot"
+  },
+  {
+    "position": "hand",
+    "color": "Green",
+    "rank": 6,
+    "title": "Found a secret order",
+    "beginning": "Revive your top discard scheme's time",
+    "end": "Draw twice the number of colors in play",
+    "threat": "",
+    "time": 2,
+    "link1": "https://en.wikipedia.org/wiki/Illuminati#Origins",
+    "link2": "https://www.sacred-texts.com/sro/mhj/mhj313.htm"
   },
   {
     "position": "hand",
@@ -283,7 +283,7 @@
     "beginning": "If your top discard scheme is green, revive 5",
     "end": "If the highest or lowest rank scheme in play is green, draw 5",
     "threat": "",
-    "time": 0,
+    "time": 2,
     "link1": "https://en.wikipedia.org/wiki/Beatrice_of_Lorraine#Regency",
     "link2": "https://www.academia.edu/2080419/Before_Matilde_Beatrice_of_Lorena_Dux_et_Marchio_Tusciae"
   },

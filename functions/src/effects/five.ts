@@ -1,13 +1,12 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addEventsEverywhere from '../add/events/everywhere'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addSortedPlayerEvents from '../add/events/player/sorted'
-import addTopDiscardSchemeTimeEvents from '../add/events/scheme/topDiscard/time'
+import addHighestPlayTimeEvents from '../add/events/scheme/play/time/highest'
 import draw from '../draw'
-import getGrammar from '../get/grammar'
-import guardPlayScheme from '../guard/playScheme'
+import getLowestRankScheme from '../get/lowestRankScheme'
 import revive from '../revive'
-import { PlayState, Scheme, SchemeEffectProps } from '../types'
+import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsFive ({
   copiedByFirstEffect,
@@ -18,49 +17,43 @@ export default function effectsFive ({
   playState,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, revive your top discard scheme\'s time.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
-  const topDiscardSchemeTime = addTopDiscardSchemeTimeEvents({
-    discard: effectPlayer.discard,
-    displayName: effectPlayer.displayName,
+  const firstPrivateChild = addEvent(privateEvent, 'First, you revive the highest time in play.')
+  const firstPublicChildren = addPlayerPublicEvents({
+    events: publicEvents,
+    message: `First, ${effectPlayer.displayName} revives the highest time in play.`
+  })
+  const highest = addHighestPlayTimeEvents({
+    playState,
     privateEvent: firstPrivateChild,
-    publicEvents: firstPublicChildren
+    publicEvents: firstPublicChildren,
+    playerId: effectPlayer.id
   })
   revive({
-    depth: topDiscardSchemeTime,
+    depth: highest.time,
     playState,
     player: effectPlayer,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'Second, draw twice the number of colors in play.')
-  const secondPublicChildren = addPlayerPublicEvents({
-    events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} draws twice the number of colors in play.`
-  })
-  const uniqueColors = playState.players.reduce<string[]>((uniqueColors, player) => {
-    const playScheme = guardPlayScheme(player)
-    if (uniqueColors.includes(playScheme.color)) return uniqueColors
-    return [...uniqueColors, playScheme.color]
-  }, [])
-  const doubleColors = uniqueColors.length * 2
-  const { toBeCount } = getGrammar(uniqueColors.length, 'color', 'colors')
-  const publicMessage = `There ${toBeCount} in play, so ${effectPlayer.displayName} draws ${doubleColors}.`
-  const privateMessage = `There ${toBeCount} in play, so you draw ${doubleColors}.`
-  function templateCallback (scheme: Scheme): string {
-    return `which is ${scheme.color}`
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you draw the lowest rank in the dungeon.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} draws the lowest rank in the dungeon.`)
+  const lowestDungeon = getLowestRankScheme(playState.game.dungeon)
+  if (playState.game.dungeon.length === 0) {
+    addEventsEverywhere({
+      publicEvents: secondPublicChildren,
+      privateEvent: secondPrivateChild,
+      message: 'The dungeon is empty.'
+    })
+  } else {
+    const lowestRank = String(lowestDungeon?.rank)
+    addEventsEverywhere({
+      publicEvents: secondPublicChildren,
+      privateEvent: secondPrivateChild,
+      message: `The lowest rank in the dungeon is ${lowestRank}.`
+    })
   }
-  addSortedPlayerEvents({
-    publicEvents: secondPublicChildren,
-    privateEvent: secondPrivateChild,
-    publicMessage,
-    privateMessage,
-    playerId: effectPlayer.id,
-    playState,
-    templateCallback
-  })
   draw({
-    depth: doubleColors,
+    depth: lowestDungeon?.rank ?? 0,
     playState,
     player: effectPlayer,
     privateEvent: secondPrivateChild,
