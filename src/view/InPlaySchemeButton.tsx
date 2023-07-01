@@ -18,7 +18,6 @@ export default function InPlaySchemeButtonView ({
   const profileState = useContext(profileContext)
   const gameState = useContext(gameContext)
   const bg = getBg({ rank })
-  console.log('rank', rank)
   const allReady = areAllReady(gameState.profiles)
   const highestUntiedProfile = getHighestUntiedProfile(gameState)
   const highestUntiedBidder = highestUntiedProfile?.userId === profileState.userId

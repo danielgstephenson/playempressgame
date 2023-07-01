@@ -45,7 +45,6 @@ export default function PlayPhaseView (): JSX.Element {
     [active, handClone]
   )
   const sortableActiveItem = (activeScheme != null) && <HandSchemeView active id={activeScheme.id} />
-  console.log('overDeck', overDeck)
   const fontWeight = overDeck === true ? '1000' : undefined
   if (hand == null || setHand == null) {
     return <></>

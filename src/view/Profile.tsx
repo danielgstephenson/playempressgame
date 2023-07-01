@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Heading, HStack, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Heading, HStack, IconButton, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
 import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
@@ -13,9 +13,12 @@ import ExpandedSchemeView from './ExpandedScheme'
 import SmallSchemeView from './SmallScheme'
 import InPlaySchemeView from './InPlayScheme'
 import DiscardButtonView from './DiscardButton'
-import BidButtonView from './BidButton'
+import BidProfileButtonView from './BidProfileButton'
 import PopoverButtonView from './PopoverButton'
 import TopPopoverButtonView from './TopPopoverButton'
+import PlayProfileButtonView from './PlayProfileButton'
+import { QuestionIcon } from '@chakra-ui/icons'
+import { BUTTON_GRAY_BORDER } from '../constants'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -39,22 +42,42 @@ export default function ProfileView (): JSX.Element {
   const inPlay = profileState
     .tableau
     ?.map(scheme => <InPlaySchemeView key={scheme.id} rank={scheme.rank} />)
-  const deckButton = deckFull && (
-    <PopoverButtonView bg='gray'>
-      {profileState.displayName}'s deck is not empty
-    </PopoverButtonView>
+  const fullMessage = `${profileState.displayName}'s deck is not empty`
+  const deckButton = deckFull
+    ? (
+      <Popover>
+        <PopoverTrigger>
+          <IconButton aria-label={fullMessage} disabled bg='gray.600' color='white' icon={<QuestionIcon />} />
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverBody>{fullMessage}</PopoverBody>
+        </PopoverContent>
+      </Popover>
+      )
+    : (
+      <PopoverButtonView bg='transparent' border={BUTTON_GRAY_BORDER}>
+        {profileState.displayName}'s deck is empty
+      </PopoverButtonView>
+      )
+
+  const moneyButtons = gameState.phase !== 'join' && (
+    <>
+      <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
+        {profileState.displayName} has {profileState.gold} gold.
+      </TopPopoverButtonView>
+      <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
+        {profileState.displayName} has {profileState.silver} silver.
+      </TopPopoverButtonView>
+    </>
   )
   return (
     <>
       <VStack spacing='0'>
         <ButtonGroup size='xs' isAttached>
-          <BidButtonView />
-          <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
-            {profileState.displayName} has {profileState.gold} gold.
-          </TopPopoverButtonView>
-          <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
-            {profileState.displayName} has {profileState.silver} silver.
-          </TopPopoverButtonView>
+          <PlayProfileButtonView />
+          <BidProfileButtonView />
+          {moneyButtons}
         </ButtonGroup>
         <ButtonGroup size='xs' isAttached>
           {deckButton}

@@ -34,14 +34,20 @@ export default function passTime ({ playState }: {
     const [passed, ...remaining] = playState.game.timeline
     const beforeTimeline = [...playState.game.timeline]
     const beforeJoined = joinRanks(beforeTimeline)
-    const beforeEvent = createEvent(`The timeline was ${beforeJoined}.`)
+    const beforeTimelineEvent = createEvent(`The timeline was ${beforeJoined}.`)
     playState.game.timeline = remaining
     const defined = guardDefined(passed, 'Passed scheme')
-    const timeMessage = `${moreMessage}, so ${defined.rank} is removed from the timeline.`
+    const timeMessage = `${moreMessage}, so ${defined.rank} is summoned from the timeline to the court.`
     const observerEvent = createEvent(timeMessage)
     const afterTimeline = [...remaining]
+    const beforeCourt = [...playState.game.court]
+    const beforeCourtJoined = joinRanks(beforeCourt)
+    const beforeCourtEvent = createEvent(`The court was ${beforeCourtJoined}.`)
+    playState.game.court.push(defined)
+    const afterCourtJoined = joinRanks(playState.game.court)
+    const afterCourtEvent = createEvent(`The court becomes ${afterCourtJoined}.`)
     const afterJoined = joinRanks(afterTimeline)
-    const afterEvent = createEvent(`The timeline is now ${afterJoined}.`)
+    const afterTimelineEvent = createEvent(`The timeline is now ${afterJoined}.`)
     playState.players.forEach(player => {
       const observerChild = guardTimeEvent({ player })
       observerEvent.events.push(observerChild)
@@ -53,10 +59,10 @@ export default function passTime ({ playState }: {
           privateId: player.id
         }))
       playerSort({ events: privateChildren, playerId: player.id })
-      playerEvent.events = [...privateChildren, beforeEvent, afterEvent]
+      playerEvent.events = [...privateChildren, beforeTimelineEvent, afterTimelineEvent, beforeCourtEvent, afterCourtEvent]
       player.events.push(playerEvent)
     })
-    observerEvent.events.push(beforeEvent, afterEvent)
+    observerEvent.events.push(beforeTimelineEvent, afterTimelineEvent, beforeCourtEvent, afterCourtEvent)
     playState.game.events.push(observerEvent)
     return playState
   }

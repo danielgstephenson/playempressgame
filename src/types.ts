@@ -84,7 +84,7 @@ export interface Game extends Doc{
   dungeon: Scheme[]
   events: HistoryEvent[]
   name: string
-  phase: string
+  phase: 'auction' | 'play' | 'join'
   readyCount: number
   round: number
   profiles: Profile[]

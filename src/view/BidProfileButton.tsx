@@ -6,7 +6,7 @@ import getTyingProfiles from '../service/getTyingProfiles'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import TopPopoverButtonView from './TopPopoverButton'
 
-export default function BidButtonView (): JSX.Element {
+export default function BidProfileButtonView (): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
   if (profileState.bid == null || profileState.displayName == null || profileState.lastBidder == null) return <></>
