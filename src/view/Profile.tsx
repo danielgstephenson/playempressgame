@@ -36,6 +36,9 @@ export default function ProfileView (): JSX.Element {
     }
     return <Heading size='md'>{profileState.displayName}</Heading>
   }
+  if (gameState.phase === 'join') {
+    return <Heading size='md'>{profileState.displayName}</Heading>
+  }
   const deckFull = profileState.deckEmpty !== true
   const bidding = gameState.phase === 'auction'
   const content = bidding ? <>({profileState.bid} / {profileState.gold})</> : undefined
@@ -61,23 +64,18 @@ export default function ProfileView (): JSX.Element {
       </PopoverButtonView>
       )
 
-  const moneyButtons = gameState.phase !== 'join' && (
-    <>
-      <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
-        {profileState.displayName} has {profileState.gold} gold.
-      </TopPopoverButtonView>
-      <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
-        {profileState.displayName} has {profileState.silver} silver.
-      </TopPopoverButtonView>
-    </>
-  )
   return (
     <>
       <VStack spacing='0'>
         <ButtonGroup size='xs' isAttached>
           <PlayProfileButtonView />
           <BidProfileButtonView />
-          {moneyButtons}
+          <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
+            {profileState.displayName} has {profileState.gold} gold.
+          </TopPopoverButtonView>
+          <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
+            {profileState.displayName} has {profileState.silver} silver.
+          </TopPopoverButtonView>
         </ButtonGroup>
         <ButtonGroup size='xs' isAttached>
           {deckButton}
