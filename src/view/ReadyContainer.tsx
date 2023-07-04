@@ -1,15 +1,16 @@
-import { VStack } from '@chakra-ui/react'
+import { VStack, StackProps } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import PlayerGoldView from './PlayerGold'
 import PlayerSilverView from './PlayerSilver'
 
 export default function ReadyContainerView ({
-  children
+  children,
+  ...restProps
 }: {
   children?: ReactNode
-}): JSX.Element {
+} & StackProps): JSX.Element {
   return (
-    <VStack width='100%'>
+    <VStack {...restProps}>
       <PlayerGoldView />
       <PlayerSilverView />
       {children}

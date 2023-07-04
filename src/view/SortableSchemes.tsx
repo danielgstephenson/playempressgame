@@ -1,6 +1,6 @@
 import { CardProps } from '@chakra-ui/card'
 import { Scheme } from '../types'
-import SchemesContainerView from './SchemesContainer'
+import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
 
 export default function SortableSchemesView ({
@@ -18,5 +18,5 @@ export default function SortableSchemesView ({
     )
   })
 
-  return <SchemesContainerView>{sortableSchemes}</SchemesContainerView>
+  return <SmallSchemesContainerView length={schemes.length}>{sortableSchemes}</SmallSchemesContainerView>
 };

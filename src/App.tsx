@@ -41,6 +41,7 @@ export default function App (): JSX.Element {
             display='flex'
             flexDirection='column'
             height='100%'
+            p='5px'
           >
             <HeaderView />
             <Router />

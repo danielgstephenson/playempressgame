@@ -227,7 +227,7 @@ export default function PlayPhaseView (): JSX.Element {
     >
       <HStack alignItems='start' spacing='2px'>
         <PrivateTableauView />
-        <ReadyContainerView>
+        <ReadyContainerView width='100%'>
           <PlayReadyView />
           <DeckChoiceReadyView />
           <TrashChoiceReadyView />

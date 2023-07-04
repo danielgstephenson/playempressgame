@@ -3,7 +3,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import EmptySmallSchemeView from './EmptySmallScheme'
-import SchemesContainerView from './SchemesContainer'
+import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
 
 export default function TakeTableauView (): JSX.Element {
@@ -17,20 +17,21 @@ export default function TakeTableauView (): JSX.Element {
   if (playState.tableau.length === 0) {
     return <EmptySmallSchemeView ref={setNodeRef}>Take</EmptySmallSchemeView>
   }
+  const schemeViews = playState.tableau.map((task) => (
+    <SortableSchemeView
+      key={task.id}
+      id={task.id}
+      rank={task.rank}
+    />
+  ))
   return (
     <SortableContext
       id='takeTableau'
       items={playState.tableau}
     >
-      <SchemesContainerView>
-        {playState.tableau?.map((task) => (
-          <SortableSchemeView
-            key={task.id}
-            id={task.id}
-            rank={task.rank}
-          />
-        ))}
-      </SchemesContainerView>
+      <SmallSchemesContainerView length={playState.tableau.length}>
+        {schemeViews}
+      </SmallSchemesContainerView>
     </SortableContext>
   )
 };

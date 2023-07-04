@@ -6,7 +6,7 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import usePointerSensor from '../use/pointerSensor'
-import SchemesContainerView from './SchemesContainer'
+import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
 import TinySchemesView from './TinySchemes'
 
@@ -70,9 +70,9 @@ export default function DeckView (): JSX.Element {
         }}
       >
         <SortableContext items={deck}>
-          <SchemesContainerView>
+          <SmallSchemesContainerView length={deck.length}>
             {sortableSchemes}
-          </SchemesContainerView>
+          </SmallSchemesContainerView>
         </SortableContext>
         <DragOverlay dropAnimation={DROP_ANIMATION}>
           {sortableActiveItem}

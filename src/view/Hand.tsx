@@ -1,14 +1,14 @@
-import React, { Fragment, useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import {
   SortableContext
 } from '@dnd-kit/sortable'
 
-import SchemesContainerView from './SchemesContainer'
 import HandSchemeView from './HandScheme'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import TinySchemesView from './TinySchemes'
+import SmallSchemesContainerView from './SmallSchemesContainer'
 
 export default function HandView (): JSX.Element {
   const {
@@ -16,7 +16,10 @@ export default function HandView (): JSX.Element {
   } = useContext(playContext)
   const { choices, phase } = useContext(gameContext)
   const playerState = useContext(playerContext)
-  const sortableItems = hand?.map((scheme) => {
+  if (hand == null) {
+    return <></>
+  }
+  const sortableItems = hand.map((scheme) => {
     if (scheme.id === trashSchemeId || scheme.id === playSchemeId) {
       return <Fragment key={scheme.id} />
     }
@@ -38,9 +41,9 @@ export default function HandView (): JSX.Element {
 
   return (
     <SortableContext items={hand}>
-      <SchemesContainerView justifyContent='center'>
+      <SmallSchemesContainerView justifyContent='center' length={sortableItems.length}>
         {sortableItems}
-      </SchemesContainerView>
+      </SmallSchemesContainerView>
     </SortableContext>
   )
 }
