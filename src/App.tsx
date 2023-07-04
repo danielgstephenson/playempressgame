@@ -42,6 +42,7 @@ export default function App (): JSX.Element {
             flexDirection='column'
             height='100%'
           >
+            <HeaderView />
             <Box
               background='green'
               height='200px'
