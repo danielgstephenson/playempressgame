@@ -76,10 +76,10 @@ export default function PlayerView (): JSX.Element {
   }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
 
   return (
-    <Stack flexGrow='1' height='100%'>
+    <>
       <BidView />
       <PlayPhaseView />
       <PlayerHistoryView />
-    </Stack>
+    </>
   )
 }

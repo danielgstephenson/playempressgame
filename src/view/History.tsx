@@ -20,7 +20,7 @@ export default function HistoryView ({
     ref.current.scrollTop = ref.current.scrollHeight
   }, [history])
   return (
-    <Box bg='black' p='20px' flex='1' height='100%' overflow='scroll'>
+    <Box bg='black' p='20px' flex='1' height='100%' overflowY='scroll'>
       <Box bg='gray' height='1000px' display='flex' flexDirection='column' justifyContent='space-between'>
         <Box>Start</Box>
         <Box>End</Box>

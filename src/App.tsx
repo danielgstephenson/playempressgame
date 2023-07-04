@@ -43,19 +43,8 @@ export default function App (): JSX.Element {
             height='100%'
           >
             <HeaderView />
-            <Box
-              background='green'
-              height='200px'
-            >
-              a
-            </Box>
-            <Box
-              height='100px'
-              background='blue'
-            >
-              b
-            </Box>
-            <Box
+            <Router />
+            {/* <Box
               height='100%'
               overflowY='scroll'
             >
@@ -69,7 +58,7 @@ export default function App (): JSX.Element {
                 <Box>start</Box>
                 <Box>end</Box>
               </Box>
-            </Box>
+            </Box> */}
           </Container>
         </FunctionsProvider>
       </DbProvider>
