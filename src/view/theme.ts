@@ -10,10 +10,6 @@ const config: ThemeConfig = {
 const styles = {
   global: {
     '#root': {
-      padding: '10px',
-      boxSizing: 'border-box',
-      background: 'black',
-      color: 'white',
       display: 'flex',
       flexDirection: 'column',
       height: '99vh'

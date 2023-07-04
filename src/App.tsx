@@ -9,7 +9,7 @@ import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
 import Router from './Router'
 import HeaderView from './view/Header'
-import { Container, Stack } from '@chakra-ui/react'
+import { Box, Container, Stack } from '@chakra-ui/react'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -34,52 +34,45 @@ if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default function App (): JSX.Element {
   return (
-    <Stack style={{
-      padding: '10px',
-      boxSizing: 'border-box',
-      background: 'black',
-      color: 'white',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%'
-    }}
-    >
-      <div>
-        <div style={{
-          background: 'green',
-          height: '200px'
-        }}
-        >a
-        </div>
-      </div>
-      <div>
-        <div style={{
-          height: '100px',
-          background: 'blue'
-        }}
-        >b
-        </div>
-      </div>
-      <div style={{
-        background: 'purple',
-        height: '100%',
-        boxSizing: 'border-box',
-        overflowY: 'scroll'
-      }}
-      >
-        <div style={{
-          height: '1000px',
-          background: 'gray',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}
-        >
-          <div>start</div>
-          <div>end</div>
-        </div>
-      </div>
-    </Stack>
+    <AuthProvider auth={auth}>
+      <DbProvider db={db}>
+        <FunctionsProvider functions={functions}>
+          <Container
+            display='flex'
+            flexDirection='column'
+            height='100%'
+          >
+            <Box
+              background='green'
+              height='200px'
+            >
+              a
+            </Box>
+            <Box
+              height='100px'
+              background='blue'
+            >
+              b
+            </Box>
+            <Box
+              height='100%'
+              overflowY='scroll'
+            >
+              <Box
+                height='1000px'
+                background='gray'
+                display='flex'
+                flexDirection='column'
+                justifyContent='space-between'
+              >
+                <Box>start</Box>
+                <Box>end</Box>
+              </Box>
+            </Box>
+          </Container>
+        </FunctionsProvider>
+      </DbProvider>
+    </AuthProvider>
   )
   // return (
   //   <>
