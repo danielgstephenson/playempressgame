@@ -20,17 +20,15 @@ export default function HistoryView ({
     ref.current.scrollTop = ref.current.scrollHeight
   }, [history])
   return (
-    <Box bg='black' p='20px' flex='1' height='100%' overflowY='scroll'>
-      <Box bg='gray' height='1000px' display='flex' flexDirection='column' justifyContent='space-between'>
-        <Box>Start</Box>
-        <Box>End</Box>
-      </Box>
-    </Box>
-  )
-  return (
-    <Accordion allowToggle defaultIndex={0} flexGrow='1' height='100%'>
+    <Accordion allowToggle defaultIndex={0} height='100%' overflowY='auto'>
       <AccordionItem>
-        <Heading size='sm'>
+        <Heading
+          size='sm'
+          position='sticky'
+          top='1px'
+          outline='1px solid #3f444e'
+          bg='var(--chakra-colors-chakra-body-bg)'
+        >
           <AccordionButton>
             <Box as='span' flex='1' textAlign='left'>
               {children}
@@ -38,11 +36,10 @@ export default function HistoryView ({
             <AccordionIcon />
           </AccordionButton>
         </Heading>
-        <AccordionPanel>
+        <AccordionPanel p='0'>
           <Accordion
             ref={ref}
             allowMultiple
-            overflowY='scroll'
           >
             {items}
           </Accordion>

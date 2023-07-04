@@ -9,7 +9,7 @@ import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
 import Router from './Router'
 import HeaderView from './view/Header'
-import { Box, Container, Stack } from '@chakra-ui/react'
+import { Container } from '@chakra-ui/react'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
