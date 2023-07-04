@@ -46,7 +46,8 @@ export default function effectsSeventeen ({
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      message: `${effectPlayer.displayName} puts their ${discardScheme.rank} face down on their deck.`
+      publicMessage: `${effectPlayer.displayName} puts their ${discardScheme.rank} face down on their deck.`,
+      privateMessage: `You put your ${discardScheme.rank} face down on their deck.`
     })
   }
   return playState

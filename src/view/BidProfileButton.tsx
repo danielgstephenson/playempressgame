@@ -9,7 +9,11 @@ import TopPopoverButtonView from './TopPopoverButton'
 export default function BidProfileButtonView (): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
-  if (profileState.bid == null || profileState.displayName == null || profileState.lastBidder == null) return <></>
+  if (
+    profileState.bid == null ||
+    profileState.displayName == null ||
+    profileState.lastBidder == null
+  ) return <></>
   const allReady = areAllReady(gameState.profiles)
   const bidding = gameState.phase === 'auction' && !allReady
   if (!bidding) return <></>
@@ -27,20 +31,20 @@ export default function BidProfileButtonView (): JSX.Element {
   if (tied) {
     if (profileState.lastBidder) {
       return (
-        <TopPopoverButtonView bg='slategray' color='white' label={profileState.bid}>
+        <TopPopoverButtonView bg='gray' color='black' label={profileState.bid}>
           {profileState.displayName}'s bid is {profileState.bid}, and they can not withdraw because they are the last bidder.
         </TopPopoverButtonView>
       )
     } else {
       return (
-        <TopPopoverButtonView bg='gray' color='black' label={profileState.bid}>
+        <TopPopoverButtonView bg='slategray' color='white' label={profileState.bid}>
           {profileState.displayName}'s bid is {profileState.bid}, but they can withdraw.
         </TopPopoverButtonView>
       )
     }
   }
   return (
-    <TopPopoverButtonView bg='white' color='black' label={profileState.bid}>
+    <TopPopoverButtonView bg='white' color='black' _hover={{ bg: 'lightgray' }} label={profileState.bid}>
       {profileState.displayName}'s bid is {profileState.bid}.
     </TopPopoverButtonView>
   )

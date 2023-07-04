@@ -40,8 +40,6 @@ export default function ProfileView (): JSX.Element {
     return <Heading size='md'>{profileState.displayName}</Heading>
   }
   const deckFull = profileState.deckEmpty !== true
-  const bidding = gameState.phase === 'auction'
-  const content = bidding ? <>({profileState.bid} / {profileState.gold})</> : undefined
   const inPlay = profileState
     .tableau
     ?.map(scheme => <InPlaySchemeView key={scheme.id} rank={scheme.rank} />)
@@ -63,17 +61,26 @@ export default function ProfileView (): JSX.Element {
         {profileState.displayName}'s deck is empty
       </PopoverButtonView>
       )
-
   return (
     <>
       <VStack spacing='0'>
         <ButtonGroup size='xs' isAttached>
           <PlayProfileButtonView />
           <BidProfileButtonView />
-          <TopPopoverButtonView disabled bg='yellow.400' color='black' label={profileState.gold}>
+          <TopPopoverButtonView
+            bg='yellow.400'
+            color='black'
+            _hover={{ bg: 'yellow.600', color: 'white' }}
+            label={profileState.gold}
+          >
             {profileState.displayName} has {profileState.gold} gold.
           </TopPopoverButtonView>
-          <TopPopoverButtonView disabled bg='gray.400' color='black' label={profileState.silver}>
+          <TopPopoverButtonView
+            disabled bg='gray.400'
+            color='black'
+            _hover={{ bg: 'gray.600', color: 'white' }}
+            label={profileState.silver}
+          >
             {profileState.displayName} has {profileState.silver} silver.
           </TopPopoverButtonView>
         </ButtonGroup>
@@ -81,8 +88,6 @@ export default function ProfileView (): JSX.Element {
           {deckButton}
           <Button onClick={onOpen}>
             {profileState.displayName}
-            {' '}
-            {content}
           </Button>
           <DiscardButtonView />
         </ButtonGroup>

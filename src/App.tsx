@@ -9,7 +9,7 @@ import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
 import Router from './Router'
 import HeaderView from './view/Header'
-import { Container } from '@chakra-ui/react'
+import { Container, Stack } from '@chakra-ui/react'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -34,17 +34,67 @@ if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default function App (): JSX.Element {
   return (
-    <>
-      <AuthProvider auth={auth}>
-        <DbProvider db={db}>
-          <FunctionsProvider functions={functions}>
-            <Container p='5px'>
-              <HeaderView />
-              <Router />
-            </Container>
-          </FunctionsProvider>
-        </DbProvider>
-      </AuthProvider>
-    </>
+    <Stack style={{
+      padding: '10px',
+      boxSizing: 'border-box',
+      background: 'black',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }}
+    >
+      <div>
+        <div style={{
+          background: 'green',
+          height: '200px'
+        }}
+        >a
+        </div>
+      </div>
+      <div>
+        <div style={{
+          height: '100px',
+          background: 'blue'
+        }}
+        >b
+        </div>
+      </div>
+      <div style={{
+        background: 'purple',
+        height: '100%',
+        boxSizing: 'border-box',
+        overflowY: 'scroll'
+      }}
+      >
+        <div style={{
+          height: '1000px',
+          background: 'gray',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}
+        >
+          <div>start</div>
+          <div>end</div>
+        </div>
+      </div>
+    </Stack>
   )
+  // return (
+  //   <>
+  //     <AuthProvider auth={auth}>
+  //       <DbProvider db={db}>
+  //         <FunctionsProvider functions={functions}>
+  //           <Container p='5px' h='99vh'>
+  //             <Stack direction='column' height='100%'>
+  //               <HeaderView />
+  //               <Router />
+  //             </Stack>
+  //           </Container>
+  //         </FunctionsProvider>
+  //       </DbProvider>
+  //     </AuthProvider>
+  //   </>
+  // )
 }

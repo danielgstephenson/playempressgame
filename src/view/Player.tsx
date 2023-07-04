@@ -5,6 +5,7 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import PlayPhaseView from './PlayPhase'
+import { Stack } from '@chakra-ui/react'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, round, phase } = useContext(gameContext)
@@ -75,10 +76,10 @@ export default function PlayerView (): JSX.Element {
   }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
 
   return (
-    <>
+    <Stack flexGrow='1' height='100%'>
       <BidView />
       <PlayPhaseView />
       <PlayerHistoryView />
-    </>
+    </Stack>
   )
 }

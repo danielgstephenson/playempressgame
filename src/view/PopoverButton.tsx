@@ -1,5 +1,6 @@
-import { Popover, PopoverTrigger, Button, PopoverContent, PopoverArrow, PopoverBody, ButtonProps } from '@chakra-ui/react'
+import { Button, ButtonProps } from '@chakra-ui/react'
 import { ReactNode } from 'react'
+import PopoverMessageView from './PopoverMessage'
 
 export default function PopoverButtonView ({
   label,
@@ -10,14 +11,8 @@ export default function PopoverButtonView ({
   children: ReactNode
 } & ButtonProps): JSX.Element {
   return (
-    <Popover>
-      <PopoverTrigger>
-        <Button disabled {...restProps}>{label}</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverBody>{children}</PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <PopoverMessageView trigger={<Button {...restProps}>{label}</Button>}>
+      {children}
+    </PopoverMessageView>
   )
 }

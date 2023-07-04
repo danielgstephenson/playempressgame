@@ -20,7 +20,15 @@ export default function HistoryView ({
     ref.current.scrollTop = ref.current.scrollHeight
   }, [history])
   return (
-    <Accordion allowToggle defaultIndex={0}>
+    <Box bg='black' p='20px' flex='1' height='100%' overflow='scroll'>
+      <Box bg='gray' height='1000px' display='flex' flexDirection='column' justifyContent='space-between'>
+        <Box>Start</Box>
+        <Box>End</Box>
+      </Box>
+    </Box>
+  )
+  return (
+    <Accordion allowToggle defaultIndex={0} flexGrow='1' height='100%'>
       <AccordionItem>
         <Heading size='sm'>
           <AccordionButton>
@@ -33,7 +41,7 @@ export default function HistoryView ({
         <AccordionPanel>
           <Accordion
             ref={ref}
-            allowMultiple height='140px'
+            allowMultiple
             overflowY='scroll'
           >
             {items}

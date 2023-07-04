@@ -64,13 +64,8 @@ export default function effectsTwenty ({
       suffix: `top discard scheme, ${topDiscardScheme.rank}, is summoned to the court`,
       displayName: effectPlayer.displayName
     })
-    earn({
-      amount: topDiscardScheme.rank,
-      player: effectPlayer,
-      playState,
-      privateEvent: firstPrivateChild,
-      publicEvents: firstPublicChildren
-    })
+    effectPlayer.discard.shift()
+    playState.game.court.push(topDiscardScheme)
   }
   return playState
 }

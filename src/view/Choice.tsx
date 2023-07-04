@@ -19,6 +19,6 @@ export default function ChoiceView (): JSX.Element {
   }
   const label = labels[choice.type]
   return (
-    <Heading size='md'>{label}</Heading>
+    <Heading size='md' textAlign='center'>{label}</Heading>
   )
 }

@@ -19,7 +19,7 @@ export default function DiscardButtonView (): JSX.Element {
   const bg = getBg({ rank: profileState.topDiscardScheme.rank })
   return (
     <>
-      <Button bg={bg} onClick={onOpen}>
+      <Button bg={bg} onClick={onOpen} w='24px'>
         {profileState.topDiscardScheme.rank}
       </Button>
       <SchemeModal isOpen={isOpen} onClose={onClose} rank={profileState.topDiscardScheme.rank} />

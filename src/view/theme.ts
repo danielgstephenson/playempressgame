@@ -7,7 +7,21 @@ const config: ThemeConfig = {
   useSystemColorMode: false
 }
 
+const styles = {
+  global: {
+    '#root': {
+      padding: '10px',
+      boxSizing: 'border-box',
+      background: 'black',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '99vh'
+    }
+  }
+}
+
 // 3. extend the theme
-const theme = extendTheme({ config })
+const theme = extendTheme({ config, styles })
 
 export default theme

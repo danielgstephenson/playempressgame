@@ -73,30 +73,32 @@ export default function BidView (): JSX.Element {
           </NumberInputStepper>
         </NumberInput>
       </HStack>
-      <Cloud
-        fn='bid'
-        props={{ bid, gameId: gameState.id }}
-      >
-        Bid
-      </Cloud>
-      <Cloud
-        fn='imprison'
-        props={{ gameId: gameState.id }}
-      >
-        Imprison
-      </Cloud>
-      <Cloud
-        fn='concede'
-        props={{ gameId: gameState.id }}
-      >
-        Concede
-      </Cloud>
-      <Cloud
-        fn='withdraw'
-        props={{ gameId: gameState.id }}
-      >
-        Withdraw
-      </Cloud>
+      <HStack justifyContent='space-between'>
+        <Cloud
+          fn='bid'
+          props={{ bid, gameId: gameState.id }}
+        >
+          Bid
+        </Cloud>
+        <Cloud
+          fn='imprison'
+          props={{ gameId: gameState.id }}
+        >
+          Imprison
+        </Cloud>
+        <Cloud
+          fn='concede'
+          props={{ gameId: gameState.id }}
+        >
+          Concede
+        </Cloud>
+        <Cloud
+          fn='withdraw'
+          props={{ gameId: gameState.id }}
+        >
+          Withdraw
+        </Cloud>
+      </HStack>
     </>
   )
 }

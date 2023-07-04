@@ -12,6 +12,7 @@ import guardPlayScheme from './guard/playScheme'
 import drawUpToThree from './drawUpToThree'
 import addPublicEvent from './add/event/public'
 import addChoiceEvents from './add/events/choice'
+import joinRanksGrammar from './join/ranks/grammar'
 
 export default function summonOrImprison ({
   playState
@@ -122,26 +123,39 @@ export default function summonOrImprison ({
   }
   if (highPlayers.length === 1) {
     const highPlayer = guardFirst(highPlayers, 'High player')
+    const courtBefore = [...playState.game.court]
+    const courtBeforeJoined = joinRanksGrammar(courtBefore)
+    const courtBeforeMessage = `The court was ${courtBeforeJoined.joinedRanks}.`
     playState.game.court.push(guardPlayScheme(highPlayer))
+    const courtAfterJoined = joinRanksGrammar(playState.game.court)
+    const courtAfterMessage = `The court becomes ${courtAfterJoined.joinedRanks}.`
     if (highestPlayScheme.rank !== 15) {
       const privateSummonMessage = `Your ${highestPlayScheme.rank} is summoned to the court.`
       const privateSummonEvent = createEvent(privateSummonMessage)
+      addEvent(privateSummonEvent, courtBeforeMessage)
+      addEvent(privateSummonEvent, courtAfterMessage)
       highPlayer.events.push(privateSummonEvent)
-      addBroadcastEvent({
+      const publicSummonEvent = addBroadcastEvent({
         players: notHighPlayers,
         game: playState.game,
         message: `${highPlayer.displayName}'s ${highestPlayScheme.rank} is summoned to the court.`
       })
+      addEvent(publicSummonEvent, courtBeforeMessage)
+      addEvent(publicSummonEvent, courtAfterMessage)
     } else {
       const privateMessage = 'Your 15 is summoned to the court, so you carry out its threat.'
       const privateEvent = createEvent(privateMessage)
       highPlayer.events.push(privateEvent)
+      addEvent(privateEvent, courtBeforeMessage)
+      addEvent(privateEvent, courtAfterMessage)
       addEvent(privateEvent, 'You copy your 15.')
       const publicEvents = addPublicEvents({
         effectPlayer: highPlayer,
         message: `${highPlayer.displayName}'s 15 is summoned to the court, so they carry out its threat.`,
         playState
       })
+      addPublicEvent(publicEvents, courtBeforeMessage)
+      addPublicEvent(publicEvents, courtAfterMessage)
       addPublicEvent(publicEvents, `${highPlayer.displayName} copies their 15.`)
       const playScheme = guardPlayScheme(highPlayer)
       const choices = copyEffects({
@@ -160,6 +174,13 @@ export default function summonOrImprison ({
       }
     }
   } else {
+    const dungeonBeforeJoined = joinRanksGrammar(playState.game.dungeon)
+    const dungeonBeforeMessage = `The dungeon was ${dungeonBeforeJoined.joinedRanks}.`
+    highPlayers.forEach(highPlayer => {
+      playState.game.dungeon.push(guardPlayScheme(highPlayer))
+    })
+    const dungeonAfterJoined = joinRanksGrammar(playState.game.dungeon)
+    const dungeonAfterMessage = `The dungeon becomes ${dungeonAfterJoined.joinedRanks}.`
     highPlayers.forEach(highPlayer => {
       const otherHighPlayers = highPlayers.filter(player => player.id !== highPlayer.id)
       const otherHighDisplayNames = otherHighPlayers.map(p => p.displayName)
@@ -167,15 +188,18 @@ export default function summonOrImprison ({
       const joinedDisplayNames = join(displayNames)
       const privateEvent = createEvent(`${joinedDisplayNames} imprison your ${highestPlayScheme.rank}s in the dungeon.`)
       highPlayer.events.push(privateEvent)
-      playState.game.dungeon.push(guardPlayScheme(highPlayer))
+      addEvent(privateEvent, dungeonBeforeMessage)
+      addEvent(privateEvent, dungeonAfterMessage)
     })
     const highDisplayNames = highPlayers.map(p => p.displayName)
     const joinedHighDisplayNames = join(highDisplayNames)
-    addBroadcastEvent({
+    const publicEvent = addBroadcastEvent({
       players: notHighPlayers,
       game: playState.game,
       message: `The ${highestPlayScheme.rank}s played by ${joinedHighDisplayNames} are summoned to the court.`
     })
+    addEvent(publicEvent, dungeonBeforeMessage)
+    addEvent(publicEvent, dungeonAfterMessage)
   }
   const notFifteen = highestPlayScheme.rank !== 15
   const multipleHighPlayers = highPlayers.length > 1
