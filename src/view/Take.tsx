@@ -6,11 +6,12 @@ import authContext from '../context/auth'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import activeOver from '../service/activeOver'
+import add from '../service/add'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
-import move from '../service/move'
 import reorder from '../service/reorder'
 import usePointerSensor from '../use/pointerSensor'
 import Cloud from './Cloud'
+import StaticDungeonView from './Dungeon'
 import ReadyContainerView from './ReadyContainer'
 import SortableSchemeView from './SortableScheme'
 import TakeCourtView from './TakeCourt'
@@ -95,35 +96,98 @@ export default function TakeView (): JSX.Element {
     const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
     const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
     if (activeTableau) {
+      const tableauFromDungeon = playState.tableau.filter((scheme) => {
+        const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
+        return fromDungeon
+      })
       if (fromCourt && overEmptyCourt) {
         leave?.(activeScheme.id)
-        playState.setTableau?.(current => current.filter((scheme) => scheme.id !== activeScheme.id))
+
+        playState.setTableau?.((current) => {
+          return current.filter((scheme) => {
+            if (scheme.id === active.id) {
+              return false
+            }
+            const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
+            if (!twelve && fromDungeon) {
+              return false
+            }
+            return true
+          })
+        })
+        playState.setDungeon?.(current => [...current, ...tableauFromDungeon])
         playState.setCourt?.([activeScheme])
       }
       if (fromDungeon && overEmptyDungeon) {
         leave?.(activeScheme.id)
-        playState.setTableau?.(current => current.filter((scheme) => scheme.id !== activeScheme.id))
-        playState.setDungeon?.([activeScheme])
+        playState.setTableau?.((current) => {
+          return current.filter((scheme) => {
+            if (scheme.id === active.id) {
+              return false
+            }
+            const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
+            if (!twelve && fromDungeon) {
+              return false
+            }
+            return true
+          })
+        })
+        playState.setDungeon?.([activeScheme, ...tableauFromDungeon])
       }
       if (overTableau) {
         playState.setTableau?.((current) => reorder({ a: active, b: over, current }))
       }
+      const filteredTableau = playState.tableau.filter((scheme) => scheme.id !== activeScheme.id)
+      const twelve = filteredTableau.some((scheme) => scheme.rank === 12)
+      console.log('twelve', twelve)
+      console.log('fromCourt', fromCourt)
+      console.log('overCourt', overCourt)
       if (fromCourt && overCourt) {
         leave?.(activeScheme.id)
-        move({
-          active: activeScheme,
-          setOld: playState.setTableau,
-          setNew: playState.setCourt,
-          over
+        playState.setTableau?.((current) => {
+          console.log('current', current)
+          return current.filter((scheme) => {
+            if (scheme.id === active.id) {
+              return false
+            }
+            const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
+            console.log('fromDungeon', fromDungeon)
+            if (!twelve && fromDungeon) {
+              return false
+            }
+            return true
+          })
+        })
+        playState.setCourt?.((current) => {
+          return add({
+            active: activeScheme,
+            current,
+            over
+          })
+        })
+        playState.setDungeon?.((current) => {
+          return [...current, ...tableauFromDungeon]
         })
       }
       if (fromDungeon && overDungeon) {
         leave?.(activeScheme.id)
-        move({
-          active: activeScheme,
-          setOld: playState.setTableau,
-          setNew: playState.setDungeon,
-          over
+        playState.setTableau?.((current) => {
+          return current.filter((scheme) => {
+            if (scheme.id === active.id) {
+              return false
+            }
+            if (!twelve && fromDungeon) {
+              return false
+            }
+            return true
+          })
+        })
+        playState.setDungeon?.((current) => {
+          const overIndex = current.findIndex((scheme) => scheme.id === over.id)
+          const beforeIndex = current.slice(0, overIndex)
+          const afterIndex = current.slice(overIndex)
+          const added = [...beforeIndex, activeScheme, ...afterIndex, ...tableauFromDungeon]
+          return added
         })
       }
     }
@@ -153,6 +217,8 @@ export default function TakeView (): JSX.Element {
   ) {
     return <></>
   }
+  const twelve = playState.tableau.some((scheme) => scheme.rank === 12)
+  const tinyDungeon = !twelve && <StaticDungeonView />
   const fontWeight = playState.overTableau === true ? '1000' : undefined
   return (
     <DndContext
@@ -172,6 +238,7 @@ export default function TakeView (): JSX.Element {
       onDragOver={handleDragOver}
     >
       <Stack direction='row'>
+        {tinyDungeon}
         <TakeCourtView />
         <TimelineView />
       </Stack>
