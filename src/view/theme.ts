@@ -12,7 +12,7 @@ const styles = {
     '#root': {
       display: 'flex',
       flexDirection: 'column',
-      height: '99vh'
+      height: '99dvh'
     }
   }
 }

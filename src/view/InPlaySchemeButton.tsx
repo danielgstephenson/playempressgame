@@ -75,13 +75,18 @@ export default function InPlaySchemeButtonView ({
     }
   }
   if (rank === 12) {
+    if (gameState.dungeon?.length === 0) {
+      return (
+        <GridButton {...restProps} bg='gray' color={bg}>{rank}</GridButton>
+      )
+    }
     if (!allReady) {
       return (
         <GridButton {...restProps} bg='white' color='red'>{rank}</GridButton>
       )
     }
     const taking = isTaking({ game: gameState, userId: profileState.userId })
-    if (!taking || gameState.dungeon?.length === 0) {
+    if (!taking) {
       return (
         <GridButton {...restProps} bg='gray' color={bg}>{rank}</GridButton>
       )

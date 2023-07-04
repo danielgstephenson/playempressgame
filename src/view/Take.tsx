@@ -16,6 +16,7 @@ import SortableSchemeView from './SortableScheme'
 import TakeCourtView from './TakeCourt'
 import TakeDungeonView from './TakeDungeon'
 import TakeTableauView from './TakeTableau'
+import TimelineView from './Timeline'
 import TrashHistoryView from './TrashHistory'
 
 export default function TakeView (): JSX.Element {
@@ -65,6 +66,8 @@ export default function TakeView (): JSX.Element {
     const activeTableau = playState.tableau.some((scheme) => scheme.id === active.id)
     const overTableau = playState.tableau.some((scheme) => scheme.id === over.id)
     const overTakeArea = over.id === 'takeArea'
+    const overEmptyCourt = over.id === 'court'
+    const overEmptyDungeon = over.id === 'dungeon'
     if (activeCourt) {
       activeOver({
         active: activeScheme,
@@ -89,11 +92,22 @@ export default function TakeView (): JSX.Element {
         take
       })
     }
+    const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
+    const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
     if (activeTableau) {
+      if (fromCourt && overEmptyCourt) {
+        leave?.(activeScheme.id)
+        playState.setTableau?.(current => current.filter((scheme) => scheme.id !== activeScheme.id))
+        playState.setCourt?.([activeScheme])
+      }
+      if (fromDungeon && overEmptyDungeon) {
+        leave?.(activeScheme.id)
+        playState.setTableau?.(current => current.filter((scheme) => scheme.id !== activeScheme.id))
+        playState.setDungeon?.([activeScheme])
+      }
       if (overTableau) {
         playState.setTableau?.((current) => reorder({ a: active, b: over, current }))
       }
-      const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
       if (fromCourt && overCourt) {
         leave?.(activeScheme.id)
         move({
@@ -103,7 +117,6 @@ export default function TakeView (): JSX.Element {
           over
         })
       }
-      const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
       if (fromDungeon && overDungeon) {
         leave?.(activeScheme.id)
         move({
@@ -113,6 +126,21 @@ export default function TakeView (): JSX.Element {
           over
         })
       }
+    }
+    if (fromCourt && (overCourt || overEmptyCourt)) {
+      playState.setOverCourt?.(true)
+    } else {
+      playState.setOverCourt?.(false)
+    }
+    if (fromDungeon && (overDungeon || overEmptyDungeon)) {
+      playState.setOverDungeon?.(true)
+    } else {
+      playState.setOverDungeon?.(false)
+    }
+    if (overTableau) {
+      playState.setOverTableau?.(true)
+    } else {
+      playState.setOverTableau?.(false)
     }
   }
   if (
@@ -125,6 +153,7 @@ export default function TakeView (): JSX.Element {
   ) {
     return <></>
   }
+  const fontWeight = playState.overTableau === true ? '1000' : undefined
   return (
     <DndContext
       sensors={sensors}
@@ -136,13 +165,19 @@ export default function TakeView (): JSX.Element {
       }}
       onDragEnd={({ active, over }) => {
         setActive(null)
+        playState.setOverCourt?.(false)
+        playState.setOverDungeon?.(false)
+        playState.setOverTableau?.(false)
       }}
       onDragOver={handleDragOver}
     >
-      <TakeCourtView />
+      <Stack direction='row'>
+        <TakeCourtView />
+        <TimelineView />
+      </Stack>
       <Stack direction='row' justifyContent='space-between'>
         <Box>
-          <Heading size='sm'>Play</Heading>
+          <Heading size='sm' fontWeight={fontWeight}>Play</Heading>
           <TakeTableauView />
         </Box>
         <ReadyContainerView>

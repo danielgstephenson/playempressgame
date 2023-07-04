@@ -44,19 +44,6 @@ export default function BidView (): JSX.Element {
   return (
     <>
       <HStack spacing='20px'>
-        <Status label='Bid' value={playerState.bid} />
-        <RangeSlider
-          onChange={handleSliderChange}
-          value={[bid]}
-          min={0}
-          max={playerState.gold}
-          step={5}
-        >
-          <RangeSliderTrack>
-            <RangeSliderFilledTrack />
-          </RangeSliderTrack>
-          <RangeSliderThumb boxSize={6} index={0} />
-        </RangeSlider>
         <NumberInput
           step={5}
           min={playerState.bid}
@@ -72,6 +59,19 @@ export default function BidView (): JSX.Element {
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
+        <RangeSlider
+          onChange={handleSliderChange}
+          value={[bid]}
+          min={0}
+          max={playerState.gold}
+          step={5}
+        >
+          <RangeSliderTrack>
+            <RangeSliderFilledTrack />
+          </RangeSliderTrack>
+          <RangeSliderThumb boxSize={6} index={0} />
+        </RangeSlider>
+        <Status label='Bid' value={playerState.bid} />
       </HStack>
       <HStack justifyContent='space-between'>
         <Cloud

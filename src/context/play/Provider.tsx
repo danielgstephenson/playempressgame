@@ -11,8 +11,11 @@ export default function PlayProvider ({ children }: {
   const [dungeon, setDungeon] = useState<Scheme[]>([])
   const [hand, setHand] = useState<Scheme[]>([])
   const [handClone, setHandClone] = useState<Scheme[]>([])
+  const [overCourt, setOverCourt] = useState(false)
   const [overDeck, setOverDeck] = useState(false)
+  const [overDungeon, setOverDungeon] = useState(false)
   const [overPlay, setOverPlay] = useState(false)
+  const [overTableau, setOverTableau] = useState(false)
   const [overTrash, setOverTrash] = useState(false)
   const [playSchemeId, setPlaySchemeId] = useState<string>()
   const [trashChoiceId, setTrashChoiceId] = useState<string>()
@@ -22,18 +25,12 @@ export default function PlayProvider ({ children }: {
   const leave = useCallback((schemeId: string) => {
     setTaken(taken => taken.filter(scheme => scheme !== schemeId))
   }, [])
-  const resetTaken = useCallback(() => {
-    setTaken([])
-  }, [])
+  const resetTaken = useCallback(() => setTaken([]), [])
   const take = useCallback((schemeId: string) => {
     setTaken(taken => [...taken, schemeId])
   }, [])
-  const emptyTrash = useCallback(() => {
-    setTrashSchemeId(undefined)
-  }, [])
-  const emptyPlay = useCallback(() => {
-    setPlaySchemeId(undefined)
-  }, [])
+  const emptyTrash = useCallback(() => setTrashSchemeId(undefined), [])
+  const emptyPlay = useCallback(() => setPlaySchemeId(undefined), [])
   const state = {
     court,
     deck,
@@ -44,8 +41,11 @@ export default function PlayProvider ({ children }: {
     hand,
     handClone,
     leave,
+    overCourt,
     overDeck,
+    overDungeon,
     overPlay,
+    overTableau,
     overTrash,
     playSchemeId,
     resetTaken,
@@ -55,8 +55,11 @@ export default function PlayProvider ({ children }: {
     setDungeon,
     setHand,
     setHandClone,
+    setOverCourt,
     setOverDeck,
+    setOverDungeon,
     setOverPlay,
+    setOverTableau,
     setOverTrash,
     setPlaySchemeId,
     setTableau,

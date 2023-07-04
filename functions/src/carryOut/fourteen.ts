@@ -3,6 +3,7 @@ import addPlayerEvent from '../add/event/player'
 import addTargetEvents from '../add/events/target'
 import createId from '../create/id'
 import discardTableau from '../discardTableau'
+import getGrammar from '../get/grammar'
 import join from '../join'
 import { PlayState } from '../types'
 
@@ -25,9 +26,10 @@ export default function carryOutFourteen ({
         const otherNames = names.filter(name => name !== player.displayName)
         const playerNames = ['You', ...otherNames]
         const privateNames = join(playerNames)
+        const grammar = getGrammar(otherNames.length, '14', '14s')
         return addPlayerEvent({
           container: player,
-          message: `${privateNames} made no trades, so you carry out the threat on your 14s.`,
+          message: `${privateNames} made no trades, so you carry out the threat on your ${grammar.noun}.`,
           round: playState.game.round,
           playerId: player.id
         })

@@ -3,15 +3,19 @@ import ProfilesView from './Profiles'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PalaceView from './Palace'
-import TinySchemeAreaView from './TinySchemeArea'
 import { Box, Stack } from '@chakra-ui/react'
 import CourtTakeView from './Take'
 import TotalView from './Total'
+import TimelineView from './Timeline'
+import authContext from '../context/auth'
+import isTaking from '../service/isTaking'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
-  const showContent = gameState.phase !== 'join'
-  const timeline = gameState.timeline?.slice()
+  const authState = useContext(authContext)
+  if (authState.currentUser?.uid == null) return <></>
+  const taking = isTaking({ game: gameState, userId: authState.currentUser.uid })
+  const showContent = !taking && gameState.phase !== 'join'
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden'>
       <Box>
@@ -19,7 +23,7 @@ export default function GameContentView (): JSX.Element {
           <Curtain open={showContent}>
             <PalaceView />
             <TotalView />
-            <TinySchemeAreaView label='Timeline' schemes={timeline} />
+            <TimelineView />
           </Curtain>
         </Stack>
       </Box>
