@@ -1,3 +1,4 @@
+import { Alert, AlertIcon, Box, HStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import ProfileProvider from '../context/profile/Provider'
@@ -17,5 +18,18 @@ export default function ProfilesView (): JSX.Element {
       <ProfileView key={profile.userId} />
     </ProfileProvider>
   ))
-  return <>{items}</>
+  const heading = gameState.profiles.length === 1 && (
+    <Alert status='warning'>
+      <HStack m='0 auto' spacing='0' alignItems='end'>
+        <AlertIcon />
+        <Box>Waiting for more players</Box>
+      </HStack>
+    </Alert>
+  )
+  return (
+    <>
+      {heading}
+      {items}
+    </>
+  )
 }

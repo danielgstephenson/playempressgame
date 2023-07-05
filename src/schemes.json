@@ -150,7 +150,7 @@
     "title": "Storm the palace",
     "beginning": "If the leftmost timeline scheme is green or yellow, copy it",
     "end": "Copy the highest rank green scheme in play",
-    "threat": "If you are the auction winner, you may take cards from the dungeon as well as the court",
+    "threat": "If you won the auction, you may take cards from the dungeon as well as the court",
     "time": 2,
     "link1": "https://en.wikipedia.org/wiki/Women%27s_March_on_Versailles",
     "link2": "https://en.wikipedia.org/wiki/Storming_of_the_Bastille"

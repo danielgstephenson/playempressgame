@@ -10,6 +10,7 @@ import FunctionsProvider from './context/functions/Provider'
 import Router from './Router'
 import HeaderView from './view/Header'
 import { Container } from '@chakra-ui/react'
+import { Helmet } from 'react-helmet'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -35,6 +36,9 @@ if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
 export default function App (): JSX.Element {
   return (
     <AuthProvider auth={auth}>
+      <Helmet>
+        <title>Long Live the Empress</title>
+      </Helmet>
       <DbProvider db={db}>
         <FunctionsProvider functions={functions}>
           <Container

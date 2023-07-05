@@ -1,7 +1,7 @@
-import { Card, CardBody, Center, Heading, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
-import { SCHEME_RATIO } from '../constants'
+import { Card, CardBody, Heading, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
 import getBg from '../service/getBg'
 import ExpandedSchemeView from './ExpandedScheme'
+import TinySchemeCenter from './TinySchemeCenter'
 
 export default function TinySchemeView ({
   children,
@@ -21,10 +21,10 @@ export default function TinySchemeView ({
           onClick={onOpen}
           borderRadius='4px'
         >
-          <CardBody p='0.05px' sx={{ aspectRatio: SCHEME_RATIO }}>
-            <Center w='18px' minH='24px' h='100%'>
+          <CardBody p='0'>
+            <TinySchemeCenter>
               <Heading size='xs' fontSize='xs'>{rank}</Heading>
-            </Center>
+            </TinySchemeCenter>
           </CardBody>
         </Card>
         {children}

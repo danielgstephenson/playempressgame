@@ -8,6 +8,7 @@ import { playerContext } from '../reader/player'
 import usePointerSensor from '../use/pointerSensor'
 import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
+import TinySchemeCenterView from './TinySchemeCenter'
 import TinySchemesView from './TinySchemes'
 
 export default function DeckView (): JSX.Element {
@@ -21,8 +22,11 @@ export default function DeckView (): JSX.Element {
     [active, deck]
   )
   const sortableActiveItem = (activeScheme != null) && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
-  if (deck == null || deck.length === 0) {
+  if (deck == null) {
     return <></>
+  }
+  if (deck.length === 0) {
+    return <TinySchemeCenterView />
   }
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   if (gameState.phase === 'play' || choice?.type !== 'deck') {

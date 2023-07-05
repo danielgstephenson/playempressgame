@@ -19,6 +19,7 @@ import TopPopoverButtonView from './TopPopoverButton'
 import PlayProfileButtonView from './PlayProfileButton'
 import { QuestionIcon } from '@chakra-ui/icons'
 import { BUTTON_GRAY_BORDER } from '../constants'
+import ProfileHeadingView from './ProfileHeading'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -34,10 +35,10 @@ export default function ProfileView (): JSX.Element {
     if (playing) {
       return <PlayerReader DocView={PlayerView} />
     }
-    return <Heading size='md'>{profileState.displayName}</Heading>
+    return <ProfileHeadingView />
   }
   if (gameState.phase === 'join') {
-    return <Heading size='md'>{profileState.displayName}</Heading>
+    return <ProfileHeadingView />
   }
   const deckFull = profileState.deckEmpty !== true
   const inPlay = profileState
