@@ -139,19 +139,14 @@ export default function TakeView (): JSX.Element {
       }
       const filteredTableau = playState.tableau.filter((scheme) => scheme.id !== activeScheme.id)
       const twelve = filteredTableau.some((scheme) => scheme.rank === 12)
-      console.log('twelve', twelve)
-      console.log('fromCourt', fromCourt)
-      console.log('overCourt', overCourt)
       if (fromCourt && overCourt) {
         leave?.(activeScheme.id)
         playState.setTableau?.((current) => {
-          console.log('current', current)
           return current.filter((scheme) => {
             if (scheme.id === active.id) {
               return false
             }
             const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
-            console.log('fromDungeon', fromDungeon)
             if (!twelve && fromDungeon) {
               return false
             }

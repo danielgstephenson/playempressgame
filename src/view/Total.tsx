@@ -38,19 +38,23 @@ export default function TotalView (): JSX.Element {
     return schemes
   }, [court, dungeon, twelve, leftmost])
   const bg = useMemo(() => {
+    const totalRank = schemes.reduce((totalRank, scheme) => {
+      return totalRank + scheme.rank
+    }, 0)
     const rgb = schemes.reduce((rgb, scheme) => {
+      const rankFactor = scheme.rank / totalRank
       if (scheme.color === 'yellow') {
-        rgb[0] += 183 / schemes.length
-        rgb[1] += 121 / schemes.length
-        rgb[2] += 31 / schemes.length
+        rgb[0] += 183 * rankFactor
+        rgb[1] += 121 * rankFactor
+        rgb[2] += 31 * rankFactor
       } else if (scheme.color === 'red') {
-        rgb[0] += 197 / schemes.length
-        rgb[1] += 48 / schemes.length
-        rgb[2] += 48 / schemes.length
+        rgb[0] += 197 * rankFactor
+        rgb[1] += 48 * rankFactor
+        rgb[2] += 48 * rankFactor
       } else if (scheme.color === 'green') {
-        rgb[0] += 47 / schemes.length
-        rgb[1] += 133 / schemes.length
-        rgb[2] += 90 / schemes.length
+        rgb[0] += 47 * rankFactor
+        rgb[1] += 133 * rankFactor
+        rgb[2] += 90 * rankFactor
       }
       return rgb
     }, [0, 0, 0])

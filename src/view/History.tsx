@@ -25,7 +25,7 @@ export default function HistoryView ({
         <Heading
           size='sm'
           position='sticky'
-          top='1px'
+          top='0px'
           outline='1px solid #3f444e'
           bg='var(--chakra-colors-chakra-body-bg)'
         >

@@ -7,10 +7,8 @@ import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import AuthProvider from './context/auth/Provider'
 import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
-import Router from './Router'
-import HeaderView from './view/Header'
-import { Container } from '@chakra-ui/react'
 import { Helmet } from 'react-helmet'
+import RouterView from './Router'
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -41,48 +39,9 @@ export default function App (): JSX.Element {
       </Helmet>
       <DbProvider db={db}>
         <FunctionsProvider functions={functions}>
-          <Container
-            display='flex'
-            flexDirection='column'
-            height='100%'
-            p='5px'
-          >
-            <HeaderView />
-            <Router />
-            {/* <Box
-              height='100%'
-              overflowY='scroll'
-            >
-              <Box
-                height='1000px'
-                background='gray'
-                display='flex'
-                flexDirection='column'
-                justifyContent='space-between'
-              >
-                <Box>start</Box>
-                <Box>end</Box>
-              </Box>
-            </Box> */}
-          </Container>
+          <RouterView />
         </FunctionsProvider>
       </DbProvider>
     </AuthProvider>
   )
-  // return (
-  //   <>
-  //     <AuthProvider auth={auth}>
-  //       <DbProvider db={db}>
-  //         <FunctionsProvider functions={functions}>
-  //           <Container p='5px' h='99vh'>
-  //             <Stack direction='column' height='100%'>
-  //               <HeaderView />
-  //               <Router />
-  //             </Stack>
-  //           </Container>
-  //         </FunctionsProvider>
-  //       </DbProvider>
-  //     </AuthProvider>
-  //   </>
-  // )
 }
