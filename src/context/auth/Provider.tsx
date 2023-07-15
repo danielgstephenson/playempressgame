@@ -50,7 +50,8 @@ export default function AuthProvider ({
     setSignOutErrorMessage,
     signOutErrorMessage,
     signOutLoading,
-    unauth
+    unauth,
+    userId: currentUser?.uid
   }
   return (
     <authContext.Provider value={state}>

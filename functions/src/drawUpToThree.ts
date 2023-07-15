@@ -1,4 +1,4 @@
-import { PlayState, Player, Result } from './types'
+import { PlayState } from './types'
 import draw from './draw'
 import addBroadcastEvent from './add/event/broadcast'
 import createEvent from './create/event'
@@ -7,13 +7,14 @@ import addEvent from './add/event'
 import getGrammar from './get/grammar'
 import guardPlayerEvent from './guard/playerEvent'
 import guardFirst from './guard/first'
-import getScore from './get/score'
 import join from './join'
 import guardHighestRankPlayScheme from './guard/highestRankPlayScheme'
 import guardPlayScheme from './guard/playScheme'
 import addPlayerWinEvents from './add/events/player/win'
 import addTargetEvents from './add/events/target'
 import joinRanksGrammar from './join/ranks/grammar'
+import getWinners from './get/winners'
+import guardProfile from './guard/profile'
 
 export default function drawUpToThree ({
   playState
@@ -79,37 +80,14 @@ export default function drawUpToThree ({
     })
   }
   if (playState.game.final) {
-    const winners = playState.players.reduce<Array<Result<Player>>>((winners, player) => {
-      if (winners.length === 0) {
-        return [player]
-      }
-      const winner = guardFirst(winners, 'Winner')
-      const winnerScore = getScore(winner)
-      const score = getScore(player)
-      if (score === winnerScore) {
-        const tiers: Array<Result<Player>> = [...winners, player]
-        const handHighest = tiers.reduce((highest, tier) => {
-          const highestScheme = tier.hand.reduce((highestScheme, scheme) => {
-            return scheme.rank > highestScheme.rank ? scheme : highestScheme
-          })
-          if (highestScheme.rank > highest) {
-            return highestScheme.rank
-          }
-          return highest
-        }, 0)
-        const highTiers = tiers.filter(tier => {
-          const highestScheme = tier.hand.reduce((highestScheme, scheme) => {
-            return scheme.rank > highestScheme.rank ? scheme : highestScheme
-          })
-          return highestScheme.rank === handHighest
-        })
-        return highTiers
-      }
-      if (score > winnerScore) {
-        return [player]
-      }
-      return winners
-    }, [])
+    playState.players.forEach(player => {
+      const profile = guardProfile(playState, player.userId)
+      profile.deck = player.deck
+      profile.discard = player.discard
+      profile.hand = player.hand
+      profile.privateTrashHistory = player.trashHistory
+    })
+    const winners = getWinners({ players: playState.players })
     if (winners.length > 1) {
       const winnerNames = winners.map(winner => winner.displayName)
       const joined = join(winnerNames)
@@ -176,7 +154,8 @@ export default function drawUpToThree ({
   const leftmost = playState.game.timeline[0]
   const courtJoined = joinRanksGrammar(playState.game.court)
   if (leftmost != null) {
-    const leftmostMessage = `${leftmost.rank} is up for auction`
+    const auction = playState.game.timeline.length === 1 ? 'the final auction' : 'auction'
+    const leftmostMessage = `${leftmost.rank} is up for ${auction}`
     const courtMessage = playState.game.court.length > 0
       ? ` with ${courtJoined.joinedRanks} in the court`
       : ' and the court is empty'
@@ -187,7 +166,7 @@ export default function drawUpToThree ({
       message
     })
   } else {
-    const message = `The timeline is empty, but ${courtJoined.joinedRanks} from the court ${courtJoined.grammar.toBe} up for auction.`
+    const message = `The timeline is empty, but ${courtJoined.joinedRanks} from the court ${courtJoined.grammar.toBe} up for the final auction.`
     addTargetEvents({ playState, message })
   }
 }

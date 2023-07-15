@@ -1,9 +1,10 @@
-import { CardProps, forwardRef, Heading, HStack, Stack } from '@chakra-ui/react'
+import { Box, CardProps, forwardRef, Heading, HStack, Stack, Text } from '@chakra-ui/react'
 import SmallScheme from './SmallScheme'
 import schemes from '../schemes.json'
 import getBg from '../service/getBg'
 import { ReactNode, Ref } from 'react'
 import CircleView from './Circle'
+import { RepeatClockIcon } from '@chakra-ui/icons'
 
 function View ({
   active,
@@ -20,12 +21,16 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   if (scheme == null) {
     return <>CollapsedScheme</>
   }
-  const time = Array.from(
-    { length: scheme.time },
-    (_, index) => (
-      <Heading key={index} color='white' size='sm' m='0'>X</Heading>
+  const time = Array.from({ length: 3 }, (_, index) => {
+    if (index < scheme.time) {
+      return (
+        <Text fontSize='10px' key={index} color='white'><RepeatClockIcon /></Text>
+      )
+    }
+    return (
+      <Box key={index} w='30px' />
     )
-  )
+  })
   const cardBg = getBg({ rank, weight: 700 })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
   return (
@@ -37,7 +42,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
     >
       <Stack height='100%' justifyContent='space-between'>
         <Stack spacing='5px'>
-          <HStack color={circleBg} spacing='2px'>
+          <HStack color={circleBg} spacing='2px' justifyContent='space-between' width='100%' alignItems='start'>
             <CircleView bg={circleBg}>
               <Heading size='sm'>
                 {scheme.rank}

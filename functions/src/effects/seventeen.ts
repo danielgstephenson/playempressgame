@@ -4,6 +4,7 @@ import addEventsEverywhere from '../add/events/everywhere'
 import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
 import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
 import earn from '../earn'
+import joinRanksGrammar from '../join/ranks/grammar'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsSeventeen ({
@@ -41,14 +42,20 @@ export default function effectsSeventeen ({
     publicEvents: secondPublicChildren
   })
   if (discardScheme != null) {
+    const deckBeforeJoined = joinRanksGrammar(effectPlayer.deck)
+    const deckBeforeMessage = `Your deck was ${deckBeforeJoined.joinedRanks}.`
     effectPlayer.deck.unshift(discardScheme)
-    effectPlayer.discard.pop()
-    addEventsEverywhere({
+    const deckAfterJoined = joinRanksGrammar(effectPlayer.deck)
+    const deckAfterMessage = `Your deck becomes ${deckAfterJoined.joinedRanks}.`
+    effectPlayer.discard.shift()
+    const { privateEvent } = addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      publicMessage: `${effectPlayer.displayName} puts their ${discardScheme.rank} face down on their deck.`,
-      privateMessage: `You put your ${discardScheme.rank} face down on their deck.`
+      publicMessage: `${effectPlayer.displayName} puts their ${discardScheme.rank} on their deck.`,
+      privateMessage: `You put your ${discardScheme.rank} on their deck.`
     })
+    addEvent(privateEvent, deckBeforeMessage)
+    addEvent(privateEvent, deckAfterMessage)
   }
   return playState
 }

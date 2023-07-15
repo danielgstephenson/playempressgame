@@ -209,7 +209,14 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     if (player.userId === currentUid) {
       return highest
     }
-    if (player.gold > highest) {
+    const ten = player.tableau.some(scheme => scheme.rank === 10)
+    const tenBid = player.bid >= 10
+    if (ten && tenBid) {
+      const tenGold = player.gold + 10
+      if (tenGold > highest) {
+        return tenGold
+      }
+    } else if (player.gold > highest) {
       return player.gold
     }
     return highest

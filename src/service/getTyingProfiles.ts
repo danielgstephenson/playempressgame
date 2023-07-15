@@ -1,14 +1,11 @@
-import { DocState } from '../lib/fireread/types'
-import { Game, Profile } from '../types'
+import { Profile } from '../types'
 
 export default function getTyingProfiles ({
   bid,
-  game
+  profiles
 }: {
   bid: number
-  game: DocState<Game>
+  profiles?: Profile[]
 }): Profile[] | undefined {
-  return game
-    .profiles
-    ?.filter(profile => !profile.withdrawn && profile.bid === bid)
+  return profiles?.filter(profile => !profile.withdrawn && profile.bid === bid)
 }

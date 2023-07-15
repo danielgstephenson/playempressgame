@@ -4,6 +4,7 @@ import { Timestamp } from 'firebase/firestore'
 import React, { CSSProperties } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { UniqueIdentifier } from '@dnd-kit/core'
+import { SystemStyleObject } from '@chakra-ui/react'
 
 export interface AuthState {
   auth?: Auth
@@ -17,6 +18,7 @@ export interface AuthState {
   signOutErrorMessage?: string
   signOutLoading?: boolean
   unauth?: () => Promise<boolean>
+  userId?: string
 }
 
 export interface Doc {
@@ -53,17 +55,21 @@ export interface PrivateTrashEvent extends TrashEvent {
 export interface Profile {
   auctionReady: boolean
   bid: number
+  deck?: Scheme[]
   deckEmpty: boolean
+  discard?: Scheme[]
   displayName: string
   gameId: string
   gold: number
+  hand?: Scheme[]
   lastBidder: boolean
   playReady: boolean
-  playScheme?: Scheme | undefined
+  playScheme: Scheme | undefined
   silver: number
   tableau: Scheme[]
   topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
+  privateTrashHistory: PrivateTrashEvent[]
   userId: string
   withdrawn: boolean
 }
@@ -83,12 +89,15 @@ export interface Game extends Doc{
   court: Scheme[]
   dungeon: Scheme[]
   events: HistoryEvent[]
+  imprisoned: boolean
   name: string
   phase: 'auction' | 'play' | 'join'
   readyCount: number
   round: number
   profiles: Profile[]
   timeline: Scheme[]
+  timePassed: boolean
+  final: boolean
 }
 
 export interface Player extends Doc {
@@ -170,4 +179,11 @@ export interface ButtonDetails {
   bg: string
   color: string
   label: string
+}
+
+export interface SchemeStyles {
+  bg?: string
+  border?: string
+  color?: string
+  _hover?: SystemStyleObject | undefined
 }

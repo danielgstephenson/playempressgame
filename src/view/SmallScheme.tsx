@@ -17,6 +17,7 @@ ref: Ref<HTMLDivElement>
     <Card
       sx={sx}
       ref={ref}
+      h='fit-content'
       w={SCHEME_WIDTH}
       {...cardProps}
     >

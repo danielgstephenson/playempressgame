@@ -1,21 +1,44 @@
-import { Box, HStack } from '@chakra-ui/react'
+import { HStack, Text, VStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
+import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
+import getInPlayStyles from '../service/getInPlayStyles'
 import ActiveHeading from './ActiveHeading'
+import FinalIconView from './FinalIcon'
 import PlayAreaView from './PlayArea'
-import TinySchemesView from './TinySchemes'
+import SchemesContainerView from './SchemesContainer'
+import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 export default function PrivateTableauView (): JSX.Element {
+  const gameState = useContext(gameContext)
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
+  const views = playerState.tableau?.map(scheme => {
+    const styles = getInPlayStyles({
+      bid: playerState.bid,
+      choices: gameState.choices,
+      court: gameState.court,
+      deck: playerState.deck,
+      dungeon: gameState.dungeon,
+      gameId: gameState.id,
+      phase: gameState.phase,
+      profiles: gameState.profiles,
+      rank: scheme.rank,
+      schemeId: scheme.id,
+      userId: playerState.userId
+    })
+    return (
+      <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
+    )
+  })
   return (
-    <Box>
-      <ActiveHeading active={playState.overPlay}>Play</ActiveHeading>
+    <VStack spacing='2px'>
+      <ActiveHeading active={playState.overPlay}><HStack><Text>Play</Text><FinalIconView /></HStack></ActiveHeading>
       <HStack spacing='2px' width='max-content'>
         <PlayAreaView />
-        <TinySchemesView schemes={playerState.tableau} />
+        <SchemesContainerView>{views}</SchemesContainerView>
       </HStack>
-    </Box>
+    </VStack>
   )
 }

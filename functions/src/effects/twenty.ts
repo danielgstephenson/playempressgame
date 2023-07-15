@@ -4,6 +4,7 @@ import addEventsEverywhere from '../add/events/everywhere'
 import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
 import earn from '../earn'
 import isYellow from '../is/yellow'
+import summon from '../summon'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsTwenty ({
@@ -65,7 +66,7 @@ export default function effectsTwenty ({
       displayName: effectPlayer.displayName
     })
     effectPlayer.discard.shift()
-    playState.game.court.push(topDiscardScheme)
+    summon({ court: playState.game.court, scheme: topDiscardScheme })
   }
   return playState
 }

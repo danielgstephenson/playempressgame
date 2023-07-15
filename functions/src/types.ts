@@ -29,16 +29,21 @@ export type Result <Collection extends MetaType> = Collection['read'] & { id: st
 export interface Profile {
   auctionReady: boolean
   bid: number
+  deck?: Scheme[]
   deckEmpty: boolean
+  discard?: Scheme[]
   displayName: string
   gameId: string
   gold: number
+  hand?: Scheme[]
   lastBidder: boolean
   playReady: boolean
+  playScheme?: Scheme | undefined
   silver: number
   tableau: Scheme[]
   topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
+  privateTrashHistory: PrivateTrashEvent[]
   userId: string
   withdrawn: boolean
 }
@@ -65,6 +70,8 @@ export type Game = MetaTypeCreator<{
   round: number
   profiles: Profile[]
   timeline: Scheme[]
+  timePassed: boolean
+  imprisoned: boolean
 }, 'games', string>
 
 export type User = MetaTypeCreator<{

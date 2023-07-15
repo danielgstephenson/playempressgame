@@ -14,12 +14,12 @@ export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const authState = useContext(authContext)
   if (authState.currentUser?.uid == null) return <></>
-  const taking = isTaking({ game: gameState, userId: authState.currentUser.uid })
+  const taking = isTaking({ profiles: gameState.profiles, userId: authState.currentUser.uid })
   const showContent = !taking && gameState.phase !== 'join'
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden'>
       <Box>
-        <Stack direction='row' justifyContent='space-between'>
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
           <Curtain open={showContent}>
             <PalaceView />
             <TotalView />

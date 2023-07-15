@@ -1,8 +1,12 @@
-import { CheckIcon } from '@chakra-ui/icons'
+import { CheckIcon, MinusIcon, SmallCloseIcon, StarIcon } from '@chakra-ui/icons'
+import { HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
+import getScore from '../service/getScore'
+import getWinners from '../service/getWinners'
 import isTaking from '../service/isTaking'
+import TopPopoverButtonView from './TopPopoverButton'
 import TopPopoverIconButtonView from './TopPopoverIconButton'
 import WaitingButtonView from './WaitingButton'
 
@@ -14,6 +18,7 @@ export default function PlayProfileButtonView (): JSX.Element {
     gameState.court == null ||
     gameState.dungeon == null ||
     gameState.id == null ||
+    gameState.profiles == null ||
     profileState.playReady == null ||
     profileState.userId == null ||
     profileState.displayName == null ||
@@ -42,7 +47,7 @@ export default function PlayProfileButtonView (): JSX.Element {
       )
     }
   }
-  const taking = isTaking({ game: gameState, userId: profileState.userId })
+  const taking = isTaking({ profiles: gameState.profiles, userId: profileState.userId })
   if (taking) {
     const tableauTwelve = profileState.tableau.some(scheme => scheme.rank === 12)
 
@@ -68,11 +73,51 @@ export default function PlayProfileButtonView (): JSX.Element {
   }
   if (gameState.phase !== 'play') return <></>
   if (profileState.playReady) {
+    const allReady = gameState.profiles.every(profile => profile.playReady)
+    if (gameState.final === true && allReady && gameState.choices?.length === 0) {
+      const score = getScore(profileState)
+      const winners = getWinners({ profiles: gameState.profiles })
+      const winner = winners.some(winner => winner.userId === profileState.userId)
+      if (winner) {
+        if (winners.length > 1) {
+          const message = `${profileState.displayName} ties at ${score}.`
+          return (
+            <TopPopoverButtonView
+              bg='slategrey'
+              color='white'
+              label={<HStack><MinusIcon /> <Text>{score}</Text></HStack>}
+            >
+              {message}
+            </TopPopoverButtonView>
+          )
+        }
+        const message = `${profileState.displayName} wins with ${score}.`
+        return (
+          <TopPopoverButtonView
+            bg='black'
+            color='white'
+            label={<HStack><StarIcon /> <Text>{score}</Text></HStack>}
+          >
+            {message}
+          </TopPopoverButtonView>
+        )
+      } else {
+        const message = `${profileState.displayName} loses with ${score}.`
+        return (
+          <TopPopoverButtonView
+            bg='white'
+            color='black'
+            label={<HStack><SmallCloseIcon /> <Text>{score}</Text></HStack>}
+          >
+            {message}
+          </TopPopoverButtonView>
+        )
+      }
+    }
     const message = `${profileState.displayName} is ready.`
     return (
       <TopPopoverIconButtonView
         aria-label={message}
-        disabled
         bg='black'
         color='white'
         icon={<CheckIcon />}

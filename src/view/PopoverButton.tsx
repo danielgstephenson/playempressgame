@@ -7,7 +7,7 @@ export default function PopoverButtonView ({
   children,
   ...restProps
 }: {
-  label?: string | number
+  label?: string | number | JSX.Element
   children: ReactNode
 } & ButtonProps): JSX.Element {
   return (

@@ -1,17 +1,11 @@
-import { useContext } from 'react'
-import { playerContext } from '../reader/player'
-import TinySchemeAreaView from './TinySchemeArea'
-import TinySchemeCenterView from './TinySchemeCenter'
+import { Box, Heading } from '@chakra-ui/react'
+import DiscardContentView from './DiscardContent'
 
 export default function DiscardView (): JSX.Element {
-  const playerState = useContext(playerContext)
-  if (playerState.discard?.length === 0) {
-    return <TinySchemeCenterView />
-  }
   return (
-    <TinySchemeAreaView
-      label='Discard'
-      schemes={playerState.discard}
-    />
+    <Box>
+      <Heading size='sm'>Discard</Heading>
+      <DiscardContentView />
+    </Box>
   )
 }

@@ -1,7 +1,7 @@
 import { Box, Heading, HStack } from '@chakra-ui/react'
 import { Active, DndContext, DragOverlay } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useContext, useState, useMemo } from 'react'
+import { useState, useMemo, useContext } from 'react'
 import { DROP_ANIMATION } from '../constants'
 import playContext from '../context/play'
 import dragReturn from '../service/dragReturn'
@@ -19,8 +19,13 @@ import PrivateTrashView from './PrivateTrash'
 import ReadyContainerView from './ReadyContainer'
 import TrashChoiceReadyView from './TrashChoiceReady'
 import ReorderReadyView from './ReorderReady'
+import { gameContext } from '../reader/game'
+import Curtain from './Curtain'
+import isTaking from '../service/isTaking'
+import { playerContext } from '../reader/player'
 
 export default function PlayPhaseView (): JSX.Element {
+  const gameState = useContext(gameContext)
   const {
     deckChoiceId,
     hand,
@@ -38,6 +43,7 @@ export default function PlayPhaseView (): JSX.Element {
     trashChoiceId,
     trashSchemeId
   } = useContext(playContext)
+  const playerState = useContext(playerContext)
   const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
@@ -49,6 +55,7 @@ export default function PlayPhaseView (): JSX.Element {
   if (hand == null || setHand == null) {
     return <></>
   }
+  const taking = isTaking({ profiles: gameState.profiles, userId: playerState.userId })
   return (
     <DndContext
       sensors={sensors}
@@ -225,16 +232,18 @@ export default function PlayPhaseView (): JSX.Element {
         setActive(null)
       }}
     >
-      <HStack alignItems='start' spacing='2px'>
-        <PrivateTableauView />
-        <ReadyContainerView width='100%'>
-          <PlayReadyView />
-          <DeckChoiceReadyView />
-          <TrashChoiceReadyView />
-          <ReorderReadyView />
-        </ReadyContainerView>
-        <PrivateTrashView />
-      </HStack>
+      <Curtain open={!taking}>
+        <HStack alignItems='start' spacing='2px'>
+          <PrivateTableauView />
+          <ReadyContainerView width='100%'>
+            <PlayReadyView />
+            <DeckChoiceReadyView />
+            <TrashChoiceReadyView />
+            <ReorderReadyView />
+          </ReadyContainerView>
+          <PrivateTrashView />
+        </HStack>
+      </Curtain>
       <ChoiceView />
       <Heading size='sm' textAlign='center'>Hand</Heading>
       <HandView />

@@ -141,7 +141,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       displayName: profile.displayName,
       events: [...currentGameData.events, startEvent, chooseEvent],
       gameId,
-      gold: 40,
+      gold: 50,
       hand: handSchemes,
       lastBidder: false,
       playReady: false,
@@ -158,7 +158,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       ...profile,
       topDiscardScheme,
       deckEmpty: false,
-      gold: 40
+      gold: 50
     }
   })
   const observerChooseEvent = createEvent(OBSERVER_CHOOSE_MESSAGE)

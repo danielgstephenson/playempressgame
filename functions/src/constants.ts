@@ -1,5 +1,3 @@
-import { deleteField } from 'firelord'
-
 export const END_AUCTION = {
   withdrawn: false,
   bid: 0,
@@ -9,8 +7,8 @@ export const END_AUCTION = {
 
 export const END_AUCTION_PLAYER = {
   ...END_AUCTION,
-  playScheme: deleteField(),
-  trashScheme: deleteField()
+  playScheme: undefined,
+  trashScheme: undefined
 }
 
 export const PLAYER_CHOOSE_MESSAGE = 'Choose one scheme from your hand to play and another to trash.'

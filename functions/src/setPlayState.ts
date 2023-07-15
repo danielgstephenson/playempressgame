@@ -28,6 +28,7 @@ export default function setPlayState ({
     profile.bid = player.bid
     profile.lastBidder = player.lastBidder
     profile.playReady = player.playReady
+    profile.playScheme = rest.playScheme
     profile.tableau = player.tableau
     profile.trashHistory = player.trashHistory.map(event => ({ round: event.round }))
     profile.withdrawn = player.withdrawn

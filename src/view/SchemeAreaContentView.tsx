@@ -4,7 +4,7 @@ import { playerContext } from '../reader/player'
 import { Scheme } from '../types'
 import HandSchemeView from './HandScheme'
 import SmallSchemeView from './SmallScheme'
-import TinySchemeView from './TinyScheme'
+import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 function View ({
   children,
@@ -26,7 +26,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
       throw new Error('Ready without rank')
     }
     return (
-      <TinySchemeView rank={rank} />
+      <TinyExpandableSchemeView rank={rank} />
     )
   }
   if (schemeId == null) {

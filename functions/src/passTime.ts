@@ -8,6 +8,7 @@ import getGrammar from './get/grammar'
 import guardDefined from './guard/defined'
 import addEvent from './add/event'
 import guardPlayScheme from './guard/playScheme'
+import summon from './summon'
 
 export default function passTime ({ playState }: {
   playState: PlayState
@@ -31,6 +32,7 @@ export default function passTime ({ playState }: {
       })
       return playState
     }
+    playState.game.timePassed = true
     const [passed, ...remaining] = playState.game.timeline
     const beforeTimeline = [...playState.game.timeline]
     const beforeJoined = joinRanks(beforeTimeline)
@@ -43,7 +45,7 @@ export default function passTime ({ playState }: {
     const beforeCourt = [...playState.game.court]
     const beforeCourtJoined = joinRanks(beforeCourt)
     const beforeCourtEvent = createEvent(`The court was ${beforeCourtJoined}.`)
-    playState.game.court.push(defined)
+    summon({ court: playState.game.court, scheme: defined })
     const afterCourtJoined = joinRanks(playState.game.court)
     const afterCourtEvent = createEvent(`The court becomes ${afterCourtJoined}.`)
     const afterJoined = joinRanks(afterTimeline)

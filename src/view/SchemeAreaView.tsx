@@ -1,4 +1,3 @@
-import { Center, Heading } from '@chakra-ui/react'
 import { useDroppable } from '@dnd-kit/core'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
@@ -7,12 +6,10 @@ import SchemeAreaContentView from './SchemeAreaContentView'
 
 export default function SchemeAreaView ({
   areaId,
-  label,
   scheme,
   schemeId
 }: {
   areaId: string
-  label: string
   scheme?: Scheme
   schemeId?: string
 }): JSX.Element {
@@ -28,10 +25,6 @@ export default function SchemeAreaView ({
       ref={setNodeRef}
       scheme={scheme}
       schemeId={schemeId}
-    >
-      <Center h='100%'>
-        <Heading size='xs'>{label}</Heading>
-      </Center>
-    </SchemeAreaContentView>
+    />
   )
 }

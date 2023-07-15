@@ -13,6 +13,7 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
+import useBidMax from '../use/bidMax'
 import Cloud from './Cloud'
 import Status from './Status'
 
@@ -24,7 +25,15 @@ export default function BidView (): JSX.Element {
     setBid(playerState.bid)
   }, [playerState.bid])
   const allReady = gameState.profiles?.every(profile => profile.auctionReady)
-  if (playerState.bid == null || bid == null || gameState.phase !== 'auction' || allReady === true) {
+  const max = useBidMax()
+  if (
+    playerState.bid == null ||
+    bid == null ||
+    gameState.phase !== 'auction' ||
+    allReady === true ||
+    playerState.tableau == null ||
+    gameState.profiles == null
+  ) {
     return <></>
   }
   function handleChange (value: string): void {
@@ -41,13 +50,16 @@ export default function BidView (): JSX.Element {
       setBid(bid)
     }
   }
+  const eleven = playerState.tableau.some(scheme => scheme.rank === 11)
+  const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
+  const step = eleven && bidFive ? 1 : 5
   return (
     <>
       <HStack spacing='20px'>
         <NumberInput
-          step={5}
+          step={step}
           min={playerState.bid}
-          max={playerState.gold}
+          max={max}
           value={bid}
           onChange={handleChange}
           width='100px'
@@ -63,8 +75,8 @@ export default function BidView (): JSX.Element {
           onChange={handleSliderChange}
           value={[bid]}
           min={0}
-          max={playerState.gold}
-          step={5}
+          max={max}
+          step={step}
         >
           <RangeSliderTrack>
             <RangeSliderFilledTrack />

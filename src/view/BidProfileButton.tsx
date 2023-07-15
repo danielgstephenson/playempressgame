@@ -1,3 +1,5 @@
+import { LockIcon } from '@chakra-ui/icons'
+import { HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
@@ -17,7 +19,9 @@ export default function BidProfileButtonView (): JSX.Element {
   const allReady = areAllReady(gameState.profiles)
   const bidding = gameState.phase === 'auction' && !allReady
   if (!bidding) return <></>
-  const highestUntied = isHighestUntiedBidder({ game: gameState, userId: profileState.userId })
+  const highestUntied = isHighestUntiedBidder({
+    profiles: gameState.profiles, userId: profileState.userId
+  })
   if (highestUntied) {
     return (
       <TopPopoverButtonView bg='black' color='white' label={profileState.bid}>
@@ -25,19 +29,24 @@ export default function BidProfileButtonView (): JSX.Element {
       </TopPopoverButtonView>
     )
   }
-  const tyingProfiles = getTyingProfiles({ game: gameState, bid: profileState.bid })
+  const tyingProfiles = getTyingProfiles({
+    profiles: gameState.profiles, bid: profileState.bid
+  })
   if (tyingProfiles == null) return <></>
   const tied = tyingProfiles.length > 1
   if (tied) {
+    const label = profileState.auctionReady === true
+      ? <HStack alignItems='start'><Text>{profileState.bid}</Text> <LockIcon /></HStack>
+      : profileState.bid
     if (profileState.lastBidder) {
       return (
-        <TopPopoverButtonView bg='gray' color='black' label={profileState.bid}>
+        <TopPopoverButtonView bg='gray' color='black' label={label}>
           {profileState.displayName}'s bid is {profileState.bid}, and they can not withdraw because they are the last bidder.
         </TopPopoverButtonView>
       )
     } else {
       return (
-        <TopPopoverButtonView bg='slategray' color='white' label={profileState.bid}>
+        <TopPopoverButtonView bg='slategray' color='white' label={label}>
           {profileState.displayName}'s bid is {profileState.bid}, but they can withdraw.
         </TopPopoverButtonView>
       )

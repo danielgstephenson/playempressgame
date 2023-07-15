@@ -19,6 +19,7 @@ CardProps,
 ref: React.Ref<HTMLDivElement>
 ): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <>
       <CollapsedSchemeView

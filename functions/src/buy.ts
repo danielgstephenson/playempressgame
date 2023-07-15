@@ -36,25 +36,50 @@ export default function buy ({
     playState,
     rank: leftmost?.rank
   })
+  const buyerEvents = Object.values(buyEvents.targetEvents)
+  function addBuyEvent ({ publicMessage, privateMessage }: {
+    publicMessage: string
+    privateMessage: string
+  }): void {
+    buyEvents.publicEvents.forEach(event => {
+      addEvent(event, publicMessage)
+    })
+    buyerEvents.forEach(event => {
+      addEvent(event, privateMessage)
+    })
+  }
   playState.players.forEach(player => {
     player.auctionReady = true
   })
   const found = playState.players.find(player => player.id === buyerId)
   const buyer = guardDefined(found, 'Buyer')
   if (leftmost != null) {
+    const inPlayBefore = joinRanksGrammar(buyer.tableau)
+    const inPlayBeforeMessage = `tableau was ${inPlayBefore.joinedRanks}.`
+    const privateInPlayBeforeMessage = `Your ${inPlayBeforeMessage}.`
+    const publicInPlayBeforeMessage = `${buyer.displayName}'s ${inPlayBeforeMessage}.`
     buyer.tableau.push(leftmost)
+    const inPlayAfter = joinRanksGrammar(buyer.tableau)
+    const inPlayAfterMessage = `tableau becomes ${inPlayAfter.joinedRanks}.`
+    const privateInPlayAfterMessage = `Your ${inPlayAfterMessage}.`
+    const publicInPlayAfterMessage = `${buyer.displayName}'s ${inPlayAfterMessage}.`
+    addBuyEvent({
+      publicMessage: publicInPlayBeforeMessage,
+      privateMessage: privateInPlayBeforeMessage
+    })
+    addBuyEvent({
+      publicMessage: publicInPlayAfterMessage,
+      privateMessage: privateInPlayAfterMessage
+    })
   }
   const silver = bid % 5
   const gold = bid - silver
-  const buyerEvents = Object.values(buyEvents.targetEvents)
   if (gold > 0) {
     const before = buyer.gold
     buyer.gold -= gold
-    buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} went from ${before} gold to ${buyer.gold} gold.`)
-    })
-    buyerEvents.forEach(event => {
-      addEvent(event, `You went from ${before} gold to ${buyer.gold} gold.`)
+    addBuyEvent({
+      publicMessage: `${buyer.displayName} went from ${before} gold to ${buyer.gold} gold.`,
+      privateMessage: `You went from ${before} gold to ${buyer.gold} gold.`
     })
   }
   if (silver > 0) {

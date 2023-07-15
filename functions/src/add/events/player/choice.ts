@@ -12,7 +12,7 @@ export default function addPlayerChoiceEvents ({ playState, player }: {
   const trash = choice.type === 'trash'
   const privateMessage = trash
     ? 'Choose a scheme from your hand to trash.'
-    : 'Choose a scheme from your hand to put on your deck.'
+    : 'Choose a scheme from your hand to put on the bottom of your deck.'
   const publicMessage = trash
     ? `${player.displayName} is choosing a scheme to trash from their hand.`
     : `${player.displayName} is choosing a scheme from their hand to put on their deck.`

@@ -12,6 +12,7 @@ import joinRanks from '../join/ranks'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import createPlayState from '../create/playState'
 import addTargetEvents from '../add/events/target'
+import joinRanksGrammar from '../join/ranks/grammar'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
   const {
@@ -96,7 +97,23 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       `${joined} ${grammar.toBe} reordering.`
     )
   }
+  const tableauBefore = joinRanksGrammar(currentPlayer.tableau)
+  addTargetEvents({
+    playState,
+    message: `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`,
+    targetMessages: {
+      [currentPlayer.id]: `You had ${tableauBefore.joinedRanks} in play.`
+    }
+  })
   currentPlayer.tableau.push(...courtTaken)
+  const tableauAfter = joinRanksGrammar(currentPlayer.tableau)
+  addTargetEvents({
+    playState,
+    message: `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`,
+    targetMessages: {
+      [currentPlayer.id]: `You then have ${tableauAfter.joinedRanks} in play.`
+    }
+  })
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const courtJoined = joinRanks(courtTaken)
   const courtMessage = courtTaken.length === 0
@@ -147,7 +164,6 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     const beforeDungeonJoined = joinRanks(beforeDungeon)
     const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
     const imprisoned = playState.game.court.filter(scheme => scheme.rank === lowest.rank)
-    console.log('imprisoned', imprisoned)
     playState.game.dungeon.push(...imprisoned)
     playState.game.court = playState.game.court.filter(scheme => scheme.rank !== lowest.rank)
     const afterDungeon = [...playState.game.dungeon]

@@ -1,15 +1,14 @@
-import { DocState } from '../lib/fireread/types'
-import { Game } from '../types'
+import { Profile } from '../types'
 import getHighestUntiedProfile from './getHighestUntiedProfile'
 
 export default function isHighestUntiedBidder ({
-  game,
+  profiles,
   userId
 }: {
-  game: DocState<Game>
+  profiles?: Profile[]
   userId?: string
 }): boolean {
-  const profile = getHighestUntiedProfile(game)
+  const profile = getHighestUntiedProfile(profiles)
   if (profile == null) {
     return false
   }

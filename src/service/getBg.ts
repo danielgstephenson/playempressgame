@@ -2,7 +2,7 @@ import schemes from '../schemes.json'
 
 export default function getBg ({
   rank,
-  weight = 600
+  weight = 700
 }: {
   rank: number
   weight?: number

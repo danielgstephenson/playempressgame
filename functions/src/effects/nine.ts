@@ -1,6 +1,6 @@
 import addEvent from '../add/event'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addLowestRankGreenOrYellowDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/lowest/greenOrYellow'
+import addHighestRankGreenDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/highest/green'
 import addLeftmostYellowTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost/yellow'
 import guardDefined from '../guard/defined'
 import { PlayState, SchemeEffectProps } from '../types'
@@ -47,7 +47,7 @@ export default function effectsNine ({
     message: `Second, ${effectPlayer.displayName} copies the highest rank green dungeon scheme.`
   })
   const secondPrivateEvent = addEvent(privateEvent, 'Second, you copy the highest rank green dungeon scheme.')
-  const { scheme } = addLowestRankGreenOrYellowDungeonSchemeEvents({
+  const { scheme } = addHighestRankGreenDungeonSchemeEvents({
     playState,
     privateEvent: secondPrivateEvent,
     publicEvents: secondPublicChildren,

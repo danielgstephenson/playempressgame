@@ -1,16 +1,11 @@
-import { Box, Button, ButtonGroup, Heading, HStack, IconButton, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
+import { Button, ButtonGroup, HStack, IconButton, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
 import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import PlayerView from './Player'
 import authContext from '../context/auth'
-import Status from './Status'
 import profileContext from '../context/profile'
-import PublicTrashView from './PublicTrash'
-import PublicTableauView from './PublicTableau'
-import ExpandedSchemeView from './ExpandedScheme'
-import SmallSchemeView from './SmallScheme'
 import InPlaySchemeView from './InPlayScheme'
 import DiscardButtonView from './DiscardButton'
 import BidProfileButtonView from './BidProfileButton'
@@ -20,9 +15,11 @@ import PlayProfileButtonView from './PlayProfileButton'
 import { QuestionIcon } from '@chakra-ui/icons'
 import { BUTTON_GRAY_BORDER } from '../constants'
 import ProfileHeadingView from './ProfileHeading'
+import ExpandedProfileView from './ExpandedProfile'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
+  console.log('profileState', profileState)
   const authState = useContext(authContext)
   const gameState = useContext(gameContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -43,7 +40,7 @@ export default function ProfileView (): JSX.Element {
   const deckFull = profileState.deckEmpty !== true
   const inPlay = profileState
     .tableau
-    ?.map(scheme => <InPlaySchemeView key={scheme.id} rank={scheme.rank} />)
+    ?.map(scheme => <InPlaySchemeView key={scheme.id} id={scheme.id} rank={scheme.rank} />)
   const fullMessage = `${profileState.displayName}'s deck is not empty`
   const deckButton = deckFull
     ? (
@@ -100,24 +97,7 @@ export default function ProfileView (): JSX.Element {
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay />
           <ModalContent width='auto' onClick={onClose}>
-            <Box>
-              <Heading size='md'>{profileState.displayName}</Heading>
-              <Status label='Bid' value={profileState.bid} />
-              <Status label='Gold' value={profileState.gold} />
-              <Status label='Silver' value={profileState.silver} />
-              <PublicTableauView />
-              <PublicTrashView />
-              <Heading size='sm'>Deck</Heading>
-              <Curtain open={deckFull}>
-                <SmallSchemeView bg='gray.500' />
-              </Curtain>
-            </Box>
-            <Box>
-              <Heading size='sm'>Discard</Heading>
-              <ExpandedSchemeView
-                rank={profileState.topDiscardScheme?.rank}
-              />
-            </Box>
+            <ExpandedProfileView />
           </ModalContent>
         </Modal>
       </Curtain>

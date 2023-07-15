@@ -1,45 +1,22 @@
-import { Card, CardBody, Heading, Modal, ModalContent, ModalOverlay, useDisclosure, VStack } from '@chakra-ui/react'
-import getBg from '../service/getBg'
-import ExpandedSchemeView from './ExpandedScheme'
+import { Card, CardBody, CardProps } from '@chakra-ui/react'
 import TinySchemeCenter from './TinySchemeCenter'
 
 export default function TinySchemeView ({
   children,
-  rank
+  ...restProps
 }: {
   children?: React.ReactNode
-  rank: number
-}
-): JSX.Element {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const bg = getBg({ rank })
+} & CardProps): JSX.Element {
   return (
-    <>
-      <VStack direction='column'>
-        <Card
-          bg={bg}
-          onClick={onOpen}
-          borderRadius='4px'
-        >
-          <CardBody p='0'>
-            <TinySchemeCenter>
-              <Heading size='xs' fontSize='xs'>{rank}</Heading>
-            </TinySchemeCenter>
-          </CardBody>
-        </Card>
-        {children}
-      </VStack>
-
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent width='auto' onClick={onClose}>
-          <ExpandedSchemeView
-            rank={rank}
-          >
-            {children}
-          </ExpandedSchemeView>
-        </ModalContent>
-      </Modal>
-    </>
+    <Card
+      borderRadius='4px'
+      {...restProps}
+    >
+      <CardBody p='0'>
+        <TinySchemeCenter>
+          {children}
+        </TinySchemeCenter>
+      </CardBody>
+    </Card>
   )
 }

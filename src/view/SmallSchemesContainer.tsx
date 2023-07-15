@@ -11,10 +11,11 @@ function View ({
   length: number
 } & FlexProps,
 ref: Ref<HTMLDivElement>): JSX.Element {
-  const lengthProps = length > 5 ? { minHeight: '125px', overflow: 'auto' } : {}
+  const lengthProps = length > 5 ? { minHeight: 'min(21dvh, 175px)', overflow: 'auto' } : { minHeight: 'auto' }
   return (
     <SchemesContainerView
       ref={ref}
+      maxHeight='175px'
       {...lengthProps}
       {...otherProps}
     >

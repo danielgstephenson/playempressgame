@@ -2,7 +2,7 @@ import { useDisclosure, Button } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { BUTTON_GRAY_BORDER } from '../constants'
 import profileContext from '../context/profile'
-import getBg from '../service/getBg'
+import getInDiscardStyles from '../service/getInDiscardStyles'
 import PopoverButtonView from './PopoverButton'
 import SchemeModal from './SchemeModal'
 
@@ -16,10 +16,16 @@ export default function DiscardButtonView (): JSX.Element {
       </PopoverButtonView>
     )
   }
-  const bg = getBg({ rank: profileState.topDiscardScheme.rank })
+  console.log('profileState', profileState)
+  const styles = getInDiscardStyles({
+    discardId: profileState.topDiscardScheme.id,
+    discardRank: profileState.topDiscardScheme.rank,
+    playId: profileState.playScheme?.id
+  })
+  console.log('styles', styles)
   return (
     <>
-      <Button bg={bg} onClick={onOpen} w='24px'>
+      <Button {...styles} onClick={onOpen}>
         {profileState.topDiscardScheme.rank}
       </Button>
       <SchemeModal isOpen={isOpen} onClose={onClose} rank={profileState.topDiscardScheme.rank} />

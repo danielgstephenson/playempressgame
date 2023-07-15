@@ -1,5 +1,7 @@
-import { Button } from '@chakra-ui/react'
+import { StarIcon, UnlockIcon } from '@chakra-ui/icons'
+import { Button, ButtonGroup, HStack, IconButton, Text } from '@chakra-ui/react'
 import { useContext, useMemo } from 'react'
+import authContext from '../context/auth'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import areAllReady from '../service/areAllReady'
@@ -9,6 +11,8 @@ export default function TotalView (): JSX.Element {
   const gameState = useContext(gameContext)
   const { court, dungeon, phase, profiles, timeline } = gameState
   const { tableau } = useContext(playContext)
+  const authState = useContext(authContext)
+  const { userId } = authState
   const courtTotal = useMemo(() => {
     if (court == null) return 0
     const courtTotal = court.reduce((courtTotal, scheme) => {
@@ -28,15 +32,26 @@ export default function TotalView (): JSX.Element {
     if (tableau == null || court == null) return false
     if (tableau.some((scheme) => scheme.rank === 12)) return true
     if (court.some((scheme) => scheme.rank === 12)) return true
+    if (leftmost?.rank === 12) return true
     return false
-  }, [court, tableau])
+  }, [court, tableau, leftmost])
+  const otherThirteen = useMemo(() => {
+    if (profiles == null || userId == null) return false
+    const otherThirteen = profiles.some((profile) => {
+      if (profile.userId === userId) return false
+      const thirteen = profile.tableau.some((scheme) => scheme.rank === 13)
+      return thirteen
+    })
+    return otherThirteen
+  }, [profiles, userId])
   const schemes = useMemo(() => {
     if (court == null || dungeon == null) return []
-    const schemes = [...court]
+    const schemes = []
+    if (!otherThirteen) schemes.push(...court)
     if (leftmost != null) schemes.push(leftmost)
     if (twelve) schemes.push(...dungeon)
     return schemes
-  }, [court, dungeon, twelve, leftmost])
+  }, [court, dungeon, leftmost, otherThirteen, twelve])
   const bg = useMemo(() => {
     const totalRank = schemes.reduce((totalRank, scheme) => {
       return totalRank + scheme.rank
@@ -66,14 +81,28 @@ export default function TotalView (): JSX.Element {
     }, 0)
   }, [schemes])
   const allReady = areAllReady(profiles)
-  if (phase !== 'auction' || allReady || gameState.dungeon == null) return <></>
-  const number = <Button bg={bg} alignSelf='end'>{total}</Button>
-  const timelineMessage = leftmost?.rank ?? 'nothing'
+  if (phase !== 'auction' || allReady || gameState.dungeon == null || gameState.timeline == null) return <></>
+  const imprisonIcon = twelve && <UnlockIcon />
+  const totalButton = <Button bg={bg}><HStack alignItems='start'><Text>{total}</Text> {imprisonIcon}</HStack></Button>
+  const timelineMessage = leftmost == null ? 'nothing' : leftmost.rank
   const dungeonTotalMessage = gameState.dungeon.length > 0 ? dungeonTotal : 'nothing'
   const dungeonMessage = twelve ? ` + ${dungeonTotalMessage} from the dungeon` : ''
-  return (
-    <PopoverMessageView trigger={number}>
-      {courtTotal} in the court + {timelineMessage} from the timeline{dungeonMessage}
+  const courtTotalMessage = courtTotal > 0 ? courtTotal : 'nothing'
+  const courtMessage = otherThirteen ? '' : `${courtTotalMessage} in the court + `
+  const courtPopover = (
+    <PopoverMessageView trigger={totalButton} _firstLetter={{ textTransform: 'capitalize' }}>
+      {courtMessage}{timelineMessage} from the timeline{dungeonMessage}
     </PopoverMessageView>
+  )
+  const finalPopover = gameState.timeline.length <= 1 && (
+    <PopoverMessageView trigger={<IconButton color={bg} aria-label='Final auction' icon={<StarIcon />} />}>
+      Final auction
+    </PopoverMessageView>
+  )
+  return (
+    <ButtonGroup isAttached alignSelf='end'>
+      {courtPopover}
+      {finalPopover}
+    </ButtonGroup>
   )
 }

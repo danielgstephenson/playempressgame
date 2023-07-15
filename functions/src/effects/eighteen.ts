@@ -2,7 +2,9 @@ import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import createPrivilege from '../create/privilege'
 import earn from '../earn'
+import guardFirst from '../guard/first'
 import joinRanksGrammar from '../join/ranks/grammar'
+import summon from '../summon'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsEighteen ({
@@ -45,6 +47,7 @@ export default function effectsEighteen ({
   }
   addEvent(privateEvent, 'Second, one Privilege is summoned to the court')
   addPublicEvent(publicEvents, 'Second, one Privilege is summoned to the court')
-  playState.game.court.push(...createPrivilege(1))
+  const privilege = guardFirst(createPrivilege(1), 'Privilege')
+  summon({ court: playState.game.court, scheme: privilege })
   return playState
 }

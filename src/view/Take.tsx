@@ -11,7 +11,7 @@ import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import reorder from '../service/reorder'
 import usePointerSensor from '../use/pointerSensor'
 import Cloud from './Cloud'
-import StaticDungeonView from './Dungeon'
+import StaticDungeonView from './StaticDungeon'
 import ReadyContainerView from './ReadyContainer'
 import SortableSchemeView from './SortableScheme'
 import TakeCourtView from './TakeCourt'
@@ -26,7 +26,10 @@ export default function TakeView (): JSX.Element {
   const authState = useContext(authContext)
   const { court: gameCourt, dungeon: gameDungeon, id: gameId } = gameState
   const allReady = gameState.profiles?.every(profile => profile.auctionReady)
-  const highestUntiedBidder = isHighestUntiedBidder({ game: gameState, userId: authState.currentUser?.uid })
+  const highestUntiedBidder = isHighestUntiedBidder({
+    profiles: gameState.profiles,
+    userId: authState.currentUser?.uid
+  })
   const { leave, tableau: playerTableau, take } = useContext(playContext)
   const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)

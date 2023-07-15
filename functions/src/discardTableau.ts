@@ -69,4 +69,6 @@ export default function discardTableau ({
   })
   playState.game.round = playState.game.round + 1
   playState.game.phase = 'play'
+  playState.game.timePassed = false
+  playState.game.imprisoned = false
 }

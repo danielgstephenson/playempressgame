@@ -2,6 +2,7 @@ import { Box, Card, CardBody, Stack, HStack, Circle, Heading, Flex, Spacer, Text
 import getBg from '../service/getBg'
 import schemes from '../schemes.json'
 import { SCHEME_RATIO } from '../constants'
+import { RepeatClockIcon } from '@chakra-ui/icons'
 
 export default function ExpandedSchemeView ({
   children,
@@ -22,7 +23,18 @@ export default function ExpandedSchemeView ({
     throw new Error(message)
   }
   const cardBg = getBg({ rank, weight: 700 })
-  const time = Array.from({ length: scheme.time }, (_, index) => <Heading color='white' key={index} size='md'>X</Heading>)
+  const time = Array.from({ length: 3 }, (_, index) => {
+    if (index < scheme.time) {
+      return (
+        <Heading color='white' key={index} size='xl'>
+          <RepeatClockIcon />
+        </Heading>
+      )
+    }
+    return (
+      <Box key={index} w='30px' />
+    )
+  })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
   const threat = scheme.threat !== '' && <Box color={circleBg} padding='10px' bg='white' height='112px'>{scheme.threat}</Box>
   const expandedHeight = children == null ? '370px' : '385px'
@@ -34,7 +46,7 @@ export default function ExpandedSchemeView ({
     >
       <CardBody padding='10px'>
         <Stack height='100%'>
-          <HStack>
+          <HStack justifyContent='space-between' width='100%'>
             <Circle size='35px' bg={circleBg} color='white'>
               <Heading size='md'>
                 {scheme.rank}

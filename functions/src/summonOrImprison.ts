@@ -13,6 +13,7 @@ import drawUpToThree from './drawUpToThree'
 import addPublicEvent from './add/event/public'
 import addChoiceEvents from './add/events/choice'
 import joinRanksGrammar from './join/ranks/grammar'
+import summon from './summon'
 
 export default function summonOrImprison ({
   playState
@@ -126,7 +127,8 @@ export default function summonOrImprison ({
     const courtBefore = [...playState.game.court]
     const courtBeforeJoined = joinRanksGrammar(courtBefore)
     const courtBeforeMessage = `The court was ${courtBeforeJoined.joinedRanks}.`
-    playState.game.court.push(guardPlayScheme(highPlayer))
+    const highPlayScheme = guardPlayScheme(highPlayer)
+    summon({ court: playState.game.court, scheme: highPlayScheme })
     const courtAfterJoined = joinRanksGrammar(playState.game.court)
     const courtAfterMessage = `The court becomes ${courtAfterJoined.joinedRanks}.`
     if (highestPlayScheme.rank !== 15) {
@@ -174,6 +176,7 @@ export default function summonOrImprison ({
       }
     }
   } else {
+    playState.game.imprisoned = true
     const dungeonBeforeJoined = joinRanksGrammar(playState.game.dungeon)
     const dungeonBeforeMessage = `The dungeon was ${dungeonBeforeJoined.joinedRanks}.`
     highPlayers.forEach(highPlayer => {
@@ -196,7 +199,7 @@ export default function summonOrImprison ({
     const publicEvent = addBroadcastEvent({
       players: notHighPlayers,
       game: playState.game,
-      message: `The ${highestPlayScheme.rank}s played by ${joinedHighDisplayNames} are summoned to the court.`
+      message: `The ${highestPlayScheme.rank}s played by ${joinedHighDisplayNames} are imprisoned in the dungeon.`
     })
     addEvent(publicEvent, dungeonBeforeMessage)
     addEvent(publicEvent, dungeonAfterMessage)

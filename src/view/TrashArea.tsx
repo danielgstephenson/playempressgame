@@ -9,7 +9,6 @@ export default function TrashAreaView (): JSX.Element {
   return (
     <SchemeAreaView
       areaId='trashArea'
-      label='Trash'
       schemeId={playState.trashSchemeId}
       scheme={playerState.trashScheme}
     />
