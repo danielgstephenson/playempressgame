@@ -34,8 +34,12 @@ export interface Scheme {
   beginning: string
   end: string
   threat?: string
+  label1: string
+  label2: string
   link1: string
   link2: string
+  icon2: string
+  icon3: string
 }
 
 export interface HistoryEvent {

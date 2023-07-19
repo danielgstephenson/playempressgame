@@ -1,10 +1,10 @@
-import { RepeatClockIcon } from '@chakra-ui/icons'
 import { Box, Heading, HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import getInCourtStyles from '../service/getInCourtStyles'
 import SchemesContainerView from './SchemesContainer'
+import TimePassedButton from './TimePassedButton c'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 export default function StaticCourtView (): JSX.Element {
@@ -20,10 +20,9 @@ export default function StaticCourtView (): JSX.Element {
     })
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
   })
-  const timePassedIcon = gameState.timePassed === true && <RepeatClockIcon />
   return (
-    <Box>
-      <Heading size='sm'><HStack alignItems='start'><Text>Court</Text> {timePassedIcon}</HStack></Heading>
+    <Box alignSelf='start'>
+      <Heading size='sm'><HStack><Text>Court</Text> <TimePassedButton /></HStack></Heading>
       <SchemesContainerView>{views}</SchemesContainerView>
     </Box>
   )

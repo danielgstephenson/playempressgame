@@ -49,7 +49,7 @@ export default function TakeTableauView (): JSX.Element {
       id='takeTableau'
       items={playState.tableau}
     >
-      <SmallSchemesContainerView length={playState.tableau.length}>
+      <SmallSchemesContainerView length={playState.tableau.length} overflow='auto'>
         {schemeViews}
       </SmallSchemesContainerView>
     </SortableContext>

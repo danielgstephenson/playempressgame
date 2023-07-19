@@ -3,20 +3,24 @@ import { ReactNode } from 'react'
 
 export default function PopoverMessageView ({
   children,
+  isOpen,
+  onClose,
   trigger,
   ...restProps
 }: {
   children: ReactNode
+  isOpen: boolean
+  onClose: () => void
   trigger: ReactNode
 } & PopoverBodyProps): JSX.Element {
   return (
-    <Popover>
+    <Popover isOpen={isOpen} onClose={onClose}>
       <PopoverTrigger>
         {trigger}
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />
-        <PopoverBody {...restProps}>{children}</PopoverBody>
+        <PopoverBody {...restProps} onClick={onClose}>{children}</PopoverBody>
       </PopoverContent>
     </Popover>
   )

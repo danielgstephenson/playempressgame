@@ -98,6 +98,8 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     )
   }
   const tableauBefore = joinRanksGrammar(currentPlayer.tableau)
+  const privateTableauBeforeMessage = `You had ${tableauBefore.joinedRanks} in play.`
+  const publicTableauBeforeMessage = `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`
   addTargetEvents({
     playState,
     message: `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`,
@@ -107,6 +109,8 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   })
   currentPlayer.tableau.push(...courtTaken)
   const tableauAfter = joinRanksGrammar(currentPlayer.tableau)
+  const privateTableauAfterMessage = `You then have ${tableauAfter.joinedRanks} in play.`
+  const publicTableauAfterMessage = `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`
   addTargetEvents({
     playState,
     message: `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`,

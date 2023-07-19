@@ -1,16 +1,17 @@
-import { AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Heading, Tooltip } from '@chakra-ui/react'
+import { AccordionButton, AccordionIcon, AccordionItem, AccordionItemProps, AccordionPanel, Box, Heading, Tooltip } from '@chakra-ui/react'
 import { HistoryEvent } from '../types'
 
 export default function HistoryEventView ({
-  event
+  event,
+  ...restProps
 }: {
   event: HistoryEvent
-}): JSX.Element {
+} & AccordionItemProps): JSX.Element {
   const hasChildren = event.events != null && event.events?.length > 0
   const icon = hasChildren && <AccordionIcon />
   return (
     <>
-      <AccordionItem>
+      <AccordionItem {...restProps}>
         {({ isExpanded }) => {
           const items = isExpanded && event.events?.map((event, index) => (
             <HistoryEventView key={index} event={event} />

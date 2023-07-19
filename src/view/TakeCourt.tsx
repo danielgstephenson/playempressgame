@@ -1,4 +1,3 @@
-import { RepeatClockIcon } from '@chakra-ui/icons'
 import { Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
@@ -7,6 +6,7 @@ import getInCourtStyles from '../service/getInCourtStyles'
 import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
 import TakePalaceView from './TakePalace'
+import TimePassedButton from './TimePassedButton c'
 
 export default function TakeCourtView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -32,9 +32,8 @@ export default function TakeCourtView (): JSX.Element {
       />
     )
   })
-  const timePassedIcon = gameState.timePassed === true && <RepeatClockIcon />
   return (
-    <TakePalaceView id='court' label={<><Text>Court</Text> {timePassedIcon}</>} schemes={playState.court} over={playState.overCourt} emptied={emptied}>
+    <TakePalaceView id='court' label={<><Text>Court</Text> <TimePassedButton /></>} schemes={playState.court} over={playState.overCourt} emptied={emptied}>
       <SmallSchemesContainerView length={playState.court.length} overflow='auto'>{sortableSchemes}</SmallSchemesContainerView>
     </TakePalaceView>
   )

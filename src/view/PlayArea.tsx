@@ -9,8 +9,7 @@ export default function PlayAreaView (): JSX.Element {
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
   const ready = gameState.profiles?.every(profile => profile.playReady) === true
-  const choosing = gameState.choices != null && gameState.choices.length > 0
-  if (ready && !choosing) {
+  if (ready) {
     return <></>
   }
   return (

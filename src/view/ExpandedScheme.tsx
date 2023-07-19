@@ -1,19 +1,15 @@
-import { Box, Card, CardBody, Stack, HStack, Circle, Heading, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Box, Stack, HStack, Circle, Heading, Flex, Spacer, Text } from '@chakra-ui/react'
 import getBg from '../service/getBg'
 import schemes from '../schemes.json'
-import { SCHEME_RATIO } from '../constants'
 import { RepeatClockIcon } from '@chakra-ui/icons'
+import LargeSchemeView from './LargeScheme'
+import ExpandedLinkView from './ExpandedLink'
 
 export default function ExpandedSchemeView ({
-  children,
-  isDragging,
   rank
 }: {
-  children?: React.ReactNode
-  isDragging?: boolean
   rank?: number
-}
-): JSX.Element {
+}): JSX.Element {
   if (rank == null) {
     return <Text>Empty</Text>
   }
@@ -26,7 +22,7 @@ export default function ExpandedSchemeView ({
   const time = Array.from({ length: 3 }, (_, index) => {
     if (index < scheme.time) {
       return (
-        <Heading color='white' key={index} size='xl'>
+        <Heading color='white' key={index} size='xl' display='flex'>
           <RepeatClockIcon />
         </Heading>
       )
@@ -36,36 +32,33 @@ export default function ExpandedSchemeView ({
     )
   })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
-  const threat = scheme.threat !== '' && <Box color={circleBg} padding='10px' bg='white' height='112px'>{scheme.threat}</Box>
-  const expandedHeight = children == null ? '370px' : '385px'
+  const threat = scheme.threat !== '' && <Box color={circleBg} padding='10px' bg='white' height='100%' maxHeight='112px'>{scheme.threat}</Box>
+  const linkProps = scheme.rank === 25 ? { fontSize: '10px' } : {}
   return (
-    <Card
-      bg={cardBg}
-      height={expandedHeight}
-      sx={{ aspectRatio: SCHEME_RATIO }}
-    >
-      <CardBody padding='10px'>
-        <Stack height='100%'>
-          <HStack justifyContent='space-between' width='100%'>
-            <Circle size='35px' bg={circleBg} color='white'>
-              <Heading size='md'>
-                {scheme.rank}
-              </Heading>
-            </Circle>
-            {time}
-          </HStack>
-          <Heading size='sm'>{scheme.title}</Heading>
+    <LargeSchemeView bg={cardBg}>
+      <Stack height='100%'>
+        <HStack alignItems='center' justifyContent='space-between' width='100%'>
+          <Circle size='50px' bg={circleBg} color='white'>
+            <Heading size='md'>
+              {scheme.rank}
+            </Heading>
+          </Circle>
+          {time}
+        </HStack>
+        <Heading size='xl'>{scheme.title}</Heading>
+        <Flex direction='column' height='100%' gap='10px'>
+          <Text minHeight='72px'>{scheme.beginning}</Text>
+          <Text>{scheme.end}</Text>
           <Flex direction='column' height='100%' gap='10px'>
-            <Text minHeight='72px'>{scheme.beginning}</Text>
-            <Text>{scheme.end}</Text>
-            <Flex direction='column' height='100%'>
-              <Spacer />
-              {threat}
-            </Flex>
+            <Spacer />
+            {threat}
+            <HStack spacing='10px'>
+              <ExpandedLinkView label={scheme.label1} link={scheme.link1} icon={scheme.icon1} {...linkProps} />
+              <ExpandedLinkView label={scheme.label2} link={scheme.link2} icon={scheme.icon2} {...linkProps} />
+            </HStack>
           </Flex>
-          {children}
-        </Stack>
-      </CardBody>
-    </Card>
+        </Flex>
+      </Stack>
+    </LargeSchemeView>
   )
 }

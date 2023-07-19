@@ -1,11 +1,12 @@
 import { StarIcon, UnlockIcon } from '@chakra-ui/icons'
-import { Button, ButtonGroup, HStack, IconButton, Text } from '@chakra-ui/react'
+import { ButtonGroup, HStack, Text } from '@chakra-ui/react'
 import { useContext, useMemo } from 'react'
 import authContext from '../context/auth'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import areAllReady from '../service/areAllReady'
-import PopoverMessageView from './PopoverMessage'
+import PopoverButtonView from './PopoverButton'
+import PopoverIconButtonView from './PopoverIconButton'
 
 export default function TotalView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -83,21 +84,24 @@ export default function TotalView (): JSX.Element {
   const allReady = areAllReady(profiles)
   if (phase !== 'auction' || allReady || gameState.dungeon == null || gameState.timeline == null) return <></>
   const imprisonIcon = twelve && <UnlockIcon />
-  const totalButton = <Button bg={bg}><HStack alignItems='start'><Text>{total}</Text> {imprisonIcon}</HStack></Button>
   const timelineMessage = leftmost == null ? 'nothing' : leftmost.rank
   const dungeonTotalMessage = gameState.dungeon.length > 0 ? dungeonTotal : 'nothing'
   const dungeonMessage = twelve ? ` + ${dungeonTotalMessage} from the dungeon` : ''
   const courtTotalMessage = courtTotal > 0 ? courtTotal : 'nothing'
   const courtMessage = otherThirteen ? '' : `${courtTotalMessage} in the court + `
   const courtPopover = (
-    <PopoverMessageView trigger={totalButton} _firstLetter={{ textTransform: 'capitalize' }}>
+    <PopoverButtonView
+      label={<HStack alignItems='start'><Text>{total}</Text> {imprisonIcon}</HStack>}
+      _firstLetter={{ textTransform: 'capitalize' }}
+      bg={bg}
+    >
       {courtMessage}{timelineMessage} from the timeline{dungeonMessage}
-    </PopoverMessageView>
+    </PopoverButtonView>
   )
   const finalPopover = gameState.timeline.length <= 1 && (
-    <PopoverMessageView trigger={<IconButton color={bg} aria-label='Final auction' icon={<StarIcon />} />}>
+    <PopoverIconButtonView icon={<StarIcon />} color={bg} aria-label='Final auction'>
       Final auction
-    </PopoverMessageView>
+    </PopoverIconButtonView>
   )
   return (
     <ButtonGroup isAttached alignSelf='end'>

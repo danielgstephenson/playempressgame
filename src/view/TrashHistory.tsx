@@ -1,8 +1,13 @@
 import { VStack, HStack } from '@chakra-ui/react'
+import { ReactNode } from 'react'
 import { PrivateTrashEvent } from '../types'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
 
-export default function TrashHistoryView ({ history }: {
+export default function TrashHistoryView ({
+  children,
+  history
+}: {
+  children?: ReactNode
   history?: PrivateTrashEvent[]
 }): JSX.Element {
   const rounds = Array.from(new Set(history?.map(trashEvent => trashEvent.round)))
@@ -14,12 +19,13 @@ export default function TrashHistoryView ({ history }: {
     const schemes = events?.map((trashEvent) => (
       <TinyExpandableSchemeView key={trashEvent.scheme.id} rank={trashEvent.scheme.rank} />
     ))
+    const area = index === eventsByRound.length - 1 && children
     return (
-      <VStack key={index} spacing='2px'>
+      <VStack alignItems='start' key={index} spacing='2px'>
         {schemes}
+        {area}
       </VStack>
     )
   })
-  // return <>xyz {eventRounds}</>
   return <HStack spacing='2px'>{eventRounds}</HStack>
 }

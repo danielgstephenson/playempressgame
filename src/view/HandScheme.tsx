@@ -4,7 +4,6 @@ import playContext from '../context/play'
 import useDndSortable from '../use/DndSortable'
 import CollapsedSchemeView from './CollapsedScheme'
 import ExpandedSchemeView from './ExpandedScheme'
-import HandSchemeActions from './HandSchemeActions'
 
 export default function HandSchemeView ({
   active,
@@ -50,9 +49,7 @@ export default function HandSchemeView ({
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent width='auto' onClick={onClose}>
-          <ExpandedSchemeView rank={scheme.rank}>
-            <HandSchemeActions id={id} />
-          </ExpandedSchemeView>
+          <ExpandedSchemeView rank={scheme.rank} />
         </ModalContent>
       </Modal>
     </>

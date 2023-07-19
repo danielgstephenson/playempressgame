@@ -10,9 +10,10 @@ export default function TinySchemeView ({
   return (
     <Card
       borderRadius='4px'
+      w='fit-content'
       {...restProps}
     >
-      <CardBody p='0'>
+      <CardBody w='fit-content' p='0'>
         <TinySchemeCenter>
           {children}
         </TinySchemeCenter>

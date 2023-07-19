@@ -5,7 +5,7 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import ActiveHeading from './ActiveHeading'
 import Curtain from './Curtain'
-import FinalIconView from './FinalIcon'
+import FinalIconPopoverButtonView from './FinalIconPopoverButton'
 import TrashAreaView from './TrashArea'
 import TrashChoiceView from './TrashChoiceView'
 import TrashHistoryView from './TrashHistory'
@@ -15,19 +15,17 @@ export default function PrivateTrashView (): JSX.Element {
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
   const done = gameState.final === true && gameState.profiles?.every(profile => profile.playReady) === true && gameState.choices?.length === 0
-  console.log('private trash')
   return (
     <VStack spacing='2px'>
       <ActiveHeading active={playState.overTrash}>
-        <HStack alignItems='baseline'><Text>Trash</Text> <FinalIconView /></HStack>
+        <HStack alignItems='baseline'><Text>Trash</Text> <FinalIconPopoverButtonView /></HStack>
       </ActiveHeading>
       <HStack spacing='2px' alignItems='center'>
-        <TrashHistoryView history={playerState.trashHistory} />
+        <TrashHistoryView history={playerState.trashHistory}>
+          <TrashChoiceView />
+        </TrashHistoryView>
         <Curtain open={!done}>
-          <VStack spacing='2px' alignItems='start' height='100%' justifyContent='center'>
-            <TrashAreaView />
-            <TrashChoiceView />
-          </VStack>
+          <TrashAreaView />
         </Curtain>
       </HStack>
     </VStack>

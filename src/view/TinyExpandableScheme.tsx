@@ -1,7 +1,6 @@
-import { CardProps, Heading, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react'
-import getBg from '../service/getBg'
+import { CardProps, Modal, ModalContent, ModalOverlay, useDisclosure } from '@chakra-ui/react'
 import ExpandedSchemeView from './ExpandedScheme'
-import TinySchemeView from './TinyScheme'
+import TinyRankedSchemeView from './TinyRankedScheme'
 
 export default function TinyExpandableSchemeView ({
   children,
@@ -12,30 +11,18 @@ export default function TinyExpandableSchemeView ({
   rank: number
 } & CardProps): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  if (rank == null) {
-    return (
-      <TinySchemeView bg='gray' />
-    )
-  }
-  const bg = getBg({ rank })
   return (
     <>
-      <TinySchemeView
-        bg={bg}
+      <TinyRankedSchemeView
         onClick={onOpen}
+        rank={rank}
         {...restProps}
-      >
-        <Heading size='xs' fontSize='xs'>{rank}</Heading>
-      </TinySchemeView>
+      />
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent width='auto' onClick={onClose}>
-          <ExpandedSchemeView
-            rank={rank}
-          >
-            {children}
-          </ExpandedSchemeView>
+          <ExpandedSchemeView rank={rank} />
         </ModalContent>
       </Modal>
     </>

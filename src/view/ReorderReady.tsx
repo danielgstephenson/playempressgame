@@ -11,6 +11,7 @@ export default function ReorderReadyView (): JSX.Element {
   const playState = useContext(playContext)
   const choice = gameState.choices?.some(choice => choice.playerId === playerState.id && choice.type === 'deck')
   const showReady = gameState.phase === 'auction' && choice === true
+  console.log('showReady', showReady)
   const schemeIds = playState.deck?.map(scheme => scheme.id)
   const props = {
     gameId: gameState.id,

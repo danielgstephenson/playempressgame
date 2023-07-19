@@ -1,7 +1,7 @@
 import { HStack, Text, VStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
-import TinySchemeView from './TinyScheme'
+import SomeTinySchemeView from './SomeTinyScheme'
 
 export default function PublicTrashSchemesView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -19,13 +19,13 @@ export default function PublicTrashSchemesView (): JSX.Element {
     return profileState.trashHistory.filter(event => event.round === round)
   })
   const numberByRound = eventsByRound.map(events => events.length)
-  const circlesByRound = numberByRound?.map((number, index) => {
-    const circles = Array.from({ length: number }, (_, index) => <TinySchemeView key={index} />)
+  const schemesByRound = numberByRound?.map((number, index) => {
+    const schemes = Array.from({ length: number }, (_, index) => <SomeTinySchemeView key={index} />)
     return (
       <VStack key={index}>
-        {circles}
+        {schemes}
       </VStack>
     )
   })
-  return <HStack>{circlesByRound}</HStack>
+  return <HStack>{schemesByRound}</HStack>
 }

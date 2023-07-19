@@ -19,11 +19,15 @@ import ExpandedProfileView from './ExpandedProfile'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
-  console.log('profileState', profileState)
   const authState = useContext(authContext)
   const gameState = useContext(gameContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  if (profileState.gold == null || profileState.silver == null || profileState.displayName == null || profileState.bid == null) {
+  if (
+    profileState.gold == null ||
+    profileState.silver == null ||
+    profileState.displayName == null ||
+    profileState.bid == null
+  ) {
     return <></>
   }
   const currentPlayer = authState.currentUser?.uid === profileState.userId
@@ -46,7 +50,7 @@ export default function ProfileView (): JSX.Element {
     ? (
       <Popover>
         <PopoverTrigger>
-          <IconButton aria-label={fullMessage} disabled bg='gray.600' color='white' icon={<QuestionIcon />} />
+          <IconButton aria-label={fullMessage} disabled bg='gray.600' color='white' icon={<QuestionIcon />} minW='30px' />
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />

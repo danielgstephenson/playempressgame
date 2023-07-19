@@ -22,12 +22,12 @@ export default function drawUpToThree ({
   playState: PlayState
 }): void {
   const highestPlayScheme = guardHighestRankPlayScheme(playState.players)
-  const notHighPlayers = playState
+  const highPlayers = playState
     .players
-    .filter(player => player.playScheme?.rank !== highestPlayScheme.rank)
-  notHighPlayers.forEach(player => {
+    .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
+  highPlayers.forEach(player => {
     const playScheme = guardPlayScheme(player)
-    player.tableau.push(playScheme)
+    player.tableau = player.tableau.filter(scheme => scheme.id !== playScheme.id)
   })
   const underPlayers = playState.players.filter(player => player.hand.length < 3)
   if (underPlayers.length === 0) {

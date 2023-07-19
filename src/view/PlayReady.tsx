@@ -8,6 +8,7 @@ import getScore from '../service/getScore'
 import getWinners from '../service/getWinners'
 import { CloseIcon, MinusIcon, StarIcon } from '@chakra-ui/icons'
 import ScorePopoverView from './ScorePopover'
+import { HStack, Text } from '@chakra-ui/react'
 
 export default function PlayReadyView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -50,13 +51,16 @@ export default function PlayReadyView (): JSX.Element {
     trashSchemeId: playState.trashSchemeId,
     playSchemeId: playState.playSchemeId
   }
+  const icon = gameState.final === true && <StarIcon />
   return (
-    <Curtain open={showReady}>
+    <Curtain open={showReady} hider={icon}>
       <Cloud
         fn='playReady'
         props={props}
       >
-        Ready
+        <HStack>
+          <Text>Ready</Text> {icon}
+        </HStack>
       </Cloud>
     </Curtain>
   )

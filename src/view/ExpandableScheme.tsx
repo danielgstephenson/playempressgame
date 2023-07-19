@@ -5,13 +5,11 @@ import ExpandedSchemeView from './ExpandedScheme'
 
 function View ({
   active = false,
-  children,
   isDragging,
   rank,
   ...cardProps
 }: {
   active?: boolean
-  children?: React.ReactNode
   isDragging?: boolean
   rank: number
 } &
@@ -34,11 +32,7 @@ ref: React.Ref<HTMLDivElement>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent width='auto' onClick={onClose}>
-          <ExpandedSchemeView
-            rank={rank}
-          >
-            {children}
-          </ExpandedSchemeView>
+          <ExpandedSchemeView rank={rank} />
         </ModalContent>
       </Modal>
     </>

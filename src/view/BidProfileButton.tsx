@@ -35,18 +35,26 @@ export default function BidProfileButtonView (): JSX.Element {
   if (tyingProfiles == null) return <></>
   const tied = tyingProfiles.length > 1
   if (tied) {
-    const label = profileState.auctionReady === true
-      ? <HStack alignItems='start'><Text>{profileState.bid}</Text> <LockIcon /></HStack>
-      : profileState.bid
+    if (profileState.auctionReady === true) {
+      return (
+        <TopPopoverButtonView
+          bg='gray'
+          color='black'
+          label={<HStack alignItems='start'><Text>{profileState.bid}</Text> <LockIcon /></HStack>}
+        >
+          {profileState.displayName}'s is ready to imprison.
+        </TopPopoverButtonView>
+      )
+    }
     if (profileState.lastBidder) {
       return (
-        <TopPopoverButtonView bg='gray' color='black' label={label}>
+        <TopPopoverButtonView bg='slategrey' color='white' label={profileState.bid}>
           {profileState.displayName}'s bid is {profileState.bid}, and they can not withdraw because they are the last bidder.
         </TopPopoverButtonView>
       )
     } else {
       return (
-        <TopPopoverButtonView bg='slategray' color='white' label={label}>
+        <TopPopoverButtonView bg='gray' color='black' label={profileState.bid}>
           {profileState.displayName}'s bid is {profileState.bid}, but they can withdraw.
         </TopPopoverButtonView>
       )

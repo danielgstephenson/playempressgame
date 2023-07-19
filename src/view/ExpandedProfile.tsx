@@ -1,56 +1,43 @@
-import { Box, Heading, HStack } from '@chakra-ui/react'
+import { Heading, Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import Curtain from './Curtain'
 import ExpandedSchemeView from './ExpandedScheme'
-import PublicTableauView from './PublicTableau'
+import LargeSchemeView from './LargeScheme'
 import PublicTrashView from './PublicTrash'
-import SmallSchemeView from './SmallScheme'
-import Status from './Status'
 import TinySchemesView from './TinySchemes'
 import TrashHistoryView from './TrashHistory'
 
 export default function ExpandedProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
-  const deckFull = profileState.deckEmpty !== true
-  const deck = profileState.deck == null
-    ? (
-      <Curtain open={deckFull}>
-        <SmallSchemeView bg='gray.500' />
-      </Curtain>
-      )
-    : <TinySchemesView schemes={profileState.deck} />
-  const discard = profileState.discard == null
-    ? <ExpandedSchemeView rank={profileState.topDiscardScheme?.rank} />
-    : <TinySchemesView schemes={profileState.discard} />
-  const hand = profileState.hand != null && (
-    <><Heading size='sm'>Hand</Heading><TinySchemesView schemes={profileState.hand} /></>
-  )
-  const trash = profileState.privateTrashHistory == null
-    ? <PublicTrashView />
-    : (
-      <>
-        <Heading size='sm'>Trash</Heading>
-        <TrashHistoryView history={profileState.privateTrashHistory} />
-      </>
-      )
+  if (profileState.privateTrashHistory == null) {
+    return <></>
+  }
+  const playEmpty = profileState.playScheme == null
+  const gameOver = profileState.privateTrashHistory.length > 0
   return (
-    <HStack>
-      <Box>
-        <Heading size='md'>{profileState.displayName}</Heading>
-        <Status label='Bid' value={profileState.bid} />
-        <Status label='Gold' value={profileState.gold} />
-        <Status label='Silver' value={profileState.silver} />
-        <PublicTableauView />
-        {hand}
+    <Stack p='5px' spacing='5px'>
+      <Heading size='md' textAlign='center'>{profileState.displayName}</Heading>
+      <Heading size='sm'>Last Played</Heading>
+      <Curtain open={playEmpty} hider={<ExpandedSchemeView rank={profileState.playScheme?.rank} />}>
+        <LargeSchemeView border='2px dashed gray' />
+      </Curtain>
+      <Heading size='sm'>Trash</Heading>
+      <Curtain open={gameOver} hider={<PublicTrashView />}>
+        <TrashHistoryView history={profileState.privateTrashHistory} />
+      </Curtain>
+      <Curtain open={gameOver}>
+        <Heading size='sm'>Hand</Heading>
+        <TinySchemesView schemes={profileState.hand} />
+      </Curtain>
+      <Curtain open={gameOver}>
         <Heading size='sm'>Deck</Heading>
-        {deck}
-        {trash}
-      </Box>
-      <Box>
+        <TinySchemesView schemes={profileState.deck} />
+      </Curtain>
+      <Curtain open={gameOver}>
         <Heading size='sm'>Discard</Heading>
-        {discard}
-      </Box>
-    </HStack>
+        <TinySchemesView schemes={profileState.discard} />
+      </Curtain>
+    </Stack>
   )
 }

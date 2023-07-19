@@ -10,7 +10,9 @@ import FunctionsProvider from './context/functions/Provider'
 import { Helmet } from 'react-helmet'
 import RouterView from './Router'
 
-const isLocalhost = Boolean(
+const isNgrok = window.location.hostname.endsWith('ngrok-free.app')
+const isLocal = Boolean(
+  isNgrok ||
   window.location.hostname === 'localhost' ||
   window.location.hostname === '[::1]' || // [::1] is the IPv6 localhost address.
   window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/) // 127.0.0.1/8 is considered localhost for IPv4.
@@ -18,18 +20,18 @@ const isLocalhost = Boolean(
 
 const app = initializeApp(firebaseConfig)
 // @ts-expect-error
-if (isLocalhost) window.FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken
+if (isLocal) window.FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken
 initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider(reCaptchaSiteKey),
   isTokenAutoRefreshEnabled: true
 })
 
 const db = getFirestore(app)
-if (isLocalhost) connectFirestoreEmulator(db, 'localhost', 8080)
+if (isLocal) connectFirestoreEmulator(db, 'localhost', 8080)
 const auth = getAuth()
-if (isLocalhost) connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
+if (isLocal) connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
 const functions = getFunctions(app)
-if (isLocalhost) connectFunctionsEmulator(functions, 'localhost', 5001)
+if (isLocal) connectFunctionsEmulator(functions, 'localhost', 5001)
 
 export default function App (): JSX.Element {
   return (

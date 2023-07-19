@@ -5,7 +5,7 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getInPlayStyles from '../service/getInPlayStyles'
 import ActiveHeading from './ActiveHeading'
-import FinalIconView from './FinalIcon'
+import FinalIconPopoverButtonView from './FinalIconPopoverButton'
 import PlayAreaView from './PlayArea'
 import SchemesContainerView from './SchemesContainer'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
@@ -34,7 +34,7 @@ export default function PrivateTableauView (): JSX.Element {
   })
   return (
     <VStack spacing='2px'>
-      <ActiveHeading active={playState.overPlay}><HStack><Text>Play</Text><FinalIconView /></HStack></ActiveHeading>
+      <ActiveHeading active={playState.overPlay}><HStack><Text>Play</Text><FinalIconPopoverButtonView /></HStack></ActiveHeading>
       <HStack spacing='2px' width='max-content'>
         <PlayAreaView />
         <SchemesContainerView>{views}</SchemesContainerView>

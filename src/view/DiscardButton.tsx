@@ -16,16 +16,14 @@ export default function DiscardButtonView (): JSX.Element {
       </PopoverButtonView>
     )
   }
-  console.log('profileState', profileState)
   const styles = getInDiscardStyles({
     discardId: profileState.topDiscardScheme.id,
     discardRank: profileState.topDiscardScheme.rank,
     playId: profileState.playScheme?.id
   })
-  console.log('styles', styles)
   return (
     <>
-      <Button {...styles} onClick={onOpen}>
+      <Button {...styles} onClick={onOpen} minW='30px'>
         {profileState.topDiscardScheme.rank}
       </Button>
       <SchemeModal isOpen={isOpen} onClose={onClose} rank={profileState.topDiscardScheme.rank} />

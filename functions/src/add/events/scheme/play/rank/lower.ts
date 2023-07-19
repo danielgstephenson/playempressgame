@@ -28,12 +28,12 @@ export default function addLowerRankPlaySchemeEvents ({
       privateEvent,
       message: `${rank} is lower than ${scheme.rank}`
     })
-    return { playEvents }
+    return { scheme, playEvents }
   }
   const playEvents = addEventsEverywhere({
     publicEvents,
     privateEvent,
-    message: `${scheme.rank} is lower than ${rank}`
+    message: `${scheme.rank} is not lower than ${rank}`
   })
-  return { scheme, playEvents }
+  return { playEvents }
 }

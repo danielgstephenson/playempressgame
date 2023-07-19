@@ -1,4 +1,4 @@
-import { IconButton, IconButtonProps } from '@chakra-ui/react'
+import { IconButton, IconButtonProps, useDisclosure } from '@chakra-ui/react'
 import { ReactNode } from 'react'
 import PopoverMessageView from './PopoverMessage'
 
@@ -8,8 +8,9 @@ export default function PopoverIconButtonView ({
 }: {
   children: ReactNode
 } & IconButtonProps): JSX.Element {
+  const { isOpen, onToggle, onClose } = useDisclosure()
   return (
-    <PopoverMessageView trigger={<IconButton {...restProps} />}>
+    <PopoverMessageView isOpen={isOpen} onClose={onClose} trigger={<IconButton onClick={onToggle} {...restProps} />}>
       {children}
     </PopoverMessageView>
   )

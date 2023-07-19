@@ -56,6 +56,7 @@ export default function PlayPhaseView (): JSX.Element {
     return <></>
   }
   const taking = isTaking({ profiles: gameState.profiles, userId: playerState.userId })
+  console.log('taking', taking)
   return (
     <DndContext
       sensors={sensors}

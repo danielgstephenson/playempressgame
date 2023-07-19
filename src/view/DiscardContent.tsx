@@ -7,12 +7,10 @@ import TinySchemeCenterView from './TinySchemeCenter'
 
 export default function DiscardContentView (): JSX.Element {
   const playerState = useContext(playerContext)
-  console.log('playerState', playerState)
   if (playerState.discard == null || playerState.discard.length === 0) {
     return <TinySchemeCenterView />
   }
   const [first, ...rest] = playerState.discard
-  console.log('first', first)
   const styles = getInDiscardStyles({
     discardId: first.id,
     discardRank: first.rank,
