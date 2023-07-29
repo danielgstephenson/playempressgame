@@ -1,8 +1,9 @@
-import { Spinner } from '@chakra-ui/react'
+import { WarningIcon } from '@chakra-ui/icons'
+import { MenuItem, Spinner } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import authContext from '../context/auth'
-import ChakraButton from '../lib/firewrite/chakra/Button'
+import PopoverIconButtonView from './PopoverIconButton'
 
 export default function SignOutView (): JSX.Element {
   const navigate = useNavigate()
@@ -12,16 +13,20 @@ export default function SignOutView (): JSX.Element {
     await authState.unauth?.()
     navigate('/')
   }
-  const rightIcon = authState.named === true ? undefined : <Spinner />
-  const suffix = authState.displayName == null ? <></> : <>({authState.displayName})</>
+  const loadingSpinner = authState.signOutLoading === true && <Spinner />
+  const errorButton = authState.signOutErrorMessage != null && (
+    <PopoverIconButtonView aria-label={authState.signOutErrorMessage} icon={<WarningIcon />}>
+      {authState.signOutErrorMessage}
+    </PopoverIconButtonView>
+  )
   return (
-    <ChakraButton
+    <MenuItem
       onClick={signOutToHome}
-      loading={authState.signOutLoading}
-      errorMessage={authState.signOutErrorMessage}
-      rightIcon={rightIcon}
     >
-      Sign Out {suffix}
-    </ChakraButton>
+      Sign Out
+      {' '}
+      {loadingSpinner}
+      {errorButton}
+    </MenuItem>
   )
 }

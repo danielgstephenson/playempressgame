@@ -12,18 +12,20 @@ export default function HeaderView (): JSX.Element {
   const inGame = params.gameId != null
   return (
     <HStack justifyContent='space-between'>
+      <HStack>
+        <Clink to='/'>Home</Clink>
+        <Curtain open={authState.authed}>
+          <Clink to='/games'>Games</Clink>
+        </Curtain>
+        <Curtain open={inGame}>
+          <Clink to={`/game/${String(params.gameId)}`} fontWeight='bold'>
+            <Box mb='-1px'>
+              {params.gameId}
+            </Box>
+          </Clink>
+        </Curtain>
+      </HStack>
       <AuthView />
-      <Clink to='/'>Home</Clink>
-      <Curtain open={authState.authed}>
-        <Clink to='/games'>Games</Clink>
-      </Curtain>
-      <Curtain open={inGame}>
-        <Clink to={`/game/${String(params.gameId)}`} fontWeight='bold'>
-          <Box mb='-1px'>
-            {params.gameId}
-          </Box>
-        </Clink>
-      </Curtain>
     </HStack>
   )
 }

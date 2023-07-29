@@ -23,6 +23,7 @@ import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
 import isTaking from '../service/isTaking'
 import { playerContext } from '../reader/player'
+import isReordering from '../service/isReordering'
 
 export default function PlayPhaseView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -55,8 +56,12 @@ export default function PlayPhaseView (): JSX.Element {
   if (hand == null || setHand == null) {
     return <></>
   }
-  const taking = isTaking({ profiles: gameState.profiles, userId: playerState.userId })
-  console.log('taking', taking)
+  const taking = isTaking({ profiles: gameState.profiles, userId: playerState.userId, choices: gameState.choices })
+  const reordering = isReordering({
+    choices: gameState.choices,
+    phase: gameState.phase,
+    playerId: playerState.id
+  })
   return (
     <DndContext
       sensors={sensors}
@@ -248,6 +253,9 @@ export default function PlayPhaseView (): JSX.Element {
       <ChoiceView />
       <Heading size='sm' textAlign='center'>Hand</Heading>
       <HandView />
+      <Curtain open={reordering}>
+        <Heading size='md' textAlign='center'>Reorder your deck</Heading>
+      </Curtain>
       <HStack justifyContent='space-between' alignItems='start'>
         <Box>
           <Heading size='sm' fontWeight={fontWeight}>Deck</Heading>

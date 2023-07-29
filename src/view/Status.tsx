@@ -6,9 +6,9 @@ export default function StatusView ({ label, value }: {
 }): JSX.Element {
   const valueString = value == null ? 'Empty' : value?.toString()
   return (
-    <HStack alignItems='baseline'>
+    <HStack alignItems='baseline' width='max-content'>
       <Heading size='sm'>{label}:</Heading>
-      <Text lineHeight='1'>{valueString}</Text>
+      <Text width='max-content' lineHeight='1'>{valueString}</Text>
     </HStack>
   )
 }

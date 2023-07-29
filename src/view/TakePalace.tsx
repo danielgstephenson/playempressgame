@@ -32,7 +32,7 @@ export default function TakePalaceView ({
     <SortableContext items={schemes}>
       <Box flexGrow='1'>
         <Heading size='sm' fontWeight={fontWeight}>
-          <HStack width='max-content'>
+          <HStack width='max-content' alignItems='baseline'>
             {label}
           </HStack>
         </Heading>

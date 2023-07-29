@@ -1,10 +1,11 @@
-import { Box, Heading, HStack, Text } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import getInCourtStyles from '../service/getInCourtStyles'
 import SchemesContainerView from './SchemesContainer'
-import TimePassedButton from './TimePassedButton c'
+import StaticPalaceHeadingView from './StaticPalaceHeading'
+import TimePassedButton from './TimePassedButton'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 export default function StaticCourtView (): JSX.Element {
@@ -22,7 +23,9 @@ export default function StaticCourtView (): JSX.Element {
   })
   return (
     <Box alignSelf='start'>
-      <Heading size='sm'><HStack><Text>Court</Text> <TimePassedButton /></HStack></Heading>
+      <StaticPalaceHeadingView label='Court'>
+        <TimePassedButton />
+      </StaticPalaceHeadingView>
       <SchemesContainerView>{views}</SchemesContainerView>
     </Box>
   )

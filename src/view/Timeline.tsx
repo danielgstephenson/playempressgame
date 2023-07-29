@@ -28,8 +28,8 @@ export default function TimelineView (): JSX.Element {
     <TinyExpandableSchemeView rank={scheme.rank} key={scheme.id} />
   )
   return (
-    <Box>
-      <Heading size='sm'>Timeline</Heading>
+    <Box alignSelf='start'>
+      <Heading size='sm' mb='5px'>Timeline</Heading>
       <SchemesContainerView>
         {firstView}
         {views}

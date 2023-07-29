@@ -1,4 +1,4 @@
-import { Box, Heading, Stack } from '@chakra-ui/react'
+import { Box, Heading, HStack, Spinner, Stack, Text } from '@chakra-ui/react'
 import { Active, DndContext, DragOverEvent, DragOverlay } from '@dnd-kit/core'
 import { useContext, useMemo, useState } from 'react'
 import { DROP_ANIMATION } from '../constants'
@@ -10,7 +10,6 @@ import add from '../service/add'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import reorder from '../service/reorder'
 import usePointerSensor from '../use/pointerSensor'
-import Cloud from './Cloud'
 import StaticDungeonView from './StaticDungeon'
 import ReadyContainerView from './ReadyContainer'
 import SortableSchemeView from './SortableScheme'
@@ -19,11 +18,22 @@ import TakeDungeonView from './TakeDungeon'
 import TakeTableauView from './TakeTableau'
 import TimelineView from './Timeline'
 import TrashHistoryView from './TrashHistory'
+import PopoverButtonView from './PopoverButton'
+import join from '../service/join'
+import { useHttpsCallable } from 'react-firebase-hooks/functions'
+import { Functions } from 'firebase/functions'
+import ChakraButton from '../lib/firewrite/chakra/Button'
+import { LockIcon } from '@chakra-ui/icons'
+import { playerContext } from '../reader/player'
 
-export default function TakeView (): JSX.Element {
+export default function TakeView ({ functions }: {
+  functions: Functions
+}): JSX.Element {
   const gameState = useContext(gameContext)
   const playState = useContext(playContext)
+  const playerState = useContext(playerContext)
   const authState = useContext(authContext)
+  const [cloudCourt, cloudCourtLoading] = useHttpsCallable(functions, 'court')
   const { court: gameCourt, dungeon: gameDungeon, id: gameId } = gameState
   const allReady = gameState.profiles?.every(profile => profile.auctionReady)
   const highestUntiedBidder = isHighestUntiedBidder({
@@ -210,14 +220,64 @@ export default function TakeView (): JSX.Element {
     playState.court == null ||
     playState.dungeon == null ||
     playState.tableau == null ||
+    playState.taken == null ||
     allReady !== true ||
-    !highestUntiedBidder
+    !highestUntiedBidder ||
+    gameDungeon == null
   ) {
     return <></>
   }
   const twelve = playState.tableau.some((scheme) => scheme.rank === 12)
   const tinyDungeon = !twelve && <StaticDungeonView />
   const fontWeight = playState.overTableau === true ? '1000' : undefined
+  const courtTaken = playState.taken.filter((schemeId) => {
+    const court = gameCourt?.some((scheme) => scheme.id === schemeId)
+    return court
+  })
+  const courtTakenSchemes = courtTaken.map((schemeId) => {
+    const scheme = gameCourt?.find((scheme) => scheme.id === schemeId)
+    if (scheme == null) {
+      throw new Error('Scheme not found')
+    }
+    return scheme
+  })
+  const courtTakenRanks = courtTakenSchemes.map((scheme) => scheme.rank)
+  const courtTakenJoined = join(courtTakenRanks, 'nothing')
+  const courtTakenMessage = `You took ${courtTakenJoined} from the court.`
+  const courtLeft = playState.court.length > 0
+  const courtLeftRanks = playState.court.map((scheme) => scheme.rank)
+  const courtLeftJoined = join(courtLeftRanks, 'nothing')
+  const courtLeftMessage = `You left ${courtLeftJoined} in the court.`
+  const courtLeftView = courtLeft && <Text>{courtLeftMessage}</Text>
+  const imprisonedRank = Math.min(...courtLeftRanks)
+  const imprisonedMessage = `${imprisonedRank} will be imprisoned in the dungeon!`
+  const imprisonedView = courtLeft && <Text>{imprisonedMessage}</Text>
+  const dungeonTaken = playState.taken.filter((schemeId) => {
+    const dungeon = gameDungeon?.some((scheme) => scheme.id === schemeId)
+    return dungeon
+  })
+  const dungeonTakenSchemes = dungeonTaken.map((schemeId) => {
+    const scheme = gameDungeon?.find((scheme) => scheme.id === schemeId)
+    if (scheme == null) {
+      throw new Error('Scheme not found')
+    }
+    return scheme
+  })
+  const dungeonTakenRanks = dungeonTakenSchemes.map((scheme) => scheme.rank)
+  const takenDungeonJoined = join(dungeonTakenRanks, 'nothing')
+  const dungeonTakenMessage = `You took ${takenDungeonJoined} from the dungeon.`
+  const dungeonTakenView = twelve && gameDungeon.length > 0 && <Text>{dungeonTakenMessage}</Text>
+  const dungeonLeft = twelve && playState.dungeon.length > 0
+  const dungeonLeftRanks = playState.dungeon.map((scheme) => scheme.rank)
+  const dungeonLeftJoined = join(dungeonLeftRanks, 'nothing')
+  const dungeonLeftMessage = `You left ${dungeonLeftJoined} in the dungeon.`
+  const dungeonLeftView = dungeonLeft && <Text>{dungeonLeftMessage}</Text>
+  const readyText = <Text>Ready</Text>
+  const readyContent = courtLeft ? <>{readyText} <LockIcon /></> : readyText
+  const readyLoadingContent = cloudCourtLoading ? <>{readyContent} <Spinner /></> : readyContent
+  const readyLabel = (
+    <HStack>{readyLoadingContent}</HStack>
+  )
   return (
     <DndContext
       sensors={sensors}
@@ -246,16 +306,24 @@ export default function TakeView (): JSX.Element {
           <TakeTableauView />
         </Box>
         <ReadyContainerView>
-          <Cloud
-            fn='court'
-            props={{ gameId, schemeIds: playState.taken }}
-          >
-            Ready
-          </Cloud>
+          <PopoverButtonView label={readyLabel} disabled={cloudCourtLoading}>
+            <Text>{courtTakenMessage}</Text>
+            {courtLeftView}
+            {dungeonTakenView}
+            {dungeonLeftView}
+            {imprisonedView}
+            <ChakraButton
+              onClick={async () => {
+                await cloudCourt({ gameId, schemeIds: playState.taken })
+              }}
+            >
+              {readyLoadingContent}
+            </ChakraButton>
+          </PopoverButtonView>
         </ReadyContainerView>
         <Box>
           <Heading size='sm'>Trash</Heading>
-          <TrashHistoryView />
+          <TrashHistoryView history={playerState.trashHistory} />
         </Box>
       </Stack>
       <TakeDungeonView />

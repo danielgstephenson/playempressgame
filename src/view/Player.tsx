@@ -5,9 +5,13 @@ import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import PlayPhaseView from './PlayPhase'
+import functionsContext from '../context/functions'
+import TakeView from './Take'
+import ProfileView from './Profile'
+import ProfileProvider from '../context/profile/Provider'
 
 export default function PlayerView (): JSX.Element {
-  const { court, dungeon, round, phase } = useContext(gameContext)
+  const { court, dungeon, round, phase, profiles } = useContext(gameContext)
   const {
     resetTaken,
     setCourt,
@@ -21,7 +25,7 @@ export default function PlayerView (): JSX.Element {
     setTrashChoiceId,
     setTrashSchemeId
   } = useContext(playContext)
-  const { deck, hand, tableau } = useContext(playerContext)
+  const { deck, hand, tableau, userId } = useContext(playerContext)
   useEffect(() => {
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
@@ -73,9 +77,20 @@ export default function PlayerView (): JSX.Element {
       setDeckChoiceId?.(undefined)
     }
   }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
-
+  const functionsState = useContext(functionsContext)
+  if (functionsState.functions == null || profiles == null) return <></>
+  const otherProfiles = profiles.filter(profile => profile.userId !== userId)
+  const otherProfileViews = otherProfiles.map(profile => {
+    return (
+      <ProfileProvider key={profile.userId} profile={profile}>
+        <ProfileView />
+      </ProfileProvider>
+    )
+  })
   return (
     <>
+      <TakeView functions={functionsState.functions} />
+      {otherProfileViews}
       <BidView />
       <PlayPhaseView />
       <PlayerHistoryView />

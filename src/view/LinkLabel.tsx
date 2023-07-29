@@ -5,7 +5,6 @@ export default function LinkLabelView ({
 }: {
   label: string
 }): JSX.Element {
-  console.log('label', label)
   const [, domain, third] = label.split('.')
   const [tld] = third.split('/')
   const text = `${domain}.${tld}`

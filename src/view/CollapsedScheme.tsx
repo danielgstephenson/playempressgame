@@ -2,19 +2,17 @@ import { CardProps, forwardRef, Heading, HStack, Spacer, Stack, Text } from '@ch
 import SmallScheme from './SmallScheme'
 import schemes from '../schemes.json'
 import getBg from '../service/getBg'
-import { ReactNode, Ref } from 'react'
+import { Ref } from 'react'
 import CircleView from './Circle'
 import { RepeatClockIcon } from '@chakra-ui/icons'
 import CollapsedLinkView from './CollapsedLink'
 
 function View ({
   active,
-  children,
   rank,
   ...cardProps
 }: {
   active?: boolean
-  children?: ReactNode
   rank: number
 } & CardProps,
 ref: Ref<HTMLDivElement>): JSX.Element {
@@ -34,6 +32,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   })
   const cardBg = getBg({ rank, weight: 700 })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
+  const fontSize = rank === 23 ? '10px' : 'xs'
   return (
     <SmallScheme
       active={active}
@@ -51,9 +50,8 @@ ref: Ref<HTMLDivElement>): JSX.Element {
             </CircleView>
             {time}
           </HStack>
-          <Heading size='xs' fontSize='xs'>{scheme.title}</Heading>
+          <Heading size='xs' fontSize={fontSize}>{scheme.title}</Heading>
         </Stack>
-        {children}
         <HStack>
           <CollapsedLinkView link={scheme.link1} icon={scheme.icon1} />
           <CollapsedLinkView link={scheme.link2} icon={scheme.icon2} />

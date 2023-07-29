@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import authContext from '../context/auth'
 import ProfileProvider from '../context/profile/Provider'
 import { gameContext } from '../reader/game'
-import ProfileView from './Profile'
+import PlayerProfileView from './PlayerProfile'
 
 export default function ProfilesView (): JSX.Element {
   const authState = useContext(authContext)
@@ -15,7 +15,7 @@ export default function ProfilesView (): JSX.Element {
   copy.sort((a, b) => a.userId === authState.currentUser?.uid ? 1 : -1)
   const items = copy.map((profile) => (
     <ProfileProvider key={profile.userId} profile={profile}>
-      <ProfileView key={profile.userId} />
+      <PlayerProfileView key={profile.userId} />
     </ProfileProvider>
   ))
   const heading = gameState.profiles.length === 1 && (

@@ -3,11 +3,12 @@ import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import PopoverIconButton from './PopoverIconButton'
 
-export default function ImprisonedButton (): JSX.Element {
+export default function TimePassedButton (): JSX.Element | null {
   const gameState = useContext(gameContext)
-  if (gameState.profiles?.length == null) return <></>
-  const totalTime = gameState.profiles.reduce((total, profile) => total + (profile.playScheme?.time ?? 0), 0)
-  const message = `The total time in play was ${totalTime}, more than the ${gameState.profiles.length} players.`
+  if (gameState.profiles == null) {
+    return <></>
+  }
+  const message = `Because the total time in play was more than ${gameState.profiles.length + 1}, the leftmost timeline scheme was summoned to the court.`
   if (gameState.timePassed === true) {
     return (
       <PopoverIconButton size='xs' aria-label={message} icon={<RepeatClockIcon />}>
@@ -15,5 +16,5 @@ export default function ImprisonedButton (): JSX.Element {
       </PopoverIconButton>
     )
   }
-  return <></>
+  return null
 }

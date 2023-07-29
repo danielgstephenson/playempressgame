@@ -39,15 +39,15 @@ export default function ExpandedSchemeView ({
       <Stack height='100%'>
         <HStack alignItems='center' justifyContent='space-between' width='100%'>
           <Circle size='50px' bg={circleBg} color='white'>
-            <Heading size='md'>
+            <Heading size='xl'>
               {scheme.rank}
             </Heading>
           </Circle>
           {time}
         </HStack>
-        <Heading size='xl'>{scheme.title}</Heading>
+        <Heading size='xl' minH='85px'>{scheme.title}</Heading>
         <Flex direction='column' height='100%' gap='10px'>
-          <Text minHeight='72px'>{scheme.beginning}</Text>
+          <Text minHeight='60px'>{scheme.beginning}</Text>
           <Text>{scheme.end}</Text>
           <Flex direction='column' height='100%' gap='10px'>
             <Spacer />

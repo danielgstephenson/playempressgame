@@ -1,3 +1,5 @@
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Menu, MenuButton, Button, MenuList, Spinner } from '@chakra-ui/react'
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import CreateAccountView from './CreateAccount'
@@ -8,6 +10,16 @@ export default function AuthView (): JSX.Element {
   if (authState.currentUser == null) {
     return <CreateAccountView />
   } else {
-    return <SignOutView />
+    const name = authState.named === true ? authState.displayName : <Spinner />
+    return (
+      <Menu>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+          {name}
+        </MenuButton>
+        <MenuList>
+          <SignOutView />
+        </MenuList>
+      </Menu>
+    )
   }
 }

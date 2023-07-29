@@ -89,7 +89,7 @@ export default function getInPlayStyles ({
     if (!allReady) {
       return { bg, ...CAN_CARRY_OUT_STYLES }
     }
-    const taking = isTaking({ profiles, userId })
+    const taking = isTaking({ profiles, userId, choices })
     if (!taking) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
@@ -102,8 +102,9 @@ export default function getInPlayStyles ({
     if (fromCourt === true) {
       return { bg }
     }
-    const taking = isTaking({ profiles, userId })
-    if (taking || highestUntiedProfile?.topDiscardScheme == null) {
+    const wonTheAuction = highestUntiedProfile?.userId === userId
+    const taking = isTaking({ profiles, userId, choices })
+    if (wonTheAuction || taking || highestUntiedProfile?.topDiscardScheme == null) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
     return { bg, ...CARRYING_OUT_STYLES }

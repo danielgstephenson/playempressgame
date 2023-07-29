@@ -1,9 +1,7 @@
 import { Button, ButtonGroup, HStack, IconButton, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
-import PlayerReader from '../reader/player'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
-import PlayerView from './Player'
 import authContext from '../context/auth'
 import profileContext from '../context/profile'
 import InPlaySchemeView from './InPlayScheme'
@@ -32,11 +30,8 @@ export default function ProfileView (): JSX.Element {
   }
   const currentPlayer = authState.currentUser?.uid === profileState.userId
   const playing = gameState.phase !== 'join'
-  if (currentPlayer) {
-    if (playing) {
-      return <PlayerReader DocView={PlayerView} />
-    }
-    return <ProfileHeadingView />
+  if (currentPlayer && playing) {
+    throw new Error('ProfileView should not be rendered for the current player')
   }
   if (gameState.phase === 'join') {
     return <ProfileHeadingView />

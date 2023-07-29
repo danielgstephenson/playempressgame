@@ -3,6 +3,7 @@ import { HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
+import { playerContext } from '../reader/player'
 import getScore from '../service/getScore'
 import getWinners from '../service/getWinners'
 import isTaking from '../service/isTaking'
@@ -13,6 +14,8 @@ import WaitingButtonView from './WaitingButton'
 export default function PlayProfileButtonView (): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
+  const playerState = useContext(playerContext)
+  console.log('playerState', playerState)
   if (
     gameState.choices == null ||
     gameState.court == null ||
@@ -47,7 +50,7 @@ export default function PlayProfileButtonView (): JSX.Element {
       )
     }
   }
-  const taking = isTaking({ profiles: gameState.profiles, userId: profileState.userId })
+  const taking = isTaking({ profiles: gameState.profiles, userId: profileState.userId, choices: gameState.choices })
   if (taking) {
     const tableauTwelve = profileState.tableau.some(scheme => scheme.rank === 12)
 
@@ -126,8 +129,13 @@ export default function PlayProfileButtonView (): JSX.Element {
       </TopPopoverIconButtonView>
     )
   }
+  const unready = gameState.phase === 'play' && playerState.playReady !== true
+  const bg = unready ? 'gray' : 'white'
+  const color = unready ? 'white' : 'black'
   return (
     <WaitingButtonView
+      bg={bg}
+      color={color}
       aria-label={`${profileState.displayName} is choosing a scheme from their hand to play and another to trash.`}
     />
   )

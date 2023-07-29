@@ -13,6 +13,7 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
+import getBid from '../service/getBid'
 import useBidMax from '../use/bidMax'
 import Cloud from './Cloud'
 import Status from './Status'
@@ -53,6 +54,7 @@ export default function BidView (): JSX.Element {
   const eleven = playerState.tableau.some(scheme => scheme.rank === 11)
   const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
   const step = eleven && bidFive ? 1 : 5
+  const bidStatus = getBid({ tableau: playerState.tableau, bid: playerState.bid })
   return (
     <>
       <HStack spacing='20px'>
@@ -83,7 +85,7 @@ export default function BidView (): JSX.Element {
           </RangeSliderTrack>
           <RangeSliderThumb boxSize={6} index={0} />
         </RangeSlider>
-        <Status label='Bid' value={playerState.bid} />
+        <Status label='Bid' value={bidStatus} />
       </HStack>
       <HStack justifyContent='space-between'>
         <Cloud
