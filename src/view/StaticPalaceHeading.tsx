@@ -9,8 +9,8 @@ export default function StaticPalaceHeadingView ({
 }): JSX.Element {
   return (
     <Heading size='sm'>
-      <HStack alignItems='center' minH='28px'>
-        <Text mb='5px'>{label}</Text>
+      <HStack alignItems='center'>
+        <Text>{label}</Text>
         {children}
       </HStack>
     </Heading>

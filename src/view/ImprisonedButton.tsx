@@ -6,12 +6,10 @@ import PopoverIconButton from './PopoverIconButton'
 export default function ImprisonedButton (): JSX.Element | null {
   const gameState = useContext(gameContext)
   const message = 'The highest schemes in play were imprisoned'
-  if (gameState.imprisoned === true) {
-    return (
-      <PopoverIconButton fontSize='xs' size='xs' aria-label={message} icon={<LockIcon />}>
-        {message}
-      </PopoverIconButton>
-    )
-  }
-  return null
+  const visibility = gameState.imprisoned === true ? 'visible' : 'hidden'
+  return (
+    <PopoverIconButton fontSize='xs' size='xs' aria-label={message} icon={<LockIcon />} visibility={visibility}>
+      {message}
+    </PopoverIconButton>
+  )
 }

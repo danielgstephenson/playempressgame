@@ -1,4 +1,4 @@
-import { Box, Heading, HStack } from '@chakra-ui/react'
+import { Heading, HStack, Stack } from '@chakra-ui/react'
 import { useDroppable } from '@dnd-kit/core'
 import { ReactNode } from 'react'
 import { Scheme } from '../types'
@@ -28,13 +28,13 @@ export default function TakePalaceView ({
     : children
   const fontWeight = over === true ? '1000' : undefined
   return (
-    <Box flexGrow='1'>
+    <Stack flexGrow='1' spacing='4px'>
       <Heading size='sm' fontWeight={fontWeight}>
         <HStack width='max-content' alignItems='baseline'>
           {label}
         </HStack>
       </Heading>
       {content}
-    </Box>
+    </Stack>
   )
 }

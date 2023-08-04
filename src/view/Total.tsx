@@ -87,7 +87,7 @@ export default function TotalView (): JSX.Element {
   const timelineMessage = leftmost == null ? 'nothing' : leftmost.rank
   const dungeonTotalMessage = gameState.dungeon.length > 0 ? dungeonTotal : 'nothing'
   const dungeonMessage = twelve ? ` + ${dungeonTotalMessage} from the dungeon` : ''
-  const courtTotalMessage = courtTotal > 0 ? courtTotal : 'nothing'
+  const courtTotalMessage = courtTotal > 0 ? courtTotal : 'Nothing'
   const courtMessage = otherThirteen ? '' : `${courtTotalMessage} in the court + `
   const courtPopover = (
     <PopoverButtonView
@@ -104,7 +104,7 @@ export default function TotalView (): JSX.Element {
     </PopoverIconButtonView>
   )
   return (
-    <ButtonGroup isAttached alignSelf='end'>
+    <ButtonGroup isAttached alignSelf='end' size='md'>
       {courtPopover}
       {finalPopover}
     </ButtonGroup>
