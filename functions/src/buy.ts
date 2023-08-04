@@ -55,7 +55,7 @@ export default function buy ({
   const buyer = guardDefined(found, 'Buyer')
   if (leftmost != null) {
     const inPlayBefore = joinRanksGrammar(buyer.tableau)
-    const inPlayBeforeMessage = `tableau was ${inPlayBefore.joinedRanks}.`
+    const inPlayBeforeMessage = `tableau was ${inPlayBefore.joinedRanks}`
     const privateInPlayBeforeMessage = `Your ${inPlayBeforeMessage}.`
     const publicInPlayBeforeMessage = `${buyer.displayName}'s ${inPlayBeforeMessage}.`
     buyer.tableau.push(leftmost)

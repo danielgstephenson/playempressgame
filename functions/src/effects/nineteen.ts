@@ -1,9 +1,10 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
-import addPlayerPublicEvents from '../add/events/player/public'
-import addHighestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/yellow'
-import addLeftmostTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost'
+import createPrivilege from '../create/privilege'
 import earn from '../earn'
+import guardFirst from '../guard/first'
+import joinRanksGrammar from '../join/ranks/grammar'
+import summon from '../summon'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsNineteen ({
@@ -15,41 +16,38 @@ export default function effectsNineteen ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, earn the leftmost timeline scheme\'s rank.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the leftmost timeline scheme's rank.`)
-  const { scheme } = addLeftmostTimelineSchemeEvents({
-    playState,
-    privateEvent: firstPrivateChild,
-    publicEvents: firstPublicChildren
-  })
-  if (scheme != null) {
+  const firstPrivateChild = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 30 gold.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
+  const deckEmpty = effectPlayer.deck.length === 0
+  if (deckEmpty) {
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is empty.`)
+    addEvent(firstPrivateChild, 'Your deck is empty.')
+  } else {
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is not empty.`)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.deck)
+    addEvent(firstPrivateChild, `Your deck has ${joinedCount}.`)
+  }
+  const discardEmpty = effectPlayer.discard.length === 0
+  if (discardEmpty) {
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is empty.`)
+    addEvent(firstPrivateChild, 'Your discard is empty.')
+  } else {
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is not empty.`)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.discard)
+    addEvent(firstPrivateChild, `Your discard has ${joinedCount}.`)
+  }
+  if (deckEmpty || discardEmpty) {
     earn({
-      amount: scheme.rank,
+      amount: 30,
       player: effectPlayer,
       playState,
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren
     })
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, earn the highest yellow rank in play.')
-  const secondPublicChildren = addPlayerPublicEvents({
-    events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} earns the highest yellow rank in play.`
-  })
-  const { scheme: yellowScheme } = addHighestRankYellowPlaySchemeEvents({
-    playState,
-    playerId: effectPlayer.id,
-    privateEvent: secondPrivateChild,
-    publicEvents: secondPublicChildren
-  })
-  if (yellowScheme != null) {
-    earn({
-      amount: yellowScheme.rank,
-      player: effectPlayer,
-      playState,
-      privateEvent: secondPrivateChild,
-      publicEvents: secondPublicChildren
-    })
-  }
+  addEvent(privateEvent, 'Second, one Privilege is summoned to the court')
+  addPublicEvent(publicEvents, 'Second, one Privilege is summoned to the court')
+  const privilege = guardFirst(createPrivilege(1), 'Privilege')
+  summon({ court: playState.game.court, scheme: privilege })
   return playState
 }

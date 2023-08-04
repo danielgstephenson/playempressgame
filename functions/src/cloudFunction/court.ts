@@ -6,10 +6,8 @@ import guardCurrentBidding from '../guard/current/bidding'
 import getGrammar from '../get/grammar'
 import getHighestUntiedProfile from '../get/highestUntiedProfile'
 import carryOutFourteen from '../carryOut/fourteen'
-import addEvent from '../add/event'
 import setPlayState from '../setPlayState'
 import joinRanks from '../join/ranks'
-import getLowestRankScheme from '../get/lowestRankScheme'
 import createPlayState from '../create/playState'
 import addTargetEvents from '../add/events/target'
 import joinRanksGrammar from '../join/ranks/grammar'
@@ -102,9 +100,9 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const publicTableauBeforeMessage = `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`
   addTargetEvents({
     playState,
-    message: `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`,
+    message: publicTableauBeforeMessage,
     targetMessages: {
-      [currentPlayer.id]: `You had ${tableauBefore.joinedRanks} in play.`
+      [currentPlayer.id]: privateTableauBeforeMessage
     }
   })
   currentPlayer.tableau.push(...courtTaken)
@@ -113,9 +111,9 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
   const publicTableauAfterMessage = `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`
   addTargetEvents({
     playState,
-    message: `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`,
+    message: publicTableauAfterMessage,
     targetMessages: {
-      [currentPlayer.id]: `You then have ${tableauAfter.joinedRanks} in play.`
+      [currentPlayer.id]: privateTableauAfterMessage
     }
   })
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
@@ -160,27 +158,6 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       targetMessages: {
         [currentPlayer.id]: privateMessage
       }
-    })
-  }
-  const lowest = getLowestRankScheme(playState.game.court)
-  if (lowest != null) {
-    const beforeDungeon = [...playState.game.dungeon]
-    const beforeDungeonJoined = joinRanks(beforeDungeon)
-    const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
-    const imprisoned = playState.game.court.filter(scheme => scheme.rank === lowest.rank)
-    playState.game.dungeon.push(...imprisoned)
-    playState.game.court = playState.game.court.filter(scheme => scheme.rank !== lowest.rank)
-    const afterDungeon = [...playState.game.dungeon]
-    const afterDungeonJoined = joinRanks(afterDungeon)
-    const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
-    const message = `The lowest remaining court scheme, ${lowest.rank}, was imprisoned in the dungeon.`
-    const observerEvent = addEvent(currentGame, message)
-    addEvent(observerEvent, beforeDungeonMessage)
-    addEvent(observerEvent, afterDungeonMessage)
-    playState.players.forEach(player => {
-      const playerEvent = addEvent(player, message)
-      addEvent(playerEvent, beforeDungeonMessage)
-      addEvent(playerEvent, afterDungeonMessage)
     })
   }
   carryOutFourteen({ playState })

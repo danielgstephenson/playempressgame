@@ -274,7 +274,7 @@ export default function TakeView ({ functions }: {
   const dungeonLeftView = dungeonLeft && <Text>{dungeonLeftMessage}</Text>
   const readyText = <Text>Ready</Text>
   const readyContent = courtLeft ? <>{readyText} <LockIcon /></> : readyText
-  const readyLoadingContent = cloudCourtLoading ? <>{readyContent} <Spinner /></> : readyContent
+  const readyLoadingContent = cloudCourtLoading ? <HStack>{readyContent} <Spinner /></HStack> : readyContent
   const readyLabel = (
     <HStack>{readyLoadingContent}</HStack>
   )

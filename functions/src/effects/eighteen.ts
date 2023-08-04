@@ -1,10 +1,10 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
-import createPrivilege from '../create/privilege'
+import addEventsEverywhere from '../add/events/everywhere'
+import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
+import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
 import earn from '../earn'
-import guardFirst from '../guard/first'
 import joinRanksGrammar from '../join/ranks/grammar'
-import summon from '../summon'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsEighteen ({
@@ -16,38 +16,46 @@ export default function effectsEighteen ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 30 gold.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
-  const deckEmpty = effectPlayer.deck.length === 0
-  if (deckEmpty) {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is empty.`)
-    addEvent(firstPrivateChild, 'Your deck is empty.')
-  } else {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is not empty.`)
-    const { joinedCount } = joinRanksGrammar(effectPlayer.deck)
-    addEvent(firstPrivateChild, `Your deck has ${joinedCount}.`)
-  }
-  const discardEmpty = effectPlayer.discard.length === 0
-  if (discardEmpty) {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is empty.`)
-    addEvent(firstPrivateChild, 'Your discard is empty.')
-  } else {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is not empty.`)
-    const { joinedCount } = joinRanksGrammar(effectPlayer.discard)
-    addEvent(firstPrivateChild, `Your discard has ${joinedCount}.`)
-  }
-  if (deckEmpty || discardEmpty) {
+  const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is yellow, you earn twice its rank.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they earn twice its rank.`)
+  const scheme = addTopDiscardSchemeYellowEvents({
+    discard: effectPlayer.discard,
+    displayName: effectPlayer.displayName,
+    privateEvent: firstPrivateChild,
+    publicEvents: firstPublicChildren
+  })
+  if (scheme != null) {
     earn({
-      amount: 30,
+      amount: scheme.rank * 2,
       player: effectPlayer,
       playState,
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren
     })
   }
-  addEvent(privateEvent, 'Second, one Privilege is summoned to the court')
-  addPublicEvent(publicEvents, 'Second, one Privilege is summoned to the court')
-  const privilege = guardFirst(createPrivilege(1), 'Privilege')
-  summon({ court: playState.game.court, scheme: privilege })
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you put your top discard scheme on your deck.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} puts their top discard scheme on their deck.`)
+  const discardScheme = addTopDiscardSchemeEvents({
+    discard: effectPlayer.discard,
+    displayName: effectPlayer.displayName,
+    privateEvent: secondPrivateChild,
+    publicEvents: secondPublicChildren
+  })
+  if (discardScheme != null) {
+    const deckBeforeJoined = joinRanksGrammar(effectPlayer.deck)
+    const deckBeforeMessage = `Your deck was ${deckBeforeJoined.joinedRanks}.`
+    effectPlayer.deck.unshift(discardScheme)
+    const deckAfterJoined = joinRanksGrammar(effectPlayer.deck)
+    const deckAfterMessage = `Your deck becomes ${deckAfterJoined.joinedRanks}.`
+    effectPlayer.discard.shift()
+    const { privateEvent } = addEventsEverywhere({
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren,
+      publicMessage: `${effectPlayer.displayName} puts their ${discardScheme.rank} on their deck.`,
+      privateMessage: `You put your ${discardScheme.rank} on their deck.`
+    })
+    addEvent(privateEvent, deckBeforeMessage)
+    addEvent(privateEvent, deckAfterMessage)
+  }
   return playState
 }

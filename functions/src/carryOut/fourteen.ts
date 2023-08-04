@@ -4,7 +4,9 @@ import addTargetEvents from '../add/events/target'
 import createId from '../create/id'
 import discardTableau from '../discardTableau'
 import getGrammar from '../get/grammar'
+import getLowestRankScheme from '../get/lowestRankScheme'
 import join from '../join'
+import joinRanks from '../join/ranks'
 import { PlayState } from '../types'
 
 export default function carryOutFourteen ({
@@ -12,6 +14,27 @@ export default function carryOutFourteen ({
 }: {
   playState: PlayState
 }): void {
+  const lowest = getLowestRankScheme(playState.game.court)
+  if (lowest != null) {
+    const beforeDungeon = [...playState.game.dungeon]
+    const beforeDungeonJoined = joinRanks(beforeDungeon)
+    const beforeDungeonMessage = `The dungeon was ${beforeDungeonJoined}.`
+    const imprisoned = playState.game.court.filter(scheme => scheme.rank === lowest.rank)
+    playState.game.dungeon.push(...imprisoned)
+    playState.game.court = playState.game.court.filter(scheme => scheme.rank !== lowest.rank)
+    const afterDungeon = [...playState.game.dungeon]
+    const afterDungeonJoined = joinRanks(afterDungeon)
+    const afterDungeonMessage = `The dungeon becomes ${afterDungeonJoined}.`
+    const message = `The lowest remaining court scheme, ${lowest.rank}, was imprisoned in the dungeon.`
+    const observerEvent = addEvent(playState.game, message)
+    addEvent(observerEvent, beforeDungeonMessage)
+    addEvent(observerEvent, afterDungeonMessage)
+    playState.players.forEach(player => {
+      const playerEvent = addEvent(player, message)
+      addEvent(playerEvent, beforeDungeonMessage)
+      addEvent(playerEvent, afterDungeonMessage)
+    })
+  }
   const fourteenPlayers = playState
     .players
     .filter(player => player.tableau.some(scheme => scheme.rank === 14))

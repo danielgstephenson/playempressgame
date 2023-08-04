@@ -100,7 +100,7 @@ export default function TotalView (): JSX.Element {
   )
   const finalPopover = gameState.timeline.length <= 1 && (
     <PopoverIconButtonView icon={<StarIcon />} color={bg} aria-label='Final auction'>
-      Final auction
+      This is the final auction.
     </PopoverIconButtonView>
   )
   return (

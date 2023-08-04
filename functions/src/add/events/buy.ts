@@ -34,7 +34,8 @@ export default function addBuyEvents ({
     name,
     rank
   })
-  const buyerEndMessage = `${buyerPrefix}, so ${suffixes.buyer}.`
+  const buyerEndMessage = `${buyerPrefix}, so ${suffixes.buyer}
+  .`
   const loserEndMessage = `${loserPrefix}, so ${suffixes.loser}.`
   const buyEvents = addTargetEvents({
     playState,
