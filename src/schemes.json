@@ -308,7 +308,7 @@
     "color": "Yellow",
     "rank": 19,
     "title": "Choose the next Pope",
-    "beginning": "If your deck or discard is empty, earn 30 gold",
+    "beginning": "If your deck or discard is empty, earn 35 gold",
     "end": "Summon 1 privilege from the bank to the court",
     "threat": "",
     "time": 0,

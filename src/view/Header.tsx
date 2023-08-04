@@ -1,5 +1,5 @@
 import AuthView from './Auth'
-import { Box, HStack } from '@chakra-ui/react'
+import { HStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import Curtain from './Curtain'
@@ -12,16 +12,14 @@ export default function HeaderView (): JSX.Element {
   const inGame = params.gameId != null
   return (
     <HStack justifyContent='space-between'>
-      <HStack>
+      <HStack spacing='20px'>
         <Clink to='/'>Home</Clink>
         <Curtain open={authState.authed}>
           <Clink to='/games'>Games</Clink>
         </Curtain>
         <Curtain open={inGame}>
           <Clink to={`/game/${String(params.gameId)}`} fontWeight='bold'>
-            <Box mb='-1px'>
-              {params.gameId}
-            </Box>
+            {params.gameId}
           </Clink>
         </Curtain>
       </HStack>

@@ -48,6 +48,12 @@ const withdraw = createCloudFunction<GameProps>(async (props, context, transacti
       'You are the last bidder.'
     )
   }
+  if (currentPlayer.bid === 0) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      'Your bid is 0.'
+   )
+  }
   const privateReadyMessage = 'You withdraw.'
   const publicReadyMessage = `${currentPlayer.displayName} withdraws.`
   const privateReadyEvent = createEvent(privateReadyMessage)

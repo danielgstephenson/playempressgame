@@ -194,7 +194,7 @@ export default function TakeView ({ functions }: {
           const overIndex = current.findIndex((scheme) => scheme.id === over.id)
           const beforeIndex = current.slice(0, overIndex)
           const afterIndex = current.slice(overIndex)
-          const added = [...beforeIndex, activeScheme, ...afterIndex, ...tableauFromDungeon]
+          const added = [...beforeIndex, activeScheme, ...afterIndex]
           return added
         })
       }
