@@ -1,13 +1,12 @@
 import { useDroppable } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import EmptySmallSchemeView from './EmptySmallScheme'
 import SmallSchemesContainerView from './SmallSchemesContainer'
-import SortableSchemeView from './SortableScheme'
 import getInPlayStyles from '../service/getInPlayStyles'
 import authContext from '../context/auth'
+import DraggableSchemeView from './DraggableScheme'
 
 export default function TakeTableauView (): JSX.Element {
   const authState = useContext(authContext)
@@ -36,7 +35,7 @@ export default function TakeTableauView (): JSX.Element {
       userId: authState.currentUser?.uid
     })
     return (
-      <SortableSchemeView
+      <DraggableSchemeView
         {...styles}
         key={scheme.id}
         id={scheme.id}
@@ -45,13 +44,8 @@ export default function TakeTableauView (): JSX.Element {
     )
   })
   return (
-    <SortableContext
-      id='takeTableau'
-      items={playState.tableau}
-    >
-      <SmallSchemesContainerView length={playState.tableau.length} overflow='auto'>
-        {schemeViews}
-      </SmallSchemesContainerView>
-    </SortableContext>
+    <SmallSchemesContainerView length={playState.tableau.length} overflow='auto' ref={setNodeRef}>
+      {schemeViews}
+    </SmallSchemesContainerView>
   )
 };

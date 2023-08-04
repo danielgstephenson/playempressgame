@@ -1,6 +1,5 @@
 import { Box, Heading, HStack } from '@chakra-ui/react'
 import { useDroppable } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
 import { ReactNode } from 'react'
 import { Scheme } from '../types'
 import EmptySmallSchemeView from './EmptySmallScheme'
@@ -29,15 +28,13 @@ export default function TakePalaceView ({
     : children
   const fontWeight = over === true ? '1000' : undefined
   return (
-    <SortableContext items={schemes}>
-      <Box flexGrow='1'>
-        <Heading size='sm' fontWeight={fontWeight}>
-          <HStack width='max-content' alignItems='baseline'>
-            {label}
-          </HStack>
-        </Heading>
-        {content}
-      </Box>
-    </SortableContext>
+    <Box flexGrow='1'>
+      <Heading size='sm' fontWeight={fontWeight}>
+        <HStack width='max-content' alignItems='baseline'>
+          {label}
+        </HStack>
+      </Heading>
+      {content}
+    </Box>
   )
 }

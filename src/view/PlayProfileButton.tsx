@@ -15,7 +15,6 @@ export default function PlayProfileButtonView (): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
   const playerState = useContext(playerContext)
-  console.log('playerState', playerState)
   if (
     gameState.choices == null ||
     gameState.court == null ||

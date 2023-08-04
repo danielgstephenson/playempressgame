@@ -7,7 +7,6 @@ export default function StaticPalaceHeadingView ({
   label: string
   children?: JSX.Element
 }): JSX.Element {
-  console.log('children', children)
   return (
     <Heading size='sm'>
       <HStack alignItems='center' minH='28px'>

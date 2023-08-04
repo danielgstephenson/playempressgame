@@ -3,7 +3,7 @@ import { HttpsCallableResult } from 'firebase/functions'
 import { Timestamp } from 'firebase/firestore'
 import React, { CSSProperties } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
-import { UniqueIdentifier } from '@dnd-kit/core'
+import { UniqueIdentifier, useDraggable } from '@dnd-kit/core'
 import { SystemStyleObject } from '@chakra-ui/react'
 
 export interface AuthState {
@@ -175,6 +175,9 @@ export interface DisplayNameState {
 }
 export interface Identified {
   id: UniqueIdentifier
+}
+export type DndDraggable = ReturnType<typeof useDraggable> & {
+  style: CSSProperties
 }
 export type DndSortable = ReturnType<typeof useSortable> & {
   style: CSSProperties
