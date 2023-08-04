@@ -27,6 +27,8 @@ export default function CreateAccountView (): JSX.Element {
       onClick={createAccount}
       loading={createAccountLoading}
       error={createAccountError}
+      fontSize='md'
+      size='md'
     >
       New Account
     </ChakraButton>

@@ -10,9 +10,10 @@ export default function AuthView (): JSX.Element {
   if (authState.currentUser == null) {
     return <CreateAccountView />
   } else {
-    const name = authState.named === true ? authState.displayName : <Spinner />
+    const name = authState.named === true ? authState.displayName : <Spinner size='sm' />
+    const menuProps = authState.signOutLoading === true ? { isOpen: true } : {}
     return (
-      <Menu>
+      <Menu {...menuProps}>
         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
           {name}
         </MenuButton>
