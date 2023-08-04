@@ -6,7 +6,6 @@ import authContext from '../context/auth'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import activeOver from '../service/activeOver'
-import add from '../service/add'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import usePointerSensor from '../use/pointerSensor'
 import StaticDungeonView from './StaticDungeon'
@@ -25,6 +24,7 @@ import ChakraButton from '../lib/firewrite/chakra/Button'
 import { LockIcon } from '@chakra-ui/icons'
 import { playerContext } from '../reader/player'
 import returnFromTableau from '../service/returnFromTableau'
+import filterOld from '../service/filterOld'
 
 export default function TakeView ({ functions }: {
   functions: Functions
@@ -57,7 +57,6 @@ export default function TakeView ({ functions }: {
   )
   const activeSchemeView = activeScheme != null && <DraggableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
   function handleDragOver (event: DragOverEvent): void {
-    console.log('over', event)
     const { active, over } = event
     if (
       playState.court == null ||
@@ -87,10 +86,10 @@ export default function TakeView ({ functions }: {
     const overEmptyCourt = over.id === 'court'
     const overEmptyDungeon = over.id === 'dungeon'
     if (activeCourt) {
-      console.log('activeCourt')
       activeOver({
         active: activeScheme,
         getSchemeById,
+        old: gameCourt,
         over,
         overArea: overTakeArea,
         overNew: overTableau,
@@ -104,6 +103,7 @@ export default function TakeView ({ functions }: {
       activeOver({
         active: activeScheme,
         getSchemeById,
+        old: gameDungeon,
         over,
         overArea: overTakeArea,
         overNew: overTableau,
@@ -162,8 +162,7 @@ export default function TakeView ({ functions }: {
           })
         })
         playState.setCourt?.((current) => {
-          const newIds = [...current.map((scheme) => scheme.id), activeScheme.id]
-          return gameCourt.filter(scheme => newIds.includes(scheme.id))
+          return filterOld({ currentOld: current, old: gameCourt, active: activeScheme })
         })
         playState.setDungeon?.((current) => {
           return [...current, ...tableauFromDungeon]
@@ -180,11 +179,7 @@ export default function TakeView ({ functions }: {
           })
         })
         playState.setDungeon?.((current) => {
-          const overIndex = current.findIndex((scheme) => scheme.id === over.id)
-          const beforeIndex = current.slice(0, overIndex)
-          const afterIndex = current.slice(overIndex)
-          const added = [...beforeIndex, activeScheme, ...afterIndex]
-          return added
+          return filterOld({ currentOld: current, old: gameDungeon, active: activeScheme })
         })
       }
     }

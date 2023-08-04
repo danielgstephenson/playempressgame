@@ -3,7 +3,6 @@ import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import getInCourtStyles from '../service/getInCourtStyles'
-import DraggableSchemeView from './DraggableScheme'
 import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
 import TakePalaceView from './TakePalace'
@@ -17,7 +16,6 @@ export default function TakeCourtView (): JSX.Element {
   }
   const emptied = gameState.court.length !== 0 && playState.court.length === 0
   const sortableSchemes = playState.court.map((scheme, index) => {
-    console.log('take court scheme', scheme)
     const inCourtStyles = getInCourtStyles({
       deck: playState.deck,
       dungeon: gameState.dungeon,

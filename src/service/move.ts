@@ -17,7 +17,6 @@ export default function move <Element extends Identified> ({
 }): void {
   setOld?.((current) => current.filter((scheme) => scheme.id !== active.id))
   setNew?.((current) => {
-    console.log('setNew current', current)
     const added = [...current, active]
     added.sort((a, b) => {
       const aScheme = getSchemeById(a.id)

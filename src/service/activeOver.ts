@@ -1,12 +1,13 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { Dispatch, SetStateAction } from 'react'
 import { Identified, Scheme } from '../types'
+import filterOld from './filterOld'
 import move from './move'
-import reorder from './reorder'
 
 export default function activeOver <Element extends Identified> ({
   active,
   getSchemeById,
+  old,
   over,
   overArea,
   overNew,
@@ -17,6 +18,7 @@ export default function activeOver <Element extends Identified> ({
 }: {
   active: Element
   getSchemeById: (id?: UniqueIdentifier) => Scheme | undefined
+  old: Element[]
   overArea: boolean
   overNew: boolean
   overOld: boolean
@@ -26,12 +28,13 @@ export default function activeOver <Element extends Identified> ({
   take?: (schemeId: string) => void
 }): void {
   if (overOld) {
-    setOld?.((current) => reorder({ a: active, b: over, current }))
+    return setOld?.(currentOld => {
+      return filterOld({ currentOld, old, active })
+    })
   }
   if (overArea) {
     setOld?.((current) => current.filter((scheme) => scheme.id !== active.id))
     setNew?.((current) => {
-      console.log('setNew current', current)
       const added = [...current, active]
       added.sort((a, b) => {
         const aScheme = getSchemeById(a.id)
