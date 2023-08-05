@@ -1,0 +1,13 @@
+f(state,n)
+
+final play: min = max = 0
+auction:
+  timeline < 2: min = max = 1
+  timeline = 2: min = max = 2
+  timeline = 3: min = 2, max = 3
+  timeline = 4: min = 3, max = 4 
+  timeline = n > 4: min = Math.ceil(n / 2) + 1, max = n
+play:
+  timeline = 1: min = max = 1
+  timeline = 2: min = 1, max = 2
+  timeline = n > 2: min = f(auction,n-1), max = f(aunction, n)

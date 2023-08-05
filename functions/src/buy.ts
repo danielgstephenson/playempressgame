@@ -51,7 +51,9 @@ export default function buy ({
   playState.players.forEach(player => {
     player.auctionReady = true
   })
-  const found = playState.players.find(player => player.id === buyerId)
+  const found = playState
+    .players
+    .find(player => player.id === buyerId)
   const buyer = guardDefined(found, 'Buyer')
   if (leftmost != null) {
     const inPlayBefore = joinRanksGrammar(buyer.tableau)

@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react'
+import { Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
@@ -21,11 +21,11 @@ export default function StaticDungeonView (): JSX.Element {
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
   })
   return (
-    <Box alignSelf='start'>
+    <Stack alignSelf='start' spacing='3px'>
       <StaticPalaceHeadingView label='Dungeon'>
         <ImprisonedButton />
       </StaticPalaceHeadingView>
       <SchemesContainerView>{views}</SchemesContainerView>
-    </Box>
+    </Stack>
   )
 }

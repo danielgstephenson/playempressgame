@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
 import areAllReady from '../service/areAllReady'
-import getBid from '../service/getBid'
+import getBidStatus from '../service/getBidStatus'
 import getTyingProfiles from '../service/getTyingProfiles'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import TopPopoverButtonView from './TopPopoverButton'
@@ -36,7 +36,7 @@ export default function BidProfileButtonView (): JSX.Element {
   })
   if (tyingProfiles == null) return <></>
   const tied = tyingProfiles.length > 1
-  const label = getBid({ tableau: profileState.tableau, bid: profileState.bid })
+  const label = getBidStatus({ tableau: profileState.tableau, bid: profileState.bid })
   if (tied) {
     if (profileState.auctionReady === true) {
       return (

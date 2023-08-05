@@ -91,7 +91,7 @@ export default function TotalView (): JSX.Element {
   const courtMessage = otherThirteen ? '' : `${courtTotalMessage} in the court + `
   const courtPopover = (
     <PopoverButtonView
-      label={<HStack alignItems='start'><Text>{total}</Text> {imprisonIcon}</HStack>}
+      label={<HStack alignItems='center'><Text fontSize='sm'>{total}</Text> {imprisonIcon}</HStack>}
       _firstLetter={{ textTransform: 'capitalize' }}
       bg={bg}
     >
@@ -99,12 +99,12 @@ export default function TotalView (): JSX.Element {
     </PopoverButtonView>
   )
   const finalPopover = gameState.timeline.length <= 1 && (
-    <PopoverIconButtonView icon={<StarIcon />} color={bg} aria-label='Final auction'>
+    <PopoverIconButtonView fontSize='sm' icon={<StarIcon />} color={bg} aria-label='Final auction'>
       This is the final auction.
     </PopoverIconButtonView>
   )
   return (
-    <ButtonGroup isAttached alignSelf='end' size='md'>
+    <ButtonGroup isAttached alignSelf='start' size='xs'>
       {courtPopover}
       {finalPopover}
     </ButtonGroup>

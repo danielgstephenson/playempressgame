@@ -144,7 +144,7 @@ export default function TakeView ({ functions }: {
             twelve
           })
         })
-        playState.setDungeon?.([activeScheme, ...tableauFromDungeon])
+        playState.setDungeon?.([activeScheme])
       }
       if (overTableau) {
         return
@@ -214,6 +214,7 @@ export default function TakeView ({ functions }: {
   const twelve = playState.tableau.some((scheme) => scheme.rank === 12)
   const tinyDungeon = !twelve && <StaticDungeonView />
   const fontWeight = playState.overTableau === true ? '1000' : undefined
+  console.log('playState', playState)
   const courtTaken = playState.taken.filter((schemeId) => {
     const court = gameCourt?.some((scheme) => scheme.id === schemeId)
     return court

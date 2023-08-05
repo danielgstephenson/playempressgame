@@ -33,6 +33,7 @@ export default function activeOver <Element extends Identified> ({
     })
   }
   if (overArea) {
+    take?.(String(active.id))
     setOld?.((current) => current.filter((scheme) => scheme.id !== active.id))
     setNew?.((current) => {
       const added = [...current, active]

@@ -194,3 +194,8 @@ export interface SchemeStyles {
   color?: string
   _hover?: SystemStyleObject | undefined
 }
+
+export interface Range {
+  minimum: number
+  maximum: number
+}

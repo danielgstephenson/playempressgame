@@ -1,13 +1,25 @@
-import { Scheme } from '../types'
-
 export default function getBid ({
-  tableau,
-  bid
+  bid,
+  gold,
+  silver
 }: {
-  tableau: Scheme[]
   bid: number
-}): string | number {
-  const ten = tableau.some(scheme => scheme.rank === 10) && bid >= 10
-  const bidStatus = ten ? `${bid - 10} + 10` : bid
-  return bidStatus
+  gold: number
+  silver: number
+}): number {
+  const silverBid = bid % 5 !== 0
+  if (silverBid) {
+    const minimumSilver = bid % 5
+    if (silver < minimumSilver) {
+      const fiveFactor = Math.floor(bid / 5)
+      const goldBid = fiveFactor * 5
+      const higherbid = goldBid + 5
+      if (gold >= higherbid) {
+        return higherbid
+      }
+      const maximumBid = goldBid + silver
+      return maximumBid
+    }
+  }
+  return bid
 }

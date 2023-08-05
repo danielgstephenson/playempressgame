@@ -18,6 +18,18 @@ ref: Ref<HTMLDivElement>): JSX.Element {
       maxHeight='175px'
       {...lengthProps}
       {...otherProps}
+      overflowX='clip'
+      sx={{
+        '&::-webkit-scrollbar': {
+          width: 'auto',
+          borderRadius: '5px',
+          backgroundColor: 'gray.700'
+        },
+        '&::-webkit-scrollbar-thumb': {
+          borderRadius: '5px',
+          backgroundColor: 'gray.500'
+        }
+      }}
     >
       {children}
     </SchemesContainerView>

@@ -11,7 +11,7 @@ import ProfileView from './Profile'
 import ProfileProvider from '../context/profile/Provider'
 
 export default function PlayerView (): JSX.Element {
-  const { court, dungeon, round, phase, profiles } = useContext(gameContext)
+  const { court, dungeon, round, phase, profiles, choices } = useContext(gameContext)
   const {
     resetTaken,
     setCourt,
@@ -25,7 +25,7 @@ export default function PlayerView (): JSX.Element {
     setTrashChoiceId,
     setTrashSchemeId
   } = useContext(playContext)
-  const { deck, hand, tableau, userId } = useContext(playerContext)
+  const { deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
   useEffect(() => {
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
@@ -38,11 +38,18 @@ export default function PlayerView (): JSX.Element {
     setDeck?.(deck)
   }, [deck, setDeck])
   useEffect(() => {
+    console.log('hand', hand)
     if (hand == null) {
       return
     }
-
     setHand?.(current => {
+      const currentIds = current?.map(scheme => scheme.id)
+      console.log('currentIds', currentIds)
+      const handIds = hand?.map(scheme => scheme.id)
+      console.log('handIds', handIds)
+      if (handIds.length === currentIds.length && handIds?.every(id => currentIds?.includes(id))) {
+        return current
+      }
       const already = current?.filter(scheme => hand.some(handScheme => handScheme.id === scheme.id))
 
       const newSchemes = hand.filter(scheme => !current.some(currentScheme => currentScheme.id === scheme.id))
@@ -50,7 +57,7 @@ export default function PlayerView (): JSX.Element {
       setHandClone?.(newHand)
       return newHand
     })
-  }, [hand, setHand, setHandClone])
+  }, [choices, hand, playerId, setHand, setHandClone])
   useEffect(() => {
     if (court == null) {
       return

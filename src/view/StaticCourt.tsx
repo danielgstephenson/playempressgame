@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react'
+import { Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
@@ -22,11 +22,11 @@ export default function StaticCourtView (): JSX.Element {
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
   })
   return (
-    <Box alignSelf='start'>
+    <Stack spacing='3px' alignSelf='start'>
       <StaticPalaceHeadingView label='Court'>
         <TimePassedButton />
       </StaticPalaceHeadingView>
       <SchemesContainerView>{views}</SchemesContainerView>
-    </Box>
+    </Stack>
   )
 }

@@ -14,6 +14,7 @@ import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getBid from '../service/getBid'
+import getBidStatus from '../service/getBidStatus'
 import useBidMax from '../use/bidMax'
 import Cloud from './Cloud'
 import Status from './Status'
@@ -38,23 +39,27 @@ export default function BidView (): JSX.Element {
     return <></>
   }
   function handleChange (value: string): void {
-    setBid(Number(value))
+    if (playerState.silver == null || playerState.gold == null) return
+    const bid = Number(value)
+    const newBid = getBid({ bid, gold: playerState.gold, silver: playerState.silver })
+    setBid(newBid)
   }
   function handleSliderChange (
     values: number[]
   ): void {
-    if (playerState.bid == null) {
+    if (playerState.bid == null || playerState.silver == null || playerState.gold == null) {
       return
     }
     const bid = values[0]
     if (bid >= playerState.bid) {
-      setBid(bid)
+      const newBid = getBid({ bid, gold: playerState.gold, silver: playerState.silver })
+      setBid(newBid)
     }
   }
   const eleven = playerState.tableau.some(scheme => scheme.rank === 11)
   const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
   const step = eleven && bidFive ? 1 : 5
-  const bidStatus = getBid({ tableau: playerState.tableau, bid: playerState.bid })
+  const bidStatus = getBidStatus({ tableau: playerState.tableau, bid: playerState.bid })
   return (
     <>
       <HStack spacing='20px'>

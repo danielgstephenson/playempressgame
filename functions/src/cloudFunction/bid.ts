@@ -67,7 +67,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     if (currentPlayer.silver < minimumSilver) {
       throw new https.HttpsError(
         'out-of-range',
-        `You do not have enough silver. You need at least ${minimumSilver}.`
+        `You do not have enough silver. You would need at least ${minimumSilver}.`
       )
     }
     const treasure = currentPlayer.gold + currentPlayer.silver
