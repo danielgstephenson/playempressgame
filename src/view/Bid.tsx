@@ -40,9 +40,9 @@ export default function BidView (): JSX.Element {
   }
   function handleChange (value: string): void {
     if (playerState.silver == null || playerState.gold == null) return
-    const bid = Number(value)
-    const newBid = getBid({ bid, gold: playerState.gold, silver: playerState.silver })
-    setBid(newBid)
+    const newBid = Number(value)
+    const safeBid = getBid({ newBid, gold: playerState.gold, oldBid: bid, silver: playerState.silver })
+    setBid(safeBid)
   }
   function handleSliderChange (
     values: number[]
@@ -50,10 +50,10 @@ export default function BidView (): JSX.Element {
     if (playerState.bid == null || playerState.silver == null || playerState.gold == null) {
       return
     }
-    const bid = values[0]
-    if (bid >= playerState.bid) {
-      const newBid = getBid({ bid, gold: playerState.gold, silver: playerState.silver })
-      setBid(newBid)
+    const newBid = values[0]
+    if (newBid >= playerState.bid) {
+      const safeBid = getBid({ newBid, gold: playerState.gold, oldBid: bid, silver: playerState.silver })
+      setBid(safeBid)
     }
   }
   const eleven = playerState.tableau.some(scheme => scheme.rank === 11)

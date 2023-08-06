@@ -1,25 +1,32 @@
 export default function getBid ({
-  bid,
+  newBid,
   gold,
+  oldBid,
   silver
 }: {
-  bid: number
+  newBid: number
   gold: number
+  oldBid?: number
   silver: number
 }): number {
-  const silverBid = bid % 5 !== 0
+  const silverBid = newBid % 5 !== 0
   if (silverBid) {
-    const minimumSilver = bid % 5
-    if (silver < minimumSilver) {
-      const fiveFactor = Math.floor(bid / 5)
+    const silverNeeded = newBid % 5
+    if (silver < silverNeeded) {
+      const fiveFactor = Math.floor(newBid / 5)
       const goldBid = fiveFactor * 5
-      const higherbid = goldBid + 5
-      if (gold >= higherbid) {
-        return higherbid
+      if (oldBid == null || newBid > oldBid) {
+        const higherbid = goldBid + 5
+        if (gold >= higherbid) {
+          return higherbid
+        }
+        const maximumBid = goldBid + silver
+        return maximumBid
+      } else {
+        const maximumBid = goldBid + silver
+        return maximumBid
       }
-      const maximumBid = goldBid + silver
-      return maximumBid
     }
   }
-  return bid
+  return newBid
 }
