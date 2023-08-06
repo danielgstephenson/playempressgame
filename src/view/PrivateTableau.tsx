@@ -1,5 +1,5 @@
 import { HStack, Text, VStack } from '@chakra-ui/react'
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
@@ -15,11 +15,24 @@ export default function PrivateTableauView (): JSX.Element {
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
   const views = playerState.tableau?.map(scheme => {
+    if (
+      playerState.bid == null ||
+      gameState.choices == null ||
+      gameState.court == null ||
+      gameState.dungeon == null ||
+      playState.deck == null ||
+      gameState.id == null ||
+      gameState.phase == null ||
+      gameState.profiles == null ||
+      playerState.userId == null
+    ) {
+      return <Fragment key={scheme.id} />
+    }
     const styles = getInPlayStyles({
       bid: playerState.bid,
       choices: gameState.choices,
       court: gameState.court,
-      deck: playerState.deck,
+      deck: playState.deck,
       dungeon: gameState.dungeon,
       gameId: gameState.id,
       phase: gameState.phase,

@@ -137,6 +137,7 @@ export interface Play {
   emptyTrash?: () => void
   hand?: Scheme[]
   handClone?: Scheme[]
+  handlingIds?: string[]
   overCourt?: boolean
   overDeck?: boolean
   overDungeon?: boolean

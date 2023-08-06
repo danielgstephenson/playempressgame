@@ -5,7 +5,6 @@ export default function getTimelineRange ({ timelineLength, phase, final }: {
   phase: string
   final: boolean
 }): Range {
-  console.log('timeline', timelineLength)
   if (final) return { minimum: 0, maximum: 0 }
   if (phase === 'play') {
     return {

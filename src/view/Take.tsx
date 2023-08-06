@@ -25,6 +25,8 @@ import { LockIcon } from '@chakra-ui/icons'
 import { playerContext } from '../reader/player'
 import returnFromTableau from '../service/returnFromTableau'
 import filterOld from '../service/filterOld'
+import CurtainView from './Curtain'
+import PalaceView from './Palace'
 
 export default function TakeView ({ functions }: {
   functions: Functions
@@ -214,7 +216,6 @@ export default function TakeView ({ functions }: {
   const twelve = playState.tableau.some((scheme) => scheme.rank === 12)
   const tinyDungeon = !twelve && <StaticDungeonView />
   const fontWeight = playState.overTableau === true ? '1000' : undefined
-  console.log('playState', playState)
   const courtTaken = playState.taken.filter((schemeId) => {
     const court = gameCourt?.some((scheme) => scheme.id === schemeId)
     return court
@@ -281,9 +282,19 @@ export default function TakeView ({ functions }: {
       onDragOver={handleDragOver}
     >
       <Stack direction='row'>
-        {tinyDungeon}
-        <TakeCourtView />
-        <TimelineView />
+        <CurtainView
+          open={cloudCourtLoading}
+          hider={
+            <>
+              {tinyDungeon}
+              <TakeCourtView />
+              <TimelineView />
+            </>
+          }
+        >
+          <PalaceView />
+          <TimelineView />
+        </CurtainView>
       </Stack>
       <Stack direction='row' justifyContent='space-between'>
         <Box>

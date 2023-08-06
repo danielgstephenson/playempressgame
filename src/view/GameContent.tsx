@@ -18,7 +18,7 @@ export default function GameContentView (): JSX.Element {
   const taking = isTaking({ profiles: gameState.profiles, userId: authState.currentUser.uid, choices: gameState.choices })
   const showContent = !taking && gameState.phase !== 'join'
   return (
-    <Stack direction='column' flexGrow='1' height='100%' overflow='hidden'>
+    <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing='4px'>
       <Box>
         <Stack direction='row' justifyContent='space-between' alignItems='center'>
           <Curtain open={showContent}>

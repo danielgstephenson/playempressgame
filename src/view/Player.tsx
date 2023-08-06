@@ -13,6 +13,7 @@ import ProfileProvider from '../context/profile/Provider'
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, round, phase, profiles, choices } = useContext(gameContext)
   const {
+    handlingIds,
     resetTaken,
     setCourt,
     setDeck,
@@ -38,16 +39,15 @@ export default function PlayerView (): JSX.Element {
     setDeck?.(deck)
   }, [deck, setDeck])
   useEffect(() => {
-    console.log('hand', hand)
     if (hand == null) {
       return
     }
     setHand?.(current => {
-      const currentIds = current?.map(scheme => scheme.id)
-      console.log('currentIds', currentIds)
-      const handIds = hand?.map(scheme => scheme.id)
-      console.log('handIds', handIds)
-      if (handIds.length === currentIds.length && handIds?.every(id => currentIds?.includes(id))) {
+      if (hand == null || handlingIds == null || current == null) {
+        return current
+      }
+      const handIds = hand.map(scheme => scheme.id)
+      if (handIds.length === handlingIds.length && handIds?.every(id => handlingIds.includes(id))) {
         return current
       }
       const already = current?.filter(scheme => hand.some(handScheme => handScheme.id === scheme.id))

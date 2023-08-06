@@ -1,4 +1,4 @@
-import { Box, Stack, HStack, Circle, Heading, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Box, Stack, HStack, Circle, Heading, Flex, Text } from '@chakra-ui/react'
 import getBg from '../service/getBg'
 import schemes from '../schemes.json'
 import { RepeatClockIcon } from '@chakra-ui/icons'
@@ -32,7 +32,8 @@ export default function ExpandedSchemeView ({
     )
   })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
-  const threat = scheme.threat !== '' && <Box color={circleBg} padding='10px' bg='white' height='100%' maxHeight='112px'>{scheme.threat}</Box>
+  const threatProps = scheme.threat !== '' ? { color: circleBg, padding: '11px', bg: 'white' } : { height: '114px' }
+  const threat = <Box {...threatProps} maxH='114px'>{scheme.threat}</Box>
   const linkProps = scheme.rank === 25 ? { fontSize: '10px' } : {}
   return (
     <LargeSchemeView bg={cardBg}>
@@ -46,17 +47,14 @@ export default function ExpandedSchemeView ({
           {time}
         </HStack>
         <Heading size='xl' minH='85px'>{scheme.title}</Heading>
-        <Flex direction='column' height='100%' gap='10px'>
+        <Flex direction='column' height='100%' gap='10px' justifyContent='space-between'>
           <Text minHeight='60px'>{scheme.beginning}</Text>
           <Text>{scheme.end}</Text>
-          <Flex direction='column' height='100%' gap='10px'>
-            <Spacer />
-            {threat}
-            <HStack spacing='10px'>
-              <ExpandedLinkView label={scheme.label1} link={scheme.link1} icon={scheme.icon1} {...linkProps} />
-              <ExpandedLinkView label={scheme.label2} link={scheme.link2} icon={scheme.icon2} {...linkProps} />
-            </HStack>
-          </Flex>
+          {threat}
+          <HStack spacing='10px'>
+            <ExpandedLinkView label={scheme.label1} link={scheme.link1} icon={scheme.icon1} {...linkProps} />
+            <ExpandedLinkView label={scheme.label2} link={scheme.link2} icon={scheme.icon2} {...linkProps} />
+          </HStack>
         </Flex>
       </Stack>
     </LargeSchemeView>

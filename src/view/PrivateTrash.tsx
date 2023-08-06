@@ -16,7 +16,7 @@ export default function PrivateTrashView (): JSX.Element {
   const playerState = useContext(playerContext)
   const done = gameState.final === true && gameState.profiles?.every(profile => profile.playReady) === true && gameState.choices?.length === 0
   return (
-    <VStack spacing='2px'>
+    <VStack spacing='2px' alignItems='start'>
       <ActiveHeading active={playState.overTrash}>
         <HStack alignItems='baseline'><Text>Trash</Text> <FinalIconPopoverButtonView /></HStack>
       </ActiveHeading>

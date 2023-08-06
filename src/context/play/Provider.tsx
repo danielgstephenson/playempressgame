@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import playContext from '.'
 import { Scheme } from '../../types'
 
@@ -22,6 +22,12 @@ export default function PlayProvider ({ children }: {
   const [trashSchemeId, setTrashSchemeId] = useState<string>()
   const [tableau, setTableau] = useState<Scheme[]>([])
   const [taken, setTaken] = useState<string[]>([])
+  const handlingIds = useMemo(() => {
+    const handlingIds = hand.map(scheme => scheme.id)
+    const areaIds = [deckChoiceId, trashChoiceId, playSchemeId, trashSchemeId]
+    areaIds.forEach(id => id != null && handlingIds.push(id))
+    return handlingIds
+  }, [deckChoiceId, hand, playSchemeId, trashChoiceId, trashSchemeId])
   const leave = useCallback((schemeId: string) => {
     setTaken(taken => taken.filter(scheme => scheme !== schemeId))
   }, [])
@@ -31,6 +37,7 @@ export default function PlayProvider ({ children }: {
   }, [])
   const emptyTrash = useCallback(() => setTrashSchemeId(undefined), [])
   const emptyPlay = useCallback(() => setPlaySchemeId(undefined), [])
+
   const state = {
     court,
     deck,
@@ -40,6 +47,7 @@ export default function PlayProvider ({ children }: {
     emptyTrash,
     hand,
     handClone,
+    handlingIds,
     leave,
     overCourt,
     overDeck,

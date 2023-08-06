@@ -1,3 +1,4 @@
+import { LockIcon } from '@chakra-ui/icons'
 import {
   NumberInput,
   NumberInputField,
@@ -15,8 +16,11 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getBid from '../service/getBid'
 import getBidStatus from '../service/getBidStatus'
+import getTyingProfiles from '../service/getTyingProfiles'
 import useBidMax from '../use/bidMax'
 import Cloud from './Cloud'
+import Curtain from './Curtain'
+import PopoverIconButtonView from './PopoverIconButton'
 import Status from './Status'
 
 export default function BidView (): JSX.Element {
@@ -60,9 +64,26 @@ export default function BidView (): JSX.Element {
   const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
   const step = eleven && bidFive ? 1 : 5
   const bidStatus = getBidStatus({ tableau: playerState.tableau, bid: playerState.bid })
+  const showClouds = playerState.auctionReady === false
+  const tyingProfiles = getTyingProfiles({
+    profiles: gameState.profiles, bid: playerState.bid
+  })
+  const tied = tyingProfiles != null && tyingProfiles.length > 1
+  const imprisoning = tied && playerState.auctionReady
   return (
     <>
       <HStack spacing='20px'>
+        <Curtain open={imprisoning}>
+          <PopoverIconButtonView
+            aria-label='You are ready to imprison.'
+            size='xs'
+            bg='gray'
+            color='black'
+            icon={<LockIcon />}
+          >
+            You are ready to imprison.
+          </PopoverIconButtonView>
+        </Curtain>
         <NumberInput
           step={step}
           min={playerState.bid}
@@ -92,32 +113,34 @@ export default function BidView (): JSX.Element {
         </RangeSlider>
         <Status label='Bid' value={bidStatus} />
       </HStack>
-      <HStack justifyContent='space-between'>
-        <Cloud
-          fn='bid'
-          props={{ bid, gameId: gameState.id }}
-        >
-          Bid
-        </Cloud>
-        <Cloud
-          fn='imprison'
-          props={{ gameId: gameState.id }}
-        >
-          Imprison
-        </Cloud>
-        <Cloud
-          fn='concede'
-          props={{ gameId: gameState.id }}
-        >
-          Concede
-        </Cloud>
-        <Cloud
-          fn='withdraw'
-          props={{ gameId: gameState.id }}
-        >
-          Withdraw
-        </Cloud>
-      </HStack>
+      <Curtain open={showClouds}>
+        <HStack justifyContent='space-between'>
+          <Cloud
+            fn='bid'
+            props={{ bid, gameId: gameState.id }}
+          >
+            Bid
+          </Cloud>
+          <Cloud
+            fn='imprison'
+            props={{ gameId: gameState.id }}
+          >
+            Imprison
+          </Cloud>
+          <Cloud
+            fn='concede'
+            props={{ gameId: gameState.id }}
+          >
+            Concede
+          </Cloud>
+          <Cloud
+            fn='withdraw'
+            props={{ gameId: gameState.id }}
+          >
+            Withdraw
+          </Cloud>
+        </HStack>
+      </Curtain>
     </>
   )
 }

@@ -10,6 +10,7 @@ export default function getInPlayStyles ({
   choices,
   court,
   deck,
+  deckEmpty,
   dungeon,
   gameId,
   phase,
@@ -17,27 +18,41 @@ export default function getInPlayStyles ({
   rank,
   schemeId,
   userId
-}: {
-  bid?: number
-  court?: Scheme[]
-  choices?: Choice[]
-  deck?: Scheme[]
-  dungeon?: Scheme[]
-  gameId?: string
-  phase?: string
-  profiles?: Profile[]
+}: ({
+  bid: number
+  court: Scheme[]
+  choices: Choice[]
+  dungeon: Scheme[]
+  gameId: string
+  phase: string
+  profiles: Profile[]
   rank: number
   schemeId: string
-  userId?: string
-}): SchemeStyles {
+  userId: string
+} & ({
+  deck: Scheme[]
+  deckEmpty?: undefined
+} | {
+  deck?: undefined
+  deckEmpty: boolean
+}))): SchemeStyles {
   const bg = getBg({ rank })
   const allReady = areAllReady(profiles)
   const highestUntiedProfile = getHighestUntiedProfile(profiles)
   const highestUntiedBidder = highestUntiedProfile?.userId === userId
+  if (phase === 'play') {
+    const highestRankInPlay = profiles?.reduce<number>((highestRank, profile) => {
+      return Math.max(highestRank, profile.playScheme?.rank ?? 0)
+    }, 0)
+    const isHighestRankInPlay = rank === highestRankInPlay
+    if (isHighestRankInPlay) {
+      return { bg, ...CANT_CARRY_OUT_STYLES }
+    }
+  }
 
   const fromCourt = court?.some(scheme => scheme.id === schemeId)
   if (rank === 9) {
-    if (fromCourt === true) {
+    if (fromCourt) {
       return { bg }
     }
     const fullDiscard = profiles?.some(profile => profile.userId !== userId && profile.topDiscardScheme != null)
@@ -45,11 +60,11 @@ export default function getInPlayStyles ({
       if (highestUntiedBidder) {
         return { bg, ...CANT_CARRY_OUT_STYLES }
       }
-      if (fullDiscard === true) {
+      if (fullDiscard) {
         return { bg, ...CARRYING_OUT_STYLES }
       }
     }
-    if (fullDiscard === true) {
+    if (fullDiscard) {
       return { bg, ...CAN_CARRY_OUT_STYLES }
     } else {
       return { bg, ...CANT_CARRY_OUT_STYLES }
@@ -96,10 +111,11 @@ export default function getInPlayStyles ({
     return { bg, ...CARRYING_OUT_STYLES }
   }
   if (rank === 13) {
-    if (!allReady) {
-      return CAN_CARRY_OUT_STYLES
+    const choosing = choices != null && choices.length > 0
+    if (choosing || !allReady) {
+      return { bg, ...CAN_CARRY_OUT_STYLES }
     }
-    if (fromCourt === true) {
+    if (fromCourt) {
       return { bg }
     }
     const wonTheAuction = highestUntiedProfile?.userId === userId
@@ -110,15 +126,21 @@ export default function getInPlayStyles ({
     return { bg, ...CARRYING_OUT_STYLES }
   }
   if (rank === 14) {
-    if (deck != null && userId != null && gameId != null) {
+    if (deck != null) {
       const playerId = `${userId}_${gameId}`
       if (deck.length >= 2 || deck.every(scheme => scheme.rank === deck[0].rank)) {
         return { bg, ...CANT_CARRY_OUT_STYLES }
-      } else if (phase === 'auction' && choices?.some(choice => choice.playerId === playerId) === true) {
+      } else if (phase === 'auction' && choices?.some(choice => choice.playerId === playerId)) {
         return { bg, ...CARRYING_OUT_STYLES }
       } else {
         return { bg, ...CAN_CARRY_OUT_STYLES }
       }
+    }
+    if (deckEmpty != null) {
+      if (deckEmpty) {
+        return { bg, ...CANT_CARRY_OUT_STYLES }
+      }
+      return { bg, ...CAN_CARRY_OUT_STYLES }
     }
   }
   return { bg }
