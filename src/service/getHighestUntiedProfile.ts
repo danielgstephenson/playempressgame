@@ -1,5 +1,5 @@
 import { Profile } from '../types'
-import getTyingProfiles from './getTyingProfiles'
+import isTied from './isTied'
 
 export default function getHighestUntiedProfile (
   profiles?: Profile[]
@@ -9,13 +9,13 @@ export default function getHighestUntiedProfile (
       return highest
     }
     if (highest != null && highest.bid > profile.bid) {
-      const highestTiers = getTyingProfiles({ profiles, bid: highest.bid })
-      if (highestTiers == null || highestTiers.length === 1) {
+      const highestTied = isTied({ profiles, bid: highest.bid })
+      if (!highestTied) {
         return highest
       }
     }
-    const profileTiers = getTyingProfiles({ profiles, bid: profile.bid })
-    if (profileTiers == null || profileTiers.length === 1) {
+    const profileTied = isTied({ profiles, bid: profile.bid })
+    if (!profileTied) {
       return profile
     }
     return undefined

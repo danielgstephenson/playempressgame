@@ -5,7 +5,7 @@ export default function getTyingProfiles ({
   profiles
 }: {
   bid: number
-  profiles?: Profile[]
+  profiles: Profile[]
 }): Profile[] | undefined {
-  return profiles?.filter(profile => !profile.withdrawn && profile.bid === bid)
+  return profiles.filter(profile => !profile.withdrawn && profile.bid === bid)
 }

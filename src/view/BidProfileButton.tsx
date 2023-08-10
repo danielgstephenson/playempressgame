@@ -16,7 +16,8 @@ export default function BidProfileButtonView (): JSX.Element {
     profileState.bid == null ||
     profileState.displayName == null ||
     profileState.lastBidder == null ||
-    profileState.tableau == null
+    profileState.tableau == null ||
+    gameState.profiles == null
   ) return <></>
   const allReady = areAllReady(gameState.profiles)
   const bidding = gameState.phase === 'auction' && !allReady

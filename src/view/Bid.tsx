@@ -16,7 +16,7 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getBid from '../service/getBid'
 import getBidStatus from '../service/getBidStatus'
-import getTyingProfiles from '../service/getTyingProfiles'
+import isTied from '../service/isTied'
 import useBidMax from '../use/bidMax'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
@@ -65,10 +65,7 @@ export default function BidView (): JSX.Element {
   const step = eleven && bidFive ? 1 : 5
   const bidStatus = getBidStatus({ tableau: playerState.tableau, bid: playerState.bid })
   const showClouds = playerState.auctionReady === false
-  const tyingProfiles = getTyingProfiles({
-    profiles: gameState.profiles, bid: playerState.bid
-  })
-  const tied = tyingProfiles != null && tyingProfiles.length > 1
+  const tied = isTied({ profiles: gameState.profiles, bid: playerState.bid })
   const imprisoning = tied && playerState.auctionReady
   return (
     <>

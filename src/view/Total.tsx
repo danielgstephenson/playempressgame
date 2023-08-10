@@ -1,5 +1,5 @@
 import { StarIcon, UnlockIcon } from '@chakra-ui/icons'
-import { ButtonGroup, HStack, Text } from '@chakra-ui/react'
+import { ButtonGroup, Text, VStack } from '@chakra-ui/react'
 import { useContext, useMemo } from 'react'
 import authContext from '../context/auth'
 import playContext from '../context/play'
@@ -91,7 +91,9 @@ export default function TotalView (): JSX.Element {
   const courtMessage = otherThirteen ? '' : `${courtTotalMessage} in the court + `
   const courtPopover = (
     <PopoverButtonView
-      label={<HStack alignItems='center'><Text fontSize='sm'>{total}</Text> {imprisonIcon}</HStack>}
+      height='auto'
+      py='8px'
+      label={<VStack><Text fontSize='sm'>{total}</Text> {imprisonIcon}</VStack>}
       _firstLetter={{ textTransform: 'capitalize' }}
       bg={bg}
     >
@@ -99,7 +101,7 @@ export default function TotalView (): JSX.Element {
     </PopoverButtonView>
   )
   const finalPopover = gameState.timeline.length <= 1 && (
-    <PopoverIconButtonView fontSize='sm' icon={<StarIcon />} color={bg} aria-label='Final auction'>
+    <PopoverIconButtonView height='auto' fontSize='sm' icon={<StarIcon />} color={bg} aria-label='Final auction'>
       This is the final auction.
     </PopoverIconButtonView>
   )

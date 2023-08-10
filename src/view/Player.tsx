@@ -1,6 +1,6 @@
 import PlayerHistoryView from './PlayerHistory'
 import BidView from './Bid'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
@@ -9,6 +9,12 @@ import functionsContext from '../context/functions'
 import TakeView from './Take'
 import ProfileView from './Profile'
 import ProfileProvider from '../context/profile/Provider'
+import useSound from 'use-sound'
+import isTied from '../service/isTied'
+import alert from '../alert.mp3'
+import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
+import isAgainstImprison from '../service/isAgainstImprison'
+import isTaking from '../service/isTaking'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, round, phase, profiles, choices } = useContext(gameContext)
@@ -26,7 +32,7 @@ export default function PlayerView (): JSX.Element {
     setTrashChoiceId,
     setTrashSchemeId
   } = useContext(playContext)
-  const { deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
+  const { auctionReady, bid, deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
   useEffect(() => {
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
@@ -85,6 +91,59 @@ export default function PlayerView (): JSX.Element {
     }
   }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
   const functionsState = useContext(functionsContext)
+  const [playAlert] = useSound(alert)
+  const [phaseClone, setPhaseClone] = useState(phase)
+  const [bidClone, setBidClone] = useState(bid)
+  const [tiedClone, setTiedClone] = useState(() => profiles != null && bid != null && isTied({ profiles, bid }))
+  const [highestUntiedClone, setHighestUntiedClone] = useState(() => isHighestUntiedBidder({ profiles, userId }))
+  const [againstImprisonClone, setAgainstImprisonClone] = useState(() => profiles != null && userId != null && isAgainstImprison({ profiles, userId }))
+  const [takingClone, setTakingClone] = useState(() => isTaking({ profiles, userId, choices }))
+  if (phase !== phaseClone) {
+    setPhaseClone(phase)
+    if (
+      phaseClone != null &&
+      phase != null &&
+      phase !== 'join'
+    ) {
+      playAlert()
+    }
+  }
+  if (profiles != null && bid != null) {
+    const tied = isTied({ profiles, bid })
+    if (tied !== tiedClone) {
+      setTiedClone(tied)
+    }
+    const highestUntied = isHighestUntiedBidder({ profiles, userId })
+    if (highestUntied !== highestUntiedClone) {
+      setHighestUntiedClone(highestUntied)
+    }
+    if (bid !== bidClone) {
+      setBidClone(bid)
+    } else {
+      if (highestUntied !== highestUntiedClone || tied !== tiedClone) {
+        playAlert()
+      }
+    }
+  }
+  if (profiles != null && userId != null && auctionReady != null) {
+    const againstImprison = isAgainstImprison({ profiles, userId })
+    if (againstImprison !== againstImprisonClone) {
+      setAgainstImprisonClone(againstImprison)
+      if (!auctionReady) {
+        playAlert()
+      }
+    }
+  }
+  if (profiles != null && userId != null && choices != null) {
+    const taking = isTaking({ profiles, userId, choices })
+    if (taking !== takingClone) {
+      setTakingClone(taking)
+      if (taking) {
+        playAlert()
+      }
+    }
+  }
+
   if (functionsState.functions == null || profiles == null) return <></>
   const otherProfiles = profiles.filter(profile => profile.userId !== userId)
   const otherProfileViews = otherProfiles.map(profile => {

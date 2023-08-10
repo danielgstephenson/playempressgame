@@ -14,9 +14,11 @@ export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
   const authState = useContext(authContext)
   const functionsState = useContext(functionsContext)
+
   if (authState.currentUser?.uid == null || functionsState.functions == null) return <></>
   const taking = isTaking({ profiles: gameState.profiles, userId: authState.currentUser.uid, choices: gameState.choices })
   const showContent = !taking && gameState.phase !== 'join'
+
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing='4px'>
       <Box>
