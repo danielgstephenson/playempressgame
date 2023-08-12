@@ -27,7 +27,7 @@ export default function HandSchemeView ({
   }
   const scheme = handClone.find(scheme => scheme.id === id)
   if (scheme == null) {
-    console.error('id', id)
+    console.error('Missing hand scheme id', id)
     return <>HandScheme no scheme</>
     // throw new Error(`Scheme with id ${id} not found in hand`)
   }

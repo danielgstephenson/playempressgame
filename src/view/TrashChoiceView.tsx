@@ -11,6 +11,7 @@ export default function TrashChoiceView (): JSX.Element {
   const gameState = useContext(gameContext)
   const { setNodeRef } = useDroppable({ id: 'trashChoice' })
   const { trashChoiceId } = useContext(playContext)
+  console.log('trashChoiceId', trashChoiceId)
   const trashChoice = gameState.choices?.some(choice => choice.playerId === playerState.id && choice.type === 'trash')
   if (trashChoice !== true) {
     return <></>

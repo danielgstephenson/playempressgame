@@ -10,8 +10,6 @@ export default function getChoiceId ({
   userId: string
 }): string | undefined {
   const playerId = `${userId}_${gameId}`
-  console.log('playerId', playerId)
-  console.log('choices', choices)
   const userChoices = choices.filter(choice => choice.playerId === playerId)
   const userChoice = userChoices[0]
   return userChoice?.id

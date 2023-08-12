@@ -16,7 +16,7 @@ import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import isAgainstImprison from '../service/isAgainstImprison'
 import isTaking from '../service/isTaking'
 import isGameOver from '../service/isGameOver'
-import getChoiceId from '../service/countChoices'
+import getChoiceId from '../service/getChoiceId'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, final, id: gameId, round, phase, profiles, choices } = useContext(gameContext)
@@ -36,11 +36,15 @@ export default function PlayerView (): JSX.Element {
   } = useContext(playContext)
   const { auctionReady, bid, deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
   const [choiceIdClone, setChoiceIdClone] = useState(() => choices != null && userId != null && gameId != null && getChoiceId({ choices, gameId, userId }))
+  console.log('choiceIdClone', choiceIdClone)
   useEffect(() => {
+    console.log('reset choices')
+    setTrashChoiceId?.(undefined)
+    setDeckChoiceId?.(undefined)
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
     resetTaken?.()
-  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId, choiceIdClone])
+  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId, setDeckChoiceId, setTrashChoiceId, choiceIdClone])
   useEffect(() => {
     if (deck == null) {
       return
