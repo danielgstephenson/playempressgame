@@ -70,7 +70,7 @@ export default function PlayerView (): JSX.Element {
       setHandClone?.(newHand)
       return newHand
     })
-  }, [choices, hand, playerId, setHand, setHandClone])
+  }, [choices, hand, playerId, setHand, setHandClone, handlingIds])
   useEffect(() => {
     if (court == null) {
       return
