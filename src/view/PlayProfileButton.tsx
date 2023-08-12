@@ -6,6 +6,7 @@ import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getScore from '../service/getScore'
 import getWinners from '../service/getWinners'
+import isGameOver from '../service/isGameOver'
 import isTaking from '../service/isTaking'
 import TopPopoverButtonView from './TopPopoverButton'
 import TopPopoverIconButtonView from './TopPopoverIconButton'
@@ -17,6 +18,7 @@ export default function PlayProfileButtonView (): JSX.Element {
   const playerState = useContext(playerContext)
   if (
     gameState.choices == null ||
+    gameState.final == null ||
     gameState.court == null ||
     gameState.dungeon == null ||
     gameState.id == null ||
@@ -75,8 +77,8 @@ export default function PlayProfileButtonView (): JSX.Element {
   }
   if (gameState.phase !== 'play') return <></>
   if (profileState.playReady) {
-    const allReady = gameState.profiles.every(profile => profile.playReady)
-    if (gameState.final === true && allReady && gameState.choices?.length === 0) {
+    const gameOver = isGameOver({ profiles: gameState.profiles, final: gameState.final, choices: gameState.choices })
+    if (gameOver) {
       const score = getScore(profileState)
       const winners = getWinners({ profiles: gameState.profiles })
       const winner = winners.some(winner => winner.userId === profileState.userId)

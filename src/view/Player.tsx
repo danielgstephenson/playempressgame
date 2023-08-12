@@ -15,9 +15,11 @@ import alert from '../alert.mp3'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import isAgainstImprison from '../service/isAgainstImprison'
 import isTaking from '../service/isTaking'
+import isGameOver from '../service/isGameOver'
+import getChoiceId from '../service/countChoices'
 
 export default function PlayerView (): JSX.Element {
-  const { court, dungeon, round, phase, profiles, choices } = useContext(gameContext)
+  const { court, dungeon, final, id: gameId, round, phase, profiles, choices } = useContext(gameContext)
   const {
     handlingIds,
     resetTaken,
@@ -33,11 +35,12 @@ export default function PlayerView (): JSX.Element {
     setTrashSchemeId
   } = useContext(playContext)
   const { auctionReady, bid, deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
+  const [choiceIdClone, setChoiceIdClone] = useState(() => choices != null && userId != null && gameId != null && getChoiceId({ choices, gameId, userId }))
   useEffect(() => {
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
     resetTaken?.()
-  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId])
+  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId, choiceIdClone])
   useEffect(() => {
     if (deck == null) {
       return
@@ -98,6 +101,7 @@ export default function PlayerView (): JSX.Element {
   const [highestUntiedClone, setHighestUntiedClone] = useState(() => isHighestUntiedBidder({ profiles, userId }))
   const [againstImprisonClone, setAgainstImprisonClone] = useState(() => profiles != null && userId != null && isAgainstImprison({ profiles, userId }))
   const [takingClone, setTakingClone] = useState(() => isTaking({ profiles, userId, choices }))
+  const [gameOverClone, setGameOverClone] = useState(() => profiles != null && final != null && choices != null && isGameOver({ profiles, final, choices }))
   if (phase !== phaseClone) {
     setPhaseClone(phase)
     if (
@@ -143,7 +147,24 @@ export default function PlayerView (): JSX.Element {
       }
     }
   }
-
+  if (profiles != null && final != null && choices != null) {
+    const gameOver = isGameOver({ profiles, final, choices })
+    if (gameOver !== gameOverClone) {
+      setGameOverClone(gameOver)
+      if (gameOver) {
+        playAlert()
+      }
+    }
+  }
+  if (choices != null && userId != null && gameId != null) {
+    const choiceId = getChoiceId({ choices, gameId, userId })
+    if (choiceId !== choiceIdClone) {
+      setChoiceIdClone(choiceId)
+      if (choiceId != null) {
+        playAlert()
+      }
+    }
+  }
   if (functionsState.functions == null || profiles == null) return <></>
   const otherProfiles = profiles.filter(profile => profile.userId !== userId)
   const otherProfileViews = otherProfiles.map(profile => {

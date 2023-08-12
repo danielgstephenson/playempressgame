@@ -10,14 +10,15 @@ import { CloseIcon, MinusIcon, StarIcon } from '@chakra-ui/icons'
 import ScorePopoverView from './ScorePopover'
 import { HStack, Text } from '@chakra-ui/react'
 import FinalIconPopoverButtonView from './FinalIconPopoverButton'
+import isGameOver from '../service/isGameOver'
 
 export default function PlayReadyView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
   const playState = useContext(playContext)
-  if (gameState.profiles == null) return <></>
-  const allReady = gameState.profiles.every(profile => profile.playReady)
-  if (allReady && gameState.final === true && gameState.choices?.length === 0) {
+  if (gameState.profiles == null || gameState.final == null || gameState.choices == null) return <></>
+  const gameOver = isGameOver({ profiles: gameState.profiles, final: gameState.final, choices: gameState.choices })
+  if (gameOver) {
     const score = getScore(playerState)
     const winners = getWinners({ profiles: gameState.profiles })
     const winner = winners.some(winner => winner.userId === playerState.userId)
@@ -52,7 +53,7 @@ export default function PlayReadyView (): JSX.Element {
     trashSchemeId: playState.trashSchemeId,
     playSchemeId: playState.playSchemeId
   }
-  const icon = gameState.final === true && <StarIcon />
+  const icon = gameState.final && <StarIcon />
   return (
     <Curtain open={showReady} hider={<FinalIconPopoverButtonView />}>
       <Cloud
