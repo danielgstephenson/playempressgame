@@ -25,9 +25,10 @@ export default function BidProfileButtonView (): JSX.Element {
   const highestUntied = isHighestUntiedBidder({
     profiles: gameState.profiles, userId: profileState.userId
   })
+  const label = getBidStatus({ tableau: profileState.tableau, bid: profileState.bid, debug: true })
   if (highestUntied) {
     return (
-      <TopPopoverButtonView bg='black' color='white' label={profileState.bid}>
+      <TopPopoverButtonView bg='black' color='white' label={label}>
         {profileState.displayName}'s {profileState.bid} is the highest untied bid.
       </TopPopoverButtonView>
     )
@@ -37,12 +38,11 @@ export default function BidProfileButtonView (): JSX.Element {
   })
   if (tyingProfiles == null) return <></>
   const tied = tyingProfiles.length > 1
-  const label = getBidStatus({ tableau: profileState.tableau, bid: profileState.bid })
   if (tied) {
     if (profileState.auctionReady === true) {
       return (
         <TopPopoverButtonView
-          bg='gray'
+          bg='gray.400'
           color='black'
           label={<HStack alignItems='start'><Text>{label}</Text> <LockIcon /></HStack>}
         >
@@ -58,7 +58,7 @@ export default function BidProfileButtonView (): JSX.Element {
       )
     } else {
       return (
-        <TopPopoverButtonView bg='gray' color='black' label={label}>
+        <TopPopoverButtonView bg='gray.400' color='black' label={label}>
           {profileState.displayName}'s bid is {profileState.bid}, but they can withdraw.
         </TopPopoverButtonView>
       )

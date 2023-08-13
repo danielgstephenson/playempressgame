@@ -18,7 +18,6 @@ import playerJoined from '../asset/sound/playerJoined.mp3'
 import isPlaying from '../service/iaPlaying'
 
 export default function GameContentView (): JSX.Element {
-  console.log('render GameContentView')
   const gameState = useContext(gameContext)
   const authState = useContext(authContext)
   const functionsState = useContext(functionsContext)
@@ -49,19 +48,15 @@ export default function GameContentView (): JSX.Element {
     setPhaseClone(gameState.phase)
     if (gameState.phase === 'play') {
       if (gameState.final) {
-        console.log('hearFinalNewPlay')
         hearFinalNewPlay()
       } else {
-        console.log('hearNewPlay')
         hearNewPlay()
       }
     }
     if (gameState.phase === 'auction') {
       if (gameState.timeline.length <= 1) {
-        console.log('hearFinalNewAuction')
         hearFinalNewAuction()
       } else {
-        console.log('hearNewAuction')
         hearNewAuction()
       }
     }
@@ -73,7 +68,6 @@ export default function GameContentView (): JSX.Element {
       gameState.profiles?.length != null &&
       gameState.profiles?.length > 1
     ) {
-      console.log('hearPlayerJoined')
       hearPlayerJoined()
     }
   }
