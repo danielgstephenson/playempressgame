@@ -46,7 +46,7 @@ export default function PrivateTableauView (): JSX.Element {
     )
   })
   return (
-    <VStack spacing='2px'>
+    <VStack spacing='2px' alignItems='start'>
       <ActiveHeading active={playState.overPlay}><HStack><Text>Play</Text><FinalIconPopoverButtonView /></HStack></ActiveHeading>
       <HStack spacing='2px' width='max-content'>
         <PlayAreaView />
