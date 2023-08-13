@@ -11,14 +11,23 @@ import ProfileView from './Profile'
 import ProfileProvider from '../context/profile/Provider'
 import useSound from 'use-sound'
 import isTied from '../service/isTied'
-import alert from '../alert.mp3'
 import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import isAgainstImprison from '../service/isAgainstImprison'
 import isTaking from '../service/isTaking'
 import isGameOver from '../service/isGameOver'
 import getChoiceId from '../service/getChoiceId'
+import losingAuction from '../asset/sound/losingAuction.mp3'
+import tiedAuction from '../asset/sound/tiedAuction.mp3'
+import imprison from '../asset/sound/imprison.mp3'
+import youTake from '../asset/sound/youTake.mp3'
+import choiceEffect from '../asset/sound/choiceEffect.mp3'
+import gameLoss from '../asset/sound/gameLoss.mp3'
+import gameVictory from '../asset/sound/gameVictory.mp3'
+import gameTie from '../asset/sound/gameTie.mp3'
+import getWinners from '../service/getWinners'
 
 export default function PlayerView (): JSX.Element {
+  console.log('render player')
   const { court, dungeon, final, id: gameId, round, phase, profiles, choices } = useContext(gameContext)
   const {
     handlingIds,
@@ -36,9 +45,7 @@ export default function PlayerView (): JSX.Element {
   } = useContext(playContext)
   const { auctionReady, bid, deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
   const [choiceIdClone, setChoiceIdClone] = useState(() => choices != null && userId != null && gameId != null && getChoiceId({ choices, gameId, userId }))
-  console.log('choiceIdClone', choiceIdClone)
   useEffect(() => {
-    console.log('reset choices')
     setTrashChoiceId?.(undefined)
     setDeckChoiceId?.(undefined)
     setTrashSchemeId?.(undefined)
@@ -98,24 +105,21 @@ export default function PlayerView (): JSX.Element {
     }
   }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
   const functionsState = useContext(functionsContext)
-  const [playAlert] = useSound(alert)
-  const [phaseClone, setPhaseClone] = useState(phase)
   const [bidClone, setBidClone] = useState(bid)
   const [tiedClone, setTiedClone] = useState(() => profiles != null && bid != null && isTied({ profiles, bid }))
   const [highestUntiedClone, setHighestUntiedClone] = useState(() => isHighestUntiedBidder({ profiles, userId }))
   const [againstImprisonClone, setAgainstImprisonClone] = useState(() => profiles != null && userId != null && isAgainstImprison({ profiles, userId }))
   const [takingClone, setTakingClone] = useState(() => isTaking({ profiles, userId, choices }))
   const [gameOverClone, setGameOverClone] = useState(() => profiles != null && final != null && choices != null && isGameOver({ profiles, final, choices }))
-  if (phase !== phaseClone) {
-    setPhaseClone(phase)
-    if (
-      phaseClone != null &&
-      phase != null &&
-      phase !== 'join'
-    ) {
-      playAlert()
-    }
-  }
+  const [hearLosingAuction] = useSound(losingAuction)
+  const [hearAuctionTied] = useSound(tiedAuction, { volume: 0.5 })
+  const [hearImprison] = useSound(imprison)
+  const [hearYouTake] = useSound(youTake, { volume: 0.2 })
+  const [hearChoiceEffect] = useSound(choiceEffect)
+  const [hearGameLoss] = useSound(gameLoss)
+  const [hearGameVictory] = useSound(gameVictory)
+  const [hearGameTie] = useSound(gameTie)
+
   if (profiles != null && bid != null) {
     const tied = isTied({ profiles, bid })
     if (tied !== tiedClone) {
@@ -127,9 +131,21 @@ export default function PlayerView (): JSX.Element {
     }
     if (bid !== bidClone) {
       setBidClone(bid)
-    } else {
-      if (highestUntied !== highestUntiedClone || tied !== tiedClone) {
-        playAlert()
+    } else if (phase === 'auction') {
+      const someUnready = profiles.some(profile => !profile.auctionReady)
+      if (someUnready) {
+        if (highestUntied !== highestUntiedClone) {
+          if (tied) {
+            console.log('hearAuctionTied')
+            hearAuctionTied()
+          } else {
+            console.log('hearLosingAuction 1')
+            hearLosingAuction()
+          }
+        } else if (tied !== tiedClone) {
+          console.log('hearLosingAuction 2')
+          hearLosingAuction()
+        }
       }
     }
   }
@@ -137,8 +153,9 @@ export default function PlayerView (): JSX.Element {
     const againstImprison = isAgainstImprison({ profiles, userId })
     if (againstImprison !== againstImprisonClone) {
       setAgainstImprisonClone(againstImprison)
-      if (!auctionReady) {
-        playAlert()
+      if (!auctionReady && phase === 'auction') {
+        console.log('hearImprison')
+        hearImprison()
       }
     }
   }
@@ -147,7 +164,8 @@ export default function PlayerView (): JSX.Element {
     if (taking !== takingClone) {
       setTakingClone(taking)
       if (taking) {
-        playAlert()
+        console.log('hearYouTake')
+        hearYouTake()
       }
     }
   }
@@ -156,7 +174,19 @@ export default function PlayerView (): JSX.Element {
     if (gameOver !== gameOverClone) {
       setGameOverClone(gameOver)
       if (gameOver) {
-        playAlert()
+        const winners = getWinners({ profiles })
+        const winner = winners.some(winner => winner.userId === userId)
+        if (winner) {
+          if (winners.length > 1) {
+            console.log('hearGameTie')
+            hearGameTie()
+          }
+          console.log('hearGameVictory')
+          hearGameVictory()
+        } else {
+          console.log('hearGameLoss')
+          hearGameLoss()
+        }
       }
     }
   }
@@ -165,7 +195,8 @@ export default function PlayerView (): JSX.Element {
     if (choiceId !== choiceIdClone) {
       setChoiceIdClone(choiceId)
       if (choiceId != null) {
-        playAlert()
+        console.log('hearChoiceEffect')
+        hearChoiceEffect()
       }
     }
   }

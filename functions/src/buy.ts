@@ -63,7 +63,7 @@ export default function buy ({
     buyer.tableau.push(leftmost)
     buyer.tableau.sort((a, b) => b.rank - a.rank)
     const inPlayAfter = joinRanksGrammar(buyer.tableau)
-    const inPlayAfterMessage = `tableau becomes ${inPlayAfter.joinedRanks}.`
+    const inPlayAfterMessage = `tableau becomes ${inPlayAfter.joinedRanks}`
     const privateInPlayAfterMessage = `Your ${inPlayAfterMessage}.`
     const publicInPlayAfterMessage = `${buyer.displayName}'s ${inPlayAfterMessage}.`
     addBuyEvent({

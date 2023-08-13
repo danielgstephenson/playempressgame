@@ -40,7 +40,7 @@ export default function getInPlayStyles ({
   const allReady = areAllReady(profiles)
   const highestUntiedProfile = getHighestUntiedProfile(profiles)
   const highestUntiedBidder = highestUntiedProfile?.userId === userId
-  if (phase === 'play') {
+  if (phase === 'play' && rank > 9 && rank < 15) {
     const highestRankInPlay = profiles?.reduce<number>((highestRank, profile) => {
       return Math.max(highestRank, profile.playScheme?.rank ?? 0)
     }, 0)

@@ -21,7 +21,7 @@ export default function addLowerRankPlaySchemeEvents ({
     publicEvents,
     playerId
   })
-  const rankLower = scheme.rank > rank
+  const rankLower = scheme.rank < rank
   if (rankLower) {
     const playEvents = addEventsEverywhere({
       publicEvents,

@@ -13,8 +13,7 @@ export default function effectsTwentyTwo ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-
-  const firstPrivateChild = addEvent(privateEvent, 'Second, earn 5 gold for each dungeon scheme.')
+  const firstPrivateChild = addEvent(privateEvent, 'First, earn 5 gold for each dungeon scheme.')
   const firstPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} earns 5 gold for each dungeon scheme.`)
   const dungeonAmount = playState.game.dungeon.length * 5
   earn({
@@ -24,7 +23,7 @@ export default function effectsTwentyTwo ({
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'First, earn the rightmost timeline scheme\'s rank.')
+  const secondPrivateChild = addEvent(privateEvent, 'Second, earn the rightmost timeline scheme\'s rank.')
   const secondPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} earns the rightmost timeline scheme's rank.`)
   const { scheme } = addRightmostTimelineSchemeEvents({
     playState,
