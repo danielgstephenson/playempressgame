@@ -20,6 +20,7 @@ ref: Ref<HTMLDivElement>): JSX.Element {
       {...otherProps}
       overflowX='clip'
       sx={{
+        'scrollbar-width': 'auto',
         '&::-webkit-scrollbar': {
           width: 'auto',
           borderRadius: '5px',

@@ -1,18 +1,30 @@
-import { Range } from '../types'
+import { Choice, Range } from '../types'
 
-export default function getTimelineRange ({ timelineLength, phase, final }: {
-  timelineLength: number
-  phase: string
+export default function getTimelineRange ({ choices, final, phase, timelineLength }: {
+  choices: Choice[]
   final: boolean
+  phase: string
+  timelineLength: number
 }): Range {
   if (final) return { minimum: 0, maximum: 0 }
-  if (phase === 'play') {
+  if (phase === 'play' && choices.length === 0) {
+    const minimumRange = getTimelineRange({
+      timelineLength: timelineLength - 1,
+      phase: 'auction',
+      final: false,
+      choices
+    })
+    const maximumRange = getTimelineRange({
+      timelineLength,
+      phase: 'auction',
+      final: false,
+      choices
+    })
     return {
-      minimum: getTimelineRange({ timelineLength: timelineLength - 1, phase: 'auction', final: false }).minimum,
-      maximum: getTimelineRange({ timelineLength, phase: 'auction', final: false }).maximum
+      minimum: minimumRange.minimum,
+      maximum: maximumRange.maximum
     }
-  }
-  if (phase === 'auction') {
+  } else {
     if (timelineLength <= 1) {
       return { minimum: 1, maximum: 1 }
     } else if (timelineLength === 2) {
@@ -28,5 +40,4 @@ export default function getTimelineRange ({ timelineLength, phase, final }: {
       }
     }
   }
-  throw new Error('Invalid phase')
 }

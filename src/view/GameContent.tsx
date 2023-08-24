@@ -1,13 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import ProfilesView from './Profiles'
 import { gameContext } from '../reader/game'
-import Curtain from './Curtain'
-import PalaceView from './Palace'
-import { Box, Stack } from '@chakra-ui/react'
-import TotalView from './Total'
-import TimelineView from './Timeline'
+import { Stack } from '@chakra-ui/react'
 import authContext from '../context/auth'
-import isTaking from '../service/isTaking'
 import functionsContext from '../context/functions'
 import useSound from 'use-sound'
 import newPlay from '../asset/sound/newPlay.mp3'
@@ -24,9 +19,9 @@ export default function GameContentView (): JSX.Element {
   const [phaseClone, setPhaseClone] = useState(gameState.phase)
   const [profilesCountClone, setProfilesCountClone] = useState(gameState.profiles?.length)
   const [hearNewPlay] = useSound(newPlay, { volume: 0.1 })
-  const [hearNewAuction] = useSound(newAuction)
-  const [hearFinalNewAuction] = useSound(finalNewAuction)
-  const [hearFinalNewPlay] = useSound(finalNewPlay, { volume: 0.1 })
+  const [hearNewAuction] = useSound(newAuction, { volume: 0.25 })
+  const [hearFinalNewAuction] = useSound(finalNewAuction, { volume: 0.5 })
+  const [hearFinalNewPlay] = useSound(finalNewPlay, { volume: 0.2 })
   const [hearPlayerJoined] = useSound(playerJoined, { volume: 0.2 })
   const [alreadyPlaying, setAlreadyPlaying] = useState(isPlaying({ profiles: gameState.profiles, userId: authState.currentUser?.uid }))
   useEffect(() => {
@@ -42,8 +37,7 @@ export default function GameContentView (): JSX.Element {
     gameState.timeline == null ||
     gameState.final == null
   ) return <></>
-  const taking = isTaking({ profiles: gameState.profiles, userId: authState.currentUser.uid, choices: gameState.choices })
-  const showContent = !taking && gameState.phase !== 'join'
+
   if (gameState.phase !== phaseClone) {
     setPhaseClone(gameState.phase)
     if (gameState.phase === 'play') {
@@ -73,15 +67,6 @@ export default function GameContentView (): JSX.Element {
   }
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing='4px'>
-      <Box>
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Curtain open={showContent}>
-            <PalaceView />
-            <TotalView />
-            <TimelineView />
-          </Curtain>
-        </Stack>
-      </Box>
       <ProfilesView />
     </Stack>
   )

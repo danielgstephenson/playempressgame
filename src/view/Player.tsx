@@ -25,6 +25,11 @@ import gameLoss from '../asset/sound/gameLoss.mp3'
 import gameVictory from '../asset/sound/gameVictory.mp3'
 import gameTie from '../asset/sound/gameTie.mp3'
 import getWinners from '../service/getWinners'
+import { Box, Stack } from '@chakra-ui/react'
+import Curtain from './Curtain'
+import PalaceView from './Palace'
+import TimelineView from './Timeline'
+import TotalView from './Total'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, final, id: gameId, round, phase, profiles, choices } = useContext(gameContext)
@@ -110,13 +115,13 @@ export default function PlayerView (): JSX.Element {
   const [againstImprisonClone, setAgainstImprisonClone] = useState(() => profiles != null && userId != null && isAgainstImprison({ profiles, userId }))
   const [takingClone, setTakingClone] = useState(() => isTaking({ profiles, userId, choices }))
   const [gameOverClone, setGameOverClone] = useState(() => profiles != null && final != null && choices != null && isGameOver({ profiles, final, choices }))
-  const [hearLosingAuction] = useSound(losingAuction)
-  const [hearAuctionTied] = useSound(tiedAuction, { volume: 0.5 })
-  const [hearImprison] = useSound(imprison, { volume: 0.75 })
-  const [hearYouTake] = useSound(youTake, { volume: 0.2 })
-  const [hearChoiceEffect] = useSound(choiceEffect)
+  const [hearLosingAuction] = useSound(losingAuction, { volume: 0.5 })
+  const [hearAuctionTied] = useSound(tiedAuction, { volume: 0.25 })
+  const [hearImprison] = useSound(imprison, { volume: 0.5 })
+  const [hearYouTake] = useSound(youTake, { volume: 0.1 })
+  const [hearChoiceEffect] = useSound(choiceEffect, { volume: 0.75 })
   const [hearGameLoss] = useSound(gameLoss)
-  const [hearGameVictory] = useSound(gameVictory, { volume: 0.5 })
+  const [hearGameVictory] = useSound(gameVictory, { volume: 0.2 })
   const [hearGameTie] = useSound(gameTie)
 
   if (profiles != null && bid != null) {
@@ -199,8 +204,19 @@ export default function PlayerView (): JSX.Element {
       </ProfileProvider>
     )
   })
+  const taking = isTaking({ profiles, userId, choices })
+  const showContent = !taking && phase !== 'join'
   return (
     <>
+      <Box>
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+          <Curtain open={showContent}>
+            <PalaceView />
+            <TotalView />
+            <TimelineView />
+          </Curtain>
+        </Stack>
+      </Box>
       <TakeView functions={functionsState.functions} />
       {otherProfileViews}
       <BidView />

@@ -15,11 +15,11 @@ export default function effectsZero ({
 }: SchemeEffectProps): PlayState {
   const privateHandEvent = addEvent(
     privateEvent,
-    'First, you take 8 Privilege into your hand.'
+    'First, you take 9 Privilege into your hand.'
   )
   addPublicEvent(
     publicEvents,
-    `First, ${effectPlayer.displayName} takes 8 Privilege into their hand.`
+    `First, ${effectPlayer.displayName} takes 9 Privilege into their hand.`
   )
   const beforeHandJoined = joinRanksGrammar(effectPlayer.hand)
   const beforeHandMessage = `Your hand was ${beforeHandJoined.joinedRanks}.`
@@ -27,7 +27,7 @@ export default function effectsZero ({
     privateHandEvent,
     beforeHandMessage
   )
-  effectPlayer.hand.unshift(...createPrivilege(8))
+  effectPlayer.hand.unshift(...createPrivilege(9))
   const afterHandJoined = joinRanksGrammar(effectPlayer.hand)
   const afterHandMessage = `Your hand becomes ${afterHandJoined.joinedRanks}.`
   addEvent(
@@ -36,11 +36,11 @@ export default function effectsZero ({
   )
   const privateDeckEvent = addEvent(
     privateEvent,
-    'Second, you put 2 Privilege on your deck.'
+    'Second, you put 1 Privilege on your deck.'
   )
   addPublicEvent(
     publicEvents,
-    `Second, ${effectPlayer.displayName} puts 2 Privilege on their deck.`
+    `Second, ${effectPlayer.displayName} puts 1 Privilege on their deck.`
   )
   const beforeDeckJoined = joinRanksGrammar(effectPlayer.deck)
   const beforeDeckMessage = `Your deck was ${beforeDeckJoined.joinedRanks}.`
@@ -48,7 +48,7 @@ export default function effectsZero ({
     privateDeckEvent,
     beforeDeckMessage
   )
-  effectPlayer.deck.unshift(...createPrivilege(2))
+  effectPlayer.deck.unshift(...createPrivilege(1))
   const afterDeckJoined = joinRanksGrammar(effectPlayer.deck)
   const afterDeckMessage = `Your deck becomes ${afterDeckJoined.joinedRanks}.`
   addEvent(

@@ -1,6 +1,7 @@
 import { CANT_CARRY_OUT_STYLES, CAN_CARRY_OUT_STYLES, CARRYING_OUT_STYLES } from '../constants'
 import { Choice, Profile, Scheme, SchemeStyles } from '../types'
 import areAllReady from './areAllReady'
+import get14Styles from './get14Styles'
 import getBg from './getBg'
 import getHighestUntiedProfile from './getHighestUntiedProfile'
 import isTaking from './isTaking'
@@ -126,22 +127,7 @@ export default function getInPlayStyles ({
     return { bg, ...CARRYING_OUT_STYLES }
   }
   if (rank === 14) {
-    if (deck != null) {
-      const playerId = `${userId}_${gameId}`
-      if (deck.length >= 2 || deck.every(scheme => scheme.rank === deck[0].rank)) {
-        return { bg, ...CANT_CARRY_OUT_STYLES }
-      } else if (phase === 'auction' && choices?.some(choice => choice.playerId === playerId)) {
-        return { bg, ...CARRYING_OUT_STYLES }
-      } else {
-        return { bg, ...CAN_CARRY_OUT_STYLES }
-      }
-    }
-    if (deckEmpty != null) {
-      if (deckEmpty) {
-        return { bg, ...CANT_CARRY_OUT_STYLES }
-      }
-      return { bg, ...CAN_CARRY_OUT_STYLES }
-    }
+    return get14Styles({ bg, deck, deckEmpty, userId, gameId, phase, choices })
   }
   return { bg }
 }

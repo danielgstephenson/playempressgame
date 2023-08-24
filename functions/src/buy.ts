@@ -219,7 +219,7 @@ export default function buy ({
         prefix: 'The dungeon',
         schemes: playState.game.dungeon
       })
-      playState.game.dungeon.unshift(topDiscard)
+      playState.game.dungeon.push(topDiscard)
       const afterDungeon = joinRanksGrammar(playState.game.dungeon)
       const afterDungeonMessage = `The dungeon becomes ${afterDungeon.joinedRanks}.`
       const publicDungeonMessage = `${buyer.displayName} imprisons their top discard scheme, ${topDiscard.rank}.`

@@ -1,7 +1,9 @@
 import { Stack } from '@chakra-ui/react'
-import { useContext } from 'react'
+import { Fragment, useContext } from 'react'
 import playContext from '../context/play'
+import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
+import { playerContext } from '../reader/player'
 import getInDungeonStyles from '../service/getInDungeonStyles'
 import ImprisonedButton from './ImprisonedButton'
 import SchemesContainerView from './SchemesContainer'
@@ -11,12 +13,31 @@ import TinyExpandableSchemeView from './TinyExpandableScheme'
 export default function StaticDungeonView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playState = useContext(playContext)
+  const playerState = useContext(playerContext)
+  const profileState = useContext(profileContext)
   const views = playState.dungeon?.map(scheme => {
+    if (
+      gameState.choices == null ||
+      gameState.court == null ||
+      gameState.phase == null ||
+      gameState.id == null ||
+      playerState.userId == null ||
+      playerState.deck == null ||
+      profileState.deckEmpty == null
+    ) {
+      return <Fragment key={scheme.id} />
+    }
+    console.log('staticdungeon')
     const styles = getInDungeonStyles({
+      choices: gameState.choices,
+      deck: playState.deck,
+      deckEmpty: profileState.deckEmpty,
       court: gameState.court,
+      gameId: gameState.id,
       phase: gameState.phase,
       rank: scheme.rank,
-      tableau: playState.tableau
+      tableau: playState.tableau,
+      userId: playerState.userId
     })
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
   })

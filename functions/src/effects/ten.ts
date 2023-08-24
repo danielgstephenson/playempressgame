@@ -1,7 +1,8 @@
 import addEvent from '../add/event'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addHighestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/yellow'
-import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
+import addHighestRankGreenPlaySchemeEvents from '../add/events/scheme/play/rank/highest/green'
+import addLeftmostYellowTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost/yellow'
+import guardDefined from '../guard/defined'
 import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
 
@@ -15,24 +16,24 @@ export default function effectsTen ({
   resume
 }: SchemeEffectProps): PlayState {
   if (!resume) {
-    const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is yellow, you copy it.')
     const firstPublicChildren = addPlayerPublicEvents({
       events: publicEvents,
-      message: `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they copy it.`
+      message: `First, ${effectPlayer.displayName} copies the leftmost yellow timeline scheme.`
     })
-    const scheme = addTopDiscardSchemeYellowEvents({
-      privateEvent: firstPrivateChild,
-      publicEvents: firstPublicChildren,
-      displayName: effectPlayer.displayName,
-      discard: effectPlayer.discard
+    const firstPrivateEvent = addEvent(privateEvent, 'First, you copy the leftmost yellow timeline scheme.')
+    const { scheme } = addLeftmostYellowTimelineSchemeEvents({
+      playState,
+      privateEvent: firstPrivateEvent,
+      publicEvents: firstPublicChildren
     })
     if (scheme != null) {
+      const timelineScheme = guardDefined(scheme, 'Leftmost yellow timeline scheme')
       const firstChoices = copyEffects({
         copiedByFirstEffect: true,
         effectPlayer,
-        effectScheme: scheme,
+        effectScheme: timelineScheme,
         playState,
-        privateEvent: firstPrivateChild,
+        privateEvent: firstPrivateEvent,
         publicEvents: firstPublicChildren,
         resume: false
       })
@@ -41,28 +42,27 @@ export default function effectsTen ({
       }
     }
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank yellow scheme in play.')
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank green scheme in play.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} copies the highest rank yellow scheme in play.`
+    message: `Second, ${effectPlayer.displayName} copies the highest rank green scheme in play.`
   })
-  const { scheme } = addHighestRankYellowPlaySchemeEvents({
+  const { scheme } = addHighestRankGreenPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  if (scheme == null) {
-    return playState
+  if (scheme != null) {
+    copyEffects({
+      copiedByFirstEffect: false,
+      effectPlayer,
+      effectScheme: scheme,
+      playState,
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren,
+      resume: false
+    })
   }
-  copyEffects({
-    copiedByFirstEffect: false,
-    effectPlayer,
-    effectScheme: scheme,
-    playState,
-    privateEvent: secondPrivateChild,
-    publicEvents: secondPublicChildren,
-    resume: false
-  })
   return playState
 }

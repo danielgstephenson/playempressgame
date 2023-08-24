@@ -1,6 +1,6 @@
 import addEvent from '../add/event'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addHighestRankGreenPlaySchemeEvents from '../add/events/scheme/play/rank/highest/green'
+import addHighestRankGreenDungeonSchemeEvents from '../add/events/scheme/dungeon/rank/highest/green'
 import addLeftmostTimelineSchemeIsGreenOrYellowEvents from '../add/events/scheme/timeline/leftmost/is/greenOrYellow'
 import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
@@ -41,14 +41,14 @@ export default function effectsTwelve ({
       }
     }
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank green scheme in play.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} copies the highest rank green scheme in play.`
+    message: `Second, ${effectPlayer.displayName} copies the highest rank green dungeon scheme.`
   })
-  const { scheme } = addHighestRankGreenPlaySchemeEvents({
+  const secondPrivateEvent = addEvent(privateEvent, 'Second, you copy the highest rank green dungeon scheme.')
+  const { scheme } = addHighestRankGreenDungeonSchemeEvents({
     playState,
-    privateEvent: secondPrivateChild,
+    privateEvent: secondPrivateEvent,
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
@@ -58,7 +58,7 @@ export default function effectsTwelve ({
       effectPlayer,
       effectScheme: scheme,
       playState,
-      privateEvent: secondPrivateChild,
+      privateEvent: secondPrivateEvent,
       publicEvents: secondPublicChildren,
       resume: false
     })

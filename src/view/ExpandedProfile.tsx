@@ -1,6 +1,7 @@
 import { Heading, Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
+import getScore from '../service/getScore'
 import Curtain from './Curtain'
 import ExpandedSchemeView from './ExpandedScheme'
 import LargeSchemeView from './LargeScheme'
@@ -15,9 +16,24 @@ export default function ExpandedProfileView (): JSX.Element {
   }
   const playEmpty = profileState.playScheme == null
   const gameOver = profileState.privateTrashHistory.length > 0
+  const score = getScore(profileState)
   return (
     <Stack p='5px' spacing='5px'>
       <Heading size='md' textAlign='center'>{profileState.displayName}</Heading>
+      <Curtain open={gameOver}>
+        <Heading size='sm'>Final Score</Heading>
+        <Heading size='lg'>{score}</Heading>
+        <Heading size='sm'>Gold</Heading>
+        <Heading size='lg'>{profileState.gold}</Heading>
+        <Heading size='sm'>Silver</Heading>
+        <Heading size='lg'>{profileState.silver}</Heading>
+        <Heading size='sm'>Hand</Heading>
+        <TinySchemesView schemes={profileState.hand} />
+        <Heading size='sm'>Deck</Heading>
+        <TinySchemesView schemes={profileState.deck} />
+        <Heading size='sm'>Discard</Heading>
+        <TinySchemesView schemes={profileState.discard} />
+      </Curtain>
       <Heading size='sm'>Last Played</Heading>
       <Curtain open={playEmpty} hider={<ExpandedSchemeView rank={profileState.playScheme?.rank} />}>
         <LargeSchemeView border='2px dashed gray' />
@@ -26,18 +42,7 @@ export default function ExpandedProfileView (): JSX.Element {
       <Curtain open={gameOver} hider={<PublicTrashView />}>
         <TrashHistoryView history={profileState.privateTrashHistory} />
       </Curtain>
-      <Curtain open={gameOver}>
-        <Heading size='sm'>Hand</Heading>
-        <TinySchemesView schemes={profileState.hand} />
-      </Curtain>
-      <Curtain open={gameOver}>
-        <Heading size='sm'>Deck</Heading>
-        <TinySchemesView schemes={profileState.deck} />
-      </Curtain>
-      <Curtain open={gameOver}>
-        <Heading size='sm'>Discard</Heading>
-        <TinySchemesView schemes={profileState.discard} />
-      </Curtain>
+      <Curtain open={gameOver} />
     </Stack>
   )
 }
