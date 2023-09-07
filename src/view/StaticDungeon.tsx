@@ -27,7 +27,6 @@ export default function StaticDungeonView (): JSX.Element {
     ) {
       return <Fragment key={scheme.id} />
     }
-    console.log('staticdungeon')
     const styles = getInDungeonStyles({
       choices: gameState.choices,
       deck: playState.deck,

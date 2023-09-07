@@ -2,11 +2,10 @@ import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addLowestRankPlaySchemeEvents from '../add/events/scheme/play/rank/lowest'
+import addHighestPlayTimeEvents from '../add/events/scheme/play/time/highest'
 import earn from '../earn'
 import guardDefined from '../guard/defined'
 import guardSchemeData from '../guard/schemeData'
-import isGreenOrYellow from '../is/greenOrYellow'
 import { PlayState, Scheme, SchemeEffectProps } from '../types'
 
 export default function effectsSeven ({
@@ -85,32 +84,18 @@ export default function effectsSeven ({
     events: publicEvents,
     message: `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns its time in silver.`
   })
-  const { scheme } = addLowestRankPlaySchemeEvents({
+  const { time } = addHighestPlayTimeEvents({
     playState,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren,
     playerId: effectPlayer.id
   })
-  const greenOrYellow = isGreenOrYellow(scheme)
-  if (greenOrYellow) {
-    addEventsEverywhere({
-      privateEvent: secondPrivateChild,
-      publicEvents: secondPublicChildren,
-      message: `${scheme.rank} is ${scheme.color} and has ${scheme.time} time.`
-    })
-    earn({
-      amount: scheme.time,
-      player: effectPlayer,
-      playState,
-      privateEvent: secondPrivateChild,
-      publicEvents: secondPublicChildren
-    })
-  } else {
-    addEventsEverywhere({
-      privateEvent: secondPrivateChild,
-      publicEvents: secondPublicChildren,
-      message: `${scheme.rank} is red.`
-    })
-  }
+  earn({
+    amount: time,
+    player: effectPlayer,
+    playState,
+    privateEvent: secondPrivateChild,
+    publicEvents: secondPublicChildren
+  })
   return playState
 }

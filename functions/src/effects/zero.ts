@@ -3,6 +3,7 @@ import addPublicEvent from '../add/event/public'
 import createPrivilege from '../create/privilege'
 import joinRanksGrammar from '../join/ranks/grammar'
 import { PlayState, SchemeEffectProps } from '../types'
+import earn from '../earn'
 
 export default function effectsZero ({
   copiedByFirstEffect,
@@ -15,11 +16,11 @@ export default function effectsZero ({
 }: SchemeEffectProps): PlayState {
   const privateHandEvent = addEvent(
     privateEvent,
-    'First, you take 9 Privilege into your hand.'
+    'First, you take 10 Privilege into your hand.'
   )
   addPublicEvent(
     publicEvents,
-    `First, ${effectPlayer.displayName} takes 9 Privilege into their hand.`
+    `First, ${effectPlayer.displayName} takes 10 Privilege into their hand.`
   )
   const beforeHandJoined = joinRanksGrammar(effectPlayer.hand)
   const beforeHandMessage = `Your hand was ${beforeHandJoined.joinedRanks}.`
@@ -34,26 +35,20 @@ export default function effectsZero ({
     privateHandEvent,
     afterHandMessage
   )
-  const privateDeckEvent = addEvent(
+  const secondPrivateChild = addEvent(
     privateEvent,
-    'Second, you put 1 Privilege on your deck.'
+    'Second, you earn 5 gold.'
   )
-  addPublicEvent(
+  const secondPublicChildren = addPublicEvent(
     publicEvents,
-    `Second, ${effectPlayer.displayName} puts 1 Privilege on their deck.`
+    `Second, ${effectPlayer.displayName} earns 5 gold.`
   )
-  const beforeDeckJoined = joinRanksGrammar(effectPlayer.deck)
-  const beforeDeckMessage = `Your deck was ${beforeDeckJoined.joinedRanks}.`
-  addEvent(
-    privateDeckEvent,
-    beforeDeckMessage
-  )
-  effectPlayer.deck.unshift(...createPrivilege(1))
-  const afterDeckJoined = joinRanksGrammar(effectPlayer.deck)
-  const afterDeckMessage = `Your deck becomes ${afterDeckJoined.joinedRanks}.`
-  addEvent(
-    privateDeckEvent,
-    afterDeckMessage
-  )
+  earn({
+    amount: 5,
+    player: effectPlayer,
+    playState,
+    privateEvent: secondPrivateChild,
+    publicEvents: secondPublicChildren
+  })
   return playState
 }

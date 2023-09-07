@@ -1,9 +1,11 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
+import addEventsEverywhere from '../add/events/everywhere'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addHighestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/yellow'
+import addHighestRankPlaySchemeEvents from '../add/events/scheme/play/rank/highest'
 import addLeftmostTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost'
 import earn from '../earn'
+import isYellow from '../is/yellow'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsSeventeen ({
@@ -34,17 +36,22 @@ export default function effectsSeventeen ({
   const secondPrivateChild = addEvent(privateEvent, 'Second, earn the highest yellow rank in play.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} earns the highest yellow rank in play.`
+    message: `Second, if the highest scheme in play is yellow, ${effectPlayer.displayName} earns its rank.`
   })
-  const { scheme: yellowScheme } = addHighestRankYellowPlaySchemeEvents({
+  const { scheme: highScheme } = addHighestRankPlaySchemeEvents({
     playState,
     playerId: effectPlayer.id,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren
   })
-  if (yellowScheme != null) {
+  addEventsEverywhere({
+    message: `${highScheme.rank} is ${highScheme.color}.`,
+    publicEvents,
+    privateEvent
+  })
+  if (isYellow(highScheme)) {
     earn({
-      amount: yellowScheme.rank,
+      amount: highScheme.rank,
       player: effectPlayer,
       playState,
       privateEvent: secondPrivateChild,

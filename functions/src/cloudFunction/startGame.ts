@@ -145,7 +145,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       hand: handSchemes,
       lastBidder: false,
       playReady: false,
-      silver: 3,
+      silver: 0,
       tableau: [],
       trashHistory: [],
       userId: profile.userId,

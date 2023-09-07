@@ -16,8 +16,8 @@ export default function effectsNineteen ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 35 gold.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 35 gold.`)
+  const firstPrivateChild = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 30 gold.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
   const deckEmpty = effectPlayer.deck.length === 0
   if (deckEmpty) {
     addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is empty.`)
@@ -38,7 +38,7 @@ export default function effectsNineteen ({
   }
   if (deckEmpty || discardEmpty) {
     earn({
-      amount: 35,
+      amount: 30,
       player: effectPlayer,
       playState,
       privateEvent: firstPrivateChild,

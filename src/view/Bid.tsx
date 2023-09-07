@@ -15,9 +15,9 @@ import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getBid from '../service/getBid'
-import getBidStatus from '../service/getBidStatus'
 import isTied from '../service/isTied'
 import useBidMax from '../use/bidMax'
+import BidStatusView from './BidStatus'
 import Cloud from './Cloud'
 import Curtain from './Curtain'
 import PopoverIconButtonView from './PopoverIconButton'
@@ -38,7 +38,9 @@ export default function BidView (): JSX.Element {
     gameState.phase !== 'auction' ||
     allReady === true ||
     playerState.tableau == null ||
-    gameState.profiles == null
+    gameState.profiles == null ||
+    playerState.silver == null ||
+    playerState.userId == null
   ) {
     return <></>
   }
@@ -63,7 +65,16 @@ export default function BidView (): JSX.Element {
   const eleven = playerState.tableau.some(scheme => scheme.rank === 11)
   const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
   const step = eleven && bidFive ? 1 : 5
-  const bidStatus = getBidStatus({ tableau: playerState.tableau, bid: playerState.bid })
+  const bidStatus = (
+    <BidStatusView
+      bg='gray.800'
+      tableau={playerState.tableau}
+      bid={playerState.bid}
+      profiles={gameState.profiles}
+      silver={playerState.silver}
+      userId={playerState.userId}
+    />
+  )
   const showClouds = playerState.auctionReady === false
   const tied = isTied({ profiles: gameState.profiles, bid: playerState.bid })
   const imprisoning = tied && playerState.auctionReady
@@ -108,7 +119,7 @@ export default function BidView (): JSX.Element {
           </RangeSliderTrack>
           <RangeSliderThumb boxSize={6} index={0} />
         </RangeSlider>
-        <Status label='Bid' value={bidStatus} />
+        <Status label='Bid'>{bidStatus}</Status>
       </HStack>
       <Curtain open={showClouds}>
         <HStack justifyContent='space-between'>

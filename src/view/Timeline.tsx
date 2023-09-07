@@ -30,7 +30,6 @@ export default function TimelineView (): JSX.Element {
   const views = rest.map(scheme =>
     <TinyExpandableSchemeView rank={scheme.rank} key={scheme.id} />
   )
-  console.log('phase', phase)
   const { minimum, maximum } = getTimelineRange({ timelineLength: timeline.length, phase, final, choices })
   const range = maximum !== minimum
   const maximumLabel = range && `-${maximum}`

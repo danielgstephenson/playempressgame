@@ -54,11 +54,19 @@ export default function addEventsEverywhere ({
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   } else {
+    const publicMessageSuffix = publicSuffix ?? suffix
+    if (publicMessageSuffix == null) {
+      throw new Error('No event suffix')
+    }
     const publicPrefix = possessive ? `${displayName}'s` : displayName
-    const publicMessage = `${publicPrefix} ${publicSuffix ?? suffix}.`
+    const publicMessage = `${publicPrefix} ${publicMessageSuffix}.`
     const addedPublic = addPublicEvent(publicProp, publicMessage)
     const privatePrefix = possessive ? 'Your' : 'You'
-    const privateMessage = `${privatePrefix} ${privateSuffix ?? suffix}.`
+    const privateMessageSuffix = privateSuffix ?? suffix
+    if (privateMessageSuffix == null) {
+      throw new Error('No event suffix')
+    }
+    const privateMessage = `${privatePrefix} ${privateMessageSuffix}.`
     const addedPrivate = addEvent(privateProp, privateMessage)
     return { privateEvent: addedPrivate, publicEvents: addedPublic }
   }

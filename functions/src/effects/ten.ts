@@ -1,6 +1,6 @@
 import addEvent from '../add/event'
 import addPlayerPublicEvents from '../add/events/player/public'
-import addHighestRankGreenPlaySchemeEvents from '../add/events/scheme/play/rank/highest/green'
+import addHighestRankYellowPlaySchemeEvents from '../add/events/scheme/play/rank/highest/yellow'
 import addLeftmostYellowTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost/yellow'
 import guardDefined from '../guard/defined'
 import { PlayState, SchemeEffectProps } from '../types'
@@ -42,12 +42,12 @@ export default function effectsTen ({
       }
     }
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank green scheme in play.')
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you copy the highest rank yellow scheme in play.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Second, ${effectPlayer.displayName} copies the highest rank green scheme in play.`
+    message: `Second, ${effectPlayer.displayName} copies the highest rank yellow scheme in play.`
   })
-  const { scheme } = addHighestRankGreenPlaySchemeEvents({
+  const { scheme } = addHighestRankYellowPlaySchemeEvents({
     playState,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren,

@@ -75,24 +75,47 @@ export default function buy ({
       privateMessage: privateInPlayAfterMessage
     })
   }
-  const silver = bid % 5
-  const gold = bid - silver
-  if (gold > 0) {
+  const eleven = buyer.tableau.some(scheme => scheme.rank === 11)
+  if (eleven && buyer.silver > 0) {
+    addTargetEvents({
+      playState,
+      message: `${buyer.displayName} has silver, so they carry out the threat on their 11.`,
+      targetMessages: {
+        [buyer.id]: 'You have silver, so you do not carry out the threat on your 11.'
+      }
+    })
+    const allSilver = buyer.silver >= bid
+    if (allSilver) {
+      const before = buyer.silver
+      buyer.silver = buyer.silver - bid
+      addBuyEvent({
+        publicMessage: `${buyer.displayName} went from ${before} silver to ${buyer.silver} silver.`,
+        privateMessage: `You went from ${before} silver to ${buyer.silver} silver.`
+      })
+    } else {
+      const beforeSilver = buyer.silver
+      const beforeGold = buyer.gold
+      const idealSilver = Math.min(bid, buyer.silver)
+      const idealGold = bid - idealSilver
+      const realGold = Math.ceil(idealGold / 5) * 5
+      buyer.gold = buyer.gold - realGold
+      const realSilver = bid - realGold
+      buyer.silver = buyer.silver - realSilver
+      addBuyEvent({
+        publicMessage: `${buyer.displayName} went from ${beforeSilver} silver to ${buyer.silver} silver.`,
+        privateMessage: `You went from ${beforeSilver} silver to ${buyer.silver} silver.`
+      })
+      addBuyEvent({
+        publicMessage: `${buyer.displayName} went from ${beforeGold} gold to ${buyer.gold} gold.`,
+        privateMessage: `You went from ${beforeGold} gold to ${buyer.gold} gold.`
+      })
+    }
+  } else {
     const before = buyer.gold
-    buyer.gold -= gold
+    buyer.gold = buyer.gold - bid
     addBuyEvent({
       publicMessage: `${buyer.displayName} went from ${before} gold to ${buyer.gold} gold.`,
       privateMessage: `You went from ${before} gold to ${buyer.gold} gold.`
-    })
-  }
-  if (silver > 0) {
-    const before = buyer.silver
-    buyer.silver -= silver
-    buyEvents.publicEvents.forEach(event => {
-      addEvent(event, `${buyer.displayName} went from ${before} silver to ${buyer.silver} silver.`)
-    })
-    buyerEvents.forEach(event => {
-      addEvent(event, `You went from ${before} silver to  ${buyer.silver} silver.`)
     })
   }
   buyer.auctionReady = true
