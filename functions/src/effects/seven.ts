@@ -79,10 +79,10 @@ export default function effectsSeven ({
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if the lowest rank scheme in play is green, you earn its time in silver.')
+  const secondPrivateChild = addEvent(privateEvent, 'Second, you earn the highest time in play in silver.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Second, if the lowest rank scheme in play is green, ${effectPlayer.displayName} earns its time in silver.`
+    message: `Second, ${effectPlayer.displayName} earns the highest time in play in silver.`
   })
   const { time } = addHighestPlayTimeEvents({
     playState,

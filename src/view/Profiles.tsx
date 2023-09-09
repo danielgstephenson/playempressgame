@@ -1,14 +1,18 @@
-import { Alert, AlertIcon, Box, HStack } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, HStack, Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import authContext from '../context/auth'
 import ProfileProvider from '../context/profile/Provider'
 import { gameContext } from '../reader/game'
+import useCurrentPlaying from '../use/currentPlaying'
+import useGamePlaying from '../use/gamePlaying'
 import PlayerProfileView from './PlayerProfile'
 
 export default function ProfilesView (): JSX.Element {
   const authState = useContext(authContext)
   const gameState = useContext(gameContext)
-  if (gameState.profiles == null) {
+  const gamePlaying = useGamePlaying()
+  const currentPlaying = useCurrentPlaying()
+  if (gameState.profiles == null || gameState.phase == null) {
     return <></>
   }
   const copy = [...gameState.profiles]
@@ -18,7 +22,7 @@ export default function ProfilesView (): JSX.Element {
       <PlayerProfileView key={profile.userId} />
     </ProfileProvider>
   ))
-  const heading = gameState.profiles.length === 1 && (
+  const warning = gameState.profiles.length === 1 && (
     <Alert status='warning'>
       <HStack m='0 auto' spacing='0' alignItems='end'>
         <AlertIcon />
@@ -26,10 +30,18 @@ export default function ProfilesView (): JSX.Element {
       </HStack>
     </Alert>
   )
+  const observingPlay = gamePlaying && !currentPlaying
+  const profileItems = observingPlay
+    ? (
+      <Stack direction='row' justifyContent='center'>
+        {items}
+      </Stack>
+      )
+    : items
   return (
     <>
-      {heading}
-      {items}
+      {warning}
+      {profileItems}
     </>
   )
 }

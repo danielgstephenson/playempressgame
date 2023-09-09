@@ -25,11 +25,7 @@ import gameLoss from '../asset/sound/gameLoss.mp3'
 import gameVictory from '../asset/sound/gameVictory.mp3'
 import gameTie from '../asset/sound/gameTie.mp3'
 import getWinners from '../service/getWinners'
-import { Box, Stack } from '@chakra-ui/react'
-import Curtain from './Curtain'
-import PalaceView from './Palace'
-import TimelineView from './Timeline'
-import TotalView from './Total'
+import CenterView from './Center'
 
 export default function PlayerView (): JSX.Element {
   const { court, dungeon, final, id: gameId, round, phase, profiles, choices } = useContext(gameContext)
@@ -205,18 +201,9 @@ export default function PlayerView (): JSX.Element {
     )
   })
   const taking = isTaking({ profiles, userId, choices })
-  const showContent = !taking && phase !== 'join'
   return (
     <>
-      <Box>
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Curtain open={showContent}>
-            <PalaceView />
-            <TotalView />
-            <TimelineView />
-          </Curtain>
-        </Stack>
-      </Box>
+      <CenterView taking={taking} />
       <TakeView functions={functionsState.functions} />
       {otherProfileViews}
       <BidView />

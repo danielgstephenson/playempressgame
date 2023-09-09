@@ -15,11 +15,13 @@ export default function PlayerProfileView (): JSX.Element {
     profileState.gold == null ||
     profileState.silver == null ||
     profileState.displayName == null ||
-    profileState.bid == null
+    profileState.bid == null ||
+    gameState.profiles == null
   ) {
     return <></>
   }
   const playing = gameState.phase !== 'join'
+  const currentPlaying = gameState.profiles.some(profile => profile.userId === authState.currentUser?.uid)
   const currentPlayer = authState.currentUser?.uid === profileState.userId
   if (currentPlayer) {
     if (playing) {
@@ -27,7 +29,7 @@ export default function PlayerProfileView (): JSX.Element {
     }
     return <ProfileProvider profile={profileState}><ProfileView /></ProfileProvider>
   }
-  if (!playing) {
+  if (!currentPlaying || !playing) {
     return <ProfileProvider profile={profileState}><ProfileView /></ProfileProvider>
   }
   return <></>

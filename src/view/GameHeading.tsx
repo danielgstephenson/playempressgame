@@ -7,7 +7,7 @@ export default function GameHeading (): JSX.Element {
   const gameState = useContext(gameContext)
   if (gameState.phase !== 'join') return <></>
   return (
-    <Heading size='md' textAlign='center'>
+    <Heading size='lg' textAlign='center'>
       Game {gameState.id} <GameActions />
     </Heading>
   )

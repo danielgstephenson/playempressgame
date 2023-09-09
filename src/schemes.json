@@ -230,7 +230,7 @@
     "title": "Plunder the enemy",
     "beginning": "If there is a lower rank scheme in play, copy the rightmost yellow timeline scheme",
     "end": "Copy the highest rank green or yellow dungeon scheme",
-    "threat": "If you make no trades, you may reorder the schemes in your deck at the end of the round",
+    "threat": "If you make no trades, you may reorder the schemes in your deck before dicscarding this",
     "time": 3,
     "label1": "Sack of Constantinople",
     "label2": "Latin Empire",

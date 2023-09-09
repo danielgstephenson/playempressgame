@@ -59,6 +59,5 @@ export default function BidStatusView ({
       </Text>
     )
   }
-  const color = bid === 0 ? 'black' : goldColor
-  return <Text color={color}>{bid}</Text>
+  return <Text color={goldColor}>{bid}</Text>
 }

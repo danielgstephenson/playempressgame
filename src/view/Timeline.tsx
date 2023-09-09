@@ -2,8 +2,9 @@ import { StarIcon } from '@chakra-ui/icons'
 import { Heading, HStack, Stack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import playContext from '../context/play'
+import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
-import getInCourtStyles from '../service/getInCourtStyles'
+import getInTimelineStyles from '../service/getInTimelineStyles'
 import getTimelineRange from '../service/getTimelineRange'
 import PopoverButtonView from './PopoverButton'
 import SchemesContainerView from './SchemesContainer'
@@ -12,18 +13,22 @@ import TinyExpandableSchemeView from './TinyExpandableScheme'
 export default function TimelineView (): JSX.Element {
   const playState = useContext(playContext)
   const { timeline, dungeon, phase, final, choices, profiles } = useContext(gameContext)
-  if (timeline == null || phase == null || final == null || choices == null || profiles == null) return <></>
+  const profileState = useContext(profileContext)
+  if (timeline == null || phase == null || final == null || choices == null || profiles == null || profileState.userId == null) return <></>
   const [first, ...rest] = timeline
   const firstView = first != null && (
     <TinyExpandableSchemeView
       rank={first.rank}
       mr='4px'
-      {...getInCourtStyles({
+      {...getInTimelineStyles({
+        choices,
         deck: playState.deck,
         dungeon,
         phase,
+        profiles,
         rank: first.rank,
-        tableau: playState.tableau
+        tableau: playState.tableau,
+        userId: profileState.userId
       })}
     />
   )

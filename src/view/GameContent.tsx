@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import ProfilesView from './Profiles'
 import { gameContext } from '../reader/game'
-import { Stack } from '@chakra-ui/react'
+import { Heading, Stack } from '@chakra-ui/react'
 import authContext from '../context/auth'
 import functionsContext from '../context/functions'
 import useSound from 'use-sound'
@@ -11,6 +11,9 @@ import finalNewAuction from '../asset/sound/finalNewAuction.mp3'
 import finalNewPlay from '../asset/sound/finalNewPlay.mp3'
 import playerJoined from '../asset/sound/playerJoined.mp3'
 import isPlaying from '../service/iaPlaying'
+import useCurrentPlaying from '../use/currentPlaying'
+import Curtain from './Curtain'
+import CenterView from './Center'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -30,6 +33,7 @@ export default function GameContentView (): JSX.Element {
       setAlreadyPlaying(nowPlaying)
     }
   }, [gameState.profiles, authState.currentUser?.uid, alreadyPlaying])
+  const currentPlaying = useCurrentPlaying()
   if (
     gameState.phase == null ||
     authState.currentUser?.uid == null ||
@@ -65,8 +69,15 @@ export default function GameContentView (): JSX.Element {
       hearPlayerJoined()
     }
   }
+  const showCenter = !currentPlaying && gameState.phase !== 'join'
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing='4px'>
+      <Curtain open={showCenter}>
+        <CenterView />
+      </Curtain>
+      <Curtain open={showCenter}>
+        <Heading size='lg' textAlign='center'>Players</Heading>
+      </Curtain>
       <ProfilesView />
     </Stack>
   )

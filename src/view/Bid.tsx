@@ -9,12 +9,14 @@ import {
   RangeSliderThumb,
   RangeSliderTrack,
   RangeSliderFilledTrack,
-  HStack
+  HStack,
+  Box
 } from '@chakra-ui/react'
 import { useContext, useEffect, useState } from 'react'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getBid from '../service/getBid'
+import getHighestUntiedProfile from '../service/getHighestUntiedProfile'
 import isTied from '../service/isTied'
 import useBidMax from '../use/bidMax'
 import BidStatusView from './BidStatus'
@@ -40,7 +42,8 @@ export default function BidView (): JSX.Element {
     playerState.tableau == null ||
     gameState.profiles == null ||
     playerState.silver == null ||
-    playerState.userId == null
+    playerState.userId == null ||
+    playerState.lastBidder == null
   ) {
     return <></>
   }
@@ -75,12 +78,17 @@ export default function BidView (): JSX.Element {
       userId={playerState.userId}
     />
   )
-  const showClouds = playerState.auctionReady === false
+  const showControls = playerState.auctionReady === false
   const tied = isTied({ profiles: gameState.profiles, bid: playerState.bid })
   const imprisoning = tied && playerState.auctionReady
+  const highestUntiedProfile = getHighestUntiedProfile(gameState.profiles)
+  const showBid = bid > playerState.bid
+  const showConcede = highestUntiedProfile != null && highestUntiedProfile.userId !== playerState.userId
+  const showWithdraw = playerState.bid > 0 && tied && !playerState.lastBidder
+  const showImprison = gameState.profiles.every(profile => profile.bid === bid)
   return (
     <>
-      <HStack spacing='20px'>
+      <HStack spacing='20px' justifyContent='space-between'>
         <Curtain open={imprisoning}>
           <PopoverIconButtonView
             aria-label='You are ready to imprison.'
@@ -92,61 +100,73 @@ export default function BidView (): JSX.Element {
             You are ready to imprison.
           </PopoverIconButtonView>
         </Curtain>
-        <NumberInput
-          step={step}
-          min={playerState.bid}
-          max={max}
-          value={bid}
-          onChange={handleChange}
-          width='100px'
-          size='xs'
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        <RangeSlider
-          onChange={handleSliderChange}
-          value={[bid]}
-          min={0}
-          max={max}
-          step={step}
-        >
-          <RangeSliderTrack>
-            <RangeSliderFilledTrack />
-          </RangeSliderTrack>
-          <RangeSliderThumb boxSize={6} index={0} />
-        </RangeSlider>
+        <Curtain open={showControls}>
+          <NumberInput
+            step={step}
+            min={playerState.bid}
+            max={max}
+            value={bid}
+            onChange={handleChange}
+            width='100px'
+            size='xs'
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <RangeSlider
+            onChange={handleSliderChange}
+            value={[bid]}
+            min={0}
+            max={max}
+            step={step}
+          >
+            <RangeSliderTrack>
+              <RangeSliderFilledTrack />
+            </RangeSliderTrack>
+            <RangeSliderThumb boxSize={6} index={0} />
+          </RangeSlider>
+        </Curtain>
         <Status label='Bid'>{bidStatus}</Status>
       </HStack>
-      <Curtain open={showClouds}>
-        <HStack justifyContent='space-between'>
-          <Cloud
-            fn='bid'
-            props={{ bid, gameId: gameState.id }}
-          >
-            Bid
-          </Cloud>
-          <Cloud
-            fn='imprison'
-            props={{ gameId: gameState.id }}
-          >
-            Imprison
-          </Cloud>
-          <Cloud
-            fn='concede'
-            props={{ gameId: gameState.id }}
-          >
-            Concede
-          </Cloud>
-          <Cloud
-            fn='withdraw'
-            props={{ gameId: gameState.id }}
-          >
-            Withdraw
-          </Cloud>
+      <Curtain open={showControls}>
+        <HStack justifyContent='space-between' flexDirection='row-reverse'>
+          <Curtain open={showConcede}>
+            <Cloud
+              fn='concede'
+              props={{ gameId: gameState.id }}
+            >
+              Concede
+            </Cloud>
+          </Curtain>
+          <Curtain open={showWithdraw}>
+            <Cloud
+              fn='withdraw'
+              props={{ gameId: gameState.id }}
+            >
+              Withdraw
+            </Cloud>
+          </Curtain>
+          <Curtain open={showImprison}>
+            <Cloud
+              fn='imprison'
+              props={{ gameId: gameState.id }}
+            >
+              Imprison
+            </Cloud>
+          </Curtain>
+          <Curtain open={showBid}>
+            <Box mr='auto'>
+              <Cloud
+                fn='bid'
+                props={{ bid, gameId: gameState.id }}
+              >
+                Bid
+              </Cloud>
+            </Box>
+          </Curtain>
         </HStack>
       </Curtain>
     </>
