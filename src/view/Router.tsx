@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import GamesView from './view/Games'
-import LayoutView from './view/Layout'
-import GamePageView from './view/page/Game'
-import HomePageView from './view/page/Home'
+import GamesView from './Games'
+import LayoutView from './Layout'
+import GamePageView from './page/Game'
+import HomePageView from './page/Home'
 
 export default function RouterView (): JSX.Element {
   return (

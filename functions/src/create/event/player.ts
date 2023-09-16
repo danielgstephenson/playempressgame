@@ -5,14 +5,16 @@ export default function createPlayerEvent ({
   message,
   children = [],
   round,
-  playerId
+  playerId,
+  roundEvent
 }: {
   message: string
   children?: HistoryEvent[]
   round?: number | undefined
   playerId: string
+  roundEvent?: boolean | undefined
 }): PlayerEvent {
-  const event = createEvent(message, children)
+  const event = createEvent(message, children, roundEvent)
   if (round != null) {
     event.round = round
   }

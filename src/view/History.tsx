@@ -12,7 +12,9 @@ export default function HistoryView ({
 }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null)
   const items = history?.map((event, index) => {
-    const styles = index === history.length - 1 ? { bg: 'gray.600' } : {}
+    const styles = event.roundEvent === true
+      ? { bg: 'purple.700' }
+      : index === history.length - 1 ? { bg: 'gray.600' } : {}
     return (
       <HistoryEventView event={event} key={index} {...styles} />
     )

@@ -46,6 +46,7 @@ export interface HistoryEvent {
   message: string
   events?: HistoryEvent[]
   timestamp: number
+  roundEvent?: boolean
 }
 
 export interface TrashEvent {

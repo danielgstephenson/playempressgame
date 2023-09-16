@@ -13,6 +13,7 @@ export interface HistoryEvent extends EventContainer {
   id: string
   round?: number
   playerId?: string
+  roundEvent?: boolean | undefined
 }
 export type SchemeColor = 'green' | 'yellow' | 'red'
 export interface SchemeData {

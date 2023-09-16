@@ -7,7 +7,6 @@ export const END_AUCTION = {
 
 export const END_AUCTION_PLAYER = {
   ...END_AUCTION,
-  playScheme: undefined,
   trashScheme: undefined
 }
 

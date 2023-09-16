@@ -10,7 +10,6 @@ import setPlayState from '../setPlayState'
 import joinRanks from '../join/ranks'
 import createPlayState from '../create/playState'
 import addTargetEvents from '../add/events/target'
-import joinRanksGrammar from '../join/ranks/grammar'
 
 const court = createCloudFunction<SchemesProps>(async (props, context, transaction) => {
   const {
@@ -95,27 +94,27 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       `${joined} ${grammar.toBe} reordering.`
     )
   }
-  const tableauBefore = joinRanksGrammar(currentPlayer.tableau)
-  const privateTableauBeforeMessage = `You had ${tableauBefore.joinedRanks} in play.`
-  const publicTableauBeforeMessage = `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`
-  addTargetEvents({
-    playState,
-    message: publicTableauBeforeMessage,
-    targetMessages: {
-      [currentPlayer.id]: privateTableauBeforeMessage
-    }
-  })
+  // const tableauBefore = joinRanksGrammar(currentPlayer.tableau)
+  // const privateTableauBeforeMessage = `You had ${tableauBefore.joinedRanks} in play.`
+  // const publicTableauBeforeMessage = `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`
+  // addTargetEvents({
+  //   playState,
+  //   message: publicTableauBeforeMessage,
+  //   targetMessages: {
+  //     [currentPlayer.id]: privateTableauBeforeMessage
+  //   }
+  // })
   currentPlayer.tableau.push(...courtTaken)
-  const tableauAfter = joinRanksGrammar(currentPlayer.tableau)
-  const privateTableauAfterMessage = `You then have ${tableauAfter.joinedRanks} in play.`
-  const publicTableauAfterMessage = `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`
-  addTargetEvents({
-    playState,
-    message: publicTableauAfterMessage,
-    targetMessages: {
-      [currentPlayer.id]: privateTableauAfterMessage
-    }
-  })
+  // const tableauAfter = joinRanksGrammar(currentPlayer.tableau)
+  // const privateTableauAfterMessage = `You then have ${tableauAfter.joinedRanks} in play.`
+  // const publicTableauAfterMessage = `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`
+  // addTargetEvents({
+  //   playState,
+  //   message: publicTableauAfterMessage,
+  //   targetMessages: {
+  //     [currentPlayer.id]: privateTableauAfterMessage
+  //   }
+  // })
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const courtJoined = joinRanks(courtTaken)
   const courtMessage = courtTaken.length === 0

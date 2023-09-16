@@ -24,7 +24,7 @@ export default function GameContentView (): JSX.Element {
   const [hearNewPlay] = useSound(newPlay, { volume: 0.1 })
   const [hearNewAuction] = useSound(newAuction, { volume: 0.25 })
   const [hearFinalNewAuction] = useSound(finalNewAuction, { volume: 0.5 })
-  const [hearFinalNewPlay] = useSound(finalNewPlay, { volume: 0.2 })
+  const [hearFinalNewPlay] = useSound(finalNewPlay, { volume: 0.1 })
   const [hearPlayerJoined] = useSound(playerJoined, { volume: 0.2 })
   const [alreadyPlaying, setAlreadyPlaying] = useState(isPlaying({ profiles: gameState.profiles, userId: authState.currentUser?.uid }))
   useEffect(() => {

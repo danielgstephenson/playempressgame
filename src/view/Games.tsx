@@ -6,12 +6,14 @@ import Curtain from './Curtain'
 import GameItemView from './GameItem'
 import Warning from './Warning'
 import Cloud from './Cloud'
+import HeaderView from './Header'
 
 export default function GamesView (): JSX.Element {
   const authState = useContext(authContext)
   const warning = <Warning>You are not signed in yet.</Warning>
   return (
     <>
+      <HeaderView />
       <Heading>
         Games
         {' '}

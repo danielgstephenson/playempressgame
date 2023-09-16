@@ -28,7 +28,7 @@ export default function earn ({
       ? `${remainder} silver`
       : '0'
   const privateSuffix = `earn ${amountMessage}`
-  const publicSuffix = `earn ${amountMessage}`
+  const publicSuffix = `earns ${amountMessage}`
   const playEvents = addEventsEverywhere({
     possessive: false,
     displayName: player.displayName,

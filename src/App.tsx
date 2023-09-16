@@ -8,7 +8,7 @@ import AuthProvider from './context/auth/Provider'
 import DbProvider from './context/db/Provider'
 import FunctionsProvider from './context/functions/Provider'
 import { Helmet } from 'react-helmet'
-import RouterView from './Router'
+import RouterView from './view/Router'
 
 const isNgrok = window.location.hostname.endsWith('ngrok-free.app')
 const isLocal = Boolean(

@@ -7,6 +7,7 @@ export default function addPlayerEvent ({
   message,
   playerId,
   round,
+  roundEvent,
   debug = false
 }: {
   children?: PlayerEvent[]
@@ -14,6 +15,7 @@ export default function addPlayerEvent ({
   message: string
   playerId: string
   round?: number | undefined
+  roundEvent?: boolean | undefined
   debug?: boolean
 }): PlayerEvent {
   if (debug) {
@@ -23,7 +25,8 @@ export default function addPlayerEvent ({
     children,
     playerId,
     round,
-    message
+    message,
+    roundEvent
   })
   if (debug) {
     console.debug('event', event)

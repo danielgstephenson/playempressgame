@@ -107,7 +107,7 @@ export default function BidView (): JSX.Element {
             max={max}
             value={bid}
             onChange={handleChange}
-            width='100px'
+            width='120px'
             size='xs'
           >
             <NumberInputField />

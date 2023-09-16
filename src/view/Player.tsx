@@ -116,7 +116,7 @@ export default function PlayerView (): JSX.Element {
   const [hearImprison] = useSound(imprison, { volume: 0.5 })
   const [hearYouTake] = useSound(youTake, { volume: 0.1 })
   const [hearChoiceEffect] = useSound(choiceEffect, { volume: 0.75 })
-  const [hearGameLoss] = useSound(gameLoss)
+  const [hearGameLoss] = useSound(gameLoss, { volume: 0.2 })
   const [hearGameVictory] = useSound(gameVictory, { volume: 0.2 })
   const [hearGameTie] = useSound(gameTie)
 

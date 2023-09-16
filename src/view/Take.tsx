@@ -88,6 +88,7 @@ export default function TakeView ({ functions }: {
     const overEmptyCourt = over.id === 'court'
     const overEmptyDungeon = over.id === 'dungeon'
     if (activeCourt) {
+      console.log('activeCourt')
       activeOver({
         active: activeScheme,
         getSchemeById,
@@ -118,6 +119,7 @@ export default function TakeView ({ functions }: {
     const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
     const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
     if (activeTableau) {
+      console.log('activeTableau')
       const tableauFromDungeon = playState.tableau.filter((scheme) => {
         const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
         return fromDungeon
@@ -133,7 +135,9 @@ export default function TakeView ({ functions }: {
             twelve
           })
         })
-        playState.setDungeon?.(current => [...current, ...tableauFromDungeon])
+        if (activeScheme.rank === 12) {
+          playState.setDungeon?.(current => [...current, ...tableauFromDungeon])
+        }
         playState.setCourt?.([activeScheme])
       }
       if (fromDungeon && overEmptyDungeon) {
@@ -165,9 +169,6 @@ export default function TakeView ({ functions }: {
         })
         playState.setCourt?.((current) => {
           return filterOld({ currentOld: current, old: gameCourt, active: activeScheme })
-        })
-        playState.setDungeon?.((current) => {
-          return [...current, ...tableauFromDungeon]
         })
       }
       if (fromDungeon && overDungeon) {

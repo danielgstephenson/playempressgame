@@ -44,6 +44,13 @@ export default function discardTableau ({
       })
     }
   })
+  playState.game.round = playState.game.round + 1
+  const roundMessage = `Round ${playState.game.round} begins.`
+  addTargetEvents({
+    playState,
+    message: roundMessage,
+    roundEvent: true
+  })
   if (playState.game.timeline.length === 0) {
     addTargetEvents({
       playState,
@@ -67,7 +74,6 @@ export default function discardTableau ({
   playState.players.forEach(player => {
     Object.assign(player, END_AUCTION_PLAYER)
   })
-  playState.game.round = playState.game.round + 1
   playState.game.phase = 'play'
   playState.game.timePassed = false
   playState.game.imprisoned = false

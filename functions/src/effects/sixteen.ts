@@ -35,7 +35,7 @@ export default function effectsSixteen ({
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, put one scheme from your hand on your deck.')
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, put one scheme from your hand on the bottom of your deck.')
   const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName} took gold, they put one scheme from their hand on their deck.`)
   if (less) {
     const justMessage = 'just took twenty five gold'

@@ -1,5 +1,4 @@
 export default function getGoldColor ({ bg }: { bg: string }): string {
-  console.log('gold bg', bg)
   switch (bg) {
     case 'gray.800': {
       return 'yellow.300'

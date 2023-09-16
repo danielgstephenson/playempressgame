@@ -7,10 +7,12 @@ export default function addTargetEvents ({
   observerMessage,
   playerMessage,
   playState,
+  roundEvent,
   targetMessages
 }: {
   playState: PlayState
   targetMessages?: Record<string, string>
+  roundEvent?: boolean
 } & ({
   message?: string
   observerMessage: string
@@ -32,7 +34,7 @@ export default function addTargetEvents ({
   if (publicMessage == null) {
     throw new Error('Some message for observers is required.')
   }
-  const observerEvent = addEvent(playState.game, publicMessage)
+  const observerEvent = addEvent(playState.game, publicMessage, [], roundEvent)
   const publicEvents: HistoryEvent[] = []
   const targetEvents: Record<string, HistoryEvent> = {}
   const otherPlayerEvents: HistoryEvent[] = []
@@ -46,7 +48,8 @@ export default function addTargetEvents ({
       container: player,
       message: privateMessage,
       playerId: player.id,
-      round: playState.game.round
+      round: playState.game.round,
+      roundEvent
     })
     if (targetMessage == null) {
       otherPlayerEvents.push(event)
