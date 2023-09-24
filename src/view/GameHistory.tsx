@@ -8,7 +8,7 @@ export default function GameHistoryView (accordionProps: AccordionProps): JSX.El
   return (
     <>
       <HistoryView events={gameState.events} {...accordionProps}>
-        <Heading size='md'>Game History</Heading>
+        <Heading size='sm'>Game History</Heading>
       </HistoryView>
     </>
   )

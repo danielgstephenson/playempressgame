@@ -21,7 +21,7 @@ import join from '../service/join'
 import { useHttpsCallable } from 'react-firebase-hooks/functions'
 import { Functions } from 'firebase/functions'
 import ChakraButton from '../lib/firewrite/chakra/Button'
-import { LockIcon } from '@chakra-ui/icons'
+import { LockIcon, StarIcon } from '@chakra-ui/icons'
 import { playerContext } from '../reader/player'
 import returnFromTableau from '../service/returnFromTableau'
 import filterOld from '../service/filterOld'
@@ -208,7 +208,8 @@ export default function TakeView ({ functions }: {
     playState.taken == null ||
     allReady !== true ||
     !highestUntiedBidder ||
-    gameDungeon == null
+    gameDungeon == null ||
+    gameState.timeline == null
   ) {
     return <></>
   }
@@ -259,7 +260,9 @@ export default function TakeView ({ functions }: {
   const dungeonLeftView = dungeonLeft && <Text>{dungeonLeftMessage}</Text>
   const readyText = <Text>Ready</Text>
   const readyContent = courtLeft ? <>{readyText} <LockIcon /></> : readyText
-  const readyLoadingContent = cloudCourtLoading ? <HStack>{readyContent} <Spinner /></HStack> : readyContent
+  const final = gameState.timeline.length === 0
+  const readyFinalContent = final ? <><StarIcon /> {readyContent}</> : readyContent
+  const readyLoadingContent = cloudCourtLoading ? <HStack>{readyFinalContent} <Spinner /></HStack> : readyFinalContent
   const readyLabel = (
     <HStack>{readyLoadingContent}</HStack>
   )

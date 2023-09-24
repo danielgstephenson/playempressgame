@@ -70,13 +70,9 @@ export default function GameContentView (): JSX.Element {
       hearPlayerJoined()
     }
   }
-  console.log('currentPlaying', currentPlaying)
-  const notCurrentPlaying = !currentPlaying
   const joining = gameState.phase === 'join'
-  const observing = notCurrentPlaying && !joining
-  console.log('observing', observing)
+  const observing = !currentPlaying && !joining
   const spacing = observing ? '10px' : '4px'
-  console.log('spacing', spacing)
   return (
     <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing={spacing}>
       <Curtain open={observing}>
