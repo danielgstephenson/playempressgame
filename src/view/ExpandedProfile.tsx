@@ -17,7 +17,6 @@ export default function ExpandedProfileView (): JSX.Element {
   const playEmpty = profileState.playScheme == null
   const gameOver = profileState.privateTrashHistory.length > 0
   const score = getScore(profileState)
-  console.log('profileState', profileState)
   return (
     <Stack p='5px' spacing='5px'>
       <Heading size='md' textAlign='center'>{profileState.displayName}</Heading>

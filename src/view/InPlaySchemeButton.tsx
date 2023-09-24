@@ -1,9 +1,10 @@
-import { Box, ButtonProps } from '@chakra-ui/react'
+import { Box, ButtonProps, VStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
 import getInPlayStyles from '../service/getInPlayStyles'
 import GridButton from './GridButton'
+import SchemeIcon from './SchemeIcon'
 
 export default function InPlaySchemeButtonView ({
   id,
@@ -43,7 +44,12 @@ export default function InPlaySchemeButtonView ({
   })
   return (
     <Box {...styles}>
-      <GridButton {...restProps}>{rank}</GridButton>
+      <GridButton h='fit-content' p='2px' {...restProps}>
+        <VStack spacing='1px' pb='1px'>
+          <Box>{rank}</Box>
+          <SchemeIcon rank={rank} />
+        </VStack>
+      </GridButton>
     </Box>
   )
 }

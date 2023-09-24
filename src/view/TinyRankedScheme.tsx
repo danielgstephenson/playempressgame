@@ -1,6 +1,7 @@
-import { CardProps, Heading } from '@chakra-ui/react'
+import { CardProps, Heading, VStack } from '@chakra-ui/react'
 import getBg from '../service/getBg'
 import TinySchemeView from './TinyScheme'
+import SchemeIconView from './SchemeIcon'
 
 export default function TinyRankedSchemeView ({
   children,
@@ -16,7 +17,10 @@ export default function TinyRankedSchemeView ({
       bg={bg}
       {...restProps}
     >
-      <Heading size='xs' fontSize='xs'>{rank}</Heading>
+      <VStack spacing='1px' pb='1px'>
+        <Heading size='xs' fontSize='xs'>{rank}</Heading>
+        <SchemeIconView rank={rank} />
+      </VStack>
     </TinySchemeView>
   )
 }

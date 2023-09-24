@@ -1,11 +1,13 @@
 [
   {
-    "position": "court",
+    "timeline": "court",
     "color": "Green",
     "rank": 0,
     "title": "Inherit a title",
+    "iconFamily": "gi",
+    "icon": "GiScrollQuill",
     "beginning": "Take 10 Privilege from the bank into your hand",
-    "end": "Earn 5 gold",
+    "end": "Take 5 gold",
     "threat": "",
     "time": 3,
     "label1": "Isabella of France",
@@ -16,10 +18,12 @@
     "icon2": "https://www.britannica.com/favicon.ico"
   },
   {
-    "position": "bank",
+    "timeline": "bank",
     "color": "Green",
     "rank": 1,
     "title": "Privilege",
+    "iconFamily": "gi",
+    "icon": "GiKing",
     "beginning": "Draw 2",
     "end": "Trash 1 from your hand",
     "threat": "",
@@ -32,10 +36,12 @@
     "icon2": "https://www.marxists.org/favicon.ico"
   },
   {
-    "position": "dungeon",
+    "timeline": "dungeon",
     "color": "Green",
     "rank": 2,
     "title": "Fight for Freedom",
+    "iconFamily": "gi",
+    "icon": "GiFist",
     "beginning": "Revive the lowest time in play",
     "end": "Draw 1 for each dungeon scheme",
     "threat": "",
@@ -48,10 +54,12 @@
     "icon2": "https://plato.stanford.edu/favicon.ico"
   },
   {
-    "position": "hand",
+    "timeline": "hand",
     "color": "Green",
     "rank": 3,
     "title": "Serve as Sheriff",
+    "iconFamily": "tb",
+    "icon": "TbShieldStar",
     "beginning": "Put 3 Privilege from the bank face up on your discard",
     "end": "Draw the highest time in play",
     "threat": "",
@@ -64,10 +72,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "hand",
+    "timeline": "hand",
     "color": "Green",
     "rank": 4,
     "title": "Declare independence",
+    "iconFamily": "md",
+    "icon": "MdAnnouncement",
     "beginning": "Take 1 Privilege from the bank into your hand",
     "end": "Draw the lowest time in play",
     "threat": "",
@@ -80,10 +90,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "hand",
     "color": "Green",
     "rank": 5,
     "title": "Frame the hostage",
+    "iconFamily": "gi",
+    "icon": "GiHandcuffs",
     "beginning": "Revive the highest time in play",
     "end": "Draw the lowest rank in the dungeon",
     "threat": "",
@@ -96,10 +108,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "hand",
+    "timeline": "timeline",
     "color": "Green",
     "rank": 6,
     "title": "Found a secret order",
+    "iconFamily": "lu",
+    "icon": "LuVenetianMask",
     "beginning": "Revive your top discard scheme's time",
     "end": "Draw twice the number of colors in play",
     "threat": "",
@@ -112,10 +126,12 @@
     "icon2": "https://www.sacred-texts.com/favicon.ico"
   },
   {
-    "position": "hand",
+    "timeline": "hand",
     "color": "Yellow",
     "rank": 7,
     "title": "Host a wedding",
+    "iconFamily": "gi",
+    "icon": "GiLinkedRings",
     "beginning": "If the left 2 timeline schemes are the same color, earn the higher rank",
     "end": "Earn the highest time in play in silver",
     "threat": "",
@@ -128,10 +144,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "hand",
+    "timeline": "hand",
     "color": "Red",
     "rank": 8,
     "title": "Buccaneer a treasure ship",
+    "iconFamily": "gi",
+    "icon": "GiPirateFlag",
     "beginning": "Copy the lowest rank yellow scheme in play",
     "end": "Copy the lowest rank green or yellow dungeon scheme",
     "threat": "If this is the highest rank scheme in play, put it face up on your discard instead of summoning or imprisoning it",
@@ -144,12 +162,14 @@
     "icon2": "https://www.thefreelibrary.com/favicon.ico"
   },
   {
-    "position": "deck",
+    "timeline": "deck",
     "color": "Red",
     "rank": 9,
     "title": "Start a bloodfeud",
+    "iconFamily": "gi",
+    "icon": "GiBackstab",
     "beginning": "If your top discard scheme is yellow, copy it",
-    "end": "Copy the lowest rank green scheme in play",
+    "end": "Copy the highest rank green scheme in play",
     "threat": "If someone else wins the auction, they must imprison their top discard scheme",
     "time": 1,
     "label1": "Fredegund",
@@ -160,12 +180,14 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 10,
     "title": "Call in allies",
+    "iconFamily": "gi",
+    "icon": "GiTrumpetFlag",
     "beginning": "Copy the leftmost yellow timeline scheme",
-    "end": "Copy the highest rank yellow scheme in play",
+    "end": "Copy highest rank yellow scheme in play",
     "threat": "If you bid 10 or more, your bid is increased by 10",
     "time": 1,
     "label1": "Maria Theresa",
@@ -176,10 +198,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 11,
     "title": "Challenge to a duel",
+    "iconFamily": "gi",
+    "icon": "GiDuel",
     "beginning": "If your top discard scheme is green or yellow, copy it",
     "end": "Copy the lowest rank green or yellow scheme in play",
     "threat": "If someone else bids 5 or more, you may bid silver",
@@ -192,10 +216,12 @@
     "icon2": "https://www.academia.edu/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 12,
     "title": "Storm the palace",
+    "iconFamily": "bi",
+    "icon": "BiSolidCastle",
     "beginning": "If the leftmost timeline scheme is green or yellow, copy it",
     "end": "Copy the highest rank green dungeon scheme",
     "threat": "If you won the auction, you may take cards from the dungeon as well as the court",
@@ -208,10 +234,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 13,
     "title": "Spread the rebellion",
+    "iconFamily": "gi",
+    "icon": "GiTeamUpgrade",
     "beginning": "If there are no red timeline schemes, copy the leftmost timeline scheme",
     "end": "Copy the highest rank green or yellow scheme in play",
     "threat": "If someone else wins the auction, they may not take schemes from the court",
@@ -224,13 +252,15 @@
     "icon2": "https://i0.wp.com/reynolds-news.com/wp-content/uploads/2021/06/Reynolds-Logo.jpg?fit=32%2C32&ssl=1"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 14,
     "title": "Plunder the enemy",
+    "iconFamily": "gi",
+    "icon": "GiOpenChest",
     "beginning": "If there is a lower rank scheme in play, copy the rightmost yellow timeline scheme",
     "end": "Copy the highest rank green or yellow dungeon scheme",
-    "threat": "If you make no trades, you may reorder the schemes in your deck before dicscarding this",
+    "threat": "If you make no trades, you may reorder the schemes in your deck before discarding this",
     "time": 3,
     "label1": "Sack of Constantinople",
     "label2": "Latin Empire",
@@ -240,10 +270,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Red",
     "rank": 15,
     "title": "Defeat the church",
+    "iconFamily": "tb",
+    "icon": "TbCrossOff",
     "beginning": "If your top discard scheme is red, copy the leftmost green timeline scheme",
     "end": "Otherwise, copy your top discard scheme",
     "threat": "If you summon this to the court, copy it",
@@ -256,10 +288,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "discard",
+    "timeline": "discard",
     "color": "Yellow",
     "rank": 16,
     "title": "Evict the tenants",
+    "iconFamily": "fa6",
+    "icon": "FaRegHandPointRight",
     "beginning": "If you have 5 or less schemes in hand, earn 25 gold",
     "end": "If you earned gold, put 1 scheme from your hand on the bottom of your deck",
     "threat": "",
@@ -272,12 +306,14 @@
     "icon2": "https://core.ac.uk/favicon/favicon.svg"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 17,
     "title": "Blackmail her Majesty",
+    "iconFamily": "md",
+    "icon": "MdMailLock",
     "beginning": "Earn the leftmost timeline scheme's rank",
-    "end": "If the highest rank scheme in play is yellow, earn its rank",
+    "end": "If the highest scheme in play is yellow, earn its rank",
     "threat": "",
     "time": 0,
     "label1": "Libelle",
@@ -288,10 +324,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 18,
     "title": "Smuggle contraband",
+    "iconFamily": "fa6",
+    "icon": "FaSackXmark",
     "beginning": "If your top discard scheme is yellow, earn twice its rank",
     "end": "Put your top discard scheme face down on your deck",
     "threat": "",
@@ -304,10 +342,12 @@
     "icon2": "https://www.bournemouthecho.co.uk/resources/images/1801544/"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 19,
     "title": "Choose the next Pope",
+    "iconFamily": "gi",
+    "icon": "GiPopeCrown",
     "beginning": "If your deck or discard is empty, earn 30 gold",
     "end": "Summon 1 privilege from the bank to the court",
     "threat": "",
@@ -320,10 +360,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 20,
     "title": "Learn ancient alchemy",
+    "iconFamily": "gi",
+    "icon": "GiStandingPotion",
     "beginning": "Earn twice your top discard scheme's rank",
     "end": "If it is not yellow, summon it to the court",
     "threat": "",
@@ -336,10 +378,12 @@
     "icon2": "https://www.nli.org.il/src/assets/images/icons/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 21,
     "title": "Marry the Duchess",
+    "iconFamily": "gi",
+    "icon": "GiBigDiamondRing",
     "beginning": "Pay five times the left timeline scheme's time in gold",
     "end": "Earn twice its rank",
     "threat": "",
@@ -352,10 +396,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Yellow",
     "rank": 22,
     "title": "Collect alms",
+    "iconFamily": "pi",
+    "icon": "PiHandCoinsDuotone",
     "beginning": "Earn 5 gold for each dungeon scheme",
     "end": "Earn the rightmost timeline scheme's rank",
     "threat": "",
@@ -368,10 +414,12 @@
     "icon2": "https://en.wikipedia.org/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Green",
     "rank": 23,
     "title": "Rule alongside your mother",
+    "iconFamily": "ri",
+    "icon": "RiParentFill",
     "beginning": "If your top discard scheme is green, revive 5",
     "end": "If the highest or lowest rank scheme in play is green, draw 5",
     "threat": "",
@@ -384,10 +432,12 @@
     "icon2": "https://www.academia.edu/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Green",
     "rank": 24,
     "title": "Enclose peasant land",
+    "iconFamily": "gi",
+    "icon": "GiSpikedFence",
     "beginning": "Earn the lowest green rank in play",
     "end": "Revive your entire discard",
     "threat": "",
@@ -400,10 +450,12 @@
     "icon2": "https://camdencivilrightsproject.com/favicon.ico"
   },
   {
-    "position": "timeline",
+    "timeline": "timeline",
     "color": "Green",
     "rank": 25,
     "title": "Become a Saint",
+    "iconFamily": "fa",
+    "icon": "FaPray",
     "beginning": "If you have 50 or less gold, revive 5",
     "end": "If your discard is empty, draw 5",
     "threat": "",

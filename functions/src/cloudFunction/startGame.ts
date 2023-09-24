@@ -126,6 +126,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const timelineRanks = join(timeline)
   addEvent(startEvent, `The timeline is ${timelineRanks}.`)
   const timelineSchemes = timeline.map(rank => createScheme(rank))
+  const roundEvent = createEvent('Round 1 begins.', [], true)
   const startedProfiles = currentGameData.profiles.map((profile) => {
     const chooseEvent = createEvent(PLAYER_CHOOSE_MESSAGE)
     const topDeckScheme = createScheme(topDeck)
@@ -139,7 +140,7 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
       deck,
       discard,
       displayName: profile.displayName,
-      events: [...currentGameData.events, startEvent, chooseEvent],
+      events: [...currentGameData.events, startEvent, roundEvent, chooseEvent],
       gameId,
       gold: 50,
       hand: handSchemes,

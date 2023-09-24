@@ -1,6 +1,5 @@
 import { HistoryEvent, PlayState, TargetEvents } from '../../types'
 import addEvent from '../event'
-import addPlayerEvent from '../event/player'
 
 export default function addTargetEvents ({
   message,
@@ -44,13 +43,7 @@ export default function addTargetEvents ({
     if (privateMessage == null) {
       throw new Error('Some message for players is required.')
     }
-    const event = addPlayerEvent({
-      container: player,
-      message: privateMessage,
-      playerId: player.id,
-      round: playState.game.round,
-      roundEvent
-    })
+    const event = addEvent(player, privateMessage, [], roundEvent)
     if (targetMessage == null) {
       otherPlayerEvents.push(event)
       publicEvents.push(event)

@@ -88,7 +88,6 @@ export default function TakeView ({ functions }: {
     const overEmptyCourt = over.id === 'court'
     const overEmptyDungeon = over.id === 'dungeon'
     if (activeCourt) {
-      console.log('activeCourt')
       activeOver({
         active: activeScheme,
         getSchemeById,
@@ -119,7 +118,6 @@ export default function TakeView ({ functions }: {
     const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
     const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
     if (activeTableau) {
-      console.log('activeTableau')
       const tableauFromDungeon = playState.tableau.filter((scheme) => {
         const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
         return fromDungeon

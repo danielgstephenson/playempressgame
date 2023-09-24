@@ -12,7 +12,7 @@ ref: React.Ref<HTMLDivElement>
   return (
     <Circle
       ref={ref}
-      size='25px'
+      size='23px'
       color='white'
       {...circleProps}
     >

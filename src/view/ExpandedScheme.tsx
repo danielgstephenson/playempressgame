@@ -4,6 +4,7 @@ import schemes from '../schemes.json'
 import { RepeatClockIcon } from '@chakra-ui/icons'
 import LargeSchemeView from './LargeScheme'
 import ExpandedLinkView from './ExpandedLink'
+import SchemeIconView from './SchemeIcon'
 
 export default function ExpandedSchemeView ({
   rank
@@ -32,7 +33,7 @@ export default function ExpandedSchemeView ({
     )
   })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
-  const threatProps = scheme.threat !== '' ? { color: circleBg, padding: '11px', bg: 'white' } : { height: '114px' }
+  const threatProps = scheme.threat !== '' ? { color: circleBg, padding: '11px', bg: 'white' } : {}
   const threat = <Box {...threatProps} maxH='114px'>{scheme.threat}</Box>
   const linkProps = scheme.rank === 25 ? { fontSize: '10px' } : {}
   return (
@@ -46,7 +47,14 @@ export default function ExpandedSchemeView ({
           </Circle>
           {time}
         </HStack>
-        <Heading size='xl' minH='85px'>{scheme.title}</Heading>
+        <Box minH='135px'>
+          <Heading size='xl' minH='65px' mb='5px'>
+            {scheme.title}
+          </Heading>
+          <Heading size='xl' textAlign='center'>
+            <SchemeIconView rank={rank} />
+          </Heading>
+        </Box>
         <Flex direction='column' height='100%' gap='10px' justifyContent='space-between'>
           <Text minHeight='60px'>{scheme.beginning}</Text>
           <Text>{scheme.end}</Text>

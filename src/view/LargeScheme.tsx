@@ -8,7 +8,7 @@ export default function LargeSchemeView ({
   children?: React.ReactNode
 } & CardProps): JSX.Element {
   return (
-    <Card h='450px' sx={{ aspectRatio: SCHEME_RATIO }} {...restProps}>
+    <Card h='500px' sx={{ aspectRatio: SCHEME_RATIO }} {...restProps}>
       <CardBody padding='10px'>
         {children}
       </CardBody>

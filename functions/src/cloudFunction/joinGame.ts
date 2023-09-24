@@ -35,7 +35,7 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
     lastBidder: false,
     playAreaEmpty: true,
     playReady: false,
-    silver: 3,
+    silver: 0,
     tableau: [],
     trashAreaEmpty: true,
     trashHistory: [],

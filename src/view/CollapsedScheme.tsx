@@ -6,6 +6,7 @@ import { Ref } from 'react'
 import CircleView from './Circle'
 import { RepeatClockIcon } from '@chakra-ui/icons'
 import CollapsedLinkView from './CollapsedLink'
+import SchemeIconView from './SchemeIcon'
 
 function View ({
   active,
@@ -32,7 +33,6 @@ ref: Ref<HTMLDivElement>): JSX.Element {
   })
   const cardBg = getBg({ rank, weight: 700 })
   const circleBg = getBg({ rank: scheme.rank, weight: 900 })
-  const fontSize = rank === 23 ? '10px' : 'xs'
   return (
     <SmallScheme
       active={active}
@@ -44,13 +44,18 @@ ref: Ref<HTMLDivElement>): JSX.Element {
         <Stack spacing='5px'>
           <HStack color={circleBg} spacing='2px' justifyContent='space-between' width='100%' alignItems='start'>
             <CircleView bg={circleBg}>
-              <Heading size='sm'>
+              <Heading size='xs'>
                 {scheme.rank}
               </Heading>
             </CircleView>
             {time}
           </HStack>
-          <Heading size='xs' fontSize={fontSize}>{scheme.title}</Heading>
+          <Heading size='xs' fontSize='9.4px' h='30px'>
+            {scheme.title}
+          </Heading>
+          <Heading size='lg' textAlign='center'>
+            <SchemeIconView rank={rank} />
+          </Heading>
         </Stack>
         <HStack>
           <CollapsedLinkView link={scheme.link1} icon={scheme.icon1} />
