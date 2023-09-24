@@ -16,12 +16,12 @@ export default function getInDungeonStyles ({
   choices: Choice[]
   court?: Scheme[]
   deck?: Scheme[]
-  deckEmpty: boolean
+  deckEmpty?: boolean
   gameId: string
   phase?: string
   rank: number
   tableau?: Scheme[]
-  userId: string
+  userId?: string
 }): SchemeStyles {
   const bg = getBg({ rank })
   if (phase !== 'auction') {

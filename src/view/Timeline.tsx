@@ -1,37 +1,17 @@
 import { StarIcon } from '@chakra-ui/icons'
 import { Heading, HStack, Stack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
-import playContext from '../context/play'
-import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
-import getInTimelineStyles from '../service/getInTimelineStyles'
 import getTimelineRange from '../service/getTimelineRange'
+import FirstTimelineView from './FirstTimeline'
 import PopoverButtonView from './PopoverButton'
 import SchemesContainerView from './SchemesContainer'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 export default function TimelineView (): JSX.Element {
-  const playState = useContext(playContext)
-  const { timeline, dungeon, phase, final, choices, profiles } = useContext(gameContext)
-  const profileState = useContext(profileContext)
-  if (timeline == null || phase == null || final == null || choices == null || profiles == null || profileState.userId == null) return <></>
-  const [first, ...rest] = timeline
-  const firstView = first != null && (
-    <TinyExpandableSchemeView
-      rank={first.rank}
-      mr='4px'
-      {...getInTimelineStyles({
-        choices,
-        deck: playState.deck,
-        dungeon,
-        phase,
-        profiles,
-        rank: first.rank,
-        tableau: playState.tableau,
-        userId: profileState.userId
-      })}
-    />
-  )
+  const { timeline, phase, final, choices, profiles } = useContext(gameContext)
+  if (timeline == null || phase == null || final == null || choices == null || profiles == null) return <></>
+  const [, ...rest] = timeline
   const views = rest.map(scheme =>
     <TinyExpandableSchemeView rank={scheme.rank} key={scheme.id} />
   )
@@ -66,7 +46,7 @@ export default function TimelineView (): JSX.Element {
         </HStack>
       </Heading>
       <SchemesContainerView>
-        {firstView}
+        <FirstTimelineView />
         {views}
       </SchemesContainerView>
     </Stack>

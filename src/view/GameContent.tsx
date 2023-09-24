@@ -14,6 +14,7 @@ import isPlaying from '../service/iaPlaying'
 import useCurrentPlaying from '../use/currentPlaying'
 import Curtain from './Curtain'
 import CenterView from './Center'
+import GameHistoryView from './GameHistory'
 
 export default function GameContentView (): JSX.Element {
   const gameState = useContext(gameContext)
@@ -69,16 +70,25 @@ export default function GameContentView (): JSX.Element {
       hearPlayerJoined()
     }
   }
-  const showCenter = !currentPlaying && gameState.phase !== 'join'
+  console.log('currentPlaying', currentPlaying)
+  const notCurrentPlaying = !currentPlaying
+  const joining = gameState.phase === 'join'
+  const observing = notCurrentPlaying && !joining
+  console.log('observing', observing)
+  const spacing = observing ? '10px' : '4px'
+  console.log('spacing', spacing)
   return (
-    <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing='4px'>
-      <Curtain open={showCenter}>
+    <Stack direction='column' flexGrow='1' height='100%' overflow='hidden' spacing={spacing}>
+      <Curtain open={observing}>
         <CenterView />
       </Curtain>
-      <Curtain open={showCenter}>
+      <Curtain open={joining}>
         <Heading size='lg' textAlign='center'>Players</Heading>
       </Curtain>
       <ProfilesView />
+      <Curtain open={observing}>
+        <GameHistoryView />
+      </Curtain>
     </Stack>
   )
 }

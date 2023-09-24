@@ -5,6 +5,7 @@ import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
 import { playerContext } from '../reader/player'
 import getInDungeonStyles from '../service/getInDungeonStyles'
+import useStaticSchemes from '../use/useStaticSchemes'
 import ImprisonedButton from './ImprisonedButton'
 import SchemesContainerView from './SchemesContainer'
 import StaticPalaceHeadingView from './StaticPalaceHeading'
@@ -15,15 +16,14 @@ export default function StaticDungeonView (): JSX.Element {
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
   const profileState = useContext(profileContext)
-  const views = playState.dungeon?.map(scheme => {
+  const dungeon = useStaticSchemes({ property: 'dungeon' })
+  if (dungeon == null) return <></>
+  const views = dungeon.map(scheme => {
     if (
       gameState.choices == null ||
       gameState.court == null ||
       gameState.phase == null ||
-      gameState.id == null ||
-      playerState.userId == null ||
-      playerState.deck == null ||
-      profileState.deckEmpty == null
+      gameState.id == null
     ) {
       return <Fragment key={scheme.id} />
     }

@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import playContext from '../context/play'
 import { gameContext } from '../reader/game'
 import getInCourtStyles from '../service/getInCourtStyles'
+import useStaticSchemes from '../use/useStaticSchemes'
 import SchemesContainerView from './SchemesContainer'
 import StaticPalaceHeadingView from './StaticPalaceHeading'
 import TimePassedButton from './TimePassedButton'
@@ -10,8 +11,11 @@ import TinyExpandableSchemeView from './TinyExpandableScheme'
 
 export default function StaticCourtView (): JSX.Element {
   const gameState = useContext(gameContext)
+  console.log('gameState', gameState)
   const playState = useContext(playContext)
-  const views = playState.court?.map(scheme => {
+  const court = useStaticSchemes({ property: 'court' })
+  if (court == null) return <></>
+  const views = court.map(scheme => {
     const styles = getInCourtStyles({
       dungeon: gameState.dungeon,
       phase: gameState.phase,

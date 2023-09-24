@@ -20,7 +20,7 @@ export default function getInTimelineStyles ({
   profiles: Profile[]
   rank: number
   tableau: Scheme[] | undefined
-  userId: string
+  userId?: string
 }): SchemeStyles {
   const taking = isTaking({ profiles, userId, choices })
   if (taking) {

@@ -5,11 +5,14 @@ export default function get14Styles ({ bg, deck, deckEmpty, userId, gameId, phas
   bg: string
   deck?: Scheme[]
   deckEmpty?: boolean
-  userId: string
+  userId?: string
   gameId: string
   phase: string
   choices: Choice[]
 }): SchemeStyles {
+  if (userId == null) {
+    return { bg }
+  }
   if (deck != null) {
     const playerId = `${userId}_${gameId}`
     if (deck.length >= 2 || deck.every(scheme => scheme.rank === deck[0].rank)) {

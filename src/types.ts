@@ -201,3 +201,13 @@ export interface Range {
   minimum: number
   maximum: number
 }
+
+type KeysOfValue<T, TCondition> = {
+  [K in keyof T]: T[K] extends TCondition
+    ? K
+    : never;
+}[keyof T]
+
+export type GameSchemesKeys = KeysOfValue<Game, Scheme[] | undefined>
+export type PlaySchemesKeys = KeysOfValue<Play, Scheme[] | undefined>
+export type StaticSchemesKeys = Exclude<GameSchemesKeys & PlaySchemesKeys, undefined>
