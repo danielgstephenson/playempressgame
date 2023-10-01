@@ -1,16 +1,19 @@
 import { Scheme } from '../types'
-import TinyExpandableSchemeView from './TinyExpandableScheme'
 import SchemesContainerView from './SchemesContainer'
 import { FlexProps } from '@chakra-ui/react'
+import TinySchemesContentView from './TinySchemesContent'
 
 export default function TinySchemesView ({
+  firstOffset,
   schemes,
   ...otherProps
 }: {
+  firstOffset?: boolean
   schemes?: Scheme[]
 } & FlexProps): JSX.Element {
-  const views = schemes?.map(scheme =>
-    <TinyExpandableSchemeView rank={scheme.rank} key={scheme.id} />
+  return (
+    <SchemesContainerView {...otherProps}>
+      <TinySchemesContentView firstOffset={firstOffset} schemes={schemes} />
+    </SchemesContainerView>
   )
-  return <SchemesContainerView {...otherProps}>{views}</SchemesContainerView>
 }

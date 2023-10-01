@@ -30,7 +30,7 @@ export default function DeckView (): JSX.Element {
   }
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   if (gameState.phase === 'play' || choice?.type !== 'deck') {
-    return <TinySchemesView schemes={deck} />
+    return <TinySchemesView schemes={deck} firstOffset />
   }
   function handleDragEnd (event: any): void {
     setActive(null)
@@ -52,7 +52,15 @@ export default function DeckView (): JSX.Element {
       })
     }
   }
-  const sortableSchemes = deck.map((scheme, index) => {
+  const [first, ...rest] = deck
+  const firstSortable = (
+    <SortableSchemeView
+      id={first.id}
+      mr='4px'
+      rank={first.rank}
+    />
+  )
+  const restSortables = rest.map((scheme, index) => {
     return (
       <SortableSchemeView
         key={scheme.id}
@@ -75,7 +83,8 @@ export default function DeckView (): JSX.Element {
       >
         <SortableContext items={deck}>
           <SmallSchemesContainerView length={deck.length}>
-            {sortableSchemes}
+            {firstSortable}
+            {restSortables}
           </SmallSchemesContainerView>
         </SortableContext>
         <DragOverlay dropAnimation={DROP_ANIMATION}>

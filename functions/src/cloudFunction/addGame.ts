@@ -1,32 +1,9 @@
 import createCloudFunction from '../create/cloudFunction'
-import createId from '../create/id'
-import { gamesRef } from '../db'
-import { serverTimestamp } from 'firelord'
-import guardCurrentUser from '../guard/current/user'
-import addEvent from '../add/event'
+import guardNewGame from '../guard/newGame'
 
 const addGame = createCloudFunction(async (props, context, transaction) => {
   console.info('Adding game...')
-  const { currentUser } = await guardCurrentUser({ context, transaction })
-  const id = createId()
-  const newData = {
-    name: id,
-    createdAt: serverTimestamp(),
-    choices: [],
-    final: false,
-    phase: 'join' as const,
-    profiles: [],
-    court: [],
-    dungeon: [],
-    events: [],
-    imprisoned: false,
-    round: 1,
-    timeline: [],
-    timePassed: false
-  }
-  addEvent(newData, `${currentUser.displayName} created game ${id}.`)
-  const gameRef = gamesRef.doc(id)
-  transaction.create(gameRef, newData)
+  const id = await guardNewGame({ context, transaction })
   console.info(`Added game with id ${id}`)
 })
 export default addGame

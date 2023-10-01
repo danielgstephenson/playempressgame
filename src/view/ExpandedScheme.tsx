@@ -47,11 +47,11 @@ export default function ExpandedSchemeView ({
           </Circle>
           {time}
         </HStack>
-        <Box minH='135px'>
-          <Heading size='xl' minH='65px' mb='5px'>
+        <Box>
+          <Heading size='xl' minH='65px' mb='10px'>
             {scheme.title}
           </Heading>
-          <Heading size='xl' textAlign='center'>
+          <Heading size='xl' textAlign='center' mb='10px'>
             <SchemeIconView rank={rank} />
           </Heading>
         </Box>

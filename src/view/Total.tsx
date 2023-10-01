@@ -38,6 +38,8 @@ export default function TotalView (): JSX.Element {
   }, [court, tableau, leftmost])
   const otherThirteen = useMemo(() => {
     if (profiles == null || userId == null) return false
+    const playing = profiles.some((profile) => profile.userId === userId)
+    if (!playing) return false
     const otherThirteen = profiles.some((profile) => {
       if (profile.userId === userId) return false
       const thirteen = profile.tableau.some((scheme) => scheme.rank === 13)
