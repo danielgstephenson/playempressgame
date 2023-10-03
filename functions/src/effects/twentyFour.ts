@@ -36,18 +36,18 @@ export default function effectsTwentyFour ({
       publicEvents: firstPublicChildren
     })
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, revive your entire discard.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} revives their entire discard.`)
-  const joined = joinRanksGrammar(effectPlayer.discard)
-  const discardMessage = effectPlayer.discard.length === 0
-    ? 'discard is empty'
-    : `discard has ${joined.grammar.spelled} ${joined.grammar.noun}, ${joined.joinedRanks}`
-  const privateDiscardMessage = `Your ${discardMessage}.`
-  const publicDiscardMessage = `${effectPlayer.displayName}'s ${discardMessage}.`
-  addEvent(secondPrivateChild, privateDiscardMessage)
-  addPublicEvent(secondPublicChildren, publicDiscardMessage)
+  const secondPrivateChild = addEvent(privateEvent, 'Second, revive 5.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} revives 5.`)
+  const joined = joinRanksGrammar(effectPlayer.reserve)
+  const reserveMessage = effectPlayer.reserve.length === 0
+    ? 'reserve is empty'
+    : `reserve has ${joined.grammar.spelled} ${joined.grammar.noun}, ${joined.joinedRanks}`
+  const privateReserveMessage = `Your ${reserveMessage}.`
+  const publicReserveMessage = `${effectPlayer.displayName}'s ${reserveMessage}.`
+  addEvent(secondPrivateChild, privateReserveMessage)
+  addPublicEvent(secondPublicChildren, publicReserveMessage)
   revive({
-    depth: effectPlayer.discard.length,
+    depth: effectPlayer.reserve.length,
     playState,
     player: effectPlayer,
     privateEvent: secondPrivateChild,

@@ -15,9 +15,9 @@ export default function effectsThree ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  addEvent(privateEvent, 'First, you put three Privilege on your discard.')
-  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} puts three Privilege on their discard.`)
-  effectPlayer.discard.unshift(...createPrivilege(3))
+  addEvent(privateEvent, 'First, you reserve three Privilege from the bank.')
+  addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} reserves three Privilege from the bank.`)
+  effectPlayer.reserve.push(...createPrivilege(3))
   const secondPrivateChild = addEvent(privateEvent, 'Second, you draw the highest time in play.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,

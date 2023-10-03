@@ -100,7 +100,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     const hasElevens = playState
       .players
       .filter(player => player
-        .tableau
+        .inPlay
         .some(scheme => scheme.rank === 11 && !player.withdrawn && player.userId !== currentUid)
       )
     if (hasElevens.length > 0) {
@@ -173,7 +173,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     }
   }
   if (tenThreshold) {
-    const hasTen = currentPlayer.tableau.some(scheme => scheme.rank === 10)
+    const hasTen = currentPlayer.inPlay.some(scheme => scheme.rank === 10)
     if (hasTen) {
       currentPlayer.bid += 10
       const tenEvents = addTargetEvents({
@@ -209,7 +209,7 @@ const bid = createCloudFunction<BidProps>(async (props, context, transaction) =>
     if (player.userId === currentUid) {
       return highest
     }
-    const ten = player.tableau.some(scheme => scheme.rank === 10)
+    const ten = player.inPlay.some(scheme => scheme.rank === 10)
     const tenBid = player.bid >= 10
     if (ten && tenBid) {
       const tenGold = player.gold + 10

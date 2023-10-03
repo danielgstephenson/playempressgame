@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
 import addPublicEvents from '../add/events/public'
 import createCloudFunction from '../create/cloudFunction'
 import { SchemeProps } from '../types'
@@ -10,8 +7,8 @@ import onChoiceComplete from '../onChoiceComplete'
 import addEvent from '../add/event'
 import joinRanks from '../join/ranks'
 
-const deckChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
-  console.info(`Choosing scheme ${props.schemeId} to put onthe bottom of their dleck..`)
+const reserveChoose = createCloudFunction<SchemeProps>(async (props, context, transaction) => {
+  console.info(`Choosing scheme ${props.schemeId} to reserve to the left of their last reserve...`)
   const {
     choice,
     currentUid,
@@ -23,7 +20,7 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     transaction,
     context,
     schemeId: props.schemeId,
-    label: 'Deck choice scheme'
+    label: 'Reserve choice scheme'
   })
   const otherPlayers = await getOtherPlayers({
     currentUid,
@@ -38,15 +35,19 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
   currentPlayer.hand = currentPlayer.hand.filter(scheme => {
     return scheme.id !== props.schemeId
   })
-  const before = joinRanks(currentPlayer.deck)
-  currentPlayer.deck = [...currentPlayer.deck, scheme]
-  const after = joinRanks(currentPlayer.deck)
-  const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put on the bottom of your deck.`)
-  addEvent(privateChoiceEvent, `Your deck was ${before}.`)
-  addEvent(privateChoiceEvent, `Your deck becomes ${after}.`)
+  const before = joinRanks(currentPlayer.reserve)
+  const lastReserve = currentPlayer.reserve.pop()
+  if (lastReserve == null) {
+    throw new Error('Your reserve is empty.')
+  }
+  currentPlayer.reserve = [...currentPlayer.reserve, scheme, lastReserve]
+  const after = joinRanks(currentPlayer.reserve)
+  const privateChoiceEvent = addEvent(currentPlayer, `You chose scheme ${scheme.rank} to put to the left of you last reserve.`)
+  addEvent(privateChoiceEvent, `Your reserve was ${before}.`)
+  addEvent(privateChoiceEvent, `Your reserve becomes ${after}.`)
   const publicChoiceEvents = addPublicEvents({
     effectPlayer: currentPlayer,
-    message: `${currentPlayer.displayName} chose a scheme to put on the bottom of their deck.`,
+    message: `${currentPlayer.displayName} chose a scheme to put to the left of their last reserve.`,
     playState
   })
   onChoiceComplete({
@@ -57,6 +58,6 @@ const deckChoose = createCloudFunction<SchemeProps>(async (props, context, trans
     publicEvents: publicChoiceEvents,
     transaction
   })
-  console.info(`Chose scheme with id ${props.schemeId} to put on the bottom of their deck!`)
+  console.info(`Chose scheme with id ${props.schemeId} to put to the let of their last reserve`)
 })
-export default deckChoose
+export default reserveChoose

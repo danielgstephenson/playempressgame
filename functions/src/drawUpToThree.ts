@@ -27,7 +27,7 @@ export default function drawUpToThree ({
     .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
   highPlayers.forEach(player => {
     const playScheme = guardPlayScheme(player)
-    player.tableau = player.tableau.filter(scheme => scheme.id !== playScheme.id)
+    player.inPlay = player.inPlay.filter(scheme => scheme.id !== playScheme.id)
   })
   const underPlayers = playState.players.filter(player => player.hand.length < 3)
   if (underPlayers.length === 0) {
@@ -82,8 +82,7 @@ export default function drawUpToThree ({
   if (playState.game.final) {
     playState.players.forEach(player => {
       const profile = guardProfile(playState, player.userId)
-      profile.deck = player.deck
-      profile.discard = player.discard
+      profile.reserve = player.reserve
       profile.hand = player.hand
       profile.privateTrashHistory = player.trashHistory
     })

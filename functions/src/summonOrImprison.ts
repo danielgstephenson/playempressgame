@@ -38,14 +38,14 @@ export default function summonOrImprison ({
       const privateMessage = 'Your 8 is the highest rank in play, so you carry out its threat.'
       const privateEvent = createEvent(privateMessage)
       highPlayer.events.push(privateEvent)
-      const privateChildMessage = 'You put your 8 on your discard instead of summoning it to the court.'
+      const privateChildMessage = 'You reserve your 8 instead of summoning it to the court.'
       addEvent(privateEvent, privateChildMessage)
       const broadcastEvent = addBroadcastEvent({
         players: notHighPlayers,
         game: playState.game,
         message: `${highPlayer.displayName}'s 8 is the highest rank in play, so they carry out its threat.`
       })
-      const publicChildMessage = `${highPlayer.displayName} puts their 8 on their discard instead of summoning it to the court.`
+      const publicChildMessage = `${highPlayer.displayName} reserves their 8 instead of summoning it to the court.`
       addEvent(broadcastEvent, publicChildMessage)
     } else {
       highPlayers.forEach(highPlayer => {
@@ -57,7 +57,7 @@ export default function summonOrImprison ({
         const privateEvent = createEvent(privateMessage)
         highPlayer.events.push(privateEvent)
         const joined = join(displayNames)
-        const privateChildMessage = `${joined} put your 8s on your discards instead of imprisoning them in the dungeon.`
+        const privateChildMessage = `${joined} reserve your 8s instead of imprisoning them in the dungeon.`
         addEvent(privateEvent, privateChildMessage)
       })
       const highDisplayNames = highPlayers.map(p => p.displayName)
@@ -68,12 +68,12 @@ export default function summonOrImprison ({
         message: `${joinedHighDisplayNamesPossessive} 8s are the highest rank in play, so they carry out their threats.`
       })
       const joinedHighDisplayNames = join(highDisplayNames)
-      const childMessage = `${joinedHighDisplayNames} put their 8s on their discards instead of imprisoning them in the dungeon.`
+      const childMessage = `${joinedHighDisplayNames} reserve their 8s instead of imprisoning them in the dungeon.`
       addEvent(broadcastEvent, childMessage)
     }
     highPlayers.forEach(highPlayer => {
       const playScheme = guardPlayScheme(highPlayer)
-      highPlayer.discard.unshift(playScheme)
+      highPlayer.reserve.push(playScheme)
     })
     drawUpToThree({ playState })
     return

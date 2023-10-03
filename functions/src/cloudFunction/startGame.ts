@@ -114,12 +114,12 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   addEvent(startEvent, `The portfolio is ${portfolioRanks}.`)
   const courtScheme = createScheme(court)
   const dungeonScheme = createScheme(dungeon)
-  const deckIndex = sortedPortfolio.length - 2
-  const topDeck = guardDefined(sortedPortfolio[deckIndex], 'Top deck')
-  addEvent(startEvent, `The top deck scheme is ${topDeck}.`)
-  const discardIndex = sortedPortfolio.length - 1
-  const topDiscard = guardDefined(sortedPortfolio[discardIndex], 'Top discard')
-  addEvent(startEvent, `The top discard scheme is ${topDiscard}.`)
+  const reserveIndex = sortedPortfolio.length - 2
+  const firstReserve = guardDefined(sortedPortfolio[reserveIndex], 'First reserve')
+  addEvent(startEvent, `The first reserve is ${firstReserve}.`)
+  const lastReserveIndex = sortedPortfolio.length - 1
+  const lastReserve = guardDefined(sortedPortfolio[lastReserveIndex], 'Last reserve')
+  addEvent(startEvent, `The last reserve is ${lastReserve}.`)
   const hand = sortedPortfolio.slice(0, sortedPortfolio.length - 2)
   addEvent(startEvent, `The hand is ${join(hand)}.`)
   const timeline = empressLeft.slice(1)
@@ -129,25 +129,23 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
   const roundEvent = createEvent('Round 1 begins.', [], true)
   const startedProfiles = currentGameData.profiles.map((profile) => {
     const chooseEvent = createEvent(PLAYER_CHOOSE_MESSAGE)
-    const topDeckScheme = createScheme(topDeck)
-    const topDiscardScheme = createScheme(topDiscard)
-    const deck = [topDeckScheme]
-    const discard = [topDiscardScheme]
+    const firstReserveScheme = createScheme(firstReserve)
+    const lastReserveScheme = createScheme(lastReserve)
+    const reserve = [firstReserveScheme, lastReserveScheme]
     const handSchemes = hand.map(rank => createScheme(rank))
     const playerData = {
       auctionReady: false,
       bid: 0,
-      deck,
-      discard,
       displayName: profile.displayName,
       events: [...currentGameData.events, startEvent, roundEvent, chooseEvent],
       gameId,
       gold: 50,
       hand: handSchemes,
+      inPlay: [],
       lastBidder: false,
       playReady: false,
+      reserve,
       silver: 0,
-      tableau: [],
       trashHistory: [],
       userId: profile.userId,
       withdrawn: false
@@ -157,8 +155,8 @@ const startGame = createCloudFunction<GameProps>(async (props, context, transact
     transaction.set(playerRef, playerData, { merge: true })
     return {
       ...profile,
-      topDiscardScheme,
-      deckEmpty: false,
+      lastReserve: lastReserveScheme,
+      reserveLength: 2,
       gold: 50
     }
   })

@@ -24,7 +24,7 @@ export default async function guardChoice ({ context, gameId, label, schemeId, t
   if (choice == null) {
     throw new https.HttpsError(
       'failed-precondition',
-      'You are not choosing a scheme to put on your deck.'
+      'You are not choosing a scheme to put on your reserve.'
     )
   }
 

@@ -25,19 +25,14 @@ export default function draw ({
   const playerClone = clone(player)
   const handBefore = joinRanks(playerClone.hand)
   const originalHandMessage = `Your hand was ${handBefore}.`
-  const deckBefore = joinRanks(playerClone.deck)
-  const originalDeckMessage = `Your deck was ${deckBefore}.`
+  const reserveBefore = joinRanks(playerClone.reserve)
+  const originalReserveMessage = `Your reserve was ${reserveBefore}.`
   const drawState: DrawState = {
     allDrawn: [],
     beforePrivilegeHand: [],
-    deckDrawn: [],
-    deckDrawnDeck: [],
-    deckDrawnHand: [...player.hand],
-    discardDrawn: [],
-    discardDrawnDeck: [],
-    discardDrawnHand: [],
-    discardFlipped: false,
-    flippedDeck: [],
+    drawn: [],
+    drawnReserve: [],
+    drawnHand: [...player.hand],
     playState,
     privilegeTaken: []
   }
@@ -46,100 +41,48 @@ export default function draw ({
     drawState,
     player
   })
-  const deckDrawnJoined = joinRanks(drawState.deckDrawnHand)
-  const afterDeckMessage = `Your hand becomes ${deckDrawnJoined}.`
-  const deckDrawnDeckJoined = joinRanks(
-    drawState.deckDrawnDeck
+  const drawnHandJoined = joinRanks(drawState.drawnHand)
+  const afterReserveMessage = `Your hand becomes ${drawnHandJoined}.`
+  const drawnReserveJoined = joinRanks(
+    drawState.drawnReserve
   )
-  const deckDeckDrawnMessage = `Your deck becomes ${deckDrawnDeckJoined}.`
-  const deckDrawnRanks = joinRanks(drawState.deckDrawn)
+  const drawnReserveMessage = `Your reserve becomes ${drawnReserveJoined}.`
+  const drawnRanks = joinRanks(drawState.drawn)
   const { count, all } = getGrammar(
-    drawState.deckDrawn.length, 'scheme', 'schemes'
+    drawState.drawn.length, 'scheme', 'schemes'
   )
-  if (playerClone.deck.length === 0) {
+  if (playerClone.reserve.length === 0) {
     addEventsEverywhere({
       privateEvent,
       publicEvents,
-      suffix: 'deck is empty',
+      suffix: 'reserve is empty',
       displayName: player.displayName
     })
-  } else if (playerClone.deck.length < depth) {
+  } else if (playerClone.reserve.length < depth) {
     const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      privateMessage: `Your deck only has ${count}, ${deckDrawnRanks}, so you draw ${all}.`,
-      publicMessage: `${player.displayName}'s deck only has ${count}, so they draw ${all}.`
+      privateMessage: `Your reserve only has ${count}, ${drawnRanks}, so you draw ${all}.`,
+      publicMessage: `${player.displayName}'s reserve only has ${count}, so they draw ${all}.`
     })
     addEvent(events.privateEvent, originalHandMessage)
-    addEvent(events.privateEvent, afterDeckMessage)
+    addEvent(events.privateEvent, afterReserveMessage)
   } else {
     const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      privateMessage: `You draw ${count} from your deck, ${deckDrawnRanks}.`,
-      publicMessage: `${player.displayName} draws ${count} from their deck.`
+      privateMessage: `You draw ${count} from your reserve, ${drawnRanks}.`,
+      publicMessage: `${player.displayName} draws ${count} from their reserve.`
     })
     addEvent(events.privateEvent, originalHandMessage)
-    addEvent(events.privateEvent, afterDeckMessage)
-    addEvent(events.privateEvent, originalDeckMessage)
-    addEvent(events.privateEvent, deckDeckDrawnMessage)
-  }
-  if (drawState.discardFlipped) {
-    const events = addEventsEverywhere({
-      privateEvent,
-      publicEvents,
-      privateMessage: 'You flip your discard to refresh your deck.',
-      publicMessage: `${player.displayName} flips their discard to refresh their deck.`
-    })
-    const discardBefore = joinRanks(playerClone.discard)
-    const originalDiscardMessage = `Your discard was ${discardBefore}.`
-    addEvent(events.privateEvent, originalDiscardMessage)
-    const flippedDeckJoined = joinRanks(drawState.flippedDeck)
-    const flippedDeckMessage = `Your deck becomes ${flippedDeckJoined}.`
-    addEvent(events.privateEvent, flippedDeckMessage)
-    const deckBeforeDiscardMessage = `Your deck was ${flippedDeckJoined}.`
-    const beforeDiscardHandMessage = `Your hand was ${deckDrawnJoined}.`
-    const discardDrawnHandJoined = joinRanks(
-      drawState.discardDrawnHand
-    )
-    const handAfterDiscardMessage = `Your hand becomes ${discardDrawnHandJoined}.`
-    const discardDrawnDeckJoined = joinRanks(player.deck)
-    const discardDrawnDeckMessage = `Your deck becomes ${discardDrawnDeckJoined}.`
-    const { count, all } = getGrammar(
-      drawState.discardDrawn.length, 'scheme', 'schemes'
-    )
-    const discardDrawnRanks = joinRanks(drawState.discardDrawn)
-    const allDiscardDrawn = drawState.discardDrawn.length === playerClone.discard.length
-    if (allDiscardDrawn) {
-      const privateMessage = `Your refreshed deck only has ${count}, ${discardDrawnRanks}, so you draw ${all}.`
-      const publicMessage = `${player.displayName}'s refreshed deck only has ${count}, so they draw ${all}.`
-      const events = addEventsEverywhere({
-        privateEvent,
-        publicEvents,
-        privateMessage,
-        publicMessage
-      })
-      addEvent(events.privateEvent, beforeDiscardHandMessage)
-      addEvent(events.privateEvent, handAfterDiscardMessage)
-    } else {
-      const privateMessage = `You draw ${count} from your refreshed deck, ${discardDrawnRanks}.`
-      const publicMessage = `${player.displayName} draws ${count} from their refreshed deck.`
-      const events = addEventsEverywhere({
-        privateEvent,
-        publicEvents,
-        privateMessage,
-        publicMessage
-      })
-      addEvent(events.privateEvent, beforeDiscardHandMessage)
-      addEvent(events.privateEvent, handAfterDiscardMessage)
-      addEvent(events.privateEvent, deckBeforeDiscardMessage)
-      addEvent(events.privateEvent, discardDrawnDeckMessage)
-    }
+    addEvent(events.privateEvent, afterReserveMessage)
+    addEvent(events.privateEvent, originalReserveMessage)
+    addEvent(events.privateEvent, drawnReserveMessage)
   }
 
   if (drawState.privilegeTaken.length > 0) {
     const { count } = getGrammar(drawState.privilegeTaken.length, 'Privilege', 'Privilege')
-    const privateMessage = `Your deck and discard are empty, so you take ${count} into your hand.`
+    const privateMessage = `Your reserve is empty, so you take ${count} into your hand.`
     const publicMessage = `${player.displayName} takes ${count} into their hand.`
     const events = addEventsEverywhere({
       privateEvent,

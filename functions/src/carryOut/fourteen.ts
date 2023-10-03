@@ -2,7 +2,7 @@ import addEvent from '../add/event'
 import addPlayerEvent from '../add/event/player'
 import addTargetEvents from '../add/events/target'
 import createId from '../create/id'
-import discardTableau from '../discardTableau'
+import reserveInPlay from '../reserveInPlay'
 import getGrammar from '../get/grammar'
 import getLowestRankScheme from '../get/lowestRankScheme'
 import join from '../join'
@@ -37,7 +37,7 @@ export default function carryOutFourteen ({
   }
   const fourteenPlayers = playState
     .players
-    .filter(player => player.tableau.some(scheme => scheme.rank === 14))
+    .filter(player => player.inPlay.some(scheme => scheme.rank === 14))
   if (fourteenPlayers.length > 0) {
     const names = fourteenPlayers.map(player => player.displayName)
     const publicNames = join(names)
@@ -69,33 +69,33 @@ export default function carryOutFourteen ({
       if (fourteen) {
         const publicNot = 'so they can not reorder it'
         const privateNot = 'so you can not reorder it'
-        if (player.deck.length === 0) {
+        if (player.reserve.length === 0) {
           addTargetEvents({
             playState,
-            message: `${player.displayName}'s deck is empty, so ${publicNot}`,
+            message: `${player.displayName}'s reserve is empty, so ${publicNot}`,
             targetMessages: {
-              [player.id]: `Your deck is empty, so ${privateNot}.`
+              [player.id]: `Your reserve is empty, so ${privateNot}.`
             }
           })
-        } else if (player.deck.length === 1) {
+        } else if (player.reserve.length === 1) {
           addTargetEvents({
             playState,
-            message: `${player.displayName}'s deck has only one scheme, so ${publicNot}`,
+            message: `${player.displayName}'s reserve has only one scheme, so ${publicNot}`,
             targetMessages: {
-              [player.id]: `Your deck has only one scheme, so ${privateNot}.`
+              [player.id]: `Your reserve has only one scheme, so ${privateNot}.`
             }
           })
         } else {
           playState.game.choices.push({
             id: createId(),
             playerId: player.id,
-            type: 'deck'
+            type: 'reserve'
           })
           addTargetEvents({
             playState,
-            message: `${player.displayName} is reordering their deck.`,
+            message: `${player.displayName} is reordering their reserve.`,
             targetMessages: {
-              [player.id]: 'Reorder your deck.'
+              [player.id]: 'Reorder your reserve.'
             }
           })
         }
@@ -105,5 +105,5 @@ export default function carryOutFourteen ({
       return
     }
   }
-  discardTableau({ playState })
+  reserveInPlay({ playState })
 }

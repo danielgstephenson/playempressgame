@@ -5,7 +5,7 @@ export default function isCarryingOutEleven ({ game, player }: {
   game: Result<Game>
   player: Result<Player>
 }): boolean {
-  const eleven = player.tableau.some(scheme => scheme.rank === 11)
+  const eleven = player.inPlay.some(scheme => scheme.rank === 11)
   if (eleven) {
     const otherProfiles = game.profiles.filter(profile => profile.userId !== player.userId)
     const highestBid = getHighestBid(otherProfiles)

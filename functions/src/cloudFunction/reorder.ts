@@ -13,7 +13,7 @@ import { playersRef } from '../db'
 import guardString from '../guard/string'
 import createPlayState from '../create/playState'
 import addTargetEvents from '../add/events/target'
-import discardTableau from '../discardTableau'
+import reserveInPlay from '../reserveInPlay'
 import setPlayState from '../setPlayState'
 import guardDefined from '../guard/defined'
 
@@ -31,7 +31,7 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     transaction,
     context
   })
-  console.info(`Reordering ${currentPlayer.displayName}'s deck...`)
+  console.info(`Reordering ${currentPlayer.displayName}'s reserve...`)
   const choice = currentGame
     .choices
     .find(choice =>
@@ -46,7 +46,7 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
   const extra = props
     .schemeIds
     .filter(id => currentPlayer
-      .deck
+      .reserve
       .every(scheme => scheme.id !== id)
     )
   if (extra.length > 0) {
@@ -54,11 +54,11 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     const grammar = getGrammar(extra.length)
     throw new https.HttpsError(
       'failed-precondition',
-      `${joined} ${grammar.toBe} not in your deck.`
+      `${joined} ${grammar.toBe} not in your reserve.`
     )
   }
   const missing = currentPlayer
-    .deck
+    .reserve
     .filter(scheme => props
       .schemeIds
       .every(id => scheme.id !== id)
@@ -68,14 +68,14 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     const grammar = getGrammar(missing.length)
     throw new https.HttpsError(
       'failed-precondition',
-      `${joined} ${grammar.toBe} missing from your deck.`
+      `${joined} ${grammar.toBe} missing from your reserve.`
     )
   }
-  const before = joinRanksGrammar(currentPlayer.deck)
-  const beforeMessage = `Your deck was ${before.joinedRanks}.`
+  const before = joinRanksGrammar(currentPlayer.reserve)
+  const beforeMessage = `Your reserve was ${before.joinedRanks}.`
   const schemes = props.schemeIds.map(id => {
     const scheme = currentPlayer
-      .deck
+      .reserve
       .find(scheme => scheme.id === id)
     if (scheme == null) {
       throw new https.HttpsError(
@@ -86,9 +86,9 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     return scheme
   })
   const joined = joinRanksGrammar(schemes)
-  const afterMessage = `Your deck becomes ${joined.joinedRanks}.`
-  const privateReorderMessage = `You reorder your deck to ${joined.joinedRanks}.`
-  const publicReorderMessage = `${currentPlayer.displayName} reorders their deck.`
+  const afterMessage = `Your reserve becomes ${joined.joinedRanks}.`
+  const privateReorderMessage = `You reorder your reserve to ${joined.joinedRanks}.`
+  const publicReorderMessage = `${currentPlayer.displayName} reorders their reserve.`
   if (currentGame.choices.length === 1) {
     const playState = await createPlayState({
       currentGame,
@@ -96,7 +96,7 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
       transaction
     })
     playState.game.choices = []
-    currentPlayer.deck = schemes
+    currentPlayer.reserve = schemes
     const reorderEvents = addTargetEvents({
       playState,
       message: publicReorderMessage,
@@ -108,16 +108,16 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     const privateReorderEvent = guardDefined(privateEvent, 'Private reorder event')
     addEvent(privateReorderEvent, beforeMessage)
     addEvent(privateReorderEvent, afterMessage)
-    discardTableau({ playState })
+    reserveInPlay({ playState })
     setPlayState({ playState, transaction })
-    console.info(`Reordered ${currentPlayer.displayName}'s deck.`)
+    console.info(`Reordered ${currentPlayer.displayName}'s reserve.`)
     return
   }
   const privateReorderEvent = createEvent(privateReorderMessage)
   addEvent(privateReorderEvent, beforeMessage)
   addEvent(privateReorderEvent, afterMessage)
   transaction.update(currentPlayerRef, {
-    deck: schemes,
+    reserve: schemes,
     events: arrayUnion(privateReorderEvent)
   })
   const publicEvent = createEvent(publicReorderMessage)
@@ -135,6 +135,6 @@ const reorder = createCloudFunction<SchemesProps>(async (props, context, transac
     choices: arrayRemove(choice),
     events: arrayUnion(publicEvent)
   })
-  console.info(`Reordered ${currentPlayer.displayName}'s deck.`)
+  console.info(`Reordered ${currentPlayer.displayName}'s reserve.`)
 })
 export default reorder

@@ -39,7 +39,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       'You are not the highest untied bidder.'
     )
   }
-  const twelve = currentPlayer.tableau.some(scheme => scheme.rank === 12)
+  const twelve = currentPlayer.inPlay.some(scheme => scheme.rank === 12)
   const courtTaken = currentGame.court.filter(scheme => props.schemeIds.some(id => scheme.id === id))
   const courtTwelve = courtTaken.some(scheme => scheme.rank === 12)
   const someTwelve = twelve || courtTwelve
@@ -94,27 +94,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
       `${joined} ${grammar.toBe} reordering.`
     )
   }
-  // const tableauBefore = joinRanksGrammar(currentPlayer.tableau)
-  // const privateTableauBeforeMessage = `You had ${tableauBefore.joinedRanks} in play.`
-  // const publicTableauBeforeMessage = `${currentPlayer.displayName} had ${tableauBefore.joinedRanks} in play.`
-  // addTargetEvents({
-  //   playState,
-  //   message: publicTableauBeforeMessage,
-  //   targetMessages: {
-  //     [currentPlayer.id]: privateTableauBeforeMessage
-  //   }
-  // })
-  currentPlayer.tableau.push(...courtTaken)
-  // const tableauAfter = joinRanksGrammar(currentPlayer.tableau)
-  // const privateTableauAfterMessage = `You then have ${tableauAfter.joinedRanks} in play.`
-  // const publicTableauAfterMessage = `${currentPlayer.displayName} then has ${tableauAfter.joinedRanks} in play.`
-  // addTargetEvents({
-  //   playState,
-  //   message: publicTableauAfterMessage,
-  //   targetMessages: {
-  //     [currentPlayer.id]: privateTableauAfterMessage
-  //   }
-  // })
+  currentPlayer.inPlay.push(...courtTaken)
   playState.game.court = playState.game.court.filter(scheme => !props.schemeIds.includes(scheme.id))
   const courtJoined = joinRanks(courtTaken)
   const courtMessage = courtTaken.length === 0
@@ -122,7 +102,7 @@ const court = createCloudFunction<SchemesProps>(async (props, context, transacti
     : `${courtJoined} from the court`
   if (someTwelve && playState.game.dungeon.length > 0) {
     const dungeonTaken = playState.game.dungeon.filter(scheme => props.schemeIds.includes(scheme.id))
-    currentPlayer.tableau.push(...dungeonTaken)
+    currentPlayer.inPlay.push(...dungeonTaken)
     playState.game.dungeon = playState.game.dungeon.filter(scheme => !props.schemeIds.includes(scheme.id))
     const dungeonJoined = joinRanks(dungeonTaken)
     const someDungeonTaken = dungeonTaken.length > 0

@@ -4,7 +4,7 @@ import addEventsEverywhere from '../add/events/everywhere'
 import addPlayerPublicEvents from '../add/events/player/public'
 import addHighestRankPlaySchemeEvents from '../add/events/scheme/play/rank/highest'
 import addLowestRankPlaySchemeEvents from '../add/events/scheme/play/rank/lowest'
-import addTopDiscardSchemeGreenEvents from '../add/events/scheme/topDiscard/green'
+import addLastReserveGreenEvents from '../add/events/scheme/lastReserve/green'
 import draw from '../draw'
 import isGreen from '../is/green'
 import revive from '../revive'
@@ -19,10 +19,10 @@ export default function effectsTwentyThree ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is green, revive 5.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName} top discard scheme is green, they revive 5.`)
-  const scheme = addTopDiscardSchemeGreenEvents({
-    discard: effectPlayer.discard,
+  const firstPrivateChild = addEvent(privateEvent, 'First, if your last reserve is green, revive 5.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s last reserve is green, they revive 5.`)
+  const scheme = addLastReserveGreenEvents({
+    reserve: effectPlayer.reserve,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren,
     displayName: effectPlayer.displayName

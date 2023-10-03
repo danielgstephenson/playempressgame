@@ -3,7 +3,7 @@ import draw from '../draw'
 import addPublicEvent from '../add/event/public'
 import { PlayState, SchemeEffectProps } from '../types'
 import addEvent from '../add/event'
-import joinRanks from '../join/ranks'
+import joinRanksGrammar from '../join/ranks/grammar'
 
 export default function effectsTwentyFive ({
   copiedByFirstEffect,
@@ -27,12 +27,12 @@ export default function effectsTwentyFive ({
       publicEvents: firstPublicChildren
     })
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if your discard is empty, draw 5.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName}'s discard is empty, draw 5.`)
-  const joinedRanks = joinRanks(effectPlayer.discard)
-  addEvent(secondPrivateChild, `Your discard is ${joinedRanks}.`)
-  if (effectPlayer.discard.length === 0) {
-    addPublicEvent(secondPublicChildren, `${effectPlayer.displayName}'s discard is empty.`)
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if your reserve has 5 or less schemes, draw 5.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName}'s reserve has 5 or less schemes, draw 5.`)
+  const { joinedRanks, joinedCount } = joinRanksGrammar(effectPlayer.reserve)
+  addEvent(secondPrivateChild, `Your reserve is ${joinedRanks}.`)
+  addPublicEvent(secondPublicChildren, `${effectPlayer.displayName}'s reserve has ${joinedCount}.`)
+  if (effectPlayer.reserve.length > 5) {
     draw({
       depth: 5,
       playState,
@@ -40,8 +40,6 @@ export default function effectsTwentyFive ({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren
     })
-  } else {
-    addPublicEvent(secondPublicChildren, `${effectPlayer.displayName}'s discard is not empty.`)
   }
   return playState
 }

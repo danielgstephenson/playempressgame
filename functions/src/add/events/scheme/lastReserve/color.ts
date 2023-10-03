@@ -1,22 +1,22 @@
-import addTopDiscardSchemeEvents from '.'
+import addLastReserveEvents from '.'
 import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
 import addEventsEverywhere from '../../everywhere'
 
-export default function addTopDiscardSchemeColorEvents ({
-  discard,
+export default function addLastReserveColorEvents ({
+  reserve,
   displayName,
   isColor,
   privateEvent,
   publicEvents
 }: {
-  discard: Scheme[]
+  reserve: Scheme[]
   displayName: string
   isColor: (scheme: Scheme) => boolean
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): Scheme | undefined {
-  const scheme = addTopDiscardSchemeEvents({
-    discard,
+  const scheme = addLastReserveEvents({
+    reserve,
     displayName,
     privateEvent,
     publicEvents
@@ -27,7 +27,7 @@ export default function addTopDiscardSchemeColorEvents ({
   addEventsEverywhere({
     publicEvents,
     privateEvent,
-    suffix: `top discard scheme, ${scheme.rank}, is ${scheme.color}`,
+    suffix: `last reserve, ${scheme.rank}, is ${scheme.color}`,
     displayName
   })
   const color = isColor(scheme)

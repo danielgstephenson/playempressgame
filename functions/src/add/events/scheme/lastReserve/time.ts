@@ -1,22 +1,22 @@
 import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
 import addEvent from '../../../event'
 import addPublicEvent from '../../../event/public'
-import addTopDiscardSchemeEvents from '.'
+import addLastReserveSchemeEvents from '.'
 import getGrammar from '../../../../get/grammar'
 
-export default function addTopDiscardSchemeTimeEvents ({
-  discard,
+export default function addLastReserveTimeEvents ({
+  reserve,
   displayName,
   privateEvent,
   publicEvents
 }: {
-  discard: Scheme[]
+  reserve: Scheme[]
   displayName: string
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): number {
-  const scheme = addTopDiscardSchemeEvents({
-    discard,
+  const scheme = addLastReserveSchemeEvents({
+    reserve,
     displayName,
     privateEvent,
     publicEvents
@@ -25,7 +25,7 @@ export default function addTopDiscardSchemeTimeEvents ({
     return 0
   }
   const { spelled } = getGrammar(scheme.time)
-  addPublicEvent(publicEvents, `${displayName}'s top discard scheme is ${scheme.rank} with ${spelled} time.`)
-  addEvent(privateEvent, `Your top discard scheme, ${scheme.rank}, has ${scheme.time} time.`)
+  addPublicEvent(publicEvents, `${displayName}'s last reserve is ${scheme.rank} with ${spelled} time.`)
+  addEvent(privateEvent, `Your last reserve, ${scheme.rank}, has ${scheme.time} time.`)
   return scheme.time
 }

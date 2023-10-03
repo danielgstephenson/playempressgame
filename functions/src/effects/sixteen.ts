@@ -3,8 +3,6 @@ import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
 import createChoice from '../create/choice'
 import earn from '../earn'
-import getGrammar from '../get/grammar'
-import joinRanks from '../join/ranks'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsSixteen ({
@@ -17,28 +15,19 @@ export default function effectsSixteen ({
   resume,
   threat
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if you have five or less schemes in hand, you earn twenty five gold.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if  ${effectPlayer.displayName} has five or less schemes in hand, they earn twenty five gold.`)
-  const less = effectPlayer.hand.length < 6
-  const { count } = getGrammar(effectPlayer.hand.length)
-  const joined = joinRanks(effectPlayer.hand)
-  const privateMessage = `You have ${count} in hand, ${joined}.`
-  addEvent(firstPrivateChild, privateMessage)
-  const lessMessage = less ? 'five or less schemes' : 'more than five schemes'
-  const publicMessage = `${effectPlayer.displayName} has ${lessMessage} in hand.`
-  addPublicEvent(firstPublicChildren, publicMessage)
-  const lessBonus = less ? 25 : 0
+  const firstPrivateChild = addEvent(privateEvent, 'First, earn twenty five gold.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if  ${effectPlayer.displayName} earns twenty five gold.`)
   earn({
-    amount: lessBonus,
+    amount: 25,
     player: effectPlayer,
     playState,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, put one scheme from your hand on the bottom of your deck.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName} took gold, they put one scheme from their hand on their deck.`)
-  if (less) {
-    const justMessage = 'just took twenty five gold'
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if your reserve is not empty, put one scheme from your hand to the left of your last reserve.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName}'s reserve is not empty, they put one scheme from their hand to the left of their last reserve.`)
+  if (effectPlayer.reserve.length > 0) {
+    const justMessage = 'reserve is not empty'
     if (effectPlayer.hand.length === 0) {
       addEventsEverywhere({
         possessive: false,
@@ -60,15 +49,15 @@ export default function effectsSixteen ({
         copiedByFirstEffect,
         effectPlayer,
         effectScheme,
-        type: 'deck',
+        type: 'reserve',
         threat
       })
       playState.game.choices.push(choice)
     }
   } else {
     addEventsEverywhere({
-      possessive: false,
-      suffix: 'did not take gold',
+      possessive: true,
+      suffix: 'reserve is empty',
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
       displayName: effectPlayer.displayName

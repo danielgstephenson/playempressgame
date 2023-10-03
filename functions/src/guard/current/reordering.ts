@@ -15,11 +15,11 @@ export default async function guardCurrentReordering ({
     gameId,
     transaction
   })
-  const fourteen = guard.currentPlayer.tableau.some(scheme => scheme.rank === 14)
+  const fourteen = guard.currentPlayer.inPlay.some(scheme => scheme.rank === 14)
   if (!fourteen) {
     throw new https.HttpsError(
       'failed-precondition',
-      'You do not have a 14 in your tableau.'
+      'You do not have a 14 in play.'
     )
   }
   return guard

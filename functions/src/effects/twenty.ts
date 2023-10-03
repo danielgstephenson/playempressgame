@@ -1,7 +1,7 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
-import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
+import addLastReserveSchemeEvents from '../add/events/scheme/lastReserve'
 import earn from '../earn'
 import isYellow from '../is/yellow'
 import summon from '../summon'
@@ -16,13 +16,13 @@ export default function effectsTwenty ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, earn twice your top discard scheme\'s rank.')
+  const firstPrivateChild = addEvent(privateEvent, 'First, earn twice your last reserve\'s rank.')
   const firstPublicChildren = addPublicEvent(
     publicEvents,
-    `First, ${effectPlayer.displayName} earns twice their top discard scheme's rank.`
+    `First, ${effectPlayer.displayName} earns twice their last reserve's rank.`
   )
-  const scheme = addTopDiscardSchemeEvents({
-    discard: effectPlayer.discard,
+  const scheme = addLastReserveSchemeEvents({
+    reserve: effectPlayer.reserve,
     displayName: effectPlayer.displayName,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
@@ -36,37 +36,37 @@ export default function effectsTwenty ({
       publicEvents: firstPublicChildren
     })
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, if your top discard scheme is not yellow, it is summoned to the court.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName}'s top discard scheme is not yellow, it is summoned to the court.`)
-  const topDiscardScheme = addTopDiscardSchemeEvents({
-    discard: effectPlayer.discard,
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if your last reserve is not yellow, it is summoned to the court.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if ${effectPlayer.displayName}'s last reserve is not yellow, it is summoned to the court.`)
+  const lastReserve = addLastReserveSchemeEvents({
+    reserve: effectPlayer.reserve,
     displayName: effectPlayer.displayName,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren
   })
-  if (topDiscardScheme == null) {
+  if (lastReserve == null) {
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      suffix: 'discard is empty',
+      suffix: 'reserve is empty',
       displayName: effectPlayer.displayName
     })
-  } else if (isYellow(topDiscardScheme)) {
+  } else if (isYellow(lastReserve)) {
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      suffix: `top discard scheme, ${topDiscardScheme.rank}, is yellow`,
+      suffix: `last reserve, ${lastReserve.rank}, is yellow`,
       displayName: effectPlayer.displayName
     })
   } else {
     addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      suffix: `top discard scheme, ${topDiscardScheme.rank}, is summoned to the court`,
+      suffix: `last reserve, ${lastReserve.rank}, is summoned to the court`,
       displayName: effectPlayer.displayName
     })
-    effectPlayer.discard.shift()
-    summon({ court: playState.game.court, scheme: topDiscardScheme })
+    effectPlayer.reserve.pop()
+    summon({ court: playState.game.court, scheme: lastReserve })
   }
   return playState
 }

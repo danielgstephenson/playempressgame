@@ -1,10 +1,7 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
-import createPrivilege from '../create/privilege'
 import earn from '../earn'
-import guardFirst from '../guard/first'
 import joinRanksGrammar from '../join/ranks/grammar'
-import summon from '../summon'
 import { PlayState, SchemeEffectProps } from '../types'
 
 export default function effectsNineteen ({
@@ -16,27 +13,18 @@ export default function effectsNineteen ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if your deck or discard is empty, you earn 30 gold.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s deck or discard is empty, they earn 30 gold.`)
-  const deckEmpty = effectPlayer.deck.length === 0
-  if (deckEmpty) {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is empty.`)
-    addEvent(firstPrivateChild, 'Your deck is empty.')
+  const firstPrivateChild = addEvent(privateEvent, 'If your reserve is empty, you earn 30 gold.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s reserve is empty, they earn 30 gold.`)
+  const reserveEmpty = effectPlayer.reserve.length === 0
+  if (reserveEmpty) {
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s reserve is empty.`)
+    addEvent(firstPrivateChild, 'Your reserve is empty.')
   } else {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s deck is not empty.`)
-    const { joinedCount } = joinRanksGrammar(effectPlayer.deck)
-    addEvent(firstPrivateChild, `Your deck has ${joinedCount}.`)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.reserve)
+    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s reserve has ${joinedCount}.`)
+    addEvent(firstPrivateChild, `Your reserve has ${joinedCount}.`)
   }
-  const discardEmpty = effectPlayer.discard.length === 0
-  if (discardEmpty) {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is empty.`)
-    addEvent(firstPrivateChild, 'Your discard is empty.')
-  } else {
-    addPublicEvent(firstPublicChildren, `${effectPlayer.displayName}'s discard is not empty.`)
-    const { joinedCount } = joinRanksGrammar(effectPlayer.discard)
-    addEvent(firstPrivateChild, `Your discard has ${joinedCount}.`)
-  }
-  if (deckEmpty || discardEmpty) {
+  if (reserveEmpty) {
     earn({
       amount: 30,
       player: effectPlayer,
@@ -44,10 +32,21 @@ export default function effectsNineteen ({
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren
     })
+  } else {
+    const secondPrivateChild = addEvent(privateEvent, 'Otherwise, you earn 5 gold for each scheme in your reserve.')
+    const secondPublicChildren = addPublicEvent(publicEvents, `Otherwise, ${effectPlayer.displayName} earns 5 gold for each scheme in their reserve.`)
+    const { joinedCount } = joinRanksGrammar(effectPlayer.reserve)
+    addPublicEvent(secondPublicChildren, `${effectPlayer.displayName}'s reserve has ${joinedCount}.`)
+    addEvent(secondPrivateChild, `Your reserve has ${joinedCount}.`)
+    if (effectPlayer.reserve.length > 0) {
+      earn({
+        amount: effectPlayer.reserve.length * 5,
+        player: effectPlayer,
+        playState,
+        privateEvent: secondPrivateChild,
+        publicEvents: secondPublicChildren
+      })
+    }
   }
-  addEvent(privateEvent, 'Second, one Privilege is summoned to the court')
-  addPublicEvent(publicEvents, 'Second, one Privilege is summoned to the court')
-  const privilege = guardFirst(createPrivilege(1), 'Privilege')
-  summon({ court: playState.game.court, scheme: privilege })
   return playState
 }

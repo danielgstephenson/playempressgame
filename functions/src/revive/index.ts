@@ -27,47 +27,47 @@ export default function revive ({
   const playerClone = clone(player)
   const handBeforeJoined = joinRanks(playerClone.hand)
   const handBeforeMessage = `Your hand was ${handBeforeJoined}.`
-  const discardBeforeJoined = joinRanks(playerClone.discard)
-  const discardBeforeMessage = `Your discard was ${discardBeforeJoined}.`
+  const reserveBeforeJoined = joinRanks(playerClone.reserve)
+  const reserveBeforeMessage = `Your reserve was ${reserveBeforeJoined}.`
   reviveMultiple({
     depth,
     playState,
     player
   })
   const revived = player.hand.filter(handScheme => {
-    const fromDiscard = playerClone.discard.some(discardScheme => handScheme.id === discardScheme.id)
-    return fromDiscard
+    const fromReserve = playerClone.reserve.some(reserveScheme => handScheme.id === reserveScheme.id)
+    return fromReserve
   })
   const afterHandJoined = joinRanks(player.hand)
   const afterHandMessage = `Your hand becomes ${afterHandJoined}.`
-  const afterDiscardJoined = joinRanks(player.discard)
-  const afterDiscardMessage = `Your discard becomes ${afterDiscardJoined}.`
+  const afterReviveJoined = joinRanks(player.reserve)
+  const afterReviveMessage = `Your reserve becomes ${afterReviveJoined}.`
   const listRanks = joinRanks(revived)
-  if (playerClone.discard.length === 0) {
+  if (playerClone.reserve.length === 0) {
     addEventsEverywhere({
       privateEvent,
       publicEvents,
-      suffix: 'discard is empty',
+      suffix: 'reserve is empty',
       displayName: player.displayName
     })
-  } else if (playerClone.discard.length < depth) {
-    const { count, all } = getGrammar(playerClone.discard.length, 'scheme', 'schemes')
+  } else if (playerClone.reserve.length < depth) {
+    const { count, all } = getGrammar(playerClone.reserve.length, 'scheme', 'schemes')
     const events = addEventsEverywhere({
       privateEvent,
       publicEvents,
-      privateMessage: `Your discard only has ${count}, ${listRanks}, so you revive ${all}.`,
-      publicMessage: `${player.displayName}'s discard only has ${count}, so they revive ${all}.`
+      privateMessage: `Your reserve only has ${count}, ${listRanks}, so you revive ${all}.`,
+      publicMessage: `${player.displayName}'s reserve only has ${count}, so they revive ${all}.`
     })
     addEvent(events.privateEvent, handBeforeMessage)
     addEvent(events.privateEvent, afterHandMessage)
-    addEvent(events.privateEvent, discardBeforeMessage)
-    addEvent(events.privateEvent, afterDiscardMessage)
+    addEvent(events.privateEvent, reserveBeforeMessage)
+    addEvent(events.privateEvent, afterReviveMessage)
   } else {
     const privateReviveEvent = addEvent(privateEvent, `You revive ${listRanks}.`)
     addEvent(privateReviveEvent, handBeforeMessage)
     addEvent(privateReviveEvent, afterHandMessage)
-    addEvent(privateReviveEvent, discardBeforeMessage)
-    addEvent(privateReviveEvent, afterDiscardMessage)
+    addEvent(privateReviveEvent, reserveBeforeMessage)
+    addEvent(privateReviveEvent, afterReviveMessage)
     addPublicEvent(publicEvents, `${player.displayName} revives ${listRanks}.`)
   }
 }

@@ -56,16 +56,16 @@ export default function buy ({
     .find(player => player.id === buyerId)
   const buyer = guardDefined(found, 'Buyer')
   if (leftmost != null) {
-    const inPlayBefore = joinRanksGrammar(buyer.tableau)
-    const inPlayBeforeMessage = `tableau was ${inPlayBefore.joinedRanks}`
-    const privateInPlayBeforeMessage = `Your ${inPlayBeforeMessage}.`
-    const publicInPlayBeforeMessage = `${buyer.displayName}'s ${inPlayBeforeMessage}.`
-    buyer.tableau.push(leftmost)
-    buyer.tableau.sort((a, b) => b.rank - a.rank)
-    const inPlayAfter = joinRanksGrammar(buyer.tableau)
-    const inPlayAfterMessage = `tableau becomes ${inPlayAfter.joinedRanks}`
-    const privateInPlayAfterMessage = `Your ${inPlayAfterMessage}.`
-    const publicInPlayAfterMessage = `${buyer.displayName}'s ${inPlayAfterMessage}.`
+    const inPlayBefore = joinRanksGrammar(buyer.inPlay)
+    const inPlayBeforeMessage = `had ${inPlayBefore.joinedRanks} in play`
+    const privateInPlayBeforeMessage = `You ${inPlayBeforeMessage}.`
+    const publicInPlayBeforeMessage = `${buyer.displayName} ${inPlayBeforeMessage}.`
+    buyer.inPlay.push(leftmost)
+    buyer.inPlay.sort((a, b) => b.rank - a.rank)
+    const inPlayAfter = joinRanksGrammar(buyer.inPlay)
+    const inPlayAfterMessage = `${inPlayAfter.joinedRanks} in play`
+    const privateInPlayAfterMessage = `You now have ${inPlayAfterMessage}.`
+    const publicInPlayAfterMessage = `${buyer.displayName} now has ${inPlayAfterMessage}.`
     addBuyEvent({
       publicMessage: publicInPlayBeforeMessage,
       privateMessage: privateInPlayBeforeMessage
@@ -75,7 +75,7 @@ export default function buy ({
       privateMessage: privateInPlayAfterMessage
     })
   }
-  const eleven = buyer.tableau.some(scheme => scheme.rank === 11)
+  const eleven = buyer.inPlay.some(scheme => scheme.rank === 11)
   if (eleven && buyer.silver > 0) {
     addTargetEvents({
       playState,
@@ -119,7 +119,7 @@ export default function buy ({
     })
   }
   buyer.auctionReady = true
-  if (buyer.tableau.some(scheme => scheme.rank === 9)) {
+  if (buyer.inPlay.some(scheme => scheme.rank === 9)) {
     addTargetEvents({
       playState,
       message: `${buyer.displayName} won the auction, so they do not carry out the threat on their 9.`,
@@ -134,7 +134,7 @@ export default function buy ({
     .filter(player => player.playScheme?.rank === highestPlayScheme.rank)
   const summoned = highPlayers.length === 1
   const highLosers = highPlayers.filter(player => player.id !== buyerId)
-  const twelve = buyer.tableau.some(scheme => scheme.rank === 12)
+  const twelve = buyer.inPlay.some(scheme => scheme.rank === 12)
   if (twelve) {
     const {
       publicEvents,
@@ -202,7 +202,7 @@ export default function buy ({
   }
   const nines = playState
     .players
-    .filter(player => player.tableau.some(scheme => scheme.rank === 9) && player.id !== buyerId)
+    .filter(player => player.inPlay.some(scheme => scheme.rank === 9) && player.id !== buyerId)
   if (nines.length > 0) {
     const nineNames = nines.map(nine => nine.displayName)
     const joined = join(nineNames)
@@ -220,12 +220,12 @@ export default function buy ({
       message: `${joined} did not win the auction, so they carry out the ${threat} on their ${grammar.noun}.`,
       targetMessages
     })
-    const beforeDiscard = joinRanksGrammar(buyer.discard)
-    const beforeDiscardMessage = `Your discard was ${beforeDiscard.joinedRanks}.`
-    const topDiscard = buyer.discard.shift()
-    if (topDiscard == null) {
-      const privateEmptyMessage = 'Your discard is empty, so you have nothing to imprison.'
-      const publicEmptyMessage = `${buyer.displayName}'s discard is empty, so they have nothing to imprison.`
+    const beforeReserve = joinRanksGrammar(buyer.reserve)
+    const beforeReserveMessage = `Your reserve was ${beforeReserve.joinedRanks}.`
+    const lastReserve = buyer.reserve.pop()
+    if (lastReserve == null) {
+      const privateEmptyMessage = 'Your reserve is empty, so you have nothing to imprison.'
+      const publicEmptyMessage = `${buyer.displayName}'s reserve is empty, so they have nothing to imprison.`
       nineEvents.events.forEach(event => {
         if (event.playerId === buyerId) {
           addEvent(event, privateEmptyMessage)
@@ -234,26 +234,26 @@ export default function buy ({
         }
       })
     } else {
-      const afterDiscardMessage = createAfterMessage({
-        prefix: 'Your discard',
-        schemes: buyer.discard
+      const afterReserveMessage = createAfterMessage({
+        prefix: 'Your reserve',
+        schemes: buyer.inPlay
       })
       const beforeDungeonMesssage = createBeforeMessage({
         prefix: 'The dungeon',
         schemes: playState.game.dungeon
       })
-      playState.game.dungeon.push(topDiscard)
+      playState.game.dungeon.push(lastReserve)
       const afterDungeon = joinRanksGrammar(playState.game.dungeon)
       const afterDungeonMessage = `The dungeon becomes ${afterDungeon.joinedRanks}.`
-      const publicDungeonMessage = `${buyer.displayName} imprisons their top discard scheme, ${topDiscard.rank}.`
-      const privateDungeonMessage = `You imprison your top discard scheme, ${topDiscard.rank}.`
+      const publicDungeonMessage = `${buyer.displayName} imprisons their last reserve, ${lastReserve.rank}.`
+      const privateDungeonMessage = `You imprison your last reserve, ${lastReserve.rank}.`
       nineEvents.events.forEach(event => {
         const children = [
           beforeDungeonMesssage,
           afterDungeonMessage
         ]
         if (event.playerId === buyerId) {
-          children.unshift(beforeDiscardMessage, afterDiscardMessage)
+          children.unshift(beforeReserveMessage, afterReserveMessage)
           const buyerEvent = addEvent(event, privateDungeonMessage)
           children.forEach(child => addEvent(buyerEvent, child))
         } else {
@@ -268,7 +268,7 @@ export default function buy ({
     .filter(player => player.playScheme?.rank === 13)
   const thirteens = playState
     .players
-    .filter(player => player.tableau.some(scheme => scheme.rank === 13) && player.id !== buyerId)
+    .filter(player => player.inPlay.some(scheme => scheme.rank === 13) && player.id !== buyerId)
   const thirteen = thirteens.length > 0
   if (thirteen) {
     const thirteenNames = thirteens.map(thirteen => thirteen.displayName)

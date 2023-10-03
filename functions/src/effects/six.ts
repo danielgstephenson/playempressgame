@@ -2,7 +2,7 @@ import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addPlayerPublicEvents from '../add/events/player/public'
 import addSortedPlayerEvents from '../add/events/player/sorted'
-import addTopDiscardSchemeTimeEvents from '../add/events/scheme/topDiscard/time'
+import addLastReserveTimeEvents from '../add/events/scheme/lastReserve/time'
 import draw from '../draw'
 import getGrammar from '../get/grammar'
 import guardPlayScheme from '../guard/playScheme'
@@ -18,16 +18,16 @@ export default function effectsSix ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, revive your top discard scheme\'s time.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their top discard scheme's time.`)
-  const topDiscardSchemeTime = addTopDiscardSchemeTimeEvents({
-    discard: effectPlayer.discard,
+  const firstPrivateChild = addEvent(privateEvent, 'First, revive your last reserve\'s time.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, ${effectPlayer.displayName} revives their last reserve's time.`)
+  const lastReserveTime = addLastReserveTimeEvents({
+    reserve: effectPlayer.reserve,
     displayName: effectPlayer.displayName,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
   })
   revive({
-    depth: topDiscardSchemeTime,
+    depth: lastReserveTime,
     playState,
     player: effectPlayer,
     privateEvent: firstPrivateChild,

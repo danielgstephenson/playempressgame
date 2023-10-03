@@ -1,22 +1,22 @@
-import isGreen from '../../../../is/green'
+import isGreenOrYellow from '../../../../is/greenOrYellow'
 import { HistoryEvent, PublicEvents, Scheme } from '../../../../types'
-import addTopDiscardSchemeColorEvents from './color'
+import addLastReserveColorEvents from './color'
 
-export default function addTopDiscardSchemeGreenEvents ({
-  discard,
+export default function addLastReserveGreenOrYellowEvents ({
+  reserve,
   displayName,
   privateEvent,
   publicEvents
 }: {
-  discard: Scheme[]
+  reserve: Scheme[]
   displayName: string
   privateEvent: HistoryEvent
   publicEvents: PublicEvents
 }): Scheme | undefined {
-  return addTopDiscardSchemeColorEvents({
-    discard,
+  return addLastReserveColorEvents({
+    reserve,
     displayName,
-    isColor: isGreen,
+    isColor: isGreenOrYellow,
     privateEvent,
     publicEvents
   })

@@ -6,20 +6,20 @@ import joinRanks from './join/ranks'
 import joinRanksGrammar from './join/ranks/grammar'
 import { PlayState } from './types'
 
-export default function discardTableau ({
+export default function reserveInPlay ({
   playState
 }: {
   playState: PlayState
 }): void {
   playState.players.forEach(player => {
-    if (player.tableau.length > 0) {
-      player.tableau.sort((a, b) => b.rank - a.rank)
-      const joined = joinRanksGrammar(player.tableau)
-      const discardBefore = [...player.discard]
-      player.discard.unshift(...player.tableau)
-      player.tableau = []
-      const privateMessage = `You put ${joined.joinedRanks} from your tableau on your discard.`
-      const publicMessage = `${player.displayName} puts ${joined.joinedRanks} from their tableau on their discard.`
+    if (player.inPlay.length > 0) {
+      player.inPlay.sort((a, b) => b.rank - a.rank)
+      const joined = joinRanksGrammar(player.inPlay)
+      const reserveBefore = [...player.reserve]
+      player.reserve.unshift(...player.inPlay)
+      player.inPlay = []
+      const privateMessage = `You reserve the ${joined.joinedRanks} you had in play.`
+      const publicMessage = `${player.displayName} reserves the ${joined.joinedRanks} they had in play.`
       addEvent(playState.game, publicMessage)
       playState.players.forEach(p => {
         if (p.userId === player.userId) {
@@ -29,10 +29,10 @@ export default function discardTableau ({
             round: playState.game.round,
             playerId: player.id
           })
-          const before = joinRanks(discardBefore)
-          addEvent(event, `Your discard was ${before}.`)
-          const after = joinRanks(player.discard)
-          addEvent(event, `Your discard becomes ${after}.`)
+          const before = joinRanks(reserveBefore)
+          addEvent(event, `Your reserve was ${before}.`)
+          const after = joinRanks(player.reserve)
+          addEvent(event, `Your reserve becomes ${after}.`)
         } else {
           addPlayerEvent({
             container: p,

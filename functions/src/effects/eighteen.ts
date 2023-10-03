@@ -1,8 +1,8 @@
 import addEvent from '../add/event'
 import addPublicEvent from '../add/event/public'
 import addEventsEverywhere from '../add/events/everywhere'
-import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
-import addTopDiscardSchemeYellowEvents from '../add/events/scheme/topDiscard/yellow'
+import addLastReserveSchemeEvents from '../add/events/scheme/lastReserve'
+import addLastReserveYellowEvents from '../add/events/scheme/lastReserve/yellow'
 import earn from '../earn'
 import joinRanksGrammar from '../join/ranks/grammar'
 import { PlayState, SchemeEffectProps } from '../types'
@@ -16,10 +16,10 @@ export default function effectsEighteen ({
   publicEvents,
   resume
 }: SchemeEffectProps): PlayState {
-  const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is yellow, you earn twice its rank.')
-  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s top discard scheme is yellow, they earn twice its rank.`)
-  const scheme = addTopDiscardSchemeYellowEvents({
-    discard: effectPlayer.discard,
+  const firstPrivateChild = addEvent(privateEvent, 'First, if your last reserve is yellow, you earn twice its rank.')
+  const firstPublicChildren = addPublicEvent(publicEvents, `First, if ${effectPlayer.displayName}'s last reserve is yellow, they earn twice its rank.`)
+  const scheme = addLastReserveYellowEvents({
+    reserve: effectPlayer.reserve,
     displayName: effectPlayer.displayName,
     privateEvent: firstPrivateChild,
     publicEvents: firstPublicChildren
@@ -33,29 +33,38 @@ export default function effectsEighteen ({
       publicEvents: firstPublicChildren
     })
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Second, you put your top discard scheme on your deck.')
-  const secondPublicChildren = addPublicEvent(publicEvents, `Second, ${effectPlayer.displayName} puts their top discard scheme on their deck.`)
-  const discardScheme = addTopDiscardSchemeEvents({
-    discard: effectPlayer.discard,
-    displayName: effectPlayer.displayName,
-    privateEvent: secondPrivateChild,
-    publicEvents: secondPublicChildren
-  })
-  if (discardScheme != null) {
-    const deckBeforeJoined = joinRanksGrammar(effectPlayer.deck)
-    const deckBeforeMessage = `Your deck was ${deckBeforeJoined.joinedRanks}.`
-    effectPlayer.deck.unshift(discardScheme)
-    const deckAfterJoined = joinRanksGrammar(effectPlayer.deck)
-    const deckAfterMessage = `Your deck becomes ${deckAfterJoined.joinedRanks}.`
-    effectPlayer.discard.shift()
-    const { privateEvent } = addEventsEverywhere({
+  const secondPrivateChild = addEvent(privateEvent, 'Second, if you took gold, you move your last reserve to the start.')
+  const secondPublicChildren = addPublicEvent(publicEvents, `Second, if you took gold, ${effectPlayer.displayName} moves their last reserve to the start.`)
+  if (scheme == null) {
+    addEventsEverywhere({
       privateEvent: secondPrivateChild,
       publicEvents: secondPublicChildren,
-      publicMessage: `${effectPlayer.displayName} puts their ${discardScheme.rank} on their deck.`,
-      privateMessage: `You put your ${discardScheme.rank} on their deck.`
+      privateMessage: 'You did not take gold.',
+      publicMessage: `${effectPlayer.displayName} did not take gold.`
     })
-    addEvent(privateEvent, deckBeforeMessage)
-    addEvent(privateEvent, deckAfterMessage)
+  } else {
+    const lastReserve = addLastReserveSchemeEvents({
+      reserve: effectPlayer.reserve,
+      displayName: effectPlayer.displayName,
+      privateEvent: secondPrivateChild,
+      publicEvents: secondPublicChildren
+    })
+    if (lastReserve != null) {
+      const reserveBeforeJoined = joinRanksGrammar(effectPlayer.reserve)
+      const reserveBeforeMessage = `Your reserve was ${reserveBeforeJoined.joinedRanks}.`
+      effectPlayer.reserve.unshift(lastReserve)
+      effectPlayer.reserve.pop()
+      const reserveAfterJoined = joinRanksGrammar(effectPlayer.reserve)
+      const reserveAfterMessage = `Your reserve becomes ${reserveAfterJoined.joinedRanks}.`
+      const { privateEvent } = addEventsEverywhere({
+        privateEvent: secondPrivateChild,
+        publicEvents: secondPublicChildren,
+        publicMessage: `${effectPlayer.displayName} moves ${lastReserve.rank} to the start of their reserve.`,
+        privateMessage: `You move ${lastReserve.rank} to the the start of your reserve.`
+      })
+      addEvent(privateEvent, reserveBeforeMessage)
+      addEvent(privateEvent, reserveAfterMessage)
+    }
   }
   return playState
 }

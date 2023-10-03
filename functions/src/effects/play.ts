@@ -27,7 +27,7 @@ export default function playEffects ({
     playerId: effectPlayer.id,
     round: playState.game.round
   })
-  effectPlayer.tableau.push(effectScheme)
+  effectPlayer.inPlay.push(effectScheme)
   applyEffects({
     copiedByFirstEffect: false,
     effectPlayer,

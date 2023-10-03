@@ -2,8 +2,8 @@ import addEvent from '../add/event'
 import addEventsEverywhere from '../add/events/everywhere'
 import addPlayerPublicEvents from '../add/events/player/public'
 import addLeftmostGreenTimelineSchemeEvents from '../add/events/scheme/timeline/leftmost/green'
-import addTopDiscardSchemeEvents from '../add/events/scheme/topDiscard'
-import addTopDiscardSchemeRedEvents from '../add/events/scheme/topDiscard/red'
+import addLastReserveSchemeEvents from '../add/events/scheme/lastReserve'
+import addLastReserveRedEvents from '../add/events/scheme/lastReserve/red'
 import isRed from '../is/red'
 import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
@@ -19,13 +19,13 @@ export default function effectsFifteen ({
   threat
 }: SchemeEffectProps): PlayState {
   if (!resume) {
-    const firstPrivateChild = addEvent(privateEvent, 'If your top discard scheme is red, you copy the leftmost green timeline scheme.')
+    const firstPrivateChild = addEvent(privateEvent, 'If your last reserve is red, you copy the leftmost green timeline scheme.')
     const firstPublicChildren = addPlayerPublicEvents({
       events: publicEvents,
-      message: `If your top discard scheme is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`
+      message: `If your last reserve is red, ${effectPlayer.displayName} copies the leftmost green timeline scheme.`
     })
-    const scheme = addTopDiscardSchemeRedEvents({
-      discard: effectPlayer.discard,
+    const scheme = addLastReserveRedEvents({
+      reserve: effectPlayer.reserve,
       displayName: effectPlayer.displayName,
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren
@@ -53,13 +53,13 @@ export default function effectsFifteen ({
       }
     }
   }
-  const secondPrivateChild = addEvent(privateEvent, 'Otherwise, you copy your top discard scheme.')
+  const secondPrivateChild = addEvent(privateEvent, 'Otherwise, you copy your last reserve.')
   const secondPublicChildren = addPlayerPublicEvents({
     events: publicEvents,
-    message: `Otherwise, ${effectPlayer.displayName} copies their top discard scheme.`
+    message: `Otherwise, ${effectPlayer.displayName} copies their last reserve.`
   })
-  const scheme = addTopDiscardSchemeEvents({
-    discard: effectPlayer.discard,
+  const scheme = addLastReserveSchemeEvents({
+    reserve: effectPlayer.reserve,
     displayName: effectPlayer.displayName,
     privateEvent: secondPrivateChild,
     publicEvents: secondPublicChildren
@@ -68,7 +68,7 @@ export default function effectsFifteen ({
     addEventsEverywhere({
       publicEvents: secondPublicChildren,
       privateEvent: secondPrivateChild,
-      suffix: `top discard scheme, ${scheme.rank}, is ${scheme.color}`,
+      suffix: `last reserve, ${scheme.rank}, is ${scheme.color}`,
       displayName: effectPlayer.displayName
     })
   }

@@ -1,11 +1,12 @@
 import 'source-map-support/register'
 import addGame from './cloudFunction/addGame'
+import deckChoose from './cloudFunction/deckChoose'
 import joinGame from './cloudFunction/joinGame'
 import startGame from './cloudFunction/startGame'
 import onCreateUser from './cloudFunction/onCreateUser'
 import onDeleteUser from './cloudFunction/onDeleteUser'
 import playReady from './cloudFunction/playReady'
-import deckChoose from './cloudFunction/deckChoose'
+import reserveChoose from './cloudFunction/reserveChoose'
 import trashChoose from './cloudFunction/trashChoose'
 import bid from './cloudFunction/bid'
 import concede from './cloudFunction/concede'
@@ -25,6 +26,7 @@ exports.onCreateUser = onCreateUser
 exports.onDeleteUser = onDeleteUser
 exports.playReady = playReady
 exports.reorder = reorder
+exports.reserveChoose = reserveChoose
 exports.startGame = startGame
 exports.trashChoose = trashChoose
 exports.withdraw = withdraw

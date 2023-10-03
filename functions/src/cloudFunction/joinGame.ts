@@ -4,7 +4,7 @@ import guardJoinPhase from '../guard/joinPhase'
 import createCloudFunction from '../create/cloudFunction'
 import { gamesRef } from '../db'
 import createEvent from '../create/event'
-import { GameProps } from '../types'
+import { GameProps, Profile } from '../types'
 import { arrayUnion } from 'firelord'
 import guardCurrentUser from '../guard/current/user'
 import guardString from '../guard/string'
@@ -25,19 +25,17 @@ const joinGame = createCloudFunction<GameProps>(async (props, context, transacti
     )
   }
   guardJoinPhase({ gameData })
-  const profile = {
+  const profile: Profile = {
     auctionReady: false,
     bid: 0,
-    deckEmpty: true,
     displayName: currentUser.displayName,
     gameId,
     gold: 0,
     lastBidder: false,
-    playAreaEmpty: true,
     playReady: false,
+    reserveLength: 0,
     silver: 0,
-    tableau: [],
-    trashAreaEmpty: true,
+    inPlay: [],
     trashHistory: [],
     privateTrashHistory: [],
     userId: currentUid,

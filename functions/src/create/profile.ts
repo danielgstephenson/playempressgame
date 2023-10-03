@@ -9,19 +9,17 @@ export default function createProfile ({
   gameId: string
   userId: string
 }): Profile {
-  const profile = {
+  const profile: Profile = {
     auctionReady: false,
     bid: 0,
-    deckEmpty: true,
     displayName,
     gameId,
     gold: 0,
     lastBidder: false,
-    playAreaEmpty: true,
     playReady: false,
     silver: 0,
-    tableau: [],
-    trashAreaEmpty: true,
+    inPlay: [],
+    reserveLength: 0,
     trashHistory: [],
     privateTrashHistory: [],
     userId,

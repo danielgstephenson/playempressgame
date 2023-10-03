@@ -1,7 +1,7 @@
 import addEvent from '../add/event'
 import addPlayerPublicEvents from '../add/events/player/public'
 import addLowestRankGreenOrYellowPlaySchemeEvents from '../add/events/scheme/play/rank/lowest/greenOrYellow'
-import addTopDiscardSchemeGreenOrYellowEvents from '../add/events/scheme/topDiscard/greenOrYellow'
+import addLastReserveGreenOrYellowEvents from '../add/events/scheme/lastReserve/greenOrYellow'
 import { PlayState, SchemeEffectProps } from '../types'
 import copyEffects from './copy'
 
@@ -15,16 +15,16 @@ export default function effectsEleven ({
   resume
 }: SchemeEffectProps): PlayState {
   if (!resume) {
-    const firstPrivateChild = addEvent(privateEvent, 'First, if your top discard scheme is green or yellow, you copy it.')
+    const firstPrivateChild = addEvent(privateEvent, 'First, if your last reserve is green or yellow, you copy it.')
     const firstPublicChildren = addPlayerPublicEvents({
       events: publicEvents,
-      message: `First, if ${effectPlayer.displayName}'s top discard scheme is green or yellow, they copy it.`
+      message: `First, if ${effectPlayer.displayName}'s last reserve is green or yellow, they copy it.`
     })
-    const scheme = addTopDiscardSchemeGreenOrYellowEvents({
+    const scheme = addLastReserveGreenOrYellowEvents({
       privateEvent: firstPrivateChild,
       publicEvents: firstPublicChildren,
       displayName: effectPlayer.displayName,
-      discard: effectPlayer.discard
+      reserve: effectPlayer.reserve
     })
     if (scheme != null) {
       const firstChoices = copyEffects({

@@ -30,26 +30,25 @@ export type Result <Collection extends MetaType> = Collection['read'] & { id: st
 export interface Profile {
   auctionReady: boolean
   bid: number
-  deck?: Scheme[]
-  deckEmpty: boolean
-  discard?: Scheme[]
   displayName: string
   gameId: string
   gold: number
   hand?: Scheme[]
+  inPlay: Scheme[]
   lastBidder: boolean
+  lastReserve?: Scheme | undefined
   playReady: boolean
   playScheme?: Scheme | undefined
+  reserve?: Scheme[]
+  reserveLength: number
   silver: number
-  tableau: Scheme[]
-  topDiscardScheme?: Scheme | undefined
   trashHistory: TrashEvent[]
   privateTrashHistory: PrivateTrashEvent[]
   userId: string
   withdrawn: boolean
 }
 
-export type ChoiceType = 'trash' | 'deck'
+export type ChoiceType = 'trash' | 'reserve'
 
 export interface Choice {
   readonly id: string
@@ -91,22 +90,21 @@ export interface PrivateTrashEvent extends TrashEvent {
 export type Player = MetaTypeCreator<{
   auctionReady: boolean
   bid: number
-  deck: Scheme[]
-  discard: Scheme[]
+  reserve: Scheme[]
   displayName: string
   events: HistoryEvent[]
   gameId: string
   gold: number
   hand: Scheme[]
+  inPlay: Scheme[]
   lastBidder: boolean
+  playReady: boolean
   playScheme: Scheme | DeleteField
   silver: number
-  tableau: Scheme[]
   trashScheme: Scheme | DeleteField
   trashHistory: PrivateTrashEvent[]
   userId: string
   withdrawn: boolean
-  playReady: boolean
 }, 'players', string>
 
 export interface CurrentGameGuard {
@@ -179,28 +177,6 @@ export interface SchemeEffectProps {
 
 export type SchemeEffect = (props: SchemeEffectProps) => PlayState
 
-export interface DrawResult {
-  drawnHand: Scheme[]
-  drawnDeck: Scheme[]
-  drawnDiscard: Scheme[]
-}
-
-export interface DrawData extends DrawResult {
-  deckDrawn: Scheme[]
-  discardDrawn: Scheme[]
-  flipped: boolean
-  privilegeTaken: Scheme[]
-}
-
-export interface ReviveResult {
-  revivedDiscard: Scheme[]
-  revivedHand: Scheme[]
-}
-
-export interface ReviveData extends ReviveResult {
-  revivedList: Scheme[]
-}
-
 export interface Grammar {
   all: string
   count: string
@@ -236,14 +212,9 @@ export interface PlayState {
 export interface DrawState {
   allDrawn: Scheme[]
   beforePrivilegeHand: Scheme[]
-  deckDrawn: Scheme[]
-  deckDrawnDeck: Scheme[]
-  deckDrawnHand: Scheme[]
-  discardDrawn: Scheme[]
-  discardDrawnDeck: Scheme[]
-  discardDrawnHand: Scheme[]
-  discardFlipped: boolean
-  flippedDeck: Scheme[]
+  drawn: Scheme[]
+  drawnReserve: Scheme[]
+  drawnHand: Scheme[]
   playState: PlayState
   privilegeTaken: Scheme[]
 }

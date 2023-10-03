@@ -9,14 +9,14 @@ export default function reviveOne ({
   playState: PlayState
   player: Result<Player>
 }): PlayState {
-  if (player.discard.length === 0) {
+  if (player.reserve.length === 0) {
     return playState
   }
   const profile = guardProfile(playState, player.userId)
-  const shiftScheme = player.discard.shift()
-  const topScheme = guardDefined(shiftScheme, 'Revive one top scheme')
+  const shiftScheme = player.reserve.pop()
+  const topScheme = guardDefined(shiftScheme, 'Revive one last reserve')
   player.hand.unshift(topScheme)
-  const topDiscardScheme = player.discard[player.discard.length - 1]
-  profile.topDiscardScheme = topDiscardScheme
+  const lastReserve = player.reserve[player.reserve.length - 1]
+  profile.lastReserve = lastReserve
   return playState
 }
