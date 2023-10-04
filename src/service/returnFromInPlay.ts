@@ -1,6 +1,6 @@
 import { Identified, Scheme } from '../types'
 
-export default function returnFromTableau ({ active, current, gameDungeon, twelve }: {
+export default function returnFromInPlay ({ active, current, gameDungeon, twelve }: {
   active: Identified
   current: Scheme[]
   gameDungeon: Scheme[]

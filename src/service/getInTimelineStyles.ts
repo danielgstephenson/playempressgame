@@ -5,21 +5,21 @@ import isTaking from './isTaking'
 
 export default function getInTimelineStyles ({
   choices,
-  deck,
+  reserve,
   dungeon,
+  inPlay,
   phase,
   profiles,
   userId,
-  rank,
-  tableau
+  rank
 }: {
   choices: Choice[]
-  deck: Scheme[] | undefined
+  reserve: Scheme[] | undefined
   dungeon: Scheme[] | undefined
   phase: string | undefined
   profiles: Profile[]
   rank: number
-  tableau: Scheme[] | undefined
+  inPlay: Scheme[] | undefined
   userId?: string
 }): SchemeStyles {
   const taking = isTaking({ profiles, userId, choices })
@@ -27,5 +27,5 @@ export default function getInTimelineStyles ({
     const bg = getBg({ rank })
     return { bg }
   }
-  return getInCourtStyles({ deck, dungeon, phase, rank, tableau })
+  return getInCourtStyles({ reserve: reserve, dungeon, phase, rank, inPlay: inPlay })
 }

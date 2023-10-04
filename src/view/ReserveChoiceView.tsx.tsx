@@ -6,21 +6,21 @@ import { playerContext } from '../reader/player'
 import HandSchemeView from './HandScheme'
 import SmallSchemeView from './SmallScheme'
 
-export default function DeckChoiceView (): JSX.Element {
+export default function ReserveChoiceView (): JSX.Element {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
-  const { setNodeRef } = useDroppable({ id: 'deckChoice' })
-  const { deckChoiceId } = useContext(playContext)
-  const choice = gameState.choices?.some(choice => choice.playerId === playerState.id && choice.type === 'deck')
+  const { setNodeRef } = useDroppable({ id: 'reserveChoice' })
+  const { reserveChoiceId } = useContext(playContext)
+  const choice = gameState.choices?.some(choice => choice.playerId === playerState.id && choice.type === 'reserve')
   if (gameState.phase !== 'play' || choice !== true) {
     return <></>
   }
-  if (deckChoiceId == null) {
+  if (reserveChoiceId == null) {
     return (
       <SmallSchemeView ref={setNodeRef} />
     )
   }
   return (
-    <HandSchemeView id={deckChoiceId} />
+    <HandSchemeView id={reserveChoiceId} />
   )
 }

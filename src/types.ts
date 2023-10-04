@@ -60,9 +60,8 @@ export interface PrivateTrashEvent extends TrashEvent {
 export interface Profile {
   auctionReady: boolean
   bid: number
-  deck?: Scheme[]
-  deckEmpty: boolean
-  discard?: Scheme[]
+  reserveLength: number
+  reserve?: Scheme[]
   displayName: string
   gameId: string
   gold: number
@@ -71,15 +70,15 @@ export interface Profile {
   playReady: boolean
   playScheme: Scheme | undefined
   silver: number
-  tableau: Scheme[]
-  topDiscardScheme?: Scheme | undefined
+  inPlay: Scheme[]
+  lastReserve?: Scheme | undefined
   trashHistory: TrashEvent[]
   privateTrashHistory: PrivateTrashEvent[]
   userId: string
   withdrawn: boolean
 }
 
-export type ChoiceType = 'trash' | 'deck'
+export type ChoiceType = 'trash' | 'reserve'
 
 export interface Choice {
   readonly id: string
@@ -108,8 +107,7 @@ export interface Game extends Doc{
 export interface Player extends Doc {
   auctionReady: boolean
   bid: number
-  deck: Scheme[]
-  discard: Scheme[]
+  reserve: Scheme[]
   displayName: string
   events: HistoryEvent[]
   gameId: string
@@ -118,7 +116,7 @@ export interface Player extends Doc {
   lastBidder: boolean
   playScheme?: Scheme
   silver: number
-  tableau: Scheme[]
+  inPlay: Scheme[]
   trashScheme?: Scheme
   trashHistory: PrivateTrashEvent[]
   userId: string
@@ -131,8 +129,8 @@ Promise<HttpsCallableResult<unknown> | undefined>
 
 export interface Play {
   court?: Scheme[]
-  deck?: Scheme[]
-  deckChoiceId?: string
+  reserve?: Scheme[]
+  reserveChoiceId?: string
   dungeon?: Scheme[]
   emptyPlay?: () => void
   emptyTrash?: () => void
@@ -140,30 +138,30 @@ export interface Play {
   handClone?: Scheme[]
   handlingIds?: string[]
   overCourt?: boolean
-  overDeck?: boolean
+  overReserve?: boolean
   overDungeon?: boolean
   overPlay?: boolean
-  overTableau?: boolean
+  overInPlay?: boolean
   overTrash?: boolean
   playSchemeId?: string
   resetTaken?: () => void
   setCourt?: React.Dispatch<React.SetStateAction<Scheme[]>>
-  setDeck?: React.Dispatch<React.SetStateAction<Scheme[]>>
-  setDeckChoiceId?: React.Dispatch<React.SetStateAction<string | undefined>>
+  setReserve?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setReserveChoiceId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setDungeon?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHand?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setHandClone?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setOverCourt?: React.Dispatch<React.SetStateAction<boolean>>
-  setOverDeck?: React.Dispatch<React.SetStateAction<boolean>>
+  setOverReserve?: React.Dispatch<React.SetStateAction<boolean>>
   setOverDungeon?: React.Dispatch<React.SetStateAction<boolean>>
   setOverPlay?: React.Dispatch<React.SetStateAction<boolean>>
-  setOverTableau?: React.Dispatch<React.SetStateAction<boolean>>
+  setOverInPlay?: React.Dispatch<React.SetStateAction<boolean>>
   setOverTrash?: React.Dispatch<React.SetStateAction<boolean>>
   setPlaySchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
-  setTableau?: React.Dispatch<React.SetStateAction<Scheme[]>>
+  setInPlay?: React.Dispatch<React.SetStateAction<Scheme[]>>
   setTrashChoiceId?: React.Dispatch<React.SetStateAction<string | undefined>>
   setTrashSchemeId?: React.Dispatch<React.SetStateAction<string | undefined>>
-  tableau?: Scheme[]
+  inPlay?: Scheme[]
   taken?: string[]
   take?: (schemeId: string) => void
   leave?: (schemeId: string) => void

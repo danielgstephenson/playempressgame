@@ -9,6 +9,6 @@ export default function isReordering ({
   phase?: string
   playerId?: string
 }): boolean {
-  const choice = choices?.some(choice => choice.playerId === playerId && choice.type === 'deck')
+  const choice = choices?.some(choice => choice.playerId === playerId && choice.type === 'reserve')
   return phase === 'auction' && choice === true
 }

@@ -11,26 +11,26 @@ import SortableSchemeView from './SortableScheme'
 import TinySchemeCenterView from './TinySchemeCenter'
 import TinySchemesView from './TinySchemes'
 
-export default function DeckView (): JSX.Element {
+export default function ReserveStartView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playerState = useContext(playerContext)
-  const { deck, setDeck } = useContext(playContext)
+  const { reserve, setReserve } = useContext(playContext)
   const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)
   const activeScheme = useMemo(
-    () => deck?.find((scheme) => scheme.id === active?.id),
-    [active, deck]
+    () => reserve?.find((scheme) => scheme.id === active?.id),
+    [active, reserve]
   )
   const sortableActiveItem = (activeScheme != null) && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
-  if (deck == null) {
+  if (reserve == null) {
     return <></>
   }
-  if (deck.length === 0) {
+  if (reserve.length === 0) {
     return <TinySchemeCenterView />
   }
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
-  if (gameState.phase === 'play' || choice?.type !== 'deck') {
-    return <TinySchemesView schemes={deck} firstOffset />
+  if (gameState.phase === 'play' || choice?.type !== 'reserve') {
+    return <TinySchemesView schemes={reserve} firstOffset />
   }
   function handleDragEnd (event: any): void {
     setActive(null)
@@ -44,15 +44,16 @@ export default function DeckView (): JSX.Element {
       return
     }
     if (active.id !== over.id) {
-      setDeck?.((currentItems) => {
+      setReserve?.((currentItems) => {
         const oldIndex = currentItems.findIndex(item => item.id === active.id)
         const newIndex = currentItems.findIndex(scheme => scheme.id === over.id)
-        const newDeck = arrayMove(currentItems, oldIndex, newIndex)
-        return newDeck
+        const newReserve = arrayMove(currentItems, oldIndex, newIndex)
+        return newReserve
       })
     }
   }
-  const [first, ...rest] = deck
+  const start = reserve.slice(0, reserve.length - 2)
+  const [first, ...rest] = start
   const firstSortable = (
     <SortableSchemeView
       id={first.id}
@@ -81,8 +82,8 @@ export default function DeckView (): JSX.Element {
           setActive(null)
         }}
       >
-        <SortableContext items={deck}>
-          <SmallSchemesContainerView length={deck.length}>
+        <SortableContext items={reserve}>
+          <SmallSchemesContainerView length={reserve.length}>
             {firstSortable}
             {restSortables}
           </SmallSchemesContainerView>

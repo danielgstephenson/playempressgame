@@ -20,8 +20,8 @@ export default function StaticCourtView (): JSX.Element {
       dungeon: gameState.dungeon,
       phase: gameState.phase,
       rank: scheme.rank,
-      tableau: playState.tableau,
-      deck: playState.deck
+      inPlay: playState.inPlay,
+      reserve: playState.reserve
     })
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />
   })

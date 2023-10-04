@@ -11,18 +11,18 @@ export default function HandSchemeActions ({ id }: {
   const playerState = useContext(playerContext)
   const gameState = useContext(gameContext)
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
-  const deckChoice = choice?.type === 'deck'
+  const reserveChoice = choice?.type === 'reserve'
   const trashChoice = choice?.type === 'trash'
   return (
     <ButtonGroup>
-      <Curtain open={deckChoice}>
+      <Curtain open={reserveChoice}>
         <Cloud
-          fn='deckChoose'
+          fn='reserveChoose'
           props={{ schemeId: id, gameId: gameState.id }}
           color='black'
           size='xs'
         >
-          Put on deck
+          Add to reserve
         </Cloud>
       </Curtain>
       <Curtain open={trashChoice}>

@@ -9,7 +9,7 @@ export default function BidStatusView ({
   debug = false,
   profiles,
   silver,
-  tableau,
+  inPlay,
   userId
 }: {
   bg: string
@@ -17,12 +17,12 @@ export default function BidStatusView ({
   debug?: boolean
   profiles: Profile[]
   silver: number
-  tableau: Scheme[]
+  inPlay: Scheme[]
   userId: string
 }): JSX.Element {
   const goldColor = getGoldColor({ bg })
   const silverColor = getSilverColor({ bg })
-  const tenInPlay = tableau.some(scheme => scheme.rank === 10)
+  const tenInPlay = inPlay.some(scheme => scheme.rank === 10)
   if (debug) {
     console.debug('tenInPlay', tenInPlay)
   }
@@ -42,7 +42,7 @@ export default function BidStatusView ({
     )
   }
   const otherProfiles = profiles.filter(profile => profile.userId !== userId)
-  const elevenInPlay = tableau.some(scheme => scheme.rank === 11)
+  const elevenInPlay = inPlay.some(scheme => scheme.rank === 11)
   const carryingOutEleven = elevenInPlay && otherProfiles.some(profile => profile.bid >= 5)
   if (carryingOutEleven) {
     const idealSilver = Math.min(bid, silver)

@@ -5,7 +5,7 @@ import Curtain from './Curtain'
 import authContext from '../context/auth'
 import profileContext from '../context/profile'
 import InPlaySchemeView from './InPlayScheme'
-import DiscardButtonView from './DiscardButton'
+import LastReserveButtonView from './LastReserveButton'
 import BidProfileButtonView from './BidProfileButton'
 import PopoverButtonView from './PopoverButton'
 import TopPopoverButtonView from './TopPopoverButton'
@@ -24,7 +24,8 @@ export default function ProfileView (): JSX.Element {
     profileState.gold == null ||
     profileState.silver == null ||
     profileState.displayName == null ||
-    profileState.bid == null
+    profileState.bid == null ||
+    profileState.reserveLength == null
   ) {
     return <></>
   }
@@ -36,26 +37,40 @@ export default function ProfileView (): JSX.Element {
   if (gameState.phase === 'join') {
     return <ProfileHeadingView />
   }
-  const deckFull = profileState.deckEmpty !== true
+  const reserveFull = profileState.reserveLength > 0
   const inPlay = profileState
-    .tableau
+    .inPlay
     ?.map(scheme => <InPlaySchemeView key={scheme.id} id={scheme.id} rank={scheme.rank} />)
-  const fullMessage = `${profileState.displayName}'s deck is not empty`
-  const deckButton = deckFull
-    ? (
-      <Popover>
+  const fullMessage = `${profileState.displayName}'s reseve has ${profileState.reserveLength} schemes.`
+  const reserveStartViews = new Array(profileState.reserveLength - 1).fill(0).map((_, index) => {
+    return (
+      <Popover key={index}>
         <PopoverTrigger>
-          <IconButton aria-label={fullMessage} disabled bg='gray.600' color='white' icon={<QuestionIcon />} minW='30px' />
+          <IconButton
+            aria-label={fullMessage}
+            disabled bg='gray.600'
+            color='white'
+            icon={<QuestionIcon />}
+            minW='30px'
+          />
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />
           <PopoverBody>{fullMessage}</PopoverBody>
         </PopoverContent>
       </Popover>
+    )
+  })
+  const reserveView = reserveFull
+    ? (
+      <HStack spacing='0' overflow='hidden'>
+        {reserveStartViews}
+        <LastReserveButtonView />
+      </HStack>
       )
     : (
       <PopoverButtonView bg='transparent' border={BUTTON_GRAY_BORDER}>
-        {profileState.displayName}'s deck is empty
+        {profileState.displayName}'s reserve is empty
       </PopoverButtonView>
       )
   return (
@@ -81,12 +96,11 @@ export default function ProfileView (): JSX.Element {
             {profileState.displayName} has {profileState.silver} silver.
           </TopPopoverButtonView>
         </ButtonGroup>
+        {reserveView}
         <ButtonGroup size='xs' isAttached>
-          {deckButton}
           <Button onClick={onOpen}>
             {profileState.displayName}
           </Button>
-          <DiscardButtonView />
         </ButtonGroup>
         <HStack borderBottomRadius='md' spacing='0' overflow='hidden'>
           {inPlay}

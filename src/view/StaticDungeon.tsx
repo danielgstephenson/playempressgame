@@ -29,13 +29,13 @@ export default function StaticDungeonView (): JSX.Element {
     }
     const styles = getInDungeonStyles({
       choices: gameState.choices,
-      deck: playState.deck,
-      deckEmpty: profileState.deckEmpty,
+      reserve: playState.reserve,
+      reserveLength: profileState.reserveLength,
       court: gameState.court,
       gameId: gameState.id,
       phase: gameState.phase,
       rank: scheme.rank,
-      tableau: playState.tableau,
+      inPlay: playState.inPlay,
       userId: playerState.userId
     })
     return <TinyExpandableSchemeView {...styles} rank={scheme.rank} key={scheme.id} />

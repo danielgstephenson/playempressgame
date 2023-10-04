@@ -17,11 +17,11 @@ export default function TakeCourtView (): JSX.Element {
   const emptied = gameState.court.length !== 0 && playState.court.length === 0
   const sortableSchemes = playState.court.map((scheme, index) => {
     const inCourtStyles = getInCourtStyles({
-      deck: playState.deck,
+      reserve: playState.reserve,
       dungeon: gameState.dungeon,
       phase: gameState.phase,
       rank: scheme.rank,
-      tableau: playState.tableau
+      inPlay: playState.inPlay
     })
     return (
       <SortableSchemeView

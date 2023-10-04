@@ -18,7 +18,7 @@ export default function InPlaySchemeButtonView ({
   const gameState = useContext(gameContext)
   if (
     profileState.bid == null ||
-    profileState.deckEmpty == null ||
+    profileState.reserveLength == null ||
     profileState.userId == null ||
     gameState.court == null ||
     gameState.dungeon == null ||
@@ -33,7 +33,7 @@ export default function InPlaySchemeButtonView ({
     bid: profileState.bid,
     choices: gameState.choices,
     court: gameState.court,
-    deckEmpty: profileState.deckEmpty,
+    reserveLength: profileState.reserveLength,
     dungeon: gameState.dungeon,
     gameId: gameState.id,
     phase: gameState.phase,

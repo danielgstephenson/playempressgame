@@ -26,7 +26,7 @@ export default function PlayProfileButtonView (): JSX.Element {
     profileState.playReady == null ||
     profileState.userId == null ||
     profileState.displayName == null ||
-    profileState.tableau == null
+    profileState.inPlay == null
   ) return <></>
   const playerId = `${profileState.userId}_${gameState.id}`
   const choice = gameState.choices.find(choice => choice.playerId === playerId)
@@ -36,33 +36,33 @@ export default function PlayProfileButtonView (): JSX.Element {
       <WaitingButtonView aria-label={message} />
     )
   }
-  if (choice?.type === 'deck') {
+  if (choice?.type === 'reserve') {
     if (gameState.phase === 'play') {
       return (
         <WaitingButtonView
-          aria-label={`${profileState.displayName} is choosing a scheme from their hand to put on the bottom of their deck.`}
+          aria-label={`${profileState.displayName} is choosing a scheme from their hand to put to the left of their last reserve.`}
         />
       )
     } else {
       return (
         <WaitingButtonView
-          aria-label={`${profileState.displayName} is reordering their deck.`}
+          aria-label={`${profileState.displayName} is reordering their reserve.`}
         />
       )
     }
   }
   const taking = isTaking({ profiles: gameState.profiles, userId: profileState.userId, choices: gameState.choices })
   if (taking) {
-    const tableauTwelve = profileState.tableau.some(scheme => scheme.rank === 12)
+    const twelveInPlay = profileState.inPlay.some(scheme => scheme.rank === 12)
 
     const courtEmpty = gameState.court.length === 0
-    if (tableauTwelve && courtEmpty) {
+    if (twelveInPlay && courtEmpty) {
       const message = `${profileState.displayName} is taking schemes from the dungeon.`
       return (
         <WaitingButtonView bg='slategray' color='white' aria-label={message} />
       )
     }
-    const twelve = tableauTwelve || gameState.court.some(scheme => scheme.rank === 12)
+    const twelve = twelveInPlay || gameState.court.some(scheme => scheme.rank === 12)
     const dungeonEmpty = gameState.dungeon.length === 0
     if (!twelve || dungeonEmpty) {
       const message = `${profileState.displayName} is taking schemes from the court.`

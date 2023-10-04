@@ -15,7 +15,7 @@ export default function ReorderReadyView (): JSX.Element {
     phase: gameState.phase,
     playerId: playerState.id
   })
-  const schemeIds = playState.deck?.map(scheme => scheme.id)
+  const schemeIds = playState.reserve?.map(scheme => scheme.id)
   const props = {
     gameId: gameState.id,
     schemeIds

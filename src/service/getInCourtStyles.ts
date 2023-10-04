@@ -3,17 +3,17 @@ import { Scheme, SchemeStyles } from '../types'
 import getBg from './getBg'
 
 export default function getInCourtStyles ({
-  deck,
+  reserve,
   dungeon,
   phase,
   rank,
-  tableau
+  inPlay
 }: {
-  deck: Scheme[] | undefined
+  reserve: Scheme[] | undefined
   dungeon: Scheme[] | undefined
   phase: string | undefined
   rank: number
-  tableau: Scheme[] | undefined
+  inPlay: Scheme[] | undefined
 }): SchemeStyles {
   const bg = getBg({ rank })
   const rankTwelve = rank === 12
@@ -21,16 +21,16 @@ export default function getInCourtStyles ({
     if (dungeon?.length === 0) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
-    if (tableau?.some(scheme => scheme.rank === 12) === true) {
+    if (inPlay?.some(scheme => scheme.rank === 12) === true) {
       return { bg }
     }
     return { bg, ...CAN_CARRY_OUT_STYLES }
   }
   if (rank === 14) {
-    if (deck != null && (deck.length < 2 || deck.every(scheme => scheme.rank === deck[0].rank))) {
+    if (reserve != null && (reserve.length < 2 || reserve.every(scheme => scheme.rank === reserve[0].rank))) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
-    if (tableau?.some(scheme => scheme.rank === 14) === true) {
+    if (inPlay?.some(scheme => scheme.rank === 14) === true) {
       return { bg }
     }
     return { bg, ...CAN_CARRY_OUT_STYLES }

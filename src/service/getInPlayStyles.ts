@@ -10,8 +10,8 @@ export default function getInPlayStyles ({
   bid,
   choices,
   court,
-  deck,
-  deckEmpty,
+  reserve,
+  reserveLength,
   dungeon,
   gameId,
   phase,
@@ -31,11 +31,11 @@ export default function getInPlayStyles ({
   schemeId: string
   userId: string
 } & ({
-  deck: Scheme[]
-  deckEmpty?: undefined
+  reserve: Scheme[]
+  reserveLength?: undefined
 } | {
-  deck?: undefined
-  deckEmpty: boolean
+  reserve?: undefined
+  reserveLength: number
 }))): SchemeStyles {
   const bg = getBg({ rank })
   const allReady = areAllReady(profiles)
@@ -56,16 +56,16 @@ export default function getInPlayStyles ({
     if (fromCourt) {
       return { bg }
     }
-    const fullDiscard = profiles?.some(profile => profile.userId !== userId && profile.topDiscardScheme != null)
+    const fullReserve = profiles?.some(profile => profile.userId !== userId && profile.lastReserve != null)
     if (allReady) {
       if (highestUntiedBidder) {
         return { bg, ...CANT_CARRY_OUT_STYLES }
       }
-      if (fullDiscard) {
+      if (fullReserve) {
         return { bg, ...CARRYING_OUT_STYLES }
       }
     }
-    if (fullDiscard) {
+    if (fullReserve) {
       return { bg, ...CAN_CARRY_OUT_STYLES }
     } else {
       return { bg, ...CANT_CARRY_OUT_STYLES }
@@ -121,13 +121,13 @@ export default function getInPlayStyles ({
     }
     const wonTheAuction = highestUntiedProfile?.userId === userId
     const taking = isTaking({ profiles, userId, choices })
-    if (wonTheAuction || taking || highestUntiedProfile?.topDiscardScheme == null) {
+    if (wonTheAuction || taking || highestUntiedProfile?.lastReserve == null) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
     return { bg, ...CARRYING_OUT_STYLES }
   }
   if (rank === 14) {
-    return get14Styles({ bg, deck, deckEmpty, userId, gameId, phase, choices })
+    return get14Styles({ bg, reserve, reserveLength, userId, gameId, phase, choices })
   }
   return { bg }
 }

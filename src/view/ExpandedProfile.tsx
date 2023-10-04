@@ -1,4 +1,4 @@
-import { Heading, Stack } from '@chakra-ui/react'
+import { Heading, HStack, Stack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import getScore from '../service/getScore'
@@ -29,10 +29,11 @@ export default function ExpandedProfileView (): JSX.Element {
         <Heading size='lg'>{profileState.silver}</Heading>
         <Heading size='sm'>Hand</Heading>
         <TinySchemesView schemes={profileState.hand} />
-        <Heading size='sm'>Deck</Heading>
-        <TinySchemesView schemes={profileState.deck} />
-        <Heading size='sm'>Discard</Heading>
-        <TinySchemesView schemes={profileState.discard} />
+        <Heading size='sm'>Reserve</Heading>
+        <HStack>
+          <TinySchemesView schemes={profileState.reserve} />
+          <TinySchemesView schemes={profileState.reserve} />
+        </HStack>
       </Curtain>
       <Heading size='sm'>Last Played</Heading>
       <Curtain open={playEmpty} hider={<ExpandedSchemeView rank={profileState.playScheme?.rank} />}>

@@ -39,7 +39,7 @@ export default function BidView (): JSX.Element {
     bid == null ||
     gameState.phase !== 'auction' ||
     allReady === true ||
-    playerState.tableau == null ||
+    playerState.inPlay == null ||
     gameState.profiles == null ||
     playerState.silver == null ||
     playerState.userId == null ||
@@ -65,13 +65,13 @@ export default function BidView (): JSX.Element {
       setBid(safeBid)
     }
   }
-  const eleven = playerState.tableau.some(scheme => scheme.rank === 11)
+  const eleven = playerState.inPlay.some(scheme => scheme.rank === 11)
   const bidFive = gameState.profiles.some(profile => profile.userId !== playerState.userId && profile.bid >= 5)
   const step = eleven && bidFive ? 1 : 5
   const bidStatus = (
     <BidStatusView
       bg='gray.800'
-      tableau={playerState.tableau}
+      inPlay={playerState.inPlay}
       bid={playerState.bid}
       profiles={gameState.profiles}
       silver={playerState.silver}

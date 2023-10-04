@@ -33,31 +33,31 @@ export default function PlayerView (): JSX.Element {
     handlingIds,
     resetTaken,
     setCourt,
-    setDeck,
-    setDeckChoiceId,
+    setReserve,
+    setReserveChoiceId,
     setDungeon,
     setHand,
     setHandClone,
     setPlaySchemeId,
-    setTableau,
+    setInPlay,
     setTrashChoiceId,
     setTrashSchemeId
   } = useContext(playContext)
-  const { auctionReady, bid, deck, hand, tableau, userId, id: playerId } = useContext(playerContext)
+  const { auctionReady, bid, reserve, hand, inPlay, userId, id: playerId } = useContext(playerContext)
   const [choiceIdClone, setChoiceIdClone] = useState(() => choices != null && userId != null && gameId != null && getChoiceId({ choices, gameId, userId }))
   useEffect(() => {
     setTrashChoiceId?.(undefined)
-    setDeckChoiceId?.(undefined)
+    setReserveChoiceId?.(undefined)
     setTrashSchemeId?.(undefined)
     setPlaySchemeId?.(undefined)
     resetTaken?.()
-  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId, setDeckChoiceId, setTrashChoiceId, choiceIdClone])
+  }, [resetTaken, round, setTrashSchemeId, setPlaySchemeId, setReserveChoiceId, setTrashChoiceId, choiceIdClone])
   useEffect(() => {
-    if (deck == null) {
+    if (reserve == null) {
       return
     }
-    setDeck?.(deck)
-  }, [deck, setDeck])
+    setReserve?.(reserve)
+  }, [reserve, setReserve])
   useEffect(() => {
     if (hand == null) {
       return
@@ -91,19 +91,19 @@ export default function PlayerView (): JSX.Element {
     setDungeon?.(dungeon)
   }, [dungeon, setDungeon])
   useEffect(() => {
-    if (tableau == null) {
+    if (inPlay == null) {
       return
     }
-    setTableau?.(tableau)
-  }, [setTableau, tableau])
+    setInPlay?.(inPlay)
+  }, [setInPlay, inPlay])
   useEffect(() => {
     if (phase !== 'play') {
       setPlaySchemeId?.(undefined)
       setTrashSchemeId?.(undefined)
       setTrashChoiceId?.(undefined)
-      setDeckChoiceId?.(undefined)
+      setReserveChoiceId?.(undefined)
     }
-  }, [setPlaySchemeId, setTrashSchemeId, setDeckChoiceId, setTrashChoiceId, phase])
+  }, [setPlaySchemeId, setTrashSchemeId, setReserveChoiceId, setTrashChoiceId, phase])
   const functionsState = useContext(functionsContext)
   const [bidClone, setBidClone] = useState(bid)
   const [tiedClone, setTiedClone] = useState(() => profiles != null && bid != null && isTied({ profiles, bid }))

@@ -13,7 +13,7 @@ import ReadyContainerView from './ReadyContainer'
 import DraggableSchemeView from './DraggableScheme'
 import TakeCourtView from './TakeCourt'
 import TakeDungeonView from './TakeDungeon'
-import TakeTableauView from './TakeTableau'
+import TakeInPlayView from './TakeInPlay'
 import TimelineView from './Timeline'
 import TrashHistoryView from './TrashHistory'
 import PopoverButtonView from './PopoverButton'
@@ -23,7 +23,7 @@ import { Functions } from 'firebase/functions'
 import ChakraButton from '../lib/firewrite/chakra/Button'
 import { LockIcon, StarIcon } from '@chakra-ui/icons'
 import { playerContext } from '../reader/player'
-import returnFromTableau from '../service/returnFromTableau'
+import returnFromInPlay from '../service/returnFromInPlay'
 import filterOld from '../service/filterOld'
 import CurtainView from './Curtain'
 import PalaceView from './Palace'
@@ -42,15 +42,15 @@ export default function TakeView ({ functions }: {
     profiles: gameState.profiles,
     userId: authState.currentUser?.uid
   })
-  const { leave, tableau: playerTableau, take } = useContext(playContext)
+  const { leave, inPlay: playerInPlay, take } = useContext(playContext)
   const sensors = usePointerSensor()
   const [active, setActive] = useState<Active | null>(null)
   const getSchemeById = useCallback((id?: UniqueIdentifier | undefined) => {
     const courtScheme = gameCourt?.find((scheme) => scheme.id === id)
     const dungeonScheme = courtScheme ?? gameDungeon?.find((scheme) => scheme.id === id)
-    const tableauScheme = dungeonScheme ?? playerTableau?.find((scheme) => scheme.id === id)
-    return tableauScheme
-  }, [gameCourt, gameDungeon, playerTableau])
+    const inPlayScheme = dungeonScheme ?? playerInPlay?.find((scheme) => scheme.id === id)
+    return inPlayScheme
+  }, [gameCourt, gameDungeon, playerInPlay])
   const activeScheme = useMemo(
     () => {
       return getSchemeById(active?.id)
@@ -63,10 +63,10 @@ export default function TakeView ({ functions }: {
     if (
       playState.court == null ||
       playState.dungeon == null ||
-      playState.tableau == null ||
+      playState.inPlay == null ||
       gameCourt == null ||
       gameDungeon == null ||
-      playerTableau == null ||
+      playerInPlay == null ||
       active == null ||
       over == null
     ) {
@@ -82,8 +82,8 @@ export default function TakeView ({ functions }: {
     const overCourt = playState.court.some((scheme) => scheme.id === over.id)
     const activeDungeon = playState.dungeon.some((scheme) => scheme.id === active.id)
     const overDungeon = playState.dungeon.some((scheme) => scheme.id === over.id)
-    const activeTableau = playState.tableau.some((scheme) => scheme.id === active.id)
-    const overTableau = playState.tableau.some((scheme) => scheme.id === over.id)
+    const activeInPlay = playState.inPlay.some((scheme) => scheme.id === active.id)
+    const overInPlay = playState.inPlay.some((scheme) => scheme.id === over.id)
     const overTakeArea = over.id === 'takeArea'
     const overEmptyCourt = over.id === 'court'
     const overEmptyDungeon = over.id === 'dungeon'
@@ -94,10 +94,10 @@ export default function TakeView ({ functions }: {
         old: gameCourt,
         over,
         overArea: overTakeArea,
-        overNew: overTableau,
+        overNew: overInPlay,
         overOld: overCourt,
         setOld: playState.setCourt,
-        setNew: playState.setTableau,
+        setNew: playState.setInPlay,
         take
       })
     }
@@ -108,25 +108,25 @@ export default function TakeView ({ functions }: {
         old: gameDungeon,
         over,
         overArea: overTakeArea,
-        overNew: overTableau,
+        overNew: overInPlay,
         overOld: overDungeon,
         setOld: playState.setDungeon,
-        setNew: playState.setTableau,
+        setNew: playState.setInPlay,
         take
       })
     }
     const fromCourt = gameCourt.some((scheme) => scheme.id === active.id)
     const fromDungeon = gameDungeon.some((scheme) => scheme.id === active.id)
-    if (activeTableau) {
-      const tableauFromDungeon = playState.tableau.filter((scheme) => {
+    if (activeInPlay) {
+      const inPlayFromDungeon = playState.inPlay.filter((scheme) => {
         const fromDungeon = gameDungeon.some((dungeonScheme) => dungeonScheme.id === scheme.id)
         return fromDungeon
       })
       if (fromCourt && overEmptyCourt) {
         leave?.(activeScheme.id)
 
-        playState.setTableau?.((current) => {
-          return returnFromTableau({
+        playState.setInPlay?.((current) => {
+          return returnFromInPlay({
             active,
             current,
             gameDungeon,
@@ -134,14 +134,14 @@ export default function TakeView ({ functions }: {
           })
         })
         if (activeScheme.rank === 12) {
-          playState.setDungeon?.(current => [...current, ...tableauFromDungeon])
+          playState.setDungeon?.(current => [...current, ...inPlayFromDungeon])
         }
         playState.setCourt?.([activeScheme])
       }
       if (fromDungeon && overEmptyDungeon) {
         leave?.(activeScheme.id)
-        playState.setTableau?.((current) => {
-          return returnFromTableau({
+        playState.setInPlay?.((current) => {
+          return returnFromInPlay({
             active,
             current,
             gameDungeon,
@@ -150,15 +150,15 @@ export default function TakeView ({ functions }: {
         })
         playState.setDungeon?.([activeScheme])
       }
-      if (overTableau) {
+      if (overInPlay) {
         return
       }
-      const filteredTableau = playState.tableau.filter((scheme) => scheme.id !== activeScheme.id)
-      const twelve = filteredTableau.some((scheme) => scheme.rank === 12)
+      const filteredInPlay = playState.inPlay.filter((scheme) => scheme.id !== activeScheme.id)
+      const twelve = filteredInPlay.some((scheme) => scheme.rank === 12)
       if (fromCourt && overCourt) {
         leave?.(activeScheme.id)
-        playState.setTableau?.((current) => {
-          return returnFromTableau({
+        playState.setInPlay?.((current) => {
+          return returnFromInPlay({
             active,
             current,
             gameDungeon,
@@ -171,8 +171,8 @@ export default function TakeView ({ functions }: {
       }
       if (fromDungeon && overDungeon) {
         leave?.(activeScheme.id)
-        playState.setTableau?.((current) => {
-          return returnFromTableau({
+        playState.setInPlay?.((current) => {
+          return returnFromInPlay({
             active,
             current,
             gameDungeon,
@@ -194,17 +194,17 @@ export default function TakeView ({ functions }: {
     } else {
       playState.setOverDungeon?.(false)
     }
-    if (overTableau) {
-      playState.setOverTableau?.(true)
+    if (overInPlay) {
+      playState.setOverInPlay?.(true)
     } else {
-      playState.setOverTableau?.(false)
+      playState.setOverInPlay?.(false)
     }
   }
   if (
     gameState.choices?.length !== 0 ||
     playState.court == null ||
     playState.dungeon == null ||
-    playState.tableau == null ||
+    playState.inPlay == null ||
     playState.taken == null ||
     allReady !== true ||
     !highestUntiedBidder ||
@@ -213,9 +213,9 @@ export default function TakeView ({ functions }: {
   ) {
     return <></>
   }
-  const twelve = playState.tableau.some((scheme) => scheme.rank === 12)
+  const twelve = playState.inPlay.some((scheme) => scheme.rank === 12)
   const tinyDungeon = !twelve && <StaticDungeonView />
-  const fontWeight = playState.overTableau === true ? '1000' : undefined
+  const fontWeight = playState.overInPlay === true ? '1000' : undefined
   const courtTaken = playState.taken.filter((schemeId) => {
     const court = gameCourt?.some((scheme) => scheme.id === schemeId)
     return court
@@ -279,7 +279,7 @@ export default function TakeView ({ functions }: {
         setActive(null)
         playState.setOverCourt?.(false)
         playState.setOverDungeon?.(false)
-        playState.setOverTableau?.(false)
+        playState.setOverInPlay?.(false)
       }}
       onDragOver={handleDragOver}
     >
@@ -301,7 +301,7 @@ export default function TakeView ({ functions }: {
       <Stack direction='row' justifyContent='space-between'>
         <Box>
           <Heading size='sm' fontWeight={fontWeight}>Play</Heading>
-          <TakeTableauView />
+          <TakeInPlayView />
         </Box>
         <ReadyContainerView>
           <PopoverButtonView label={readyLabel} disabled={cloudCourtLoading}>

@@ -20,12 +20,12 @@ export default function FirstTimelineView (): JSX.Element {
   if (first == null) return <></>
   const styles = getInTimelineStyles({
     choices: gameState.choices,
-    deck: playState.deck,
+    reserve: playState.reserve,
     dungeon: gameState.dungeon,
     phase: gameState.phase,
     profiles: gameState.profiles,
     rank: first.rank,
-    tableau: playState.tableau,
+    inPlay: playState.inPlay,
     userId: profileState.userId
   })
   return (

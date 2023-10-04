@@ -7,14 +7,13 @@ import playContext from '../context/play'
 import dragReturn from '../service/dragReturn'
 import usePointerSensor from '../use/pointerSensor'
 import ChoiceView from './Choice'
-import DeckView from './Deck'
-import DeckChoiceReadyView from './DeckChoiceReady'
-import DeckChoiceView from './DeckChoiceView.tsx'
-import DiscardView from './Discard'
+import ReserveStart from './ReserveStart'
+import ReserveChoiceReadyView from './ReserveChoiceReady'
+import ReserveChoiceView from './ReserveChoiceView.tsx'
 import HandView from './Hand'
 import HandSchemeView from './HandScheme'
 import PlayReadyView from './PlayReady'
-import PrivateTableauView from './PrivateTableau'
+import PrivateInPlayView from './PrivateInPlay'
 import PrivateTrashView from './PrivateTrash'
 import ReadyContainerView from './ReadyContainer'
 import TrashChoiceReadyView from './TrashChoiceReady'
@@ -24,18 +23,19 @@ import Curtain from './Curtain'
 import isTaking from '../service/isTaking'
 import { playerContext } from '../reader/player'
 import isReordering from '../service/isReordering'
+import LastReserveView from './LastReserve'
 
 export default function PlayPhaseView (): JSX.Element {
   const gameState = useContext(gameContext)
   const {
-    deckChoiceId,
+    reserveChoiceId,
     hand,
     handClone,
-    overDeck,
+    overReserve,
     playSchemeId,
-    setDeckChoiceId,
+    setReserveChoiceId,
     setHand,
-    setOverDeck,
+    setOverReserve,
     setOverPlay,
     setOverTrash,
     setPlaySchemeId,
@@ -52,7 +52,7 @@ export default function PlayPhaseView (): JSX.Element {
     [active, handClone]
   )
   const sortableActiveItem = (activeScheme != null) && <HandSchemeView active id={activeScheme.id} />
-  const fontWeight = overDeck === true ? '1000' : undefined
+  const fontWeight = overReserve === true ? '1000' : undefined
   if (hand == null || setHand == null) {
     return <></>
   }
@@ -81,19 +81,19 @@ export default function PlayPhaseView (): JSX.Element {
         }
         const activeTrash = active.id === trashSchemeId
         const activeTrashChoice = active.id === trashChoiceId
-        const activeDeckChoice = active.id === deckChoiceId
+        const activeReserveChoice = active.id === reserveChoiceId
         const activePlay = active.id === playSchemeId
         const overTrashScheme = over.id === trashSchemeId
         const overTrashChoice = over.id === 'trashChoice'
         const overTrashChoiceScheme = over.id === trashChoiceId
-        const overDeckChoice = over.id === 'deckChoice'
-        const overDeckChoiceScheme = over.id === deckChoiceId
+        const overReserveChoice = over.id === 'reserveChoice'
+        const overReserveChoiceScheme = over.id === reserveChoiceId
         const overTrashArea = over.id === 'trashArea'
         const overPlayScheme = over.id === playSchemeId
         const overPlayArea = over.id === 'playArea'
         const overHand = hand.some((scheme) => scheme.id === over.id)
         if (overHand) {
-          setOverDeck?.(false)
+          setOverReserve?.(false)
           setOverPlay?.(false)
           setOverTrash?.(false)
           if (activeTrash) {
@@ -105,8 +105,8 @@ export default function PlayPhaseView (): JSX.Element {
           if (activeTrashChoice) {
             setTrashChoiceId?.(undefined)
           }
-          if (activeDeckChoice) {
-            setDeckChoiceId?.(undefined)
+          if (activeReserveChoice) {
+            setReserveChoiceId?.(undefined)
           }
           setHand(current => {
             const activeIndex = current.findIndex((scheme) => scheme.id === active.id)
@@ -141,9 +141,9 @@ export default function PlayPhaseView (): JSX.Element {
               hand: current
             })
           })
-        } else if (overDeckChoice) {
-          setOverDeck?.(true)
-          setDeckChoiceId?.(String(active.id))
+        } else if (overReserveChoice) {
+          setOverReserve?.(true)
+          setReserveChoiceId?.(String(active.id))
           setHand(current => {
             return dragReturn({
               active,
@@ -167,18 +167,18 @@ export default function PlayPhaseView (): JSX.Element {
         } else if (overTrashScheme) {
           setOverPlay?.(false)
           setOverTrash?.(true)
-        } else if (overDeckChoiceScheme) {
-          setOverDeck?.(true)
+        } else if (overReserveChoiceScheme) {
+          setOverReserve?.(true)
         } else if (overTrashChoiceScheme) {
           setOverTrash?.(true)
         } else {
-          setOverDeck?.(false)
+          setOverReserve?.(false)
           setOverPlay?.(false)
           setOverTrash?.(false)
         }
       }}
       onDragEnd={({ active, over }) => {
-        setOverDeck?.(false)
+        setOverReserve?.(false)
         setOverPlay?.(false)
         setOverTrash?.(false)
         if (over != null && active.id !== over.id) {
@@ -220,8 +220,8 @@ export default function PlayPhaseView (): JSX.Element {
               return newHand
             })
           }
-          if (over.id === deckChoiceId) {
-            setDeckChoiceId?.(String(active.id))
+          if (over.id === reserveChoiceId) {
+            setReserveChoiceId?.(String(active.id))
             setHand(current => {
               if (handClone == null || overScheme == null) {
                 return current
@@ -240,10 +240,10 @@ export default function PlayPhaseView (): JSX.Element {
     >
       <Curtain open={!taking}>
         <HStack alignItems='start' spacing='2px'>
-          <PrivateTableauView />
+          <PrivateInPlayView />
           <ReadyContainerView width='100%'>
             <PlayReadyView />
-            <DeckChoiceReadyView />
+            <ReserveChoiceReadyView />
             <TrashChoiceReadyView />
             <ReorderReadyView />
           </ReadyContainerView>
@@ -254,17 +254,17 @@ export default function PlayPhaseView (): JSX.Element {
       <Heading size='sm' textAlign='center'>Hand</Heading>
       <HandView />
       <Curtain open={reordering}>
-        <Heading size='md' textAlign='center'>Reorder your deck</Heading>
+        <Heading size='md' textAlign='center'>Reorder your reserve</Heading>
       </Curtain>
       <HStack justifyContent='space-between' alignItems='start'>
         <Box>
-          <Heading size='sm' fontWeight={fontWeight}>Deck</Heading>
+          <Heading size='sm' fontWeight={fontWeight}>Reserve</Heading>
           <HStack>
-            <DeckView />
-            <DeckChoiceView />
+            <ReserveStart />
+            <ReserveChoiceView />
+            <LastReserveView />
           </HStack>
         </Box>
-        <Box><DiscardView /></Box>
       </HStack>
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {sortableActiveItem}

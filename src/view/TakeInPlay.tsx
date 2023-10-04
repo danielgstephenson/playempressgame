@@ -9,7 +9,7 @@ import authContext from '../context/auth'
 import DraggableSchemeView from './DraggableScheme'
 import { playerContext } from '../reader/player'
 
-export default function TakeTableauView (): JSX.Element {
+export default function TakeInPlayView (): JSX.Element {
   const authState = useContext(authContext)
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
@@ -17,13 +17,13 @@ export default function TakeTableauView (): JSX.Element {
   const { setNodeRef } = useDroppable({
     id: 'takeArea'
   })
-  if (playState.tableau == null) {
+  if (playState.inPlay == null) {
     return <></>
   }
-  if (playState.tableau.length === 0) {
+  if (playState.inPlay.length === 0) {
     return <EmptySmallSchemeView ref={setNodeRef}>Take</EmptySmallSchemeView>
   }
-  const schemeViews = playState.tableau.map((scheme) => {
+  const schemeViews = playState.inPlay.map((scheme) => {
     if (
       authState.currentUser == null ||
       gameState.choices == null ||
@@ -32,7 +32,7 @@ export default function TakeTableauView (): JSX.Element {
       gameState.id == null ||
       gameState.phase == null ||
       gameState.profiles == null ||
-      playState.deck == null ||
+      playState.reserve == null ||
       playerState.bid == null ||
       gameState.choices == null
     ) {
@@ -42,7 +42,7 @@ export default function TakeTableauView (): JSX.Element {
       bid: playerState.bid,
       choices: gameState.choices,
       court: gameState.court,
-      deck: playState.deck,
+      reserve: playState.reserve,
       dungeon: gameState.dungeon,
       gameId: gameState.id,
       phase: gameState.phase,
@@ -61,7 +61,7 @@ export default function TakeTableauView (): JSX.Element {
     )
   })
   return (
-    <SmallSchemesContainerView length={playState.tableau.length} overflow='auto' ref={setNodeRef}>
+    <SmallSchemesContainerView length={playState.inPlay.length} overflow='auto' ref={setNodeRef}>
       {schemeViews}
     </SmallSchemesContainerView>
   )

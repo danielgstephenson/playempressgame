@@ -16,7 +16,7 @@ export default function BidProfileButtonView (): JSX.Element {
     profileState.bid == null ||
     profileState.displayName == null ||
     profileState.lastBidder == null ||
-    profileState.tableau == null ||
+    profileState.inPlay == null ||
     gameState.profiles == null ||
     profileState.userId == null ||
     profileState.silver == null
@@ -31,7 +31,7 @@ export default function BidProfileButtonView (): JSX.Element {
     const label = (
       <BidStatusView
         bg='black'
-        tableau={profileState.tableau}
+        inPlay={profileState.inPlay}
         bid={profileState.bid}
         profiles={gameState.profiles}
         silver={profileState.silver}
@@ -54,7 +54,7 @@ export default function BidProfileButtonView (): JSX.Element {
       const label = (
         <BidStatusView
           bg='gray.400'
-          tableau={profileState.tableau}
+          inPlay={profileState.inPlay}
           bid={profileState.bid}
           profiles={gameState.profiles}
           silver={profileState.silver}
@@ -75,7 +75,7 @@ export default function BidProfileButtonView (): JSX.Element {
       const label = (
         <BidStatusView
           bg='slategrey'
-          tableau={profileState.tableau}
+          inPlay={profileState.inPlay}
           bid={profileState.bid}
           profiles={gameState.profiles}
           silver={profileState.silver}
@@ -91,7 +91,7 @@ export default function BidProfileButtonView (): JSX.Element {
       const label = (
         <BidStatusView
           bg='gray.400'
-          tableau={profileState.tableau}
+          inPlay={profileState.inPlay}
           bid={profileState.bid}
           profiles={gameState.profiles}
           silver={profileState.silver}
@@ -108,7 +108,7 @@ export default function BidProfileButtonView (): JSX.Element {
   const label = (
     <BidStatusView
       bg='gray.100'
-      tableau={profileState.tableau}
+      inPlay={profileState.inPlay}
       bid={profileState.bid}
       profiles={gameState.profiles}
       silver={profileState.silver}

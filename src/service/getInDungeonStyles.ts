@@ -5,22 +5,22 @@ import getBg from './getBg'
 export default function getInDungeonStyles ({
   choices,
   court,
-  deck,
-  deckEmpty,
   gameId,
+  inPlay,
   phase,
   rank,
-  tableau,
+  reserve,
+  reserveLength,
   userId
 }: {
   choices: Choice[]
   court?: Scheme[]
-  deck?: Scheme[]
-  deckEmpty?: boolean
+  reserve?: Scheme[]
+  reserveLength?: number
   gameId: string
   phase?: string
   rank: number
-  tableau?: Scheme[]
+  inPlay?: Scheme[]
   userId?: string
 }): SchemeStyles {
   const bg = getBg({ rank })
@@ -28,14 +28,14 @@ export default function getInDungeonStyles ({
     return { bg }
   }
   if (rank === 14) {
-    if (tableau?.some(scheme => scheme.rank === 14) === true) {
+    if (inPlay?.some(scheme => scheme.rank === 14) === true) {
       return { bg }
     }
-    if (tableau?.some(scheme => scheme.rank === 12) === true || court?.some(scheme => scheme.rank === 12) === true) {
+    if (inPlay?.some(scheme => scheme.rank === 12) === true || court?.some(scheme => scheme.rank === 12) === true) {
       return get14Styles({
         bg,
-        deck,
-        deckEmpty,
+        reserve,
+        reserveLength,
         userId,
         gameId,
         phase,

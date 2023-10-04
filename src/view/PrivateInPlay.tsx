@@ -10,17 +10,17 @@ import PlayAreaView from './PlayArea'
 import SchemesContainerView from './SchemesContainer'
 import TinyExpandableSchemeView from './TinyExpandableScheme'
 
-export default function PrivateTableauView (): JSX.Element {
+export default function PrivateInPlayView (): JSX.Element {
   const gameState = useContext(gameContext)
   const playState = useContext(playContext)
   const playerState = useContext(playerContext)
-  const views = playerState.tableau?.map(scheme => {
+  const views = playerState.inPlay?.map(scheme => {
     if (
       playerState.bid == null ||
       gameState.choices == null ||
       gameState.court == null ||
       gameState.dungeon == null ||
-      playState.deck == null ||
+      playState.reserve == null ||
       gameState.id == null ||
       gameState.phase == null ||
       gameState.profiles == null ||
@@ -32,7 +32,7 @@ export default function PrivateTableauView (): JSX.Element {
       bid: playerState.bid,
       choices: gameState.choices,
       court: gameState.court,
-      deck: playState.deck,
+      reserve: playState.reserve,
       dungeon: gameState.dungeon,
       gameId: gameState.id,
       phase: gameState.phase,

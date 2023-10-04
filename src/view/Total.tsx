@@ -11,7 +11,7 @@ import PopoverIconButtonView from './PopoverIconButton'
 export default function TotalView (): JSX.Element {
   const gameState = useContext(gameContext)
   const { court, dungeon, phase, profiles, timeline } = gameState
-  const { tableau } = useContext(playContext)
+  const { inPlay } = useContext(playContext)
   const authState = useContext(authContext)
   const { userId } = authState
   const courtTotal = useMemo(() => {
@@ -30,19 +30,19 @@ export default function TotalView (): JSX.Element {
     return dungeonTotal
   }, [dungeon])
   const twelve = useMemo(() => {
-    if (tableau == null || court == null) return false
-    if (tableau.some((scheme) => scheme.rank === 12)) return true
+    if (inPlay == null || court == null) return false
+    if (inPlay.some((scheme) => scheme.rank === 12)) return true
     if (court.some((scheme) => scheme.rank === 12)) return true
     if (leftmost?.rank === 12) return true
     return false
-  }, [court, tableau, leftmost])
+  }, [court, inPlay, leftmost])
   const otherThirteen = useMemo(() => {
     if (profiles == null || userId == null) return false
     const playing = profiles.some((profile) => profile.userId === userId)
     if (!playing) return false
     const otherThirteen = profiles.some((profile) => {
       if (profile.userId === userId) return false
-      const thirteen = profile.tableau.some((scheme) => scheme.rank === 13)
+      const thirteen = profile.inPlay.some((scheme) => scheme.rank === 13)
       return thirteen
     })
     return otherThirteen

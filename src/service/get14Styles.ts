@@ -1,10 +1,10 @@
 import { CANT_CARRY_OUT_STYLES, CARRYING_OUT_STYLES, CAN_CARRY_OUT_STYLES } from '../constants'
 import { Choice, Scheme, SchemeStyles } from '../types'
 
-export default function get14Styles ({ bg, deck, deckEmpty, userId, gameId, phase, choices }: {
+export default function get14Styles ({ bg, reserve, reserveLength, userId, gameId, phase, choices }: {
   bg: string
-  deck?: Scheme[]
-  deckEmpty?: boolean
+  reserve?: Scheme[]
+  reserveLength?: number
   userId?: string
   gameId: string
   phase: string
@@ -13,9 +13,9 @@ export default function get14Styles ({ bg, deck, deckEmpty, userId, gameId, phas
   if (userId == null) {
     return { bg }
   }
-  if (deck != null) {
+  if (reserve != null) {
     const playerId = `${userId}_${gameId}`
-    if (deck.length >= 2 || deck.every(scheme => scheme.rank === deck[0].rank)) {
+    if (reserve.length >= 1 || reserve.every(scheme => scheme.rank === reserve[0].rank)) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     } else if (phase === 'auction' && choices?.some(choice => choice.playerId === playerId)) {
       return { bg, ...CARRYING_OUT_STYLES }
@@ -23,8 +23,8 @@ export default function get14Styles ({ bg, deck, deckEmpty, userId, gameId, phas
       return { bg, ...CAN_CARRY_OUT_STYLES }
     }
   }
-  if (deckEmpty != null) {
-    if (deckEmpty) {
+  if (reserveLength != null) {
+    if (reserveLength >= 1) {
       return { bg, ...CANT_CARRY_OUT_STYLES }
     }
     return { bg, ...CAN_CARRY_OUT_STYLES }
