@@ -8,7 +8,6 @@ import { playerContext } from '../reader/player'
 import usePointerSensor from '../use/pointerSensor'
 import SmallSchemesContainerView from './SmallSchemesContainer'
 import SortableSchemeView from './SortableScheme'
-import TinySchemeCenterView from './TinySchemeCenter'
 import TinySchemesView from './TinySchemes'
 
 export default function ReserveStartView (): JSX.Element {
@@ -22,15 +21,15 @@ export default function ReserveStartView (): JSX.Element {
     [active, reserve]
   )
   const sortableActiveItem = (activeScheme != null) && <SortableSchemeView active id={activeScheme.id} rank={activeScheme.rank} />
-  if (reserve == null) {
+  if (reserve == null || reserve.length <= 1) {
     return <></>
   }
-  if (reserve.length === 0) {
-    return <TinySchemeCenterView />
-  }
+  console.log('reserve', reserve)
+  const start = reserve.slice(0, reserve.length - 1)
+  console.log('start', start)
   const choice = gameState.choices?.find(choice => choice.playerId === playerState.id)
   if (gameState.phase === 'play' || choice?.type !== 'reserve') {
-    return <TinySchemesView schemes={reserve} firstOffset />
+    return <TinySchemesView schemes={start} firstOffset />
   }
   function handleDragEnd (event: any): void {
     setActive(null)
@@ -52,7 +51,6 @@ export default function ReserveStartView (): JSX.Element {
       })
     }
   }
-  const start = reserve.slice(0, reserve.length - 2)
   const [first, ...rest] = start
   const firstSortable = (
     <SortableSchemeView

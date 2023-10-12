@@ -1,7 +1,8 @@
-import { useDisclosure, Button } from '@chakra-ui/react'
+import { useDisclosure } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import getLastReserveStyles from '../service/getLastReserveStyles'
+import ProfileSchemeButtonView from './ProfileSchemeButton'
 import SchemeModal from './SchemeModal'
 
 export default function LastReserveButtonView (): JSX.Element {
@@ -19,9 +20,7 @@ export default function LastReserveButtonView (): JSX.Element {
   })
   return (
     <>
-      <Button {...styles} onClick={onOpen} minW='30px'>
-        {profileState.lastReserve.rank}
-      </Button>
+      <ProfileSchemeButtonView rank={profileState.lastReserve.rank} {...styles} onClick={onOpen} size='xs' />
       <SchemeModal isOpen={isOpen} onClose={onClose} rank={profileState.lastReserve.rank} />
     </>
   )

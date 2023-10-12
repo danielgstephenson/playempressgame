@@ -1,5 +1,5 @@
 import { CheckIcon, MinusIcon, SmallCloseIcon, StarIcon } from '@chakra-ui/icons'
-import { HStack, Text } from '@chakra-ui/react'
+import { ButtonProps, HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
@@ -12,7 +12,9 @@ import TopPopoverButtonView from './TopPopoverButton'
 import TopPopoverIconButtonView from './TopPopoverIconButton'
 import WaitingButtonView from './WaitingButton'
 
-export default function PlayProfileButtonView (): JSX.Element {
+export default function PlayProfileButtonView ({
+  ...restProps
+}: ButtonProps): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
   const playerState = useContext(playerContext)
@@ -33,7 +35,7 @@ export default function PlayProfileButtonView (): JSX.Element {
   if (choice?.type === 'trash') {
     const message = `${profileState.displayName} is ready to trash.`
     return (
-      <WaitingButtonView aria-label={message} />
+      <WaitingButtonView aria-label={message} {...restProps} />
     )
   }
   if (choice?.type === 'reserve') {
@@ -41,12 +43,14 @@ export default function PlayProfileButtonView (): JSX.Element {
       return (
         <WaitingButtonView
           aria-label={`${profileState.displayName} is choosing a scheme from their hand to put to the left of their last reserve.`}
+          {...restProps}
         />
       )
     } else {
       return (
         <WaitingButtonView
           aria-label={`${profileState.displayName} is reordering their reserve.`}
+          {...restProps}
         />
       )
     }
@@ -59,7 +63,7 @@ export default function PlayProfileButtonView (): JSX.Element {
     if (twelveInPlay && courtEmpty) {
       const message = `${profileState.displayName} is taking schemes from the dungeon.`
       return (
-        <WaitingButtonView bg='slategray' color='white' aria-label={message} />
+        <WaitingButtonView bg='slategray' color='white' aria-label={message} {...restProps} />
       )
     }
     const twelve = twelveInPlay || gameState.court.some(scheme => scheme.rank === 12)
@@ -67,12 +71,12 @@ export default function PlayProfileButtonView (): JSX.Element {
     if (!twelve || dungeonEmpty) {
       const message = `${profileState.displayName} is taking schemes from the court.`
       return (
-        <WaitingButtonView aria-label={message} />
+        <WaitingButtonView aria-label={message} {...restProps} />
       )
     }
     const message = `${profileState.displayName} is taking schemes from the court and dungeon.`
     return (
-      <WaitingButtonView bg='slategray' color='white' aria-label={message} />
+      <WaitingButtonView bg='slategray' color='white' aria-label={message} {...restProps} />
     )
   }
   if (gameState.phase !== 'play') return <></>
@@ -90,6 +94,7 @@ export default function PlayProfileButtonView (): JSX.Element {
               bg='slategrey'
               color='white'
               label={<HStack><MinusIcon /> <Text>{score}</Text></HStack>}
+              {...restProps}
             >
               {message}
             </TopPopoverButtonView>
@@ -101,6 +106,7 @@ export default function PlayProfileButtonView (): JSX.Element {
             bg='black'
             color='white'
             label={<HStack><StarIcon /> <Text>{score}</Text></HStack>}
+            {...restProps}
           >
             {message}
           </TopPopoverButtonView>
@@ -112,6 +118,7 @@ export default function PlayProfileButtonView (): JSX.Element {
             bg='white'
             color='black'
             label={<HStack><SmallCloseIcon /> <Text>{score}</Text></HStack>}
+            {...restProps}
           >
             {message}
           </TopPopoverButtonView>
@@ -125,6 +132,7 @@ export default function PlayProfileButtonView (): JSX.Element {
         bg='black'
         color='white'
         icon={<CheckIcon />}
+        {...restProps}
       >
         {message}
       </TopPopoverIconButtonView>
@@ -138,6 +146,7 @@ export default function PlayProfileButtonView (): JSX.Element {
       bg={bg}
       color={color}
       aria-label={`${profileState.displayName} is choosing a scheme from their hand to play and another to trash.`}
+      {...restProps}
     />
   )
 }

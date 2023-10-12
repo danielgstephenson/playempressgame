@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, HStack, IconButton, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
+import { Button, ButtonGroup, HStack, Modal, ModalContent, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure, VStack } from '@chakra-ui/react'
 import { useContext } from 'react'
 import { gameContext } from '../reader/game'
 import Curtain from './Curtain'
@@ -14,6 +14,7 @@ import { QuestionIcon } from '@chakra-ui/icons'
 import { BUTTON_GRAY_BORDER } from '../constants'
 import ProfileHeadingView from './ProfileHeading'
 import ExpandedProfileView from './ExpandedProfile'
+import GridButtonView from './GridButton'
 
 export default function ProfileView (): JSX.Element {
   const profileState = useContext(profileContext)
@@ -46,13 +47,9 @@ export default function ProfileView (): JSX.Element {
     return (
       <Popover key={index}>
         <PopoverTrigger>
-          <IconButton
-            aria-label={fullMessage}
-            disabled bg='gray.600'
-            color='white'
-            icon={<QuestionIcon />}
-            minW='30px'
-          />
+          <GridButtonView>
+            <QuestionIcon />
+          </GridButtonView>
         </PopoverTrigger>
         <PopoverContent>
           <PopoverArrow />
@@ -63,10 +60,10 @@ export default function ProfileView (): JSX.Element {
   })
   const reserveView = reserveFull
     ? (
-      <HStack spacing='0' overflow='hidden'>
+      <>
         {reserveStartViews}
         <LastReserveButtonView />
-      </HStack>
+      </>
       )
     : (
       <PopoverButtonView bg='transparent' border={BUTTON_GRAY_BORDER}>
@@ -76,9 +73,15 @@ export default function ProfileView (): JSX.Element {
   return (
     <>
       <VStack spacing='0'>
+        <HStack borderTopRadius='md' spacing='0' overflow='hidden'>
+          {inPlay}
+        </HStack>
         <ButtonGroup size='xs' isAttached>
-          <PlayProfileButtonView />
-          <BidProfileButtonView />
+          <PlayProfileButtonView borderBottomRadius='md' />
+          <BidProfileButtonView borderBottomRadius='md' />
+          <Button onClick={onOpen}>
+            {profileState.displayName}
+          </Button>
           <TopPopoverButtonView
             bg='yellow.400'
             color='black'
@@ -92,18 +95,13 @@ export default function ProfileView (): JSX.Element {
             color='black'
             _hover={{ bg: 'gray.600', color: 'white' }}
             label={profileState.silver}
+            borderBottomRadius='md'
           >
             {profileState.displayName} has {profileState.silver} silver.
           </TopPopoverButtonView>
         </ButtonGroup>
-        {reserveView}
-        <ButtonGroup size='xs' isAttached>
-          <Button onClick={onOpen}>
-            {profileState.displayName}
-          </Button>
-        </ButtonGroup>
         <HStack borderBottomRadius='md' spacing='0' overflow='hidden'>
-          {inPlay}
+          {reserveView}
         </HStack>
       </VStack>
       <Curtain open={playing}>

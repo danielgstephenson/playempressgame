@@ -256,16 +256,14 @@ export default function PlayPhaseView (): JSX.Element {
       <Curtain open={reordering}>
         <Heading size='md' textAlign='center'>Reorder your reserve</Heading>
       </Curtain>
-      <HStack justifyContent='space-between' alignItems='start'>
-        <Box>
-          <Heading size='sm' fontWeight={fontWeight}>Reserve</Heading>
-          <HStack>
-            <ReserveStart />
-            <ReserveChoiceView />
-            <LastReserveView />
-          </HStack>
-        </Box>
-      </HStack>
+      <Box>
+        <Heading size='sm' fontWeight={fontWeight} textAlign='center'>Reserve</Heading>
+        <HStack gap='2px' justifyContent='center'>
+          <ReserveStart />
+          <ReserveChoiceView />
+          <LastReserveView />
+        </HStack>
+      </Box>
       <DragOverlay dropAnimation={DROP_ANIMATION}>
         {sortableActiveItem}
       </DragOverlay>

@@ -1,5 +1,5 @@
 import { LockIcon } from '@chakra-ui/icons'
-import { HStack, Text } from '@chakra-ui/react'
+import { ButtonProps, HStack, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import profileContext from '../context/profile'
 import { gameContext } from '../reader/game'
@@ -9,7 +9,7 @@ import isHighestUntiedBidder from '../service/isHighestUntiedBidder'
 import BidStatusView from './BidStatus'
 import TopPopoverButtonView from './TopPopoverButton'
 
-export default function BidProfileButtonView (): JSX.Element {
+export default function BidProfileButtonView ({ ...restProps }: ButtonProps): JSX.Element {
   const gameState = useContext(gameContext)
   const profileState = useContext(profileContext)
   if (
@@ -39,7 +39,7 @@ export default function BidProfileButtonView (): JSX.Element {
       />
     )
     return (
-      <TopPopoverButtonView bg='black' color='white' label={label}>
+      <TopPopoverButtonView bg='black' color='white' label={label} {...restProps}>
         {profileState.displayName}'s {profileState.bid} is the highest untied bid.
       </TopPopoverButtonView>
     )
@@ -66,6 +66,7 @@ export default function BidProfileButtonView (): JSX.Element {
           bg='gray.400'
           color='black'
           label={<HStack alignItems='start'><Text>{label}</Text> <LockIcon /></HStack>}
+          {...restProps}
         >
           {profileState.displayName}'s is ready to imprison.
         </TopPopoverButtonView>
@@ -83,7 +84,7 @@ export default function BidProfileButtonView (): JSX.Element {
         />
       )
       return (
-        <TopPopoverButtonView bg='slategrey' color='white' label={label}>
+        <TopPopoverButtonView bg='slategrey' color='white' label={label} {...restProps}>
           {profileState.displayName}'s bid is {profileState.bid}, and they can not withdraw because they are the last bidder.
         </TopPopoverButtonView>
       )
@@ -99,7 +100,7 @@ export default function BidProfileButtonView (): JSX.Element {
         />
       )
       return (
-        <TopPopoverButtonView bg='gray.400' color='black' label={label}>
+        <TopPopoverButtonView bg='gray.400' color='black' label={label} {...restProps}>
           {profileState.displayName}'s bid is {profileState.bid}, but they can withdraw.
         </TopPopoverButtonView>
       )
@@ -116,7 +117,7 @@ export default function BidProfileButtonView (): JSX.Element {
     />
   )
   return (
-    <TopPopoverButtonView bg='gray.100' color='black' _hover={{ bg: 'lightgray' }} label={label}>
+    <TopPopoverButtonView bg='gray.100' color='black' _hover={{ bg: 'lightgray' }} label={label} {...restProps}>
       {profileState.displayName}'s bid is {profileState.bid}.
     </TopPopoverButtonView>
   )
